@@ -12,7 +12,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@equitherm/core": "^0.1.0",
+    "@equitherm/core": "^0.1.4",
     "apexcharts": "^3.54.0",
     "custom-card-helpers": "^1.9.0",
     "lit": "^3.3.1"
