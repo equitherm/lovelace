@@ -16,7 +16,7 @@ export interface LovelaceGridOptions {
 
 // ─── HA entity state helpers ───────────────────────────────────────────────────
 
-export type HvacAction = 'heating' | 'idle' | 'off' | 'cooling';
+export type HvacAction = 'heating' | 'idle' | 'off';
 
 export interface ClimateEntityAttributes {
   temperature: number;          // target temp (setpoint)
