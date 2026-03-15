@@ -207,7 +207,7 @@ export class EquithermCurveCard extends LitElement {
         title: { text: '°C outdoor', style: { color: 'var(--secondary-text-color)' } },
         labels: {
           style: { colors: 'var(--secondary-text-color)' },
-          formatter: (val: number) => `${-val}`,
+          formatter: (val: number) => `${(-val).toFixed(1)}`,
         },
         axisBorder: { show: false },
         axisTicks: { show: false },
@@ -222,7 +222,7 @@ export class EquithermCurveCard extends LitElement {
       legend: { show: false },
       dataLabels: { enabled: false },
       tooltip: {
-        x: { formatter: (v: number) => `${-v}°C outdoor` },
+        x: { formatter: (v: number) => `${(-v).toFixed(1)}°C outdoor` },
         y: { formatter: (v: number) => `${v.toFixed(1)}°C flow` },
       },
     };
