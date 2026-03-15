@@ -31,4 +31,16 @@ export interface WeatherForecastEntry {
   temperature: number;
 }
 
-// Card configs will be added here as cards are implemented
+// ─── Card configs ───────────────────────────────────────────────────────────────
+
+export interface StatusCardConfig extends LovelaceCardConfig {
+  type: 'custom:equitherm-status-card';
+  climate_entity: string;
+  outdoor_entity: string;
+  flow_entity: string;             // sensor.flow_setpoint — rate-limited actual
+  curve_output_entity?: string;    // sensor.heating_curve_output — enables ramping display
+  rate_limiting_entity?: string;   // binary_sensor.rate_limiting_active
+  outdoor_fault_entity?: string;
+  indoor_fault_entity?: string;
+  control_mode_entity?: string;
+}

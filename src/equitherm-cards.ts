@@ -1,4 +1,5 @@
-// Card imports will be registered here as cards are implemented
+import './cards/status-card';
+import './editors/status-card-editor';
 
 declare global {
   interface Window {
