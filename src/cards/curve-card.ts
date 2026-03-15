@@ -194,10 +194,10 @@ export class EquithermCurveCard extends LitElement {
       },
       markers: {
         size: [0, this._rateLimitingActive ? [8, 6] : 10],
-        colors: ['transparent', this._rateLimitingActive ? ['#f97316', '#f97316'] : '#f97316'],
-        strokeColors: ['transparent', this._rateLimitingActive ? ['transparent', '#ffffff'] : '#ffffff'],
+        colors: ['#f97316', this._rateLimitingActive ? ['#f97316', '#f97316'] : '#f97316'],
+        strokeColors: ['#ffffff', this._rateLimitingActive ? ['transparent', '#ffffff'] : '#ffffff'],
         strokeWidth: 2,
-        hover: { size: [0, 12] },
+        hover: { size: [6, 12] },
       },
       xaxis: {
         type: 'numeric',
