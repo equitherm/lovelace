@@ -9,7 +9,7 @@ importers:
   .:
     dependencies:
       '@equitherm/core':
-        specifier: ^0.1.0
+        specifier: ^0.1.4
         version: 0.1.4
       apexcharts:
         specifier: ^3.54.0

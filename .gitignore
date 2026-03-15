@@ -26,3 +26,6 @@ npm-debug.log*
 .idea/
 *.swp
 *.swo
+
+# Local planning docs
+docs/plans/
