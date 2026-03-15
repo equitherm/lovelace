@@ -1,0 +1,212 @@
+# ─── Adjustable inputs (act as number/climate entities) ──────────────────────
+
+input_number:
+  mock_target_temp:
+    name: "Target Temperature"
+    min: 16
+    max: 26
+    step: 0.5
+    initial: 21
+    unit_of_measurement: "°C"
+    icon: mdi:home-thermometer
+
+  mock_outdoor_temp:
+    name: "Outdoor Temperature"
+    min: -30
+    max: 30
+    step: 0.5
+    initial: -5
+    unit_of_measurement: "°C"
+    icon: mdi:thermometer
+
+  mock_room_temp:
+    name: "Room Temperature"
+    min: 10
+    max: 30
+    step: 0.1
+    initial: 20.8
+    unit_of_measurement: "°C"
+    icon: mdi:thermometer
+
+  # number.* entities (equitherm.number platform)
+  heat_curve_coefficient:
+    name: "Heat Curve Coefficient"
+    min: 0.5
+    max: 5.0
+    step: 0.05
+    initial: 1.2
+    icon: mdi:chart-bell-curve
+
+  heat_curve_exponent:
+    name: "Heat Curve Exponent"
+    min: 0.5
+    max: 3.0
+    step: 0.05
+    initial: 1.25
+
+  heat_curve_shift:
+    name: "Heat Curve Shift"
+    min: -20
+    max: 20
+    step: 0.5
+    initial: 0
+    unit_of_measurement: "°C"
+
+  # Rate limit number entities
+  rate_limit_rising:
+    name: "Rate Limit Rising"
+    min: 0.0
+    max: 2.0
+    step: 0.1
+    initial: 0.5
+    unit_of_measurement: "°C/min"
+
+  rate_limit_falling:
+    name: "Rate Limit Falling"
+    min: 0.0
+    max: 2.0
+    step: 0.1
+    initial: 1.0
+    unit_of_measurement: "°C/min"
+
+  # Separate mock for heating curve output (pre-rate-limit) — adjust independently to simulate ramping
+  mock_heating_curve_output:
+    name: "Mock Heating Curve Output (pre-rate-limit)"
+    min: 25
+    max: 70
+    step: 0.1
+    initial: 62.0
+    unit_of_measurement: "°C"
+
+  # Mock flow setpoint (rate-limited) — manually adjust to simulate lag behind curve output
+  mock_flow_setpoint_input:
+    name: "Mock Flow Setpoint (rate-limited)"
+    min: 25
+    max: 70
+    step: 0.1
+    initial: 55.0
+    unit_of_measurement: "°C"
+
+input_boolean:
+  mock_heating_active:
+    name: "Heating Active"
+    initial: true
+    icon: mdi:fire
+
+  mock_outdoor_fault:
+    name: "Outdoor Sensor Fault"
+    initial: false
+
+  mock_indoor_fault:
+    name: "Indoor Sensor Fault"
+    initial: false
+
+input_select:
+  mock_control_mode:
+    name: "Control Mode"
+    options:
+      - "Normal"
+      - "Outdoor Fallback"
+      - "Indoor Fallback"
+      - "Full Fallback"
+    initial: "Normal"
+
+# ─── Climate entity (mirrors climate.equitherm) ───────────────────────────────
+
+climate:
+  - platform: generic_thermostat
+    name: "Mock Equitherm"
+    unique_id: mock_equitherm
+    heater: input_boolean.mock_heating_active
+    target_sensor: input_number.mock_room_temp
+    min_temp: 16
+    max_temp: 26
+    target_temp: 21
+    hot_tolerance: 0.3
+    cold_tolerance: 0.3
+    precision: 0.1
+
+# ─── Computed sensors (mirrors equitherm sensor platform) ─────────────────────
+
+template:
+  - sensor:
+      # FLOW_SETPOINT — tracks separate input to simulate rate-limited lag
+      # NOTE: No device_class: temperature to avoid HA auto-conversion
+      - name: "Mock Flow Setpoint"
+        unique_id: mock_flow_setpoint
+        unit_of_measurement: "°C"
+        state_class: measurement
+        icon: mdi:thermometer-water
+        state: "{{ states('input_number.mock_flow_setpoint_input') }}"
+
+      - name: "Mock Heating Curve Output"
+        unique_id: mock_heating_curve_output
+        unit_of_measurement: "°C"
+        state_class: measurement
+        state: "{{ states('input_number.mock_heating_curve_output') }}"
+
+      - name: "Mock PID Adjusted Output"
+        unique_id: mock_pid_adjusted_output
+        unit_of_measurement: "°C"
+        state_class: measurement
+        state: "{{ states('sensor.mock_flow_setpoint') }}"
+
+      - name: "Mock Active Setpoint"
+        unique_id: mock_active_setpoint
+        unit_of_measurement: "°C"
+        state_class: measurement
+        state: "{{ states('sensor.mock_flow_setpoint') }}"
+
+      - name: "Mock PID Correction"
+        unique_id: mock_pid_correction
+        unit_of_measurement: "°C"
+        state_class: measurement
+        state: "0.0"
+
+      - name: "Mock PID Proportional"
+        unique_id: mock_pid_proportional
+        unit_of_measurement: "°C"
+        state_class: measurement
+        state: "0.0"
+
+      - name: "Mock PID Integral"
+        unique_id: mock_pid_integral
+        unit_of_measurement: "°C"
+        state_class: measurement
+        state: "0.0"
+
+      - name: "Mock PID Derivative"
+        unique_id: mock_pid_derivative
+        unit_of_measurement: "°C"
+        state_class: measurement
+        state: "0.0"
+
+      - name: "Mock Fallback Duration"
+        unique_id: mock_fallback_duration
+        unit_of_measurement: "s"
+        state_class: measurement
+        state: "0"
+
+      - name: "Mock Control Mode"
+        unique_id: mock_control_mode
+        state: "{{ states('input_select.mock_control_mode') }}"
+
+  - binary_sensor:
+      - name: "Mock Outdoor Sensor Fault"
+        unique_id: mock_outdoor_sensor_fault
+        state: "{{ is_state('input_boolean.mock_outdoor_fault', 'on') }}"
+        device_class: problem
+
+      - name: "Mock Indoor Sensor Fault"
+        unique_id: mock_indoor_sensor_fault
+        state: "{{ is_state('input_boolean.mock_indoor_fault', 'on') }}"
+        device_class: problem
+
+      # Automatically true when flow_setpoint hasn't caught up to curve output
+      - name: "Mock Rate Limiting Active"
+        unique_id: mock_rate_limiting_active
+        device_class: running
+        state: >
+          {% set curve = states('sensor.mock_heating_curve_output') | float(0) %}
+          {% set flow = states('sensor.mock_flow_setpoint') | float(curve) %}
+          {{ (curve - flow) | abs > 0.1 }}

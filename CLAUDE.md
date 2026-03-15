@@ -21,6 +21,20 @@ task build        # Build
 task ci           # Run full CI locally
 ```
 
+## Development
+
+A local Home Assistant instance is configured in `.hass_dev/` for testing:
+
+```bash
+# Start HA with the card loaded
+ha -c .hass_dev start
+
+# The card is served from dist/ via configuration.yaml
+# Mock entities are defined in .hass_dev/packages/mock_equitherm.yaml
+```
+
+The dev dashboard is at `.hass_dev/lovelace/dev-dashboard.yaml`.
+
 ## Project Structure
 
 ```
@@ -54,6 +68,28 @@ lovelace/
 | Charts | ApexCharts |
 | Release | semantic-release |
 
+## Implemented Cards
+
+### Equitherm Status Card (`src/cards/status-card.ts`)
+
+Compact tile showing heating status with temperature displays.
+
+**Required config:**
+- `climate_entity` - Climate entity with `current_temperature` attribute
+- `outdoor_entity` - Outdoor temperature sensor
+- `flow_entity` - Flow setpoint sensor
+
+**Optional config:**
+- `curve_output_entity` - When set, shows "ADJUSTING" indicator with target
+- `rate_limiting_entity` - Binary sensor, enables ramping display
+- `control_mode_entity` - Shows control mode text
+
+**Features:**
+- HVAC action badge (heating/idle/off) - click opens climate more-info
+- Three-column layout: Outdoor → Flow | Room
+- Temperature unit conversion (°C/°F) via HA's unit system
+- Rate-limiting indicator with rising/falling direction
+
 ## Key Conventions
 
 1. **Lit components**: All cards are Lit elements
@@ -61,6 +97,7 @@ lovelace/
 3. **HACS distribution**: Built bundle is attached to GitHub releases
 4. **Card registration**: New cards must be registered in `src/equitherm-cards.ts`
 5. **Custom card helpers**: Use `custom-card-helpers` for HA integration
+6. **Entity change detection**: Use `entitiesChanged()` helper to gate re-renders
 
 ## Adding a New Card
 

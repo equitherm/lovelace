@@ -1,0 +1,61 @@
+title: Equitherm Dev Dashboard
+views:
+  - title: Cards
+    type: sections
+    sections:
+      - type: grid
+        cards:
+          - type: custom:equitherm-status-card
+            climate_entity: climate.mock_equitherm
+            outdoor_entity: input_number.mock_outdoor_temp
+            flow_entity: sensor.mock_flow_setpoint
+            curve_output_entity: sensor.mock_heating_curve_output
+            rate_limiting_entity: binary_sensor.mock_rate_limiting_active
+            control_mode_entity: sensor.mock_control_mode
+
+      - type: grid
+        title: Inputs
+        cards:
+          - type: entities
+            entities:
+              - input_number.mock_outdoor_temp
+              - input_number.mock_room_temp
+              - input_number.mock_target_temp
+              - input_number.mock_heating_curve_output
+              - input_number.mock_flow_setpoint_input
+          - type: entities
+            entities:
+              - input_number.heat_curve_coefficient
+              - input_number.heat_curve_exponent
+              - input_number.heat_curve_shift
+              - input_number.rate_limit_rising
+              - input_number.rate_limit_falling
+          - type: entities
+            entities:
+              - input_boolean.mock_heating_active
+              - input_boolean.mock_outdoor_fault
+              - input_boolean.mock_indoor_fault
+              - input_select.mock_control_mode
+
+      - type: grid
+        title: Sensors
+        cards:
+          - type: entities
+            entities:
+              - sensor.mock_flow_setpoint
+              - sensor.mock_heating_curve_output
+              - sensor.mock_pid_adjusted_output
+              - sensor.mock_active_setpoint
+          - type: entities
+            entities:
+              - sensor.mock_pid_correction
+              - sensor.mock_pid_proportional
+              - sensor.mock_pid_integral
+              - sensor.mock_pid_derivative
+              - sensor.mock_fallback_duration
+              - sensor.mock_control_mode
+          - type: entities
+            entities:
+              - binary_sensor.mock_rate_limiting_active
+              - binary_sensor.mock_outdoor_sensor_fault
+              - binary_sensor.mock_indoor_sensor_fault
