@@ -36,11 +36,12 @@ export class EquithermCurveCard extends LitElement {
     ];
     if (entitiesChanged(this._hass, hass, watched)) {
       this._hass = hass;
-      if (this._chart) this._updateChartSeries();
+      if (this._chart) this._updateChartOptions();
     }
   }
   @state() private _config!: CurveCardConfig;
   @query('#chart') private _chartEl!: HTMLElement;
+  @query('.chart-wrapper') private _chartWrapper!: HTMLElement;
   private _chart?: ApexCharts;
   private _resizeObserver?: ResizeObserver;
   private _chartInitialized = false;
@@ -211,17 +212,17 @@ export class EquithermCurveCard extends LitElement {
         max: -cfg.t_out_min,
         tickAmount: undefined,  // Let ApexCharts auto-calculate
         forceNiceScale: false,  // Don't adjust min/max
-        title: { text: '°C outdoor', style: { color: 'var(--secondary-text-color)' } },
+        title: { text: '°C outdoor', style: { color: 'var(--secondary-text-color)', fontWeight: 400 } },
         labels: {
-          style: { colors: 'var(--secondary-text-color)' },
+          style: { colors: 'var(--secondary-text-color)', fontWeight: 400 },
           formatter: (val: number) => `${(-val).toFixed(1)}`,
         },
         axisBorder: { show: false },
         axisTicks: { show: false },
       },
       yaxis: {
-        title: { text: '°C flow', style: { color: 'var(--secondary-text-color)' } },
-        labels: { style: { colors: 'var(--secondary-text-color)' } },
+        title: { text: '°C flow', style: { color: 'var(--secondary-text-color)', fontWeight: 400 } },
+        labels: { style: { colors: 'var(--secondary-text-color)', fontWeight: 400 } },
         min: cfg.min_flow - 5,
         max: cfg.max_flow + 5,
       },
@@ -251,8 +252,8 @@ export class EquithermCurveCard extends LitElement {
         window.dispatchEvent(new Event('resize'));
       }, 100);
     });
-    // Observe the chart container for size changes
-    this._resizeObserver.observe(this._chartEl);
+    // Observe the chart wrapper for size changes
+    this._resizeObserver.observe(this._chartWrapper);
   }
 
   private _initChart() {
@@ -321,7 +322,7 @@ export class EquithermCurveCard extends LitElement {
             window.dispatchEvent(new Event('resize'));
           }, 100);
         });
-        this._resizeObserver.observe(this._chartEl);
+        this._resizeObserver.observe(this._chartWrapper);
       });
     }
   }
@@ -341,7 +342,8 @@ export class EquithermCurveCard extends LitElement {
         font-weight: 600;
         color: var(--primary-text-color);
       }
-      #chart { flex: 1; min-height: 0; }
+      .chart-wrapper { flex: 1; min-height: 0; }
+      #chart { width: 100%; height: 100%; }
       .footer {
         display: flex;
         justify-content: center;
@@ -351,6 +353,7 @@ export class EquithermCurveCard extends LitElement {
         margin-top: 4px;
       }
       .footer strong { color: var(--primary-text-color); }
+      .footer .flow-temp { color: #f97316; }
     `,
   ];
 
@@ -365,11 +368,13 @@ export class EquithermCurveCard extends LitElement {
           <span class="title">${title}</span>
           <eq-action-badge .action=${action}></eq-action-badge>
         </div>
-        <div id="chart"></div>
+        <div class="chart-wrapper">
+          <div id="chart"></div>
+        </div>
         <div class="footer">
           <span><strong>${this._formatTemp(this._tOutdoor)}</strong> outdoor</span>
           <span>→</span>
-          <span><strong>${this._formatTemp(this._flowTemp)}</strong> flow</span>
+          <span><strong class="flow-temp">${this._formatTemp(this._flowTemp)}</strong> flow</span>
         </div>
       </ha-card>
     `;
