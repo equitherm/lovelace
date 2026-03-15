@@ -141,18 +141,19 @@ export class EquithermCurveCard extends LitElement {
     const currentFlow = flowAtOutdoor(curveParams, this._tOutdoor);
 
     // Build scatter data based on rate-limiting state
+    // Negate x values to reverse axis: warm (left) → cold (right)
     let scatterData: ChartDataPoint[];
     if (this._rateLimitingActive) {
       // Dual dots: solid (curve output) + hollow (rate-limited flow)
       const curveOutput = this.hass?.states[this._config.curve_output_entity];
       const curveOutputValue = curveOutput ? parseFloat(curveOutput.state) : currentFlow;
       scatterData = [
-        { x: this._tOutdoor, y: curveOutputValue },  // Target (solid)
-        { x: this._tOutdoor, y: this._flowTemp },    // Actual (hollow)
+        { x: -this._tOutdoor, y: curveOutputValue },  // Target (solid)
+        { x: -this._tOutdoor, y: this._flowTemp },    // Actual (hollow)
       ];
     } else {
       // Single dot at current position
-      scatterData = [{ x: this._tOutdoor, y: currentFlow }];
+      scatterData = [{ x: -this._tOutdoor, y: currentFlow }];
     }
 
     return {
@@ -169,7 +170,8 @@ export class EquithermCurveCard extends LitElement {
       series: [
         {
           name: 'Flow Temp',
-          data: curveSeries.map((p): ChartDataPoint => ({ x: p.x, y: p.y })),
+          // Negate x values to reverse axis display
+          data: curveSeries.map((p): ChartDataPoint => ({ x: -p.x, y: p.y })),
         },
         {
           name: 'Current',
@@ -199,8 +201,14 @@ export class EquithermCurveCard extends LitElement {
       },
       xaxis: {
         type: 'numeric',
+        // Negated min/max for reversed display: warm (left) → cold (right)
+        min: -cfg.t_out_max,
+        max: -cfg.t_out_min,
         title: { text: '°C outdoor', style: { color: 'var(--secondary-text-color)' } },
-        labels: { style: { colors: 'var(--secondary-text-color)' } },
+        labels: {
+          style: { colors: 'var(--secondary-text-color)' },
+          formatter: (val: number) => `${-val}`,
+        },
         axisBorder: { show: false },
         axisTicks: { show: false },
       },
@@ -214,7 +222,7 @@ export class EquithermCurveCard extends LitElement {
       legend: { show: false },
       dataLabels: { enabled: false },
       tooltip: {
-        x: { formatter: (v: number) => `${v}°C outdoor` },
+        x: { formatter: (v: number) => `${-v}°C outdoor` },
         y: { formatter: (v: number) => `${v.toFixed(1)}°C flow` },
       },
     };
