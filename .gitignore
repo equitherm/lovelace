@@ -29,3 +29,40 @@ npm-debug.log*
 
 # Local planning docs
 docs/plans/
+# Dependencies
+node_modules/
+
+# Build artifacts
+*.tsbuildinfo
+
+# Distribution (keep .gitkeep, ignore built files)
+dist/*.js
+dist/*.map
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Local planning docs
+docs/plans/
+
+# Home Assistant dev environment
+.hass_dev/.storage/
+.hass_dev/home-assistant.log
+.hass_dev/home-assistant_v2.db*
+.hass_dev/home-assistant.log.1
