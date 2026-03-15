@@ -13,7 +13,7 @@ export type CurveConfig = Omit<CurveParams, 'tOutdoor'>;
 /**
  * Generate N evenly-spaced points along the heating curve for chart rendering.
  */
-export function buildCurveSeries(params: CurveConfig, tOutMin: number, tOutMax: number, points = 100): CurvePoint[] {
+export function buildCurveSeries(params: CurveConfig, tOutMin: number, tOutMax: number, points = 40): CurvePoint[] {
   const step = (tOutMax - tOutMin) / (points - 1);
   return Array.from({ length: points }, (_, i) => {
     const x = tOutMin + i * step;
