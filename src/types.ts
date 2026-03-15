@@ -42,3 +42,20 @@ export interface StatusCardConfig extends LovelaceCardConfig {
   rate_limiting_entity?: string;   // binary_sensor.rate_limiting_active
   control_mode_entity?: string;
 }
+
+export interface CurveCardConfig extends LovelaceCardConfig {
+  type: 'custom:equitherm-curve-card';
+  title?: string;
+  climate_entity: string;
+  outdoor_entity: string;
+  curve_output_entity: string;   // sensor.heating_curve_output — solid dot (pre-rate-limit)
+  flow_entity: string;           // sensor.flow_setpoint — hollow dot (rate-limited)
+  rate_limiting_entity?: string; // binary_sensor.rate_limiting_active — controls dual-dot display
+  hc: number;
+  n: number;
+  shift: number;
+  min_flow: number;
+  max_flow: number;
+  t_out_min: number;
+  t_out_max: number;
+}

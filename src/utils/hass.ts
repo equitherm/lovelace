@@ -3,6 +3,9 @@ import type { HomeAssistant } from '../types';
 /**
  * Returns true only if any of the watched entity IDs changed state since last hass.
  * Use this in set hass() to gate expensive re-renders.
+ *
+ * Note: HA replaces state objects on ANY change (state string OR attributes),
+ * so reference comparison (!==) correctly detects attribute changes too.
  */
 export function entitiesChanged(
   prev: HomeAssistant | undefined,

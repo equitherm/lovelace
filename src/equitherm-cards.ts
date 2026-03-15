@@ -1,5 +1,7 @@
 import './cards/status-card';
+import './cards/curve-card';
 import './editors/status-card-editor';
+import './editors/curve-card-editor';
 
 declare global {
   interface Window {
@@ -20,6 +22,12 @@ window.customCards.push(
     type: 'equitherm-status-card',
     name: 'Equitherm Status',
     description: 'Compact heating status tile with temperature displays',
+    preview: true,
+  },
+  {
+    type: 'equitherm-curve-card',
+    name: 'Equitherm Curve',
+    description: 'Heating curve visualization with current operating point',
     preview: true,
   }
 );
