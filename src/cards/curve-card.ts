@@ -39,6 +39,8 @@ export class EquithermCurveCard extends LitElement {
   @state() private _config!: CurveCardConfig;
   @query('#chart') private _chartEl!: HTMLElement;
   private _chart?: ApexCharts;
+  private _resizeObserver?: ResizeObserver;
+  private _chartInitialized = false;
 
   public getGridOptions(): LovelaceGridOptions {
     return { columns: 6, rows: 3, min_rows: 2 };
@@ -216,8 +218,26 @@ export class EquithermCurveCard extends LitElement {
     // Wait for Lit to finish rendering (ensures container has dimensions)
     await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
     await this.updateComplete;
+    this._initChart();
+    // Set up ResizeObserver to handle container size changes
+    this._resizeObserver = new ResizeObserver(() => {
+      if (this._chart && this._chartInitialized) {
+        // Small delay to let layout settle
+        setTimeout(() => {
+          this._chart?.destroy();
+          this._chart = new ApexCharts(this._chartEl, this._buildChartOptions());
+          this._chart.render();
+        }, 50);
+      }
+    });
+    this._resizeObserver.observe(this._chartEl);
+  }
+
+  private _initChart() {
+    if (this._chartInitialized) return;
     this._chart = new ApexCharts(this._chartEl, this._buildChartOptions());
     this._chart.render();
+    this._chartInitialized = true;
   }
 
   /** Update series data when entity states change (fast, no rebuild) */
@@ -255,8 +275,10 @@ export class EquithermCurveCard extends LitElement {
 
   disconnectedCallback() {
     super.disconnectedCallback();
+    this._resizeObserver?.disconnect();
     this._chart?.destroy();
     this._chart = undefined;
+    this._chartInitialized = false;
   }
 
   static styles = [
