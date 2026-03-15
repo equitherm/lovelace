@@ -238,14 +238,22 @@ export class EquithermCurveCard extends LitElement {
     this._chartInitialized = true;
   }
 
-  /** Update series data when entity states change (fast, no rebuild) */
+  /** Update series data when entity states change (fast, no animation) */
   private _updateChartSeries(): void {
     if (!this._chart) return;
     const opts = this._buildChartOptions();
-    this._chart.updateSeries(opts.series, true);
+    // Second arg = false = no animation (prevents perceived lag)
+    this._chart.updateSeries(opts.series, false);
   }
 
-  /** Check if structural curve params changed (requires full chart rebuild) */
+  /** Full update: options + series, no animation, no recreate */
+  private _updateChartOptions(): void {
+    if (!this._chart) return;
+    const opts = this._buildChartOptions();
+    // updateOptions instead of destroy/recreate - false, false = no redraw, no animation
+    this._chart.updateOptions(opts, false, false);
+  }
+
   private _structuralParamsChanged(prev: CurveCardConfig | undefined, next: CurveCardConfig): boolean {
     if (!prev) return true;
     const keys: (keyof CurveStructuralParams)[] = ['hc', 'n', 'shift', 'min_flow', 'max_flow', 't_out_min', 't_out_max'];
@@ -256,16 +264,10 @@ export class EquithermCurveCard extends LitElement {
     if (changedProps.has('_config') && this._chart) {
       const prevConfig = changedProps.get('_config') as CurveCardConfig | undefined;
       if (this._structuralParamsChanged(prevConfig, this._config)) {
-        // Structural params changed — full rebuild needed
-        this._chart.destroy();
-        // Wait for render before recreating chart
-        requestAnimationFrame(async () => {
-          await this.updateComplete;
-          this._chart = new ApexCharts(this._chartEl, this._buildChartOptions());
-          this._chart.render();
-        });
+        // Structural change (axes, range) - use updateOptions instead of destroy
+        this._updateChartOptions();
       } else {
-        // Only entity references changed — fast series update
+        // Just entity values changed - fast series update
         this._updateChartSeries();
       }
     }
