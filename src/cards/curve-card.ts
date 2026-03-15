@@ -5,6 +5,7 @@ import type { HomeAssistant, CurveCardConfig, LovelaceGridOptions, ClimateEntity
 import { tokens, cardBase } from '../styles/tokens';
 import { buildCurveSeries, flowAtOutdoor } from '../utils/curve';
 import { entitiesChanged } from '../utils/hass';
+import { validateCurveCardConfig } from '../config/curve-card-config';
 import '../components/action-badge';
 
 /** Curve parameters that affect the curve shape (require full rebuild) */
@@ -63,16 +64,13 @@ export class EquithermCurveCard extends LitElement {
     };
   }
 
-  static getConfigElement() {
+  static async getConfigElement() {
+    await import('../editors/curve-card-editor');
     return document.createElement('equitherm-curve-card-editor');
   }
 
-  setConfig(config: CurveCardConfig) {
-    if (!config.climate_entity) throw new Error('climate_entity is required');
-    if (!config.outdoor_entity) throw new Error('outdoor_entity is required');
-    if (!config.curve_output_entity) throw new Error('curve_output_entity is required');
-    if (!config.flow_entity) throw new Error('flow_entity is required');
-    // Config is frozen since HA 0.106 — must clone before storing
+  setConfig(config: unknown) {
+    validateCurveCardConfig(config);
     this._config = { ...config };
   }
 
