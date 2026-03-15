@@ -63,13 +63,14 @@ jobs:
         run: pnpm build
 
       - name: Semantic Release
-        run: npx --package semantic-release@25 \
-            --package @semantic-release/changelog \
-            --package @semantic-release/npm \
-            --package @semantic-release/git \
-            --package @semantic-release/github \
-            --package conventional-changelog-conventionalcommits \
-            semantic-release
+        run: >-
+          npx --package semantic-release@25
+          --package @semantic-release/changelog
+          --package @semantic-release/npm
+          --package @semantic-release/git
+          --package @semantic-release/github
+          --package conventional-changelog-conventionalcommits
+          semantic-release
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
           GIT_AUTHOR_NAME: ${{ steps.git-bot.outputs.name }}
