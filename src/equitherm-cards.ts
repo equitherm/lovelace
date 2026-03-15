@@ -7,7 +7,7 @@ declare global {
 }
 
 console.info(
-  '%c EQUITHERM-CARDS %c 0.1.0 ',
+  '%c EQUITHERM-CARDS %c __VERSION__ ',
   'color: white; background: #f97316; font-weight: bold;',
   'color: #f97316; background: white; font-weight: bold;'
 );
