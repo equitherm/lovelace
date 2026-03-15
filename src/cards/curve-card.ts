@@ -141,30 +141,31 @@ export class EquithermCurveCard extends LitElement {
     const currentFlow = flowAtOutdoor(curveParams, this._tOutdoor);
 
     // Build annotation points for current position dot(s)
-    // Annotations are visual overlays - always visible, no interaction
-    // Scatter series (invisible) provides tooltip on hover
+    // Using annotations instead of scatter series to avoid hover conflicts
     const annotationPoints: ApexAnnotations['points'] = [];
-    const scatterData: ChartDataPoint[] = [];
-
     if (this._rateLimitingActive) {
+      // Dual dots: solid (curve output) + hollow (rate-limited flow)
       const curveOutput = this.hass?.states[this._config.curve_output_entity];
       const curveOutputValue = curveOutput ? parseFloat(curveOutput.state) : currentFlow;
-
       annotationPoints.push(
-        { x: -this._tOutdoor, y: curveOutputValue, marker: { size: 8, fillColor: '#f97316', strokeColor: '#ffffff', strokeWidth: 2 } },
-        { x: -this._tOutdoor, y: this._flowTemp, marker: { size: 6, fillColor: '#f97316', strokeColor: '#ffffff', strokeWidth: 2 } }
-      );
-      scatterData.push(
-        { x: -this._tOutdoor, y: curveOutputValue },
-        { x: -this._tOutdoor, y: this._flowTemp }
+        {
+          x: -this._tOutdoor,
+          y: curveOutputValue,
+          marker: { size: 8, fillColor: '#f97316', strokeColor: '#ffffff', strokeWidth: 2 },
+        },
+        {
+          x: -this._tOutdoor,
+          y: this._flowTemp,
+          marker: { size: 6, fillColor: '#f97316', strokeColor: '#ffffff', strokeWidth: 2 },
+        }
       );
     } else {
+      // Single dot at current position
       annotationPoints.push({
         x: -this._tOutdoor,
         y: currentFlow,
         marker: { size: 10, fillColor: '#f97316', strokeColor: '#ffffff', strokeWidth: 2 },
       });
-      scatterData.push({ x: -this._tOutdoor, y: currentFlow });
     }
 
     return {
@@ -181,16 +182,12 @@ export class EquithermCurveCard extends LitElement {
       series: [
         {
           name: 'Flow Temp',
+          // Negate x values to reverse axis display
           data: curveSeries.map((p): ChartDataPoint => ({ x: -p.x, y: p.y })),
-        },
-        {
-          name: 'Current',
-          type: 'scatter',
-          data: scatterData,
         },
       ],
       annotations: { points: annotationPoints },
-      stroke: { curve: 'smooth', width: [2, 0] },
+      stroke: { curve: 'straight', width: 2 },
       fill: {
         type: 'gradient',
         gradient: {
@@ -204,14 +201,16 @@ export class EquithermCurveCard extends LitElement {
         },
       },
       markers: {
-        size: [0, 0],  // Hidden - annotations show the dots
-        hover: { size: [6, 10] },  // Curve shows dot on hover, scatter becomes visible
+        size: 0,
+        hover: { size: 6 },
       },
       xaxis: {
         type: 'numeric',
         // Negated min/max for reversed display: warm (left) → cold (right)
         min: -cfg.t_out_max,
         max: -cfg.t_out_min,
+        tickAmount: undefined,  // Let ApexCharts auto-calculate
+        forceNiceScale: false,  // Don't adjust min/max
         title: { text: '°C outdoor', style: { color: 'var(--secondary-text-color)' } },
         labels: {
           style: { colors: 'var(--secondary-text-color)' },

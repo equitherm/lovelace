@@ -11,14 +11,16 @@ export interface CurvePoint {
 export type CurveConfig = Omit<CurveParams, 'tOutdoor'>;
 
 /**
- * Generate N evenly-spaced points along the heating curve for chart rendering.
+ * Generate points along the heating curve for chart rendering.
+ * Uses 0.1° step size for smooth hover interpolation.
  */
-export function buildCurveSeries(params: CurveConfig, tOutMin: number, tOutMax: number, points = 40): CurvePoint[] {
-  const step = (tOutMax - tOutMin) / (points - 1);
+export function buildCurveSeries(params: CurveConfig, tOutMin: number, tOutMax: number): CurvePoint[] {
+  const step = 0.1;
+  const points = Math.round((tOutMax - tOutMin) / step) + 1;
   return Array.from({ length: points }, (_, i) => {
     const x = tOutMin + i * step;
     const y = computeFlowTemperature({ ...params, tOutdoor: x });
-    return { x: parseFloat(x.toFixed(2)), y: parseFloat(y.toFixed(1)) };
+    return { x, y: parseFloat(y.toFixed(1)) };
   });
 }
 

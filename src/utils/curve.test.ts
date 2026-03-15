@@ -4,9 +4,10 @@ import { buildCurveSeries, flowAtOutdoor } from './curve';
 const params = { tTarget: 21, hc: 1.2, n: 1.25, shift: 0, minFlow: 25, maxFlow: 70 };
 
 describe('buildCurveSeries', () => {
-  it('returns correct number of points', () => {
-    const series = buildCurveSeries(params, -20, 20, 50);
-    expect(series).toHaveLength(50);
+  it('returns correct number of points (0.1° step)', () => {
+    const series = buildCurveSeries(params, -20, 20);
+    // Range of 40° with 0.1 step = 401 points
+    expect(series).toHaveLength(401);
   });
 
   it('first point x equals tOutMin', () => {
