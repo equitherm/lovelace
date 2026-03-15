@@ -11,8 +11,6 @@ views:
             flow_entity: sensor.mock_flow_setpoint
             curve_output_entity: sensor.mock_heating_curve_output
             rate_limiting_entity: binary_sensor.mock_rate_limiting_active
-            outdoor_fault_entity: binary_sensor.mock_outdoor_sensor_fault
-            indoor_fault_entity: binary_sensor.mock_indoor_sensor_fault
             control_mode_entity: sensor.mock_control_mode
 
       - type: grid

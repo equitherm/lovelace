@@ -18,8 +18,6 @@ export class EquithermStatusCard extends LitElement {
       this._config?.flow_entity,
       this._config?.curve_output_entity,
       this._config?.rate_limiting_entity,
-      this._config?.outdoor_fault_entity,
-      this._config?.indoor_fault_entity,
       this._config?.control_mode_entity,
     ];
     if (entitiesChanged(this._hass, hass, watched)) {
@@ -110,16 +108,6 @@ export class EquithermStatusCard extends LitElement {
     return this.hass?.states[this._config.control_mode_entity]?.state ?? '';
   }
 
-  private get _outdoorFault(): boolean {
-    if (!this._config.outdoor_fault_entity) return false;
-    return this.hass?.states[this._config.outdoor_fault_entity]?.state === 'on';
-  }
-
-  private get _indoorFault(): boolean {
-    if (!this._config.indoor_fault_entity) return false;
-    return this.hass?.states[this._config.indoor_fault_entity]?.state === 'on';
-  }
-
   private get _rateLimitingActive(): boolean {
     if (!this._config.rate_limiting_entity) return false;
     return this.hass?.states[this._config.rate_limiting_entity]?.state === 'on';
@@ -206,17 +194,6 @@ export class EquithermStatusCard extends LitElement {
       .arrow { color: var(--secondary-text-color); font-size: 1.2rem; }
       .divider { width: 1px; background: var(--divider-color, #e0e0e0); height: 40px; flex-shrink: 0; }
       .mode { font-size: var(--eq-font-size-small); color: var(--secondary-text-color); cursor: pointer; }
-      .fault-badge {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 3px 6px;
-        border-radius: 999px;
-        background: var(--eq-badge-fault-bg, #db4437);
-        color: var(--eq-badge-fault-color, #fff);
-        cursor: pointer;
-      }
-      .fault-badge ha-icon { --mdc-icon-size: 14px; }
       .ramping {
         display: inline-flex;
         align-items: center;
@@ -246,11 +223,6 @@ export class EquithermStatusCard extends LitElement {
       <ha-card>
         <div class="header">
           <eq-action-badge .action=${action} @click=${() => this._handleClick(this._config.climate_entity)}></eq-action-badge>
-          ${this._outdoorFault || this._indoorFault ? html`
-            <span class="fault-badge" @click=${() => this._handleClick(this._outdoorFault ? this._config.outdoor_fault_entity! : this._config.indoor_fault_entity!)}>
-              <ha-icon .icon=${'mdi:alert-circle'}></ha-icon>
-            </span>
-          ` : nothing}
           ${adjustingDir ? html`
             <span class="ramping">
               <ha-icon .icon=${adjustingDir === 'rising' ? 'mdi:trending-up' : 'mdi:trending-down'}></ha-icon>

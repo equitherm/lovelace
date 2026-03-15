@@ -33,8 +33,6 @@ export class EquithermStatusCardEditor extends LitElement {
     { name: 'flow_entity', required: true, selector: { entity: { domain: ['sensor', 'number', 'input_number'] } } },
     { name: 'curve_output_entity', required: false, selector: { entity: { domain: ['sensor'] } } },
     { name: 'rate_limiting_entity', required: false, selector: { entity: { domain: ['binary_sensor'] } } },
-    { name: 'outdoor_fault_entity', required: false, selector: { entity: { domain: ['binary_sensor'] } } },
-    { name: 'indoor_fault_entity', required: false, selector: { entity: { domain: ['binary_sensor'] } } },
     { name: 'control_mode_entity', required: false, selector: { entity: { domain: ['sensor'] } } },
   ];
 
@@ -44,8 +42,6 @@ export class EquithermStatusCardEditor extends LitElement {
     flow_entity: 'Flow Setpoint Entity (rate-limited)',
     curve_output_entity: 'Heating Curve Output Entity (pre-rate-limit, optional)',
     rate_limiting_entity: 'Rate Limiting Active Entity (optional)',
-    outdoor_fault_entity: 'Outdoor Sensor Fault Entity (optional)',
-    indoor_fault_entity: 'Indoor Sensor Fault Entity (optional)',
     control_mode_entity: 'Control Mode Entity (optional)',
   }[schema.name] ?? schema.name);
 
