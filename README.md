@@ -2,9 +2,25 @@
 
 Home Assistant Lovelace cards for the [ESPHome equitherm climate component](https://github.com/equitherm/core).
 
+![Status Card Preview](docs/status-card.png)
+
+## Features
+
+- 🛠 Visual editor for all cards
+- 🌡 Monitor heating status at a glance
+- 📊 Heating curve visualization (coming soon)
+- 🌓 Light and dark theme support
+- 🌍 Temperature unit conversion (°C/°F)
+
 ## Installation
 
+**Home Assistant minimum version:** 2026.3.1
+
 ### HACS (Recommended)
+
+[![Open Equitherm Cards on Home Assistant Community Store (HACS).](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=equitherm&repository=lovelace&category=Dashboard)
+
+_or_
 
 1. Open HACS in Home Assistant
 2. Go to "Dashboards"
@@ -12,26 +28,23 @@ Home Assistant Lovelace cards for the [ESPHome equitherm climate component](http
 4. Add `https://github.com/equitherm/lovelace` as type "Dashboard"
 5. Click "Install" on "Equitherm Cards"
 
-### Manual
+<details>
+<summary>Manual Installation</summary>
 
-1. Download `equitherm-cards.js` from the [latest release](https://github.com/equitherm/lovelace/releases/latest)
+1. Download `equitherm-cards.js` from the [latest release][release-url]
 2. Copy to `www/equitherm-cards.js` in your Home Assistant config directory
-3. Add to your `configuration.yaml`:
-   ```yaml
-   lovelace:
-     resources:
-       - url: /local/equitherm-cards.js
-         type: module
-   ```
-4. Restart Home Assistant
+3. Add to your Dashboard resources:
+   - **Using UI:** Settings → Dashboards → More Options → Resources → Add Resource
+   - Set URL as `/local/equitherm-cards.js` and type as `JavaScript Module`
+4. Refresh your browser
+
+</details>
 
 ## Cards
 
-### Equitherm Status (Available)
+### 🌡 Status Card
 
-Compact tile showing current heating status with temperature flow and optional rate-limiting indicators.
-
-![Status Card Preview](docs/status-card.png)
+Compact tile showing current heating status with temperature displays and optional rate-limiting indicators.
 
 ```yaml
 type: custom:equitherm-status-card
@@ -39,33 +52,47 @@ climate_entity: climate.your_equitherm
 outdoor_entity: sensor.outdoor_temperature
 flow_entity: sensor.flow_setpoint
 # Optional:
-curve_output_entity: sensor.heating_curve_output  # Enables ramping indicator
+curve_output_entity: sensor.heating_curve_output
 rate_limiting_entity: binary_sensor.rate_limiting_active
 control_mode_entity: sensor.control_mode
 ```
 
-**Features:**
-- Displays outdoor, flow, and room temperatures
-- HVAC action badge (heating/idle/off)
-- Optional "ADJUSTING" indicator when rate-limiting is active
-- Temperature unit conversion (°C/°F)
-- Click any value to open more-info dialog
+| Option | Type | Required | Description |
+|--------|------|----------|-------------|
+| `climate_entity` | string | ✓ | Climate entity with `current_temperature` attribute |
+| `outdoor_entity` | string | ✓ | Outdoor temperature sensor |
+| `flow_entity` | string | ✓ | Flow setpoint sensor |
+| `curve_output_entity` | string | | Shows "ADJUSTING" indicator with target |
+| `rate_limiting_entity` | string | | Binary sensor for ramping display |
+| `control_mode_entity` | string | | Shows control mode text |
 
 ### Planned Cards
 
-- **Equitherm Curve** - Heating curve visualization with live operating point
-- **Equitherm Forecast** - Predicted flow temperatures based on weather forecast
-- **Equitherm Tuning** - Compare heating curves and tune parameters live
+| Card | Description |
+|------|-------------|
+| 📈 **Curve Card** | Heating curve visualization with live operating point |
+| 🌤 **Forecast Card** | Predicted flow temperatures from weather forecast |
+| 🔧 **Tuning Card** | Compare heating curves and tune parameters live |
 
 ## Requirements
 
-- Home Assistant 2024.3.0 or later
-- ESPHome equitherm climate component configured
+- Home Assistant 2026.3.1 or later
+- [ESPHome equitherm climate component](https://github.com/equitherm/core) configured
 
 ## Related Projects
 
 - [equitherm/core](https://github.com/equitherm/core) - Pure calculation library
 - [equitherm/web](https://github.com/equitherm/web) - Web-based tuning tool
+
+## Development
+
+```bash
+pnpm install     # Install dependencies
+pnpm dev         # Start Rollup watch mode
+pnpm build       # Build bundle to dist/
+```
+
+See [CLAUDE.md](CLAUDE.md) for development guidelines.
 
 ## License
 
