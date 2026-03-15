@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+
+# Build artifacts
+*.tsbuildinfo
+
+# Distribution (keep .gitkeep, ignore built files)
+dist/*.js
+dist/*.map
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
