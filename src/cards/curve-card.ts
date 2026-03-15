@@ -222,21 +222,16 @@ export class EquithermCurveCard extends LitElement {
     // Set up ResizeObserver to handle container size changes
     let resizeTimeout: ReturnType<typeof setTimeout>;
     this._resizeObserver = new ResizeObserver(() => {
-      if (!this._chartInitialized) return;
+      if (!this._chartInitialized || !this._chart) return;
       // Debounce resize events
       clearTimeout(resizeTimeout);
       resizeTimeout = setTimeout(() => {
-        if (this._chart) {
-          this._chart.destroy();
-          this._chart = new ApexCharts(this._chartEl, this._buildChartOptions());
-          this._chart.render();
-        }
+        // Trigger ApexCharts internal resize handler
+        window.dispatchEvent(new Event('resize'));
       }, 100);
     });
-    // Observe the chart container (not the card) for size changes
+    // Observe the chart container for size changes
     this._resizeObserver.observe(this._chartEl);
-    // Also observe the card itself for layout changes (e.g., exiting edit mode)
-    this._resizeObserver.observe(this);
   }
 
   private _initChart() {
