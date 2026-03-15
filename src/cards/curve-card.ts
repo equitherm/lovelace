@@ -2,7 +2,7 @@ import { LitElement, html, css, nothing } from 'lit';
 import { customElement, state, query } from 'lit/decorators.js';
 import ApexCharts from 'apexcharts';
 import type { HomeAssistant, CurveCardConfig, LovelaceGridOptions, ClimateEntityAttributes } from '../types';
-import { tokens, cardBase } from '../styles/tokens';
+import { tokens, cardBase, applyDarkMode } from '../styles/tokens';
 import { buildCurveSeries, flowAtOutdoor } from '../utils/curve';
 import { entitiesChanged } from '../utils/hass';
 import { validateCurveCardConfig } from '../config/curve-card-config';
@@ -24,6 +24,8 @@ export class EquithermCurveCard extends LitElement {
   @state() private _hass?: HomeAssistant;
   get hass() { return this._hass!; }
   set hass(hass: HomeAssistant) {
+    // Apply dark mode based on HA theme
+    applyDarkMode(this, hass);
     // Chart update is expensive — only trigger when our watched entities change
     const watched = [
       this._config?.climate_entity,
