@@ -1,3 +1,11 @@
+## [1.0.1](https://github.com/equitherm/lovelace/compare/v1.0.0...v1.0.1) (2026-03-15)
+
+### Bug Fixes
+
+* editor entity selection and config sync ([#6](https://github.com/equitherm/lovelace/issues/6)) ([c28d7b0](https://github.com/equitherm/lovelace/commit/c28d7b06bcf48bae3165c62667ee28f274f838b2))
+* npx command in release workflow ([#7](https://github.com/equitherm/lovelace/issues/7)) ([bcbc8e4](https://github.com/equitherm/lovelace/commit/bcbc8e44c51d33a6b939695c1250e53cd88a9c22))
+* persist release version in repo [skip ci] ([#5](https://github.com/equitherm/lovelace/issues/5)) ([8e425b4](https://github.com/equitherm/lovelace/commit/8e425b44d70d6fa11f39548981a988b1af19e254))
+
 ## 1.0.0 (2026-03-15)
 
 ### Features
