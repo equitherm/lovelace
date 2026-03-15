@@ -13,25 +13,24 @@ export class EquithermStatusCardEditor extends LitElement {
   }
 
   protected _valueChanged(ev: CustomEvent): void {
-    const target = ev.target as HTMLElement & { configValue?: string; value?: unknown; checked?: boolean };
-    if (!this._config || target.configValue === undefined) {
-      return;
+    if (!this._config) return;
+
+    // ha-form passes the entire updated data object in ev.detail.value
+    const newConfig = { ...ev.detail.value } as StatusCardConfig;
+
+    // Only fire if something actually changed
+    if (JSON.stringify(newConfig) !== JSON.stringify(this._config)) {
+      fireEvent(this, 'config-changed', { config: newConfig });
     }
-    const value = target.value ?? target.checked;
-    const newConfig = {
-      ...this._config,
-      [target.configValue]: value,
-    };
-    fireEvent(this, 'config-changed', { config: newConfig });
   }
 
   static styles = css`ha-form { display: block; }`;
 
   private _schema = [
     { name: 'climate_entity', required: true, selector: { entity: { domain: ['climate'] } } },
-    { name: 'outdoor_entity', required: true, selector: { entity: { domain: ['sensor', 'input_number'] } } },
-    { name: 'flow_entity', required: true, selector: { entity: { domain: ['sensor', 'number', 'input_number'] } } },
-    { name: 'curve_output_entity', required: false, selector: { entity: { domain: ['sensor'] } } },
+    { name: 'outdoor_entity', required: true, selector: { entity: { domain: ['sensor', 'input_number'], device_class: 'temperature' } } },
+    { name: 'flow_entity', required: true, selector: { entity: { domain: ['sensor', 'number', 'input_number'], device_class: 'temperature' } } },
+    { name: 'curve_output_entity', required: false, selector: { entity: { domain: ['sensor'], device_class: 'temperature' } } },
     { name: 'rate_limiting_entity', required: false, selector: { entity: { domain: ['binary_sensor'] } } },
     { name: 'control_mode_entity', required: false, selector: { entity: { domain: ['sensor'] } } },
   ];
