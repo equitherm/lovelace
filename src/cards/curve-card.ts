@@ -140,20 +140,32 @@ export class EquithermCurveCard extends LitElement {
     const curveSeries = buildCurveSeries(curveParams, cfg.t_out_min, cfg.t_out_max);
     const currentFlow = flowAtOutdoor(curveParams, this._tOutdoor);
 
-    // Build scatter data based on rate-limiting state
-    // Negate x values to reverse axis: warm (left) → cold (right)
-    let scatterData: ChartDataPoint[];
+    // Build annotation points for current position dot(s)
+    // Using annotations instead of scatter series to avoid hover conflicts
+    const annotationPoints: ApexAnnotations['points'] = [];
     if (this._rateLimitingActive) {
       // Dual dots: solid (curve output) + hollow (rate-limited flow)
       const curveOutput = this.hass?.states[this._config.curve_output_entity];
       const curveOutputValue = curveOutput ? parseFloat(curveOutput.state) : currentFlow;
-      scatterData = [
-        { x: -this._tOutdoor, y: curveOutputValue },  // Target (solid)
-        { x: -this._tOutdoor, y: this._flowTemp },    // Actual (hollow)
-      ];
+      annotationPoints.push(
+        {
+          x: -this._tOutdoor,
+          y: curveOutputValue,
+          marker: { size: 8, fillColor: '#f97316', strokeColor: '#ffffff', strokeWidth: 2 },
+        },
+        {
+          x: -this._tOutdoor,
+          y: this._flowTemp,
+          marker: { size: 6, fillColor: '#f97316', strokeColor: '#ffffff', strokeWidth: 2 },
+        }
+      );
     } else {
       // Single dot at current position
-      scatterData = [{ x: -this._tOutdoor, y: currentFlow }];
+      annotationPoints.push({
+        x: -this._tOutdoor,
+        y: currentFlow,
+        marker: { size: 10, fillColor: '#f97316', strokeColor: '#ffffff', strokeWidth: 2 },
+      });
     }
 
     return {
@@ -173,15 +185,11 @@ export class EquithermCurveCard extends LitElement {
           // Negate x values to reverse axis display
           data: curveSeries.map((p): ChartDataPoint => ({ x: -p.x, y: p.y })),
         },
-        {
-          name: 'Current',
-          type: 'scatter',
-          data: scatterData,
-        },
       ],
-      stroke: { curve: 'smooth', width: [2, 0] },
+      annotations: { points: annotationPoints },
+      stroke: { curve: 'smooth', width: 2 },
       fill: {
-        type: ['gradient', 'solid'],
+        type: 'gradient',
         gradient: {
           type: 'vertical',
           gradientToColors: ['#3b82f6'],
@@ -193,11 +201,8 @@ export class EquithermCurveCard extends LitElement {
         },
       },
       markers: {
-        size: [0, this._rateLimitingActive ? [8, 6] : 10],
-        colors: ['#f97316', this._rateLimitingActive ? ['#f97316', '#f97316'] : '#f97316'],
-        strokeColors: ['#ffffff', this._rateLimitingActive ? ['transparent', '#ffffff'] : '#ffffff'],
-        strokeWidth: 2,
-        hover: { size: [6, 12] },
+        size: 0,
+        hover: { size: 6 },
       },
       xaxis: {
         type: 'numeric',
