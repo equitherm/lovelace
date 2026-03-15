@@ -31,15 +31,8 @@ export class EquithermStatusCard extends LitElement {
     return { columns: 12, rows: 2, min_rows: 1 };
   }
 
-  static getStubConfig(hass: HomeAssistant): StatusCardConfig {
-    const climateEntities = Object.keys(hass.states).filter((e) => e.startsWith('climate.'));
-    return {
-      type: 'custom:equitherm-status-card',
-      climate_entity: climateEntities[0] ?? 'climate.equitherm',
-      outdoor_entity: 'sensor.outdoor_temperature',
-      flow_entity: 'sensor.flow_setpoint',
-      curve_output_entity: 'sensor.heating_curve_output',
-    };
+  static getStubConfig(): StatusCardConfig {
+    return { type: 'custom:equitherm-status-card' } as StatusCardConfig;
   }
 
   static getConfigElement(): HTMLElement {
