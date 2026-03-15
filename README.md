@@ -27,45 +27,33 @@ Home Assistant Lovelace cards for the [ESPHome equitherm climate component](http
 
 ## Cards
 
-### Equitherm Status
+### Equitherm Status (Available)
 
-Compact tile showing current heating status with fault indicators.
+Compact tile showing current heating status with temperature flow and optional rate-limiting indicators.
 
 ```yaml
 type: custom:equitherm-status-card
 climate_entity: climate.your_equitherm
 outdoor_entity: sensor.outdoor_temperature
 flow_entity: sensor.flow_setpoint
+# Optional:
+curve_output_entity: sensor.heating_curve_output  # Enables ramping indicator
+rate_limiting_entity: binary_sensor.rate_limiting_active
+control_mode_entity: sensor.control_mode
 ```
 
-### Equitherm Curve
+**Features:**
+- Displays outdoor, flow, and room temperatures
+- HVAC action badge (heating/idle/off)
+- Optional "ADJUSTING" indicator when rate-limiting is active
+- Temperature unit conversion (°C/°F)
+- Click any value to open more-info dialog
 
-Heating curve visualization with live operating point.
+### Planned Cards
 
-```yaml
-type: custom:equitherm-curve-card
-climate_entity: climate.your_equitherm
-outdoor_entity: sensor.outdoor_temperature
-```
-
-### Equitherm Forecast
-
-Predicted flow temperatures based on weather forecast.
-
-```yaml
-type: custom:equitherm-forecast-card
-climate_entity: climate.your_equitherm
-weather_entity: weather.your_weather
-```
-
-### Equitherm Tuning
-
-Compare heating curves and tune parameters live.
-
-```yaml
-type: custom:equitherm-tuning-card
-climate_entity: climate.your_equitherm
-```
+- **Equitherm Curve** - Heating curve visualization with live operating point
+- **Equitherm Forecast** - Predicted flow temperatures based on weather forecast
+- **Equitherm Tuning** - Compare heating curves and tune parameters live
 
 ## Requirements
 
