@@ -211,7 +211,9 @@ export class EquithermCurveCard extends LitElement {
     };
   }
 
-  protected firstUpdated() {
+  protected async firstUpdated() {
+    // Defer chart init to next frame - card shell renders immediately
+    await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
     this._chart = new ApexCharts(this._chartEl, this._buildChartOptions());
     this._chart.render();
   }
