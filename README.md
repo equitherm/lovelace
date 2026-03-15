@@ -31,6 +31,8 @@ Home Assistant Lovelace cards for the [ESPHome equitherm climate component](http
 
 Compact tile showing current heating status with temperature flow and optional rate-limiting indicators.
 
+![Status Card Preview](docs/status-card.png)
+
 ```yaml
 type: custom:equitherm-status-card
 climate_entity: climate.your_equitherm
