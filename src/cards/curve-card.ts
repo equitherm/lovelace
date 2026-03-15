@@ -101,6 +101,12 @@ export class EquithermCurveCard extends LitElement {
     return this.hass?.states[this._config.rate_limiting_entity]?.state === 'on';
   }
 
+  /** Detect dark mode from HA theme or system preference */
+  private get _isDark(): boolean {
+    return document.documentElement.hasAttribute('dark-theme')
+      || window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+
   /** Format temperature using HA's unit system */
   private _formatTemp(value: number | undefined, entityUnit?: string): string {
     if (value == null || isNaN(value)) return '—';
@@ -159,7 +165,7 @@ export class EquithermCurveCard extends LitElement {
         animations: { enabled: true, speed: 400 },
         background: 'transparent',
       },
-      theme: { mode: 'dark' },
+      theme: { mode: this._isDark ? 'dark' : 'light' },
       series: [
         {
           name: 'Flow Temp',
