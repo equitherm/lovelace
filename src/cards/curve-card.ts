@@ -284,6 +284,27 @@ export class EquithermCurveCard extends LitElement {
     this._chartInitialized = false;
   }
 
+  connectedCallback() {
+    super.connectedCallback();
+    // Reinitialize chart if it was destroyed (e.g., after exiting edit mode)
+    if (this._config && this.hass && !this._chartInitialized) {
+      requestAnimationFrame(async () => {
+        await this.updateComplete;
+        this._initChart();
+        // Re-setup ResizeObserver
+        let resizeTimeout: ReturnType<typeof setTimeout>;
+        this._resizeObserver = new ResizeObserver(() => {
+          if (!this._chartInitialized || !this._chart) return;
+          clearTimeout(resizeTimeout);
+          resizeTimeout = setTimeout(() => {
+            window.dispatchEvent(new Event('resize'));
+          }, 100);
+        });
+        this._resizeObserver.observe(this._chartEl);
+      });
+    }
+  }
+
   static styles = [
     tokens,
     cardBase,
