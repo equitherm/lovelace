@@ -94,12 +94,18 @@ jobs:
             const content = fs.readFileSync(filePath, 'utf8');
             const contentBase64 = Buffer.from(content).toString('base64');
 
-            const { data: currentFile } = await github.rest.repos.getContent({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              path: filePath,
-              ref: 'main'
-            });
+            let sha;
+            try {
+              const { data: currentFile } = await github.rest.repos.getContent({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                path: filePath,
+                ref: 'main'
+              });
+              sha = currentFile.sha;
+            } catch (e) {
+              if (e.status !== 404) throw e;
+            }
 
             await github.rest.repos.createOrUpdateFileContents({
               owner: context.repo.owner,
@@ -107,7 +113,7 @@ jobs:
               path: filePath,
               message: message,
               content: contentBase64,
-              sha: currentFile.sha,
+              sha,
               branch: 'main'
             });
 
