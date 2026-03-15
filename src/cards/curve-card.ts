@@ -150,6 +150,7 @@ export class EquithermCurveCard extends LitElement {
     return {
       chart: {
         type: 'area',
+        width: '100%',
         height: '100%',
         toolbar: { show: false },
         zoom: { enabled: false },
