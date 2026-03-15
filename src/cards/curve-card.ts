@@ -212,8 +212,9 @@ export class EquithermCurveCard extends LitElement {
   }
 
   protected async firstUpdated() {
-    // Defer chart init to next frame - card shell renders immediately
+    // Wait for Lit to finish rendering (ensures container has dimensions)
     await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+    await this.updateComplete;
     this._chart = new ApexCharts(this._chartEl, this._buildChartOptions());
     this._chart.render();
   }
@@ -238,8 +239,12 @@ export class EquithermCurveCard extends LitElement {
       if (this._structuralParamsChanged(prevConfig, this._config)) {
         // Structural params changed — full rebuild needed
         this._chart.destroy();
-        this._chart = new ApexCharts(this._chartEl, this._buildChartOptions());
-        this._chart.render();
+        // Wait for render before recreating chart
+        requestAnimationFrame(async () => {
+          await this.updateComplete;
+          this._chart = new ApexCharts(this._chartEl, this._buildChartOptions());
+          this._chart.render();
+        });
       } else {
         // Only entity references changed — fast series update
         this._updateChartSeries();
