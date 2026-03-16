@@ -264,7 +264,17 @@ export class EquithermCurveCard extends LitElement {
     await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
     await this.updateComplete;
     this._initChart();
-    // Set up ResizeObserver to handle container size changes
+    this._setupResizeObserver();
+  }
+
+  private _initChart() {
+    if (this._chartInitialized) return;
+    this._chart = new ApexCharts(this._chartEl, this._buildChartOptions());
+    this._chart.render();
+    this._chartInitialized = true;
+  }
+
+  private _setupResizeObserver() {
     let resizeTimeout: ReturnType<typeof setTimeout>;
     this._resizeObserver = new ResizeObserver(() => {
       if (!this._chartInitialized || !this._chart) return;
@@ -275,15 +285,7 @@ export class EquithermCurveCard extends LitElement {
         window.dispatchEvent(new Event('resize'));
       }, 100);
     });
-    // Observe the chart wrapper for size changes
     this._resizeObserver.observe(this._chartWrapper);
-  }
-
-  private _initChart() {
-    if (this._chartInitialized) return;
-    this._chart = new ApexCharts(this._chartEl, this._buildChartOptions());
-    this._chart.render();
-    this._chartInitialized = true;
   }
 
   /** Update series data when entity states change (fast, no animation) */
@@ -336,16 +338,7 @@ export class EquithermCurveCard extends LitElement {
       requestAnimationFrame(async () => {
         await this.updateComplete;
         this._initChart();
-        // Re-setup ResizeObserver
-        let resizeTimeout: ReturnType<typeof setTimeout>;
-        this._resizeObserver = new ResizeObserver(() => {
-          if (!this._chartInitialized || !this._chart) return;
-          clearTimeout(resizeTimeout);
-          resizeTimeout = setTimeout(() => {
-            window.dispatchEvent(new Event('resize'));
-          }, 100);
-        });
-        this._resizeObserver.observe(this._chartWrapper);
+        this._setupResizeObserver();
       });
     }
   }
