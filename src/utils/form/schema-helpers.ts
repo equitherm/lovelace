@@ -64,7 +64,7 @@ export function expandable(
   };
 }
 
-/** Reusable schema field builders (object form for backward compatibility) */
+/** Convenience object for namespaced imports */
 export const schemaHelpers = {
   entity,
   number,
