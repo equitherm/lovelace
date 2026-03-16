@@ -1,4 +1,5 @@
 import { LitElement, html, css } from 'lit';
+import { localize } from '../localize';
 import { customElement, property } from 'lit/decorators.js';
 import type { HvacAction } from '../types';
 
@@ -49,9 +50,9 @@ export class ActionBadge extends LitElement {
   `;
 
   render() {
-    const label = this.action === 'heating' ? 'Heating'
-      : this.action === 'idle' ? 'Idle'
-      : 'Off';
+    const label = this.action === 'heating' ? localize('common.heating')
+      : this.action === 'idle' ? localize('common.idle')
+      : localize('common.off');
     return html`
       <span class="badge ${this.action}">
         <span class="dot"></span>
