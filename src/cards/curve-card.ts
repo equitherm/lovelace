@@ -162,7 +162,7 @@ export class EquithermCurveCard extends LitElement {
           {
             x: -tOutdoor,
             y: this._flowTemp,
-            marker: { size: 6, fillColor: '#f97316', strokeColor: '#ffffff', strokeWidth: 2 },
+            marker: { size: 6, fillColor: 'transparent', strokeColor: '#f97316', strokeWidth: 2 },
           }
         );
       } else {
