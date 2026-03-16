@@ -19,6 +19,11 @@ interface ChartDataPoint {
   y: number;
 }
 
+/** Marker sizes for chart annotations */
+const MARKER_SINGLE = 10;
+const MARKER_CURVE_OUTPUT = 8;
+const MARKER_RATE_LIMITED = 6;
+
 @customElement('equitherm-curve-card')
 export class EquithermCurveCard extends LitElement {
   @state() private _hass?: HomeAssistant;
@@ -174,12 +179,12 @@ export class EquithermCurveCard extends LitElement {
           {
             x: -tOutdoor,
             y: curveOutputValue,
-            marker: { size: 8, fillColor: '#f97316', strokeColor: '#ffffff', strokeWidth: 2 },
+            marker: { size: MARKER_CURVE_OUTPUT, fillColor: '#f97316', strokeColor: '#ffffff', strokeWidth: 2 },
           },
           {
             x: -tOutdoor,
             y: this._flowTemp,
-            marker: { size: 6, fillColor: 'transparent', strokeColor: '#f97316', strokeWidth: 2 },
+            marker: { size: MARKER_RATE_LIMITED, fillColor: 'transparent', strokeColor: '#f97316', strokeWidth: 2 },
           }
         );
       } else {
@@ -187,7 +192,7 @@ export class EquithermCurveCard extends LitElement {
         annotationPoints.push({
           x: -tOutdoor,
           y: currentFlow,
-          marker: { size: 10, fillColor: '#f97316', strokeColor: '#ffffff', strokeWidth: 2 },
+          marker: { size: MARKER_SINGLE, fillColor: '#f97316', strokeColor: '#ffffff', strokeWidth: 2 },
         });
       }
     }
