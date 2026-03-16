@@ -114,6 +114,5 @@ export function applyDarkMode(element: HTMLElement, hass: unknown): boolean {
   return isDark;
 }
 
-// Preset exports for backward compatibility
-export const COLOR_HEATING = '#f97316';
-export const COLOR_COLD = '#3b82f6';
+// Re-export color constants from colors.ts for convenience
+export { COLOR_HEATING, COLOR_COLD } from '../utils/colors';
