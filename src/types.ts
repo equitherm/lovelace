@@ -2,6 +2,17 @@ import { HomeAssistant, LovelaceCard, LovelaceCardConfig, LovelaceCardEditor } f
 
 export { HomeAssistant, LovelaceCard, LovelaceCardConfig, LovelaceCardEditor };
 
+// ─── Lovelace action config ───────────────────────────────────────────────────
+
+export interface ActionConfig {
+  action: 'more-info' | 'navigate' | 'call-service' | 'url' | 'none' | 'assist';
+  entity?: string;
+  navigation_path?: string;
+  url_path?: string;
+  service?: string;
+  service_data?: Record<string, unknown>;
+}
+
 /** HA entity state object */
 export interface HassEntity {
   entity_id: string;
