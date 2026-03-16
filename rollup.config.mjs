@@ -3,6 +3,7 @@ import commonjs from "@rollup/plugin-commonjs";
 import typescript from "@rollup/plugin-typescript";
 import terser from "@rollup/plugin-terser";
 import replace from "@rollup/plugin-replace";
+import json from "@rollup/plugin-json";
 import serve from "rollup-plugin-serve";
 import pkg from "./package.json" with { type: "json" };
 
@@ -17,6 +18,7 @@ export default {
     sourcemap: !!dev,
   },
   plugins: [
+    json(),
     replace({
       preventAssignment: true,
       __VERSION__: pkg.version,
