@@ -2,6 +2,15 @@ import { HomeAssistant, LovelaceCard, LovelaceCardConfig, LovelaceCardEditor } f
 
 export { HomeAssistant, LovelaceCard, LovelaceCardConfig, LovelaceCardEditor };
 
+/** HA entity state object */
+export interface HassEntity {
+  entity_id: string;
+  state: string;
+  attributes: Record<string, unknown>;
+  last_changed: string;
+  last_updated: string;
+}
+
 // ─── Lovelace grid options (sections view) ────────────────────────────────────
 // ⚠️ getGridOptions() is an INSTANCE method, not static. HA silently ignores static getLayoutOptions().
 
