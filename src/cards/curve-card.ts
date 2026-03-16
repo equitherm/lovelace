@@ -22,10 +22,15 @@ interface ChartDataPoint {
 @customElement('equitherm-curve-card')
 export class EquithermCurveCard extends LitElement {
   @state() private _hass?: HomeAssistant;
+  private _prevDarkMode?: boolean;
   get hass() { return this._hass!; }
   set hass(hass: HomeAssistant) {
     // Apply dark mode based on HA theme
     applyDarkMode(this, hass);
+    const isDark = (hass as { themes?: { darkMode?: boolean } })?.themes?.darkMode ?? false;
+    const darkChanged = this._prevDarkMode !== undefined && this._prevDarkMode !== isDark;
+    this._prevDarkMode = isDark;
+
     // Chart update is expensive — only trigger when our watched entities change
     const watched = [
       this._config?.climate_entity,
@@ -37,6 +42,10 @@ export class EquithermCurveCard extends LitElement {
     if (entitiesChanged(this._hass, hass, watched)) {
       this._hass = hass;
       if (this._chart) this._updateChartOptions();
+    } else if (darkChanged && this._chart) {
+      // Theme changed without entity change — still need to update chart
+      this._hass = hass;
+      this._updateChartOptions();
     }
   }
   @state() private _config!: CurveCardConfig;
