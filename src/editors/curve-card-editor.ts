@@ -7,6 +7,7 @@ import type { LovelaceCardEditor } from 'custom-card-helpers';
 import { fireEvent } from 'custom-card-helpers';
 import { schemaHelpers } from '../utils/form';
 import type { HaFormSchema } from '../utils/form';
+import { localize } from '../localize';
 
 @customElement('equitherm-curve-card-editor')
 export class EquithermCurveCardEditor extends LitElement implements LovelaceCardEditor {
@@ -35,14 +36,14 @@ export class EquithermCurveCardEditor extends LitElement implements LovelaceCard
 
   private _getSchema = memoizeOne((): HaFormSchema[] => [
     schemaHelpers.text('title', false),
-    schemaHelpers.expandable('Entities', 'mdi:connection', [
+    schemaHelpers.expandable(localize('editor.entities'), 'mdi:connection', [
       schemaHelpers.entity('climate_entity', { domain: 'climate' }),
       schemaHelpers.entity('outdoor_entity', { domain: ['sensor', 'input_number'], device_class: 'temperature' }),
       schemaHelpers.entity('curve_output_entity', { domain: ['sensor'], device_class: 'temperature' }),
       schemaHelpers.entity('flow_entity', { domain: ['sensor', 'number', 'input_number'], device_class: 'temperature' }),
       schemaHelpers.entity('rate_limiting_entity', { domain: ['binary_sensor'], required: false }),
     ]),
-    schemaHelpers.expandable('Curve Parameters', 'mdi:chart-bell-curve', [
+    schemaHelpers.expandable(localize('editor.curve_parameters'), 'mdi:chart-bell-curve', [
       schemaHelpers.grid([
         schemaHelpers.number('hc', 0.5, 3.0, 0.1),
         schemaHelpers.number('n', 1.0, 2.0, 0.05),
@@ -53,7 +54,7 @@ export class EquithermCurveCardEditor extends LitElement implements LovelaceCard
         schemaHelpers.number('max_flow', 50, 90, 1),
       ]),
     ]),
-    schemaHelpers.expandable('Display Range', 'mdi:arrow-expand-horizontal', [
+    schemaHelpers.expandable(localize('editor.display_range'), 'mdi:arrow-expand-horizontal', [
       schemaHelpers.grid([
         schemaHelpers.number('t_out_min', -30, 5, 1),
         schemaHelpers.number('t_out_max', 0, 30, 1),
@@ -61,21 +62,11 @@ export class EquithermCurveCardEditor extends LitElement implements LovelaceCard
     ]),
   ]);
 
-  private _computeLabel = (schema: { name: string }): string => ({
-    title: 'Title (optional)',
-    climate_entity: 'Climate Entity',
-    outdoor_entity: 'Outdoor Temperature',
-    curve_output_entity: 'Curve Output',
-    flow_entity: 'Flow Setpoint',
-    rate_limiting_entity: 'Rate Limiting (optional)',
-    hc: 'Heat Curve (hc)',
-    n: 'Exponent (n)',
-    shift: 'Shift (°C)',
-    min_flow: 'Min Flow (°C)',
-    max_flow: 'Max Flow (°C)',
-    t_out_min: 'Min Outdoor (°C)',
-    t_out_max: 'Max Outdoor (°C)',
-  }[schema.name] ?? schema.name);
+  private _computeLabel = (schema: { name: string }): string => {
+    const key = `editor.${schema.name}`;
+    const localized = localize(key);
+    return localized !== key ? localized : schema.name;
+  };
 
   render() {
     if (!this._config) return html``;

@@ -33,6 +33,17 @@
     "flow_entity": "Flow Setpoint",
     "curve_output_entity": "Curve Output",
     "rate_limiting_entity": "Rate Limiting",
-    "control_mode_entity": "Control Mode"
+    "control_mode_entity": "Control Mode",
+    "title": "Title (optional)",
+    "entities": "Entities",
+    "curve_parameters": "Curve Parameters",
+    "display_range": "Display Range",
+    "hc": "Heat Curve (hc)",
+    "n": "Exponent (n)",
+    "shift": "Shift (°C)",
+    "min_flow": "Min Flow (°C)",
+    "max_flow": "Max Flow (°C)",
+    "t_out_min": "Min Outdoor (°C)",
+    "t_out_max": "Max Outdoor (°C)"
   }
 }
