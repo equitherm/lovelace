@@ -4,6 +4,9 @@
     "flow": "Départ",
     "room": "Pièce",
     "adjusting": "Ajustement",
+    "heating": "Chauffage",
+    "idle": "Inactif",
+    "off": "Éteint",
     "not_found": "{entity} introuvable"
   },
   "status_card": {

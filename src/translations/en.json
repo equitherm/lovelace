@@ -4,6 +4,9 @@
     "flow": "Flow",
     "room": "Room",
     "adjusting": "Adjusting",
+    "heating": "Heating",
+    "idle": "Idle",
+    "off": "Off",
     "not_found": "{entity} not found"
   },
   "status_card": {
