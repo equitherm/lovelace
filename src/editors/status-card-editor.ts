@@ -32,6 +32,7 @@ export class StatusCardEditor extends LitElement implements LovelaceCardEditor {
     // Optional entities (expandable)
     {
       type: 'expandable',
+      flatten: true,
       name: 'optional_entities',
       title: localize('editor.optional'),
       icon: 'mdi:chevron-down',
@@ -53,6 +54,7 @@ export class StatusCardEditor extends LitElement implements LovelaceCardEditor {
     // Appearance (expandable)
     {
       type: 'expandable',
+      flatten: true,
       name: 'appearance',
       title: localize('editor.appearance'),
       icon: 'mdi:palette',
@@ -66,6 +68,7 @@ export class StatusCardEditor extends LitElement implements LovelaceCardEditor {
                 { value: 'vertical', label: localize('editor.layout_vertical') },
                 { value: 'horizontal', label: localize('editor.layout_horizontal') },
               ],
+              mode: 'dropdown',
             },
           },
         },

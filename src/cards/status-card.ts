@@ -1,5 +1,6 @@
 import { html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { classMap } from 'lit/directives/class-map.js';
 import type { StatusCardConfig, LovelaceGridOptions, ClimateEntityAttributes, HomeAssistant } from '../types';
 import { EquithermBaseCard } from '../utils/base-card';
 import { tokens, cardBase } from '../styles/tokens';
@@ -175,16 +176,16 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
       .flow-dual .target { font-size: 0.7rem; color: var(--secondary-text-color); }
 
       /* Layout variations */
-      :host([layout="vertical"]) .temps {
+      .temps.vertical {
         grid-template-columns: 1fr;
         grid-template-rows: auto auto auto;
         gap: var(--eq-spacing-md);
       }
-      :host([layout="vertical"]) .arrow,
-      :host([layout="vertical"]) .divider {
+      .temps.vertical .arrow,
+      .temps.vertical .divider {
         display: none;
       }
-      :host([layout="horizontal"]) .temps {
+      .temps.horizontal {
         grid-template-columns: repeat(5, 1fr);
       }
     `,
@@ -192,6 +193,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
 
   render() {
     if (!this._config || !this._hass) return nothing;
+    const layout = this._config.layout ?? 'default';
     const action = this._climate?.attributes.hvac_action ?? 'off';
     const adjustingDir = this._adjustingDirection;
     const curveOutput = this._curveOutputTemp;
@@ -209,7 +211,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
           ${this._controlMode ? html`<span class="mode" @click=${() => this._openMoreInfo(this._config.control_mode_entity!)}>${this._controlMode}</span>` : nothing}
         </div>
 
-        <div class="temps">
+        <div class=${classMap({ temps: true, vertical: layout === 'vertical', horizontal: layout === 'horizontal' })}>
           <div class="temp-block" @click=${() => this._openMoreInfo(this._config.outdoor_entity)}>
             <div class="temp-value">${this._outdoorTemp}</div>
             <div class="temp-label">${localize('common.outdoor')}</div>
