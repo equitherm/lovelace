@@ -90,6 +90,52 @@ Compact tile showing heating status with temperature displays.
 - Temperature unit conversion (°C/°F) via HA's unit system
 - Rate-limiting indicator with rising/falling direction
 
+## Shared Utilities
+
+### Editor Utilities (`src/utils/editor.ts`)
+
+Provides `schemaHelpers` for building ha-form schemas:
+
+```typescript
+import { schemaHelpers, HaFormSchema } from '../utils/editor';
+
+const schema: HaFormSchema[] = [
+  schemaHelpers.entity('climate_entity', { domain: 'climate' }),
+  schemaHelpers.expandable('Parameters', 'mdi:tune', [
+    schemaHelpers.grid([
+      schemaHelpers.number('hc', 0.5, 3.0, 0.1),
+      schemaHelpers.number('n', 1.0, 2.0, 0.05),
+    ]),
+  ]),
+];
+```
+
+### Action Utilities (`src/utils/actions.ts`)
+
+- `executeAction(element, hass, action, entityId)` - Execute tap/hold actions
+- `hasAction(action)` - Check if action is configured
+- `DEFAULT_TAP_ACTION`, `DEFAULT_HOLD_ACTION` - Common action presets
+
+### Base Class (`src/utils/base-card.ts`)
+
+All cards extend `EquithermBaseCard<TConfig>` which provides:
+
+- Entity access: `_entityState()`, `_entityAttr()`, `_entityExists()`
+- Formatting: `_formatTemp()` with unit conversion
+- Actions: `_openMoreInfo()`, `_handleAction()`, `_hasAction`
+- Rendering: `_renderNotFound()`
+- Lifecycle: `_watchedEntities()`, `_onHassUpdate()`
+
+### Config Validation (`src/config/`)
+
+Superstruct schemas for runtime config validation:
+- `status-card-config.ts` - StatusCardConfig schema and defaults
+- `curve-card-config.ts` - CurveCardConfig schema and defaults
+
+### Shared Components (`src/components/`)
+
+- `shape-icon.ts` - Icon with background shape (circle/square/pill)
+
 ## Key Conventions
 
 1. **Lit components**: All cards are Lit elements
