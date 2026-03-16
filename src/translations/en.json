@@ -1,0 +1,32 @@
+{
+  "common": {
+    "outdoor": "Outdoor",
+    "flow": "Flow",
+    "room": "Room",
+    "adjusting": "Adjusting",
+    "not_found": "{entity} not found"
+  },
+  "status_card": {
+    "name": "Equitherm Status Card",
+    "description": "Display heating status with temperature readings"
+  },
+  "curve_card": {
+    "name": "Equitherm Curve Card",
+    "description": "Interactive heating curve visualization"
+  },
+  "editor": {
+    "required": "Required",
+    "optional": "Optional",
+    "appearance": "Appearance",
+    "layout": "Layout",
+    "layout_default": "Default",
+    "layout_vertical": "Vertical",
+    "layout_horizontal": "Horizontal",
+    "climate_entity": "Climate Entity",
+    "outdoor_entity": "Outdoor Temperature",
+    "flow_entity": "Flow Setpoint",
+    "curve_output_entity": "Curve Output",
+    "rate_limiting_entity": "Rate Limiting",
+    "control_mode_entity": "Control Mode"
+  }
+}
