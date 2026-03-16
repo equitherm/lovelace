@@ -3,6 +3,7 @@ import { customElement } from 'lit/decorators.js';
 import type { StatusCardConfig, LovelaceGridOptions, ClimateEntityAttributes, HomeAssistant } from '../types';
 import { EquithermBaseCard } from '../utils/base-card';
 import { tokens, cardBase } from '../styles/tokens';
+import { localize } from '../localize';
 import '../components/action-badge';
 
 @customElement('equitherm-status-card')
@@ -172,7 +173,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
           ${adjustingDir ? html`
             <span class="ramping">
               <ha-icon .icon=${adjustingDir === 'rising' ? 'mdi:trending-up' : 'mdi:trending-down'}></ha-icon>
-              ADJUSTING
+              ${localize('common.adjusting')}
             </span>
           ` : nothing}
           ${this._controlMode ? html`<span class="mode" @click=${() => this._openMoreInfo(this._config.control_mode_entity!)}>${this._controlMode}</span>` : nothing}
@@ -181,7 +182,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
         <div class="temps">
           <div class="temp-block" @click=${() => this._openMoreInfo(this._config.outdoor_entity)}>
             <div class="temp-value">${this._outdoorTemp}</div>
-            <div class="temp-label">Outdoor</div>
+            <div class="temp-label">${localize('common.outdoor')}</div>
           </div>
           <div class="arrow" aria-hidden="true">→</div>
           <div class="temp-block" @click=${() => this._openMoreInfo(this._config.flow_entity)}>
@@ -193,12 +194,12 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
             ` : html`
               <div class="temp-value">${this._flowTemp}</div>
             `}
-            <div class="temp-label">Flow</div>
+            <div class="temp-label">${localize('common.flow')}</div>
           </div>
           <div class="divider"></div>
           <div class="temp-block" @click=${() => this._openMoreInfo(this._config.climate_entity)}>
             <div class="temp-value">${this._roomTemp}</div>
-            <div class="temp-label">Room</div>
+            <div class="temp-label">${localize('common.room')}</div>
           </div>
         </div>
       </ha-card>
