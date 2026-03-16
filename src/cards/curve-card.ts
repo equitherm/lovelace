@@ -103,9 +103,17 @@ export class EquithermCurveCard extends LitElement {
     return isNaN(val) ? null : val;
   }
 
+  private get _tOutdoorUnit(): string | undefined {
+    return this.hass?.states[this._config.outdoor_entity]?.attributes?.unit_of_measurement;
+  }
+
   private get _flowTemp(): number {
     const s = this.hass?.states[this._config.flow_entity];
     return s ? parseFloat(s.state) : this._config.min_flow;
+  }
+
+  private get _flowTempUnit(): string | undefined {
+    return this.hass?.states[this._config.flow_entity]?.attributes?.unit_of_measurement;
   }
 
   private get _rateLimitingActive(): boolean {
@@ -387,9 +395,9 @@ export class EquithermCurveCard extends LitElement {
           <div id="chart"></div>
         </div>
         <div class="footer">
-          <span><strong>${this._formatTemp(this._tOutdoor)}</strong> outdoor</span>
+          <span><strong>${this._formatTemp(this._tOutdoor, this._tOutdoorUnit)}</strong> outdoor</span>
           <span>→</span>
-          <span><strong class="flow-temp">${this._formatTemp(this._flowTemp)}</strong> flow</span>
+          <span><strong class="flow-temp">${this._formatTemp(this._flowTemp, this._flowTempUnit)}</strong> flow</span>
         </div>
       </ha-card>
     `;
