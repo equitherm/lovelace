@@ -1,4 +1,6 @@
 // src/types.ts
+import type { HvacAction as HvacActionType } from './utils/colors';
+
 // Re-export from custom-card-helpers
 export type {
   HomeAssistant,
@@ -6,6 +8,9 @@ export type {
   LovelaceCardEditor,
   LovelaceCardConfig,
 } from 'custom-card-helpers';
+
+// Re-export HvacAction from colors (canonical source)
+export type HvacAction = HvacActionType;
 
 // HA entity state object
 export interface HassEntity {
@@ -44,8 +49,6 @@ export interface LovelaceGridOptions {
 }
 
 // ─── HA entity state helpers ───────────────────────────────────────────────────
-
-export type HvacAction = 'heating' | 'idle' | 'off';
 
 export interface ClimateEntityAttributes {
   current_temperature?: number;
