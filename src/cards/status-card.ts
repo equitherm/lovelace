@@ -28,12 +28,10 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
     const layout = this._config?.layout ?? 'default';
 
     switch (layout) {
-      case 'horizontal':
-        return { columns: 12, rows: 1, min_rows: 1 };
       case 'vertical':
-        return { columns: 6, rows: 3, min_rows: 2 };
+        return { columns: 6, rows: 4, min_rows: 4 };
       default:
-        return { columns: 12, rows: 2, min_rows: 1 };
+        return { columns: 12, rows: 3, min_rows: 1 };
     }
   }
 
@@ -54,7 +52,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
     this._config = { ...STATUS_CARD_DEFAULTS, ...config };
 
     // Set layout property (reflected to attribute via @property decorator)
-    this.layout = (this._config.layout ?? 'default') as 'default' | 'vertical' | 'horizontal';
+    this.layout = this._config.layout ?? 'default';
   }
 
   private get _climate(): { state: string; attributes: Partial<ClimateEntityAttributes> } | undefined {
@@ -155,7 +153,11 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
         margin-top: 4px;
         white-space: nowrap;
       }
-      .arrow { color: var(--secondary-text-color); font-size: 1.2rem; }
+      .arrow {
+        color: var(--secondary-text-color);
+        font-size: 1.2rem;
+        padding-bottom: calc(var(--eq-font-size-small) + 4px);
+      }
       .divider { width: 1px; background: var(--divider-color, #e0e0e0); height: 40px; flex-shrink: 0; }
       .mode { font-size: var(--eq-font-size-small); color: var(--secondary-text-color); cursor: pointer; }
       .ramping {
@@ -184,9 +186,6 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
       .temps.vertical .arrow,
       .temps.vertical .divider {
         display: none;
-      }
-      .temps.horizontal {
-        grid-template-columns: repeat(5, 1fr);
       }
     `,
   ];
