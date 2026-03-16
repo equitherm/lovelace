@@ -4,7 +4,8 @@ import { customElement, property, state } from 'lit/decorators.js';
 import memoizeOne from 'memoize-one';
 import type { HomeAssistant, CurveCardConfig } from '../types';
 import { fireEvent } from 'custom-card-helpers';
-import { schemaHelpers, HaFormSchema } from '../utils/editor';
+import { schemaHelpers } from '../utils/form';
+import type { HaFormSchema } from '../utils/form';
 
 @customElement('equitherm-curve-card-editor')
 export class EquithermCurveCardEditor extends LitElement {
