@@ -1,0 +1,32 @@
+{
+  "common": {
+    "outdoor": "Extérieur",
+    "flow": "Départ",
+    "room": "Pièce",
+    "adjusting": "Ajustement",
+    "not_found": "{entity} introuvable"
+  },
+  "status_card": {
+    "name": "Carte Status Equitherm",
+    "description": "Affiche le statut du chauffage avec les températures"
+  },
+  "curve_card": {
+    "name": "Carte Courbe Equitherm",
+    "description": "Visualisation interactive de la courbe de chauffage"
+  },
+  "editor": {
+    "required": "Requis",
+    "optional": "Optionnel",
+    "appearance": "Apparence",
+    "layout": "Disposition",
+    "layout_default": "Défaut",
+    "layout_vertical": "Verticale",
+    "layout_horizontal": "Horizontale",
+    "climate_entity": "Entité Climat",
+    "outdoor_entity": "Température Extérieure",
+    "flow_entity": "Consigne Départ",
+    "curve_output_entity": "Sortie Courbe",
+    "rate_limiting_entity": "Limitation",
+    "control_mode_entity": "Mode Contrôle"
+  }
+}
