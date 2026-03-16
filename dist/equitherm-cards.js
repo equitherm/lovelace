@@ -3512,7 +3512,18 @@ var editor$1 = {
 	flow_entity: "Flow Setpoint",
 	curve_output_entity: "Curve Output",
 	rate_limiting_entity: "Rate Limiting",
-	control_mode_entity: "Control Mode"
+	control_mode_entity: "Control Mode",
+	title: "Title (optional)",
+	entities: "Entities",
+	curve_parameters: "Curve Parameters",
+	display_range: "Display Range",
+	hc: "Heat Curve (hc)",
+	n: "Exponent (n)",
+	shift: "Shift (°C)",
+	min_flow: "Min Flow (°C)",
+	max_flow: "Max Flow (°C)",
+	t_out_min: "Min Outdoor (°C)",
+	t_out_max: "Max Outdoor (°C)"
 };
 var en = {
 	common: common$1,
@@ -3564,7 +3575,18 @@ var editor = {
 	flow_entity: "Consigne Départ",
 	curve_output_entity: "Sortie Courbe",
 	rate_limiting_entity: "Limitation",
-	control_mode_entity: "Mode Contrôle"
+	control_mode_entity: "Mode Contrôle",
+	title: "Titre (optionnel)",
+	entities: "Entités",
+	curve_parameters: "Paramètres Courbe",
+	display_range: "Plage d'Affichage",
+	hc: "Coeff. Courbe (hc)",
+	n: "Exposant (n)",
+	shift: "Décalage (°C)",
+	min_flow: "Départ Min (°C)",
+	max_flow: "Départ Max (°C)",
+	t_out_min: "Extérieur Min (°C)",
+	t_out_max: "Extérieur Max (°C)"
 };
 var fr = {
 	common: common,
@@ -5176,14 +5198,14 @@ let EquithermCurveCardEditor = class EquithermCurveCardEditor extends i$1 {
         super(...arguments);
         this._getSchema = memoizeOne(() => [
             schemaHelpers.text('title', false),
-            schemaHelpers.expandable('Entities', 'mdi:connection', [
+            schemaHelpers.expandable(localize('editor.entities'), 'mdi:connection', [
                 schemaHelpers.entity('climate_entity', { domain: 'climate' }),
                 schemaHelpers.entity('outdoor_entity', { domain: ['sensor', 'input_number'], device_class: 'temperature' }),
                 schemaHelpers.entity('curve_output_entity', { domain: ['sensor'], device_class: 'temperature' }),
                 schemaHelpers.entity('flow_entity', { domain: ['sensor', 'number', 'input_number'], device_class: 'temperature' }),
                 schemaHelpers.entity('rate_limiting_entity', { domain: ['binary_sensor'], required: false }),
             ]),
-            schemaHelpers.expandable('Curve Parameters', 'mdi:chart-bell-curve', [
+            schemaHelpers.expandable(localize('editor.curve_parameters'), 'mdi:chart-bell-curve', [
                 schemaHelpers.grid([
                     schemaHelpers.number('hc', 0.5, 3.0, 0.1),
                     schemaHelpers.number('n', 1.0, 2.0, 0.05),
@@ -5194,28 +5216,18 @@ let EquithermCurveCardEditor = class EquithermCurveCardEditor extends i$1 {
                     schemaHelpers.number('max_flow', 50, 90, 1),
                 ]),
             ]),
-            schemaHelpers.expandable('Display Range', 'mdi:arrow-expand-horizontal', [
+            schemaHelpers.expandable(localize('editor.display_range'), 'mdi:arrow-expand-horizontal', [
                 schemaHelpers.grid([
                     schemaHelpers.number('t_out_min', -30, 5, 1),
                     schemaHelpers.number('t_out_max', 0, 30, 1),
                 ]),
             ]),
         ]);
-        this._computeLabel = (schema) => ({
-            title: 'Title (optional)',
-            climate_entity: 'Climate Entity',
-            outdoor_entity: 'Outdoor Temperature',
-            curve_output_entity: 'Curve Output',
-            flow_entity: 'Flow Setpoint',
-            rate_limiting_entity: 'Rate Limiting (optional)',
-            hc: 'Heat Curve (hc)',
-            n: 'Exponent (n)',
-            shift: 'Shift (°C)',
-            min_flow: 'Min Flow (°C)',
-            max_flow: 'Max Flow (°C)',
-            t_out_min: 'Min Outdoor (°C)',
-            t_out_max: 'Max Outdoor (°C)',
-        }[schema.name] ?? schema.name);
+        this._computeLabel = (schema) => {
+            const key = `editor.${schema.name}`;
+            const localized = localize(key);
+            return localized !== key ? localized : schema.name;
+        };
     }
     setConfig(config) {
         this._config = { ...config };
