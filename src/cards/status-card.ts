@@ -4,6 +4,7 @@ import type { StatusCardConfig, LovelaceGridOptions, ClimateEntityAttributes, Ho
 import { EquithermBaseCard } from '../utils/base-card';
 import { tokens, cardBase } from '../styles/tokens';
 import { localize } from '../localize';
+import { STATUS_CARD_DEFAULTS } from '../config/status-card-config';
 import '../components/action-badge';
 
 @customElement('equitherm-status-card')
@@ -20,7 +21,16 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
   }
 
   public getGridOptions(): LovelaceGridOptions {
-    return { columns: 12, rows: 2, min_rows: 1 };
+    const layout = this._config?.layout ?? 'default';
+
+    switch (layout) {
+      case 'horizontal':
+        return { columns: 12, rows: 1, min_rows: 1 };
+      case 'vertical':
+        return { columns: 6, rows: 3, min_rows: 2 };
+      default:
+        return { columns: 12, rows: 2, min_rows: 1 };
+    }
   }
 
   static getStubConfig(): StatusCardConfig {
@@ -36,8 +46,12 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
     if (!config.climate_entity) throw new Error('climate_entity is required');
     if (!config.outdoor_entity) throw new Error('outdoor_entity is required');
     if (!config.flow_entity) throw new Error('flow_entity is required');
-    // Config is frozen since HA 0.106 — must clone before storing
-    this._config = { ...config };
+
+    this._config = { ...STATUS_CARD_DEFAULTS, ...config };
+
+    // Reflect layout to attribute for CSS
+    const layout = this._config.layout ?? 'default';
+    this.setAttribute('layout', layout);
   }
 
   private get _climate(): { state: string; attributes: Partial<ClimateEntityAttributes> } | undefined {
@@ -157,6 +171,20 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
       .ramping ha-icon { --mdc-icon-size: 14px; }
       .flow-dual { display: flex; flex-direction: column; align-items: center; gap: 2px; }
       .flow-dual .target { font-size: 0.7rem; color: var(--secondary-text-color); }
+
+      /* Layout variations */
+      :host([layout="vertical"]) .temps {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+        gap: var(--eq-spacing-md);
+      }
+      :host([layout="vertical"]) .arrow,
+      :host([layout="vertical"]) .divider {
+        display: none;
+      }
+      :host([layout="horizontal"]) .temps {
+        grid-template-columns: repeat(5, 1fr);
+      }
     `,
   ];
 
