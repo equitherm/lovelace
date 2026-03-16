@@ -5184,7 +5184,7 @@ function expandable(title, icon, schema) {
         schema,
     };
 }
-/** Reusable schema field builders (object form for backward compatibility) */
+/** Convenience object for namespaced imports */
 const schemaHelpers = {
     entity,
     number,
