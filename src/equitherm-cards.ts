@@ -1,5 +1,6 @@
 import './cards/status-card';
 import './cards/curve-card';
+import './components/shape-icon';
 import { registerCustomCard } from './utils/register-card';
 
 console.info(
