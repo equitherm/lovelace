@@ -3,7 +3,6 @@ import { customElement, state } from 'lit/decorators.js';
 import type { StatusCardConfig, LovelaceGridOptions, ClimateEntityAttributes, HassEntity } from '../types';
 import { EquithermBaseCard } from '../utils/base-card';
 import { tokens, cardBase } from '../styles/tokens';
-import { fireEvent } from 'custom-card-helpers';
 import '../components/action-badge';
 
 @customElement('equitherm-status-card')
@@ -93,11 +92,6 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
     return this._formatTemp(value, this._entityAttr<string>(this._config.curve_output_entity, 'unit_of_measurement'));
   }
 
-  private _handleClick(entityId: string): void {
-    if (!entityId) return;
-    fireEvent(this, 'hass-more-info', { entityId });
-  }
-
   static styles = [
     tokens,
     cardBase,
@@ -174,23 +168,23 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
     return html`
       <ha-card>
         <div class="header">
-          <eq-action-badge .action=${action} @click=${() => this._handleClick(this._config.climate_entity)}></eq-action-badge>
+          <eq-action-badge .action=${action} @click=${() => this._openMoreInfo(this._config.climate_entity)}></eq-action-badge>
           ${adjustingDir ? html`
             <span class="ramping">
               <ha-icon .icon=${adjustingDir === 'rising' ? 'mdi:trending-up' : 'mdi:trending-down'}></ha-icon>
               ADJUSTING
             </span>
           ` : nothing}
-          ${this._controlMode ? html`<span class="mode" @click=${() => this._handleClick(this._config.control_mode_entity!)}>${this._controlMode}</span>` : nothing}
+          ${this._controlMode ? html`<span class="mode" @click=${() => this._openMoreInfo(this._config.control_mode_entity!)}>${this._controlMode}</span>` : nothing}
         </div>
 
         <div class="temps">
-          <div class="temp-block" @click=${() => this._handleClick(this._config.outdoor_entity)}>
+          <div class="temp-block" @click=${() => this._openMoreInfo(this._config.outdoor_entity)}>
             <div class="temp-value">${this._outdoorTemp}</div>
             <div class="temp-label">Outdoor</div>
           </div>
           <div class="arrow" aria-hidden="true">→</div>
-          <div class="temp-block" @click=${() => this._handleClick(this._config.flow_entity)}>
+          <div class="temp-block" @click=${() => this._openMoreInfo(this._config.flow_entity)}>
             ${adjustingDir && curveOutput ? html`
               <div class="flow-dual">
                 <div class="temp-value">${this._flowTemp}</div>
@@ -202,7 +196,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
             <div class="temp-label">Flow</div>
           </div>
           <div class="divider"></div>
-          <div class="temp-block" @click=${() => this._handleClick(this._config.climate_entity)}>
+          <div class="temp-block" @click=${() => this._openMoreInfo(this._config.climate_entity)}>
             <div class="temp-value">${this._roomTemp}</div>
             <div class="temp-label">Room</div>
           </div>
