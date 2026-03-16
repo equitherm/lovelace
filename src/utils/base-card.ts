@@ -1,8 +1,10 @@
 import { LitElement } from 'lit';
+import { html, nothing } from 'lit';
 import { state } from 'lit/decorators.js';
-import type { HomeAssistant, LovelaceGridOptions, HassEntity } from '../types';
+import type { HomeAssistant, LovelaceGridOptions, HassEntity, ActionConfig } from '../types';
 import { entitiesChanged } from './hass';
 import { applyDarkMode } from '../styles/tokens';
+import { executeAction, hasAction } from './actions';
 
 /**
  * Base class for equitherm cards.
@@ -62,6 +64,45 @@ export abstract class EquithermBaseCard<TConfig> extends LitElement {
     }
 
     return `${displayValue.toFixed(1)}${haUnit}`;
+  }
+
+  // === Action Handling ===
+
+  /** Check if an action is configured */
+  protected _hasAction = hasAction;
+
+  /** Execute an action on an entity */
+  protected _handleAction(action: ActionConfig | undefined, entityId?: string): void {
+    if (!this._hass) return;
+    executeAction(this, this._hass, action, entityId);
+  }
+
+  /** Open more-info panel for an entity */
+  protected _openMoreInfo(entityId: string | undefined): void {
+    if (entityId && this._hass) {
+      executeAction(this, this._hass, { action: 'more-info' }, entityId);
+    }
+  }
+
+  // === Entity Helpers ===
+
+  /** Check if an entity exists */
+  protected _entityExists(entityId: string | undefined): boolean {
+    return !!this._entityState(entityId);
+  }
+
+  // === Render Helpers ===
+
+  /** Render a not-found state for missing entity */
+  protected _renderNotFound(entityId: string | undefined, label?: string): typeof nothing | ReturnType<typeof html> {
+    if (!entityId || this._entityExists(entityId)) return nothing;
+
+    return html`
+      <div class="not-found">
+        <ha-icon icon="mdi:alert-circle-outline"></ha-icon>
+        <span>${label ?? entityId} not found</span>
+      </div>
+    `;
   }
 
   /** Default grid options. Override in subclass. */

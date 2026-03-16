@@ -45,6 +45,19 @@ export const cardBase = css`
     flex-direction: column;
     overflow: hidden;
   }
+
+  .not-found {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 16px;
+    color: var(--error-color, #db4437);
+    font-size: var(--eq-font-size-small);
+  }
+  .not-found ha-icon {
+    --mdc-icon-size: 20px;
+  }
 `;
 
 /**
