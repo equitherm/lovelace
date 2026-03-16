@@ -55,7 +55,6 @@ export interface StatusCardConfig extends LovelaceCardConfig {
   curve_output_entity?: string;    // sensor.heating_curve_output — enables ramping display
   rate_limiting_entity?: string;   // binary_sensor.rate_limiting_active
   control_mode_entity?: string;
-  fill_container?: boolean;        // stretch to fill container height
 }
 
 export interface CurveCardConfig extends LovelaceCardConfig, CurveParamsConfig {
@@ -66,5 +65,4 @@ export interface CurveCardConfig extends LovelaceCardConfig, CurveParamsConfig {
   curve_output_entity: string;   // sensor.heating_curve_output — solid dot (pre-rate-limit)
   flow_entity: string;           // sensor.flow_setpoint — hollow dot (rate-limited)
   rate_limiting_entity?: string; // binary_sensor.rate_limiting_active — controls dual-dot display
-  fill_container?: boolean;      // stretch to fill container height
 }
