@@ -1,11 +1,10 @@
-import { LitElement, html, css, nothing } from 'lit';
-import { customElement, state, query } from 'lit/decorators.js';
+import { html, css, nothing } from 'lit';
+import { customElement, query } from 'lit/decorators.js';
 import ApexCharts from 'apexcharts';
-import type { HomeAssistant, CurveCardConfig, LovelaceGridOptions, ClimateEntityAttributes } from '../types';
-import { tokens, cardBase, applyDarkMode, COLOR_HEATING, COLOR_COLD } from '../styles/tokens';
+import type { CurveCardConfig, LovelaceGridOptions, ClimateEntityAttributes, HomeAssistant } from '../types';
+import { EquithermBaseCard } from '../utils/base-card';
+import { tokens, cardBase, COLOR_HEATING, COLOR_COLD, applyDarkMode } from '../styles/tokens';
 import { buildCurveSeries, flowAtOutdoor } from '../utils/curve';
-import { entitiesChanged } from '../utils/hass';
-import { validateCurveCardConfig } from '../config/curve-card-config';
 import '../components/action-badge';
 
 /** Curve parameters that affect the curve shape (require full rebuild) */
@@ -25,39 +24,39 @@ const MARKER_CURVE_OUTPUT = 8;
 const MARKER_RATE_LIMITED = 6;
 
 @customElement('equitherm-curve-card')
-export class EquithermCurveCard extends LitElement {
-  @state() private _hass?: HomeAssistant;
+export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
   private _prevDarkMode?: boolean;
-  get hass() { return this._hass!; }
-  set hass(hass: HomeAssistant) {
-    // Apply dark mode based on HA theme - single source of truth
-    const isDark = applyDarkMode(this, hass);
-    const darkChanged = this._prevDarkMode !== undefined && this._prevDarkMode !== isDark;
-    this._prevDarkMode = isDark;
+  @query('#chart') private _chartEl!: HTMLElement;
+  @query('.chart-wrapper') private _chartWrapper!: HTMLElement;
+  private _chart?: ApexCharts;
+  private _resizeObserver?: ResizeObserver;
+  private _chartInitialized = false;
 
-    // Chart update is expensive — only trigger when our watched entities change
-    const watched = [
+  protected _watchedEntities(): (string | undefined)[] {
+    return [
       this._config?.climate_entity,
       this._config?.outdoor_entity,
       this._config?.curve_output_entity,
       this._config?.flow_entity,
       this._config?.rate_limiting_entity,
     ];
-    if (entitiesChanged(this._hass, hass, watched)) {
-      this._hass = hass;
-      if (this._chart) this._updateChartOptions();
-    } else if (darkChanged && this._chart) {
-      // Theme changed without entity change — still need to update chart
-      this._hass = hass;
+  }
+
+  // Override hass setter to track dark mode changes for chart theme
+  set hass(hass: HomeAssistant) {
+    const isDark = applyDarkMode(this, hass);
+    const darkChanged = this._prevDarkMode !== undefined && this._prevDarkMode !== isDark;
+    this._prevDarkMode = isDark;
+
+    const oldHass = this._hass;
+    super.hass = hass;
+
+    // Additional chart update for theme changes
+    if (darkChanged && this._chart && oldHass === this._hass) {
       this._updateChartOptions();
     }
   }
-  @state() private _config!: CurveCardConfig;
-  @query('#chart') private _chartEl!: HTMLElement;
-  @query('.chart-wrapper') private _chartWrapper!: HTMLElement;
-  private _chart?: ApexCharts;
-  private _resizeObserver?: ResizeObserver;
-  private _chartInitialized = false;
+  get hass() { return super.hass; }
 
   public getGridOptions(): LovelaceGridOptions {
     return { columns: 12, rows: 5, min_rows: 5 };
@@ -86,14 +85,18 @@ export class EquithermCurveCard extends LitElement {
   }
 
   setConfig(config: unknown) {
-    validateCurveCardConfig(config);
-    this._config = { ...config };
+    const cfg = config as CurveCardConfig;
+    if (!cfg.climate_entity) throw new Error('climate_entity is required');
+    if (!cfg.outdoor_entity) throw new Error('outdoor_entity is required');
+    if (!cfg.flow_entity) throw new Error('flow_entity is required');
+    // Config is frozen since HA 0.106 — must clone before storing
+    this._config = { ...cfg };
   }
 
   getCardSize() { return 3; }
 
   private get _climate(): { state: string; attributes: Partial<ClimateEntityAttributes> } | undefined {
-    return this.hass?.states[this._config.climate_entity] as { state: string; attributes: Partial<ClimateEntityAttributes> } | undefined;
+    return this._entityState(this._config.climate_entity) as { state: string; attributes: Partial<ClimateEntityAttributes> } | undefined;
   }
 
   private get _tTarget(): number {
@@ -101,47 +104,28 @@ export class EquithermCurveCard extends LitElement {
   }
 
   private get _tOutdoor(): number | null {
-    const s = this.hass?.states[this._config.outdoor_entity];
+    const s = this._entityState(this._config.outdoor_entity);
     if (!s) return null;
     const val = parseFloat(s.state);
     return isNaN(val) ? null : val;
   }
 
   private get _tOutdoorUnit(): string | undefined {
-    return this.hass?.states[this._config.outdoor_entity]?.attributes?.unit_of_measurement;
+    return this._entityAttr<string>(this._config.outdoor_entity, 'unit_of_measurement');
   }
 
   private get _flowTemp(): number {
-    const s = this.hass?.states[this._config.flow_entity];
+    const s = this._entityState(this._config.flow_entity);
     return s ? parseFloat(s.state) : this._config.min_flow;
   }
 
   private get _flowTempUnit(): string | undefined {
-    return this.hass?.states[this._config.flow_entity]?.attributes?.unit_of_measurement;
+    return this._entityAttr<string>(this._config.flow_entity, 'unit_of_measurement');
   }
 
   private get _rateLimitingActive(): boolean {
     if (!this._config.rate_limiting_entity) return false;
-    return this.hass?.states[this._config.rate_limiting_entity]?.state === 'on';
-  }
-
-  /** Format temperature using HA's unit system */
-  private _formatTemp(value: number | null | undefined, entityUnit?: string): string {
-    if (value == null || isNaN(value)) return '—';
-    // Get HA's configured temperature unit (°C or °F)
-    const haUnit = this.hass?.config?.unit_system?.temperature ?? '°C';
-    const sourceUnit = entityUnit ?? '°C';
-
-    let displayValue = value;
-
-    // Convert if units differ
-    if (sourceUnit === '°C' && haUnit === '°F') {
-      displayValue = value * 9 / 5 + 32;
-    } else if (sourceUnit === '°F' && haUnit === '°C') {
-      displayValue = (value - 32) * 5 / 9;
-    }
-
-    return `${displayValue.toFixed(1)}${haUnit}`;
+    return this._entityState(this._config.rate_limiting_entity)?.state === 'on';
   }
 
   private _buildChartOptions() {
@@ -158,15 +142,12 @@ export class EquithermCurveCard extends LitElement {
     const curveSeries = buildCurveSeries(curveParams, cfg.t_out_min, cfg.t_out_max);
     const tOutdoor = this._tOutdoor;
 
-    // Build annotation points for current position dot(s)
     // Using annotations instead of scatter series to avoid hover conflicts
     const annotationPoints: ApexAnnotations['points'] = [];
-    // Only show position marker if outdoor temp is valid
     if (tOutdoor !== null) {
       const currentFlow = flowAtOutdoor(curveParams, tOutdoor);
       if (this._rateLimitingActive) {
-        // Dual dots: solid (curve output) + hollow (rate-limited flow)
-        const curveOutput = this.hass?.states[this._config.curve_output_entity];
+        const curveOutput = this._entityState(this._config.curve_output_entity);
         const curveOutputValue = curveOutput ? parseFloat(curveOutput.state) : currentFlow;
         annotationPoints.push(
           {
@@ -181,7 +162,6 @@ export class EquithermCurveCard extends LitElement {
           }
         );
       } else {
-        // Single dot at current position
         annotationPoints.push({
           x: -tOutdoor,
           y: currentFlow,
@@ -204,7 +184,7 @@ export class EquithermCurveCard extends LitElement {
       series: [
         {
           name: 'Flow Temp',
-          // Negate x values to reverse axis display
+          // Negate x values to reverse axis: warm (left) → cold (right)
           data: curveSeries.map((p): ChartDataPoint => ({ x: -p.x, y: p.y })),
         },
       ],
@@ -231,7 +211,7 @@ export class EquithermCurveCard extends LitElement {
         // Negated min/max for reversed display: warm (left) → cold (right)
         min: -cfg.t_out_max,
         max: -cfg.t_out_min,
-        forceNiceScale: false,  // Don't adjust min/max
+        forceNiceScale: false,
         title: { text: '°C outdoor', style: { color: 'var(--secondary-text-color)', fontWeight: 400 } },
         labels: {
           style: { colors: 'var(--secondary-text-color)', fontWeight: 400 },
@@ -257,7 +237,6 @@ export class EquithermCurveCard extends LitElement {
   }
 
   protected async firstUpdated() {
-    // Wait for Lit to finish rendering (ensures container has dimensions)
     await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
     await this.updateComplete;
     this._initChart();
@@ -275,29 +254,24 @@ export class EquithermCurveCard extends LitElement {
     let resizeTimeout: ReturnType<typeof setTimeout>;
     this._resizeObserver = new ResizeObserver(() => {
       if (!this._chartInitialized || !this._chart) return;
-      // Debounce resize events
       clearTimeout(resizeTimeout);
       resizeTimeout = setTimeout(() => {
-        // Trigger ApexCharts internal resize handler
         window.dispatchEvent(new Event('resize'));
       }, 100);
     });
     this._resizeObserver.observe(this._chartWrapper);
   }
 
-  /** Update series data when entity states change (fast, no animation) */
   private _updateChartSeries(): void {
     if (!this._chart) return;
     const opts = this._buildChartOptions();
-    // Second arg = false = no animation (prevents perceived lag)
     this._chart.updateSeries(opts.series, false);
   }
 
-  /** Full update: options + series, no animation, no recreate */
   private _updateChartOptions(): void {
     if (!this._chart) return;
     const opts = this._buildChartOptions();
-    // updateOptions instead of destroy/recreate - false, false = no redraw, no animation
+    // false, false = no redraw, no animation (prevents perceived lag)
     this._chart.updateOptions(opts, false, false);
   }
 
@@ -311,10 +285,8 @@ export class EquithermCurveCard extends LitElement {
     if (changedProps.has('_config') && this._chart) {
       const prevConfig = changedProps.get('_config') as CurveCardConfig | undefined;
       if (this._structuralParamsChanged(prevConfig, this._config)) {
-        // Structural change (axes, range) - use updateOptions instead of destroy
         this._updateChartOptions();
       } else {
-        // Just entity values changed - fast series update
         this._updateChartSeries();
       }
     }
@@ -330,8 +302,8 @@ export class EquithermCurveCard extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
-    // Reinitialize chart if it was destroyed (e.g., after exiting edit mode)
-    if (this._config && this.hass && !this._chartInitialized) {
+    // Reinitialize chart if destroyed (e.g., after exiting HA edit mode)
+    if (this._config && this._hass && !this._chartInitialized) {
       requestAnimationFrame(async () => {
         await this.updateComplete;
         this._initChart();
@@ -371,9 +343,9 @@ export class EquithermCurveCard extends LitElement {
   ];
 
   render() {
-    if (!this._config || !this.hass) return nothing;
+    if (!this._config || !this._hass) return nothing;
     const action = this._climate?.attributes.hvac_action ?? 'off';
-    const title = this._config.title ?? this.hass.states[this._config.climate_entity]?.attributes.friendly_name ?? 'Heating Curve';
+    const title = this._config.title ?? this._entityAttr<string>(this._config.climate_entity, 'friendly_name') ?? 'Heating Curve';
 
     return html`
       <ha-card>

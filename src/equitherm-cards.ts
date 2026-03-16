@@ -1,11 +1,6 @@
 import './cards/status-card';
 import './cards/curve-card';
-
-declare global {
-  interface Window {
-    customCards: Array<{ type: string; name: string; description: string; preview?: boolean }>;
-  }
-}
+import { registerCustomCard } from './utils/register-card';
 
 console.info(
   '%c EQUITHERM-CARDS %c __VERSION__ ',
@@ -14,20 +9,16 @@ console.info(
 );
 
 // Register cards in HA picker UI
-window.customCards = window.customCards || [];
-window.customCards.push(
-  {
-    type: 'equitherm-status-card',
-    name: 'Equitherm Status',
-    description: 'Compact heating status tile with temperature displays',
-    preview: true,
-  },
-  {
-    type: 'equitherm-curve-card',
-    name: 'Equitherm Curve',
-    description: 'Heating curve visualization with current operating point',
-    preview: true,
-  }
-);
+registerCustomCard({
+  type: 'equitherm-status-card',
+  name: 'Equitherm Status',
+  description: 'Compact heating status tile with temperature displays',
+});
+
+registerCustomCard({
+  type: 'equitherm-curve-card',
+  name: 'Equitherm Curve',
+  description: 'Heating curve visualization with current operating point',
+});
 
 export {};
