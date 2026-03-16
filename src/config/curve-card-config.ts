@@ -1,6 +1,23 @@
 // src/config/curve-card-config.ts
 import { object, string, number, optional } from 'superstruct';
-import type { CurveCardConfig } from '../types';
+
+export interface CurveCardConfig {
+  type: string;
+  climate_entity: string;
+  outdoor_entity: string;
+  curve_output_entity: string;
+  flow_entity: string;
+  rate_limiting_entity?: string;
+  title?: string;
+  // Curve parameters (required after validation, optional in raw config)
+  hc: number;
+  n: number;
+  shift: number;
+  min_flow: number;
+  max_flow: number;
+  t_out_min: number;
+  t_out_max: number;
+}
 
 /** Runtime validation schema for CurveCardConfig */
 export const CurveCardConfigStruct = object({
