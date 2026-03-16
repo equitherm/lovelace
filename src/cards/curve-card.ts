@@ -87,9 +87,11 @@ export class EquithermCurveCard extends LitElement {
     return this._climate?.attributes.temperature ?? 21;
   }
 
-  private get _tOutdoor(): number {
+  private get _tOutdoor(): number | null {
     const s = this.hass?.states[this._config.outdoor_entity];
-    return s ? parseFloat(s.state) : 0;
+    if (!s) return null;
+    const val = parseFloat(s.state);
+    return isNaN(val) ? null : val;
   }
 
   private get _flowTemp(): number {
@@ -109,7 +111,7 @@ export class EquithermCurveCard extends LitElement {
   }
 
   /** Format temperature using HA's unit system */
-  private _formatTemp(value: number | undefined, entityUnit?: string): string {
+  private _formatTemp(value: number | null | undefined, entityUnit?: string): string {
     if (value == null || isNaN(value)) return '—';
     // Get HA's configured temperature unit (°C or °F)
     const haUnit = this.hass?.config?.unit_system?.temperature ?? '°C';
@@ -139,34 +141,38 @@ export class EquithermCurveCard extends LitElement {
     };
 
     const curveSeries = buildCurveSeries(curveParams, cfg.t_out_min, cfg.t_out_max);
-    const currentFlow = flowAtOutdoor(curveParams, this._tOutdoor);
+    const tOutdoor = this._tOutdoor;
 
     // Build annotation points for current position dot(s)
     // Using annotations instead of scatter series to avoid hover conflicts
     const annotationPoints: ApexAnnotations['points'] = [];
-    if (this._rateLimitingActive) {
-      // Dual dots: solid (curve output) + hollow (rate-limited flow)
-      const curveOutput = this.hass?.states[this._config.curve_output_entity];
-      const curveOutputValue = curveOutput ? parseFloat(curveOutput.state) : currentFlow;
-      annotationPoints.push(
-        {
-          x: -this._tOutdoor,
-          y: curveOutputValue,
-          marker: { size: 8, fillColor: '#f97316', strokeColor: '#ffffff', strokeWidth: 2 },
-        },
-        {
-          x: -this._tOutdoor,
-          y: this._flowTemp,
-          marker: { size: 6, fillColor: '#f97316', strokeColor: '#ffffff', strokeWidth: 2 },
-        }
-      );
-    } else {
-      // Single dot at current position
-      annotationPoints.push({
-        x: -this._tOutdoor,
-        y: currentFlow,
-        marker: { size: 10, fillColor: '#f97316', strokeColor: '#ffffff', strokeWidth: 2 },
-      });
+    // Only show position marker if outdoor temp is valid
+    if (tOutdoor !== null) {
+      const currentFlow = flowAtOutdoor(curveParams, tOutdoor);
+      if (this._rateLimitingActive) {
+        // Dual dots: solid (curve output) + hollow (rate-limited flow)
+        const curveOutput = this.hass?.states[this._config.curve_output_entity];
+        const curveOutputValue = curveOutput ? parseFloat(curveOutput.state) : currentFlow;
+        annotationPoints.push(
+          {
+            x: -tOutdoor,
+            y: curveOutputValue,
+            marker: { size: 8, fillColor: '#f97316', strokeColor: '#ffffff', strokeWidth: 2 },
+          },
+          {
+            x: -tOutdoor,
+            y: this._flowTemp,
+            marker: { size: 6, fillColor: '#f97316', strokeColor: '#ffffff', strokeWidth: 2 },
+          }
+        );
+      } else {
+        // Single dot at current position
+        annotationPoints.push({
+          x: -tOutdoor,
+          y: currentFlow,
+          marker: { size: 10, fillColor: '#f97316', strokeColor: '#ffffff', strokeWidth: 2 },
+        });
+      }
     }
 
     return {
