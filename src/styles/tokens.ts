@@ -49,9 +49,9 @@ export const cardBase = css`
 
 /**
  * Detect dark mode from HA theme and apply [dark-mode] attribute.
- * Call from connectedCallback() or after hass updates.
+ * Call from hass setter. Returns the dark mode state for use in ApexCharts.
  */
-export function applyDarkMode(element: HTMLElement, hass: unknown): void {
+export function applyDarkMode(element: HTMLElement, hass: unknown): boolean {
   // HA adds darkMode to themes object at runtime (not in custom-card-helpers types)
   const themes = (hass as { themes?: { darkMode?: boolean } })?.themes;
   const isDark = themes?.darkMode ?? false;
@@ -60,4 +60,11 @@ export function applyDarkMode(element: HTMLElement, hass: unknown): void {
   } else {
     element.removeAttribute('dark-mode');
   }
+  return isDark;
 }
+
+/** Heating orange - primary accent color */
+export const COLOR_HEATING = '#f97316';
+
+/** Cold blue - secondary accent color */
+export const COLOR_COLD = '#3b82f6';
