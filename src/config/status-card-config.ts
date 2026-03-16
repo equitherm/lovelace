@@ -1,6 +1,17 @@
 // src/config/status-card-config.ts
 import { object, string, optional } from 'superstruct';
-import type { StatusCardConfig } from '../types';
+import { LayoutStruct, type Layout } from '../shared/config/appearance-config';
+
+export interface StatusCardConfig {
+  type: string;
+  climate_entity: string;
+  outdoor_entity: string;
+  flow_entity: string;
+  curve_output_entity?: string;
+  rate_limiting_entity?: string;
+  control_mode_entity?: string;
+  layout?: Layout;
+}
 
 /** Runtime validation schema for StatusCardConfig */
 export const StatusCardConfigStruct = object({
@@ -11,10 +22,13 @@ export const StatusCardConfigStruct = object({
   curve_output_entity: optional(string()),
   rate_limiting_entity: optional(string()),
   control_mode_entity: optional(string()),
+  layout: LayoutStruct,
 });
 
 /** Default values for optional fields */
-export const STATUS_CARD_DEFAULTS: Partial<StatusCardConfig> = {};
+export const STATUS_CARD_DEFAULTS: Partial<StatusCardConfig> = {
+  layout: 'default',
+};
 
 /** Validate and apply defaults */
 export function validateStatusCardConfig(config: unknown): StatusCardConfig {
