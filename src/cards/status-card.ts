@@ -120,6 +120,11 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
         gap: 8px;
       }
       .header eq-action-badge { cursor: pointer; }
+      .title {
+        font-size: var(--eq-font-size-medium);
+        font-weight: 600;
+        color: var(--primary-text-color);
+      }
       .mode { cursor: pointer; }
       .temps {
         display: grid;
@@ -196,10 +201,12 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
     const action = this._climate?.attributes.hvac_action ?? 'off';
     const adjustingDir = this._adjustingDirection;
     const curveOutput = this._curveOutputTemp;
+    const title = this._config.title ?? this._entityAttr<string>(this._config.climate_entity, 'friendly_name') ?? localize('status_card.default_title');
 
     return html`
       <ha-card>
         <div class="header">
+          <span class="title">${title}</span>
           <eq-action-badge .action=${action} @click=${() => this._openMoreInfo(this._config.climate_entity)}></eq-action-badge>
           ${adjustingDir ? html`
             <span class="ramping">

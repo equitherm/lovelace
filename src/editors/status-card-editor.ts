@@ -13,6 +13,11 @@ export class StatusCardEditor extends LitElement implements LovelaceCardEditor {
   @state() private _config?: StatusCardConfig;
 
   private _schema: HaFormSchema[] = [
+    // Title
+    {
+      name: 'title',
+      selector: { text: {} },
+    },
     // Required entities
     {
       name: 'climate_entity',
