@@ -1,37 +1,10 @@
+// src/editors/curve-card-editor.ts
 import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import memoizeOne from 'memoize-one';
 import type { HomeAssistant, CurveCardConfig } from '../types';
 import { fireEvent } from 'custom-card-helpers';
-
-/** ha-form schema types (matches HA's internal types) */
-interface HaFormSelector {
-  entity?: { domain?: string | string[]; device_class?: string };
-  number?: { min: number; max: number; step?: number; mode?: 'slider' | 'box' };
-  text?: Record<string, never>;
-  boolean?: Record<string, never>;
-}
-
-interface HaFormSchemaBase {
-  name: string;
-  required?: boolean;
-  selector?: HaFormSelector;
-}
-
-interface HaFormGridSchema extends HaFormSchemaBase {
-  type: 'grid';
-  flatten?: boolean;
-  schema: HaFormSchemaBase[];
-}
-
-interface HaFormExpandableSchema extends HaFormSchemaBase {
-  type: 'expandable';
-  title: string;
-  icon?: string;
-  schema: (HaFormSchemaBase | HaFormGridSchema)[];
-}
-
-type HaFormSchema = HaFormSchemaBase | HaFormGridSchema | HaFormExpandableSchema;
+import { schemaHelpers, HaFormSchema } from '../utils/editor';
 
 @customElement('equitherm-curve-card-editor')
 export class EquithermCurveCardEditor extends LitElement {
@@ -58,74 +31,32 @@ export class EquithermCurveCardEditor extends LitElement {
     }
   `;
 
-  /** Memoized schema - recompute only when needed for dynamic behavior */
   private _getSchema = memoizeOne((): HaFormSchema[] => [
-    // Title section
-    {
-      name: 'title',
-      required: false,
-      selector: { text: {} },
-    },
-    // Entities section (expandable)
-    {
-      type: 'expandable',
-      title: 'Entities',
-      icon: 'mdi:connection',
-      name: '',
-      schema: [
-        { name: 'climate_entity', required: true, selector: { entity: { domain: ['climate'] } } },
-        { name: 'outdoor_entity', required: true, selector: { entity: { domain: ['sensor', 'input_number'], device_class: 'temperature' } } },
-        { name: 'curve_output_entity', required: true, selector: { entity: { domain: ['sensor'], device_class: 'temperature' } } },
-        { name: 'flow_entity', required: true, selector: { entity: { domain: ['sensor', 'number', 'input_number'], device_class: 'temperature' } } },
-        { name: 'rate_limiting_entity', required: false, selector: { entity: { domain: ['binary_sensor'] } } },
-      ],
-    },
-    // Curve Parameters section (expandable with grid)
-    {
-      type: 'expandable',
-      title: 'Curve Parameters',
-      icon: 'mdi:chart-bell-curve',
-      name: '',
-      schema: [
-        // Pair: hc + n
-        {
-          type: 'grid',
-          name: '',
-          schema: [
-            { name: 'hc', required: true, selector: { number: { min: 0.5, max: 3.0, step: 0.1, mode: 'slider' } } },
-            { name: 'n', required: true, selector: { number: { min: 1.0, max: 2.0, step: 0.05, mode: 'slider' } } },
-          ],
-        },
-        // Shift (full width)
-        { name: 'shift', required: true, selector: { number: { min: -15, max: 15, step: 1, mode: 'slider' } } },
-        // Pair: min_flow + max_flow
-        {
-          type: 'grid',
-          name: '',
-          schema: [
-            { name: 'min_flow', required: true, selector: { number: { min: 15, max: 35, step: 1, mode: 'slider' } } },
-            { name: 'max_flow', required: true, selector: { number: { min: 50, max: 90, step: 1, mode: 'slider' } } },
-          ],
-        },
-      ],
-    },
-    // Display Range section (expandable with grid)
-    {
-      type: 'expandable',
-      title: 'Display Range',
-      icon: 'mdi:arrow-expand-horizontal',
-      name: '',
-      schema: [
-        {
-          type: 'grid',
-          name: '',
-          schema: [
-            { name: 't_out_min', required: true, selector: { number: { min: -30, max: 5, step: 1, mode: 'slider' } } },
-            { name: 't_out_max', required: true, selector: { number: { min: 0, max: 30, step: 1, mode: 'slider' } } },
-          ],
-        },
-      ],
-    },
+    schemaHelpers.text('title', false),
+    schemaHelpers.expandable('Entities', 'mdi:connection', [
+      schemaHelpers.entity('climate_entity', { domain: 'climate' }),
+      schemaHelpers.entity('outdoor_entity', { domain: ['sensor', 'input_number'], device_class: 'temperature' }),
+      schemaHelpers.entity('curve_output_entity', { domain: ['sensor'], device_class: 'temperature' }),
+      schemaHelpers.entity('flow_entity', { domain: ['sensor', 'number', 'input_number'], device_class: 'temperature' }),
+      schemaHelpers.entity('rate_limiting_entity', { domain: ['binary_sensor'], required: false }),
+    ]),
+    schemaHelpers.expandable('Curve Parameters', 'mdi:chart-bell-curve', [
+      schemaHelpers.grid([
+        schemaHelpers.number('hc', 0.5, 3.0, 0.1),
+        schemaHelpers.number('n', 1.0, 2.0, 0.05),
+      ]),
+      schemaHelpers.number('shift', -15, 15, 1),
+      schemaHelpers.grid([
+        schemaHelpers.number('min_flow', 15, 35, 1),
+        schemaHelpers.number('max_flow', 50, 90, 1),
+      ]),
+    ]),
+    schemaHelpers.expandable('Display Range', 'mdi:arrow-expand-horizontal', [
+      schemaHelpers.grid([
+        schemaHelpers.number('t_out_min', -30, 5, 1),
+        schemaHelpers.number('t_out_max', 0, 30, 1),
+      ]),
+    ]),
   ]);
 
   private _computeLabel = (schema: { name: string }): string => ({
