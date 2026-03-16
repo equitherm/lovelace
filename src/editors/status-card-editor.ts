@@ -1,7 +1,9 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
+import memoizeOne from 'memoize-one';
 import type { HomeAssistant, StatusCardConfig } from '../types';
 import { fireEvent } from 'custom-card-helpers';
+import { schemaHelpers, HaFormSchema } from '../utils/editor';
 
 @customElement('equitherm-status-card-editor')
 export class EquithermStatusCardEditor extends LitElement {
@@ -13,27 +15,28 @@ export class EquithermStatusCardEditor extends LitElement {
   }
 
   protected _valueChanged(ev: CustomEvent): void {
-    if (!this._config) return;
-
-    // ha-form passes the entire updated data object in ev.detail.value
-    const newConfig = { ...ev.detail.value } as StatusCardConfig;
-
-    // Only fire if something actually changed
-    if (JSON.stringify(newConfig) !== JSON.stringify(this._config)) {
-      fireEvent(this, 'config-changed', { config: newConfig });
+    const target = ev.target as HTMLElement & { configValue?: string; value?: unknown; checked?: boolean };
+    if (!this._config || target.configValue === undefined) {
+      return;
     }
+    const value = target.value ?? target.checked;
+    const newConfig = {
+      ...this._config,
+      [target.configValue]: value,
+    };
+    fireEvent(this, 'config-changed', { config: newConfig });
   }
 
   static styles = css`ha-form { display: block; }`;
 
-  private _schema = [
-    { name: 'climate_entity', required: true, selector: { entity: { domain: ['climate'] } } },
-    { name: 'outdoor_entity', required: true, selector: { entity: { domain: ['sensor', 'input_number'], device_class: 'temperature' } } },
-    { name: 'flow_entity', required: true, selector: { entity: { domain: ['sensor', 'number', 'input_number'], device_class: 'temperature' } } },
-    { name: 'curve_output_entity', required: false, selector: { entity: { domain: ['sensor'], device_class: 'temperature' } } },
-    { name: 'rate_limiting_entity', required: false, selector: { entity: { domain: ['binary_sensor'] } } },
-    { name: 'control_mode_entity', required: false, selector: { entity: { domain: ['sensor'] } } },
-  ];
+  private _getSchema = memoizeOne((): HaFormSchema[] => [
+    schemaHelpers.entity('climate_entity', { domain: 'climate' }),
+    schemaHelpers.entity('outdoor_entity', { domain: ['sensor', 'input_number'] }),
+    schemaHelpers.entity('flow_entity', { domain: ['sensor', 'number', 'input_number'] }),
+    schemaHelpers.entity('curve_output_entity', { domain: 'sensor', required: false }),
+    schemaHelpers.entity('rate_limiting_entity', { domain: 'binary_sensor', required: false }),
+    schemaHelpers.entity('control_mode_entity', { domain: 'sensor', required: false }),
+  ]);
 
   private _computeLabel = (schema: { name: string }): string => ({
     climate_entity: 'Climate Entity',
@@ -50,7 +53,7 @@ export class EquithermStatusCardEditor extends LitElement {
       <ha-form
         .hass=${this.hass}
         .data=${this._config}
-        .schema=${this._schema}
+        .schema=${this._getSchema()}
         .computeLabel=${this._computeLabel}
         @value-changed=${this._valueChanged}
       ></ha-form>
