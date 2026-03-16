@@ -120,6 +120,32 @@ function entitiesChanged(prev, next, entityIds) {
     });
 }
 
+// src/utils/colors.ts
+/**
+ * Color utilities for HVAC states.
+ * Simplified from mushroom's colors.ts.
+ */
+// RGB values for alpha compositing
+const STATE_COLORS = {
+    heating: { r: 249, g: 115, b: 22 }, // Orange
+    cooling: { r: 59, g: 130, b: 246 }, // Blue
+    idle: { r: 158, g: 158, b: 158 }, // Gray
+    off: { r: 158, g: 158, b: 158 }, // Gray
+    fault: { r: 219, g: 68, b: 55 }, // Red
+};
+function getStateColor(action) {
+    return STATE_COLORS[action] ?? STATE_COLORS.idle;
+}
+function getStateColorRgb(action, alpha = 1) {
+    const { r, g, b } = getStateColor(action);
+    return alpha === 1
+        ? `rgb(${r}, ${g}, ${b})`
+        : `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+// Preset colors for the project
+const COLOR_HEATING = getStateColorRgb('heating');
+const COLOR_COLD = getStateColorRgb('cooling');
+
 const tokens = i$4 `
   :host {
     /* Spacing */
@@ -230,9 +256,6 @@ function applyDarkMode(element, hass) {
     }
     return isDark;
 }
-// Preset exports for backward compatibility
-const COLOR_HEATING = '#f97316';
-const COLOR_COLD = '#3b82f6';
 
 var t,r;!function(e){e.language="language",e.system="system",e.comma_decimal="comma_decimal",e.decimal_comma="decimal_comma",e.space_comma="space_comma",e.none="none";}(t||(t={})),function(e){e.language="language",e.system="system",e.am_pm="12",e.twenty_four="24";}(r||(r={}));var ne=function(e,t,r,n){n=n||{},r=null==r?{}:r;var i=new Event(t,{bubbles:void 0===n.bubbles||n.bubbles,cancelable:Boolean(n.cancelable),composed:void 0===n.composed||n.composed});return i.detail=r,e.dispatchEvent(i),i};
 
