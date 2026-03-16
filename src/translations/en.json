@@ -12,7 +12,13 @@
   },
   "curve_card": {
     "name": "Equitherm Curve Card",
-    "description": "Interactive heating curve visualization"
+    "description": "Interactive heating curve visualization",
+    "default_title": "Heating Curve",
+    "flow_temp": "Flow Temp",
+    "outdoor_axis": "°C outdoor",
+    "flow_axis": "°C flow",
+    "outdoor_tooltip": "{temp}°C outdoor",
+    "flow_tooltip": "{temp}°C flow"
   },
   "editor": {
     "required": "Required",

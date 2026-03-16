@@ -12,7 +12,13 @@
   },
   "curve_card": {
     "name": "Carte Courbe Equitherm",
-    "description": "Visualisation interactive de la courbe de chauffage"
+    "description": "Visualisation interactive de la courbe de chauffage",
+    "default_title": "Courbe de Chauffage",
+    "flow_temp": "Temp. Départ",
+    "outdoor_axis": "°C extérieur",
+    "flow_axis": "°C départ",
+    "outdoor_tooltip": "{temp}°C extérieur",
+    "flow_tooltip": "{temp}°C départ"
   },
   "editor": {
     "required": "Requis",

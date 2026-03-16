@@ -5,6 +5,7 @@ import type { CurveCardConfig, LovelaceGridOptions, ClimateEntityAttributes, Hom
 import { EquithermBaseCard } from '../utils/base-card';
 import { tokens, cardBase, COLOR_HEATING, COLOR_COLD, applyDarkMode } from '../styles/tokens';
 import { buildCurveSeries, flowAtOutdoor } from '../utils/curve';
+import { localize } from '../localize';
 import '../components/action-badge';
 
 /** Curve parameters that affect the curve shape (require full rebuild) */
@@ -183,7 +184,7 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
       theme: { mode: this._prevDarkMode ? 'dark' : 'light' },
       series: [
         {
-          name: 'Flow Temp',
+          name: localize('curve_card.flow_temp'),
           // Negate x values to reverse axis: warm (left) → cold (right)
           data: curveSeries.map((p): ChartDataPoint => ({ x: -p.x, y: p.y })),
         },
@@ -212,7 +213,7 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
         min: -cfg.t_out_max,
         max: -cfg.t_out_min,
         forceNiceScale: false,
-        title: { text: '°C outdoor', style: { color: 'var(--secondary-text-color)', fontWeight: 400 } },
+        title: { text: localize('curve_card.outdoor_axis'), style: { color: 'var(--secondary-text-color)', fontWeight: 400 } },
         labels: {
           style: { colors: 'var(--secondary-text-color)', fontWeight: 400 },
           formatter: (val: number) => `${(-val).toFixed(1)}`,
@@ -221,7 +222,7 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
         axisTicks: { show: false },
       },
       yaxis: {
-        title: { text: '°C flow', style: { color: 'var(--secondary-text-color)', fontWeight: 400 } },
+        title: { text: localize('curve_card.flow_axis'), style: { color: 'var(--secondary-text-color)', fontWeight: 400 } },
         labels: { style: { colors: 'var(--secondary-text-color)', fontWeight: 400 } },
         min: cfg.min_flow - 5,
         max: cfg.max_flow + 5,
@@ -230,8 +231,8 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
       legend: { show: false },
       dataLabels: { enabled: false },
       tooltip: {
-        x: { formatter: (v: number) => `${(-v).toFixed(1)}°C outdoor` },
-        y: { formatter: (v: number) => `${v.toFixed(1)}°C flow` },
+        x: { formatter: (v: number) => localize('curve_card.outdoor_tooltip', { temp: (-v).toFixed(1) }) },
+        y: { formatter: (v: number) => localize('curve_card.flow_tooltip', { temp: v.toFixed(1) }) },
       },
     };
   }
@@ -345,7 +346,7 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
   render() {
     if (!this._config || !this._hass) return nothing;
     const action = this._climate?.attributes.hvac_action ?? 'off';
-    const title = this._config.title ?? this._entityAttr<string>(this._config.climate_entity, 'friendly_name') ?? 'Heating Curve';
+    const title = this._config.title ?? this._entityAttr<string>(this._config.climate_entity, 'friendly_name') ?? localize('curve_card.default_title');
 
     return html`
       <ha-card>
@@ -357,9 +358,9 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
           <div id="chart"></div>
         </div>
         <div class="footer">
-          <span><strong>${this._formatTemp(this._tOutdoor, this._tOutdoorUnit)}</strong> outdoor</span>
+          <span><strong>${this._formatTemp(this._tOutdoor, this._tOutdoorUnit)}</strong> ${localize('common.outdoor').toLowerCase()}</span>
           <span>→</span>
-          <span><strong class="flow-temp">${this._formatTemp(this._flowTemp, this._flowTempUnit)}</strong> flow</span>
+          <span><strong class="flow-temp">${this._formatTemp(this._flowTemp, this._flowTempUnit)}</strong> ${localize('common.flow').toLowerCase()}</span>
         </div>
       </ha-card>
     `;
