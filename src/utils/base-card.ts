@@ -5,6 +5,7 @@ import type { HomeAssistant, LovelaceGridOptions, HassEntity, ActionConfig } fro
 import { entitiesChanged } from './hass';
 import { applyDarkMode } from '../styles/tokens';
 import { executeAction, hasAction } from './actions';
+import { localize } from '../localize';
 
 /**
  * Base class for equitherm cards.
@@ -97,10 +98,11 @@ export abstract class EquithermBaseCard<TConfig> extends LitElement {
   protected _renderNotFound(entityId: string | undefined, label?: string): typeof nothing | ReturnType<typeof html> {
     if (!entityId || this._entityExists(entityId)) return nothing;
 
+    const display = label ?? entityId;
     return html`
       <div class="not-found">
         <ha-icon icon="mdi:alert-circle-outline"></ha-icon>
-        <span>${label ?? entityId} not found</span>
+        <span>${localize('common.not_found', { entity: display })}</span>
       </div>
     `;
   }
