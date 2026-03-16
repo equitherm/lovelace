@@ -2,7 +2,7 @@ import { LitElement, html, css, nothing } from 'lit';
 import { customElement, state, query } from 'lit/decorators.js';
 import ApexCharts from 'apexcharts';
 import type { HomeAssistant, CurveCardConfig, LovelaceGridOptions, ClimateEntityAttributes } from '../types';
-import { tokens, cardBase, applyDarkMode } from '../styles/tokens';
+import { tokens, cardBase, applyDarkMode, COLOR_HEATING, COLOR_COLD } from '../styles/tokens';
 import { buildCurveSeries, flowAtOutdoor } from '../utils/curve';
 import { entitiesChanged } from '../utils/hass';
 import { validateCurveCardConfig } from '../config/curve-card-config';
@@ -30,9 +30,8 @@ export class EquithermCurveCard extends LitElement {
   private _prevDarkMode?: boolean;
   get hass() { return this._hass!; }
   set hass(hass: HomeAssistant) {
-    // Apply dark mode based on HA theme
-    applyDarkMode(this, hass);
-    const isDark = (hass as { themes?: { darkMode?: boolean } })?.themes?.darkMode ?? false;
+    // Apply dark mode based on HA theme - single source of truth
+    const isDark = applyDarkMode(this, hass);
     const darkChanged = this._prevDarkMode !== undefined && this._prevDarkMode !== isDark;
     this._prevDarkMode = isDark;
 
@@ -126,12 +125,6 @@ export class EquithermCurveCard extends LitElement {
     return this.hass?.states[this._config.rate_limiting_entity]?.state === 'on';
   }
 
-  /** Detect dark mode from HA theme or system preference */
-  private get _isDark(): boolean {
-    return document.documentElement.hasAttribute('dark-theme')
-      || window.matchMedia('(prefers-color-scheme: dark)').matches;
-  }
-
   /** Format temperature using HA's unit system */
   private _formatTemp(value: number | null | undefined, entityUnit?: string): string {
     if (value == null || isNaN(value)) return '—';
@@ -179,12 +172,12 @@ export class EquithermCurveCard extends LitElement {
           {
             x: -tOutdoor,
             y: curveOutputValue,
-            marker: { size: MARKER_CURVE_OUTPUT, fillColor: '#f97316', strokeColor: '#ffffff', strokeWidth: 2 },
+            marker: { size: MARKER_CURVE_OUTPUT, fillColor: COLOR_HEATING, strokeColor: '#ffffff', strokeWidth: 2 },
           },
           {
             x: -tOutdoor,
             y: this._flowTemp,
-            marker: { size: MARKER_RATE_LIMITED, fillColor: 'transparent', strokeColor: '#f97316', strokeWidth: 2 },
+            marker: { size: MARKER_RATE_LIMITED, fillColor: 'transparent', strokeColor: COLOR_HEATING, strokeWidth: 2 },
           }
         );
       } else {
@@ -192,7 +185,7 @@ export class EquithermCurveCard extends LitElement {
         annotationPoints.push({
           x: -tOutdoor,
           y: currentFlow,
-          marker: { size: MARKER_SINGLE, fillColor: '#f97316', strokeColor: '#ffffff', strokeWidth: 2 },
+          marker: { size: MARKER_SINGLE, fillColor: COLOR_HEATING, strokeColor: '#ffffff', strokeWidth: 2 },
         });
       }
     }
@@ -207,7 +200,7 @@ export class EquithermCurveCard extends LitElement {
         animations: { enabled: true, speed: 400 },
         background: 'transparent',
       },
-      theme: { mode: this._isDark ? 'dark' : 'light' },
+      theme: { mode: this._prevDarkMode ? 'dark' : 'light' },
       series: [
         {
           name: 'Flow Temp',
@@ -221,11 +214,11 @@ export class EquithermCurveCard extends LitElement {
         type: 'gradient',
         gradient: {
           type: 'vertical',
-          gradientToColors: ['#3b82f6'],
+          gradientToColors: [COLOR_COLD],
           stops: [0, 100],
           colorStops: [
-            { offset: 0, color: '#f97316', opacity: 0.8 },
-            { offset: 100, color: '#3b82f6', opacity: 0.3 },
+            { offset: 0, color: COLOR_HEATING, opacity: 0.8 },
+            { offset: 100, color: COLOR_COLD, opacity: 0.3 },
           ],
         },
       },
@@ -373,7 +366,7 @@ export class EquithermCurveCard extends LitElement {
         margin-top: 4px;
       }
       .footer strong { color: var(--primary-text-color); }
-      .footer .flow-temp { color: #f97316; }
+      .footer .flow-temp { color: var(--eq-gradient-hot); }
     `,
   ];
 
