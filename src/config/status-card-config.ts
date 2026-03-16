@@ -11,6 +11,7 @@ export interface StatusCardConfig {
   rate_limiting_entity?: string;
   control_mode_entity?: string;
   layout?: Layout;
+  title?: string;
 }
 
 /** Runtime validation schema for StatusCardConfig */
@@ -23,6 +24,7 @@ export const StatusCardConfigStruct = object({
   rate_limiting_entity: optional(string()),
   control_mode_entity: optional(string()),
   layout: LayoutStruct,
+  title: optional(string()),
 });
 
 /** Default values for optional fields */

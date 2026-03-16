@@ -11,7 +11,8 @@
   },
   "status_card": {
     "name": "Equitherm Status Card",
-    "description": "Display heating status with temperature readings"
+    "description": "Display heating status with temperature readings",
+    "default_title": "Heating Status"
   },
   "curve_card": {
     "name": "Equitherm Curve Card",

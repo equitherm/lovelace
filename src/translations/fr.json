@@ -11,7 +11,8 @@
   },
   "status_card": {
     "name": "Carte Status Equitherm",
-    "description": "Affiche le statut du chauffage avec les températures"
+    "description": "Affiche le statut du chauffage avec les températures",
+    "default_title": "Statut Chauffage"
   },
   "curve_card": {
     "name": "Carte Courbe Equitherm",
