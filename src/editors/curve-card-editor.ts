@@ -3,12 +3,13 @@ import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import memoizeOne from 'memoize-one';
 import type { HomeAssistant, CurveCardConfig } from '../types';
+import type { LovelaceCardEditor } from 'custom-card-helpers';
 import { fireEvent } from 'custom-card-helpers';
 import { schemaHelpers } from '../utils/form';
 import type { HaFormSchema } from '../utils/form';
 
 @customElement('equitherm-curve-card-editor')
-export class EquithermCurveCardEditor extends LitElement {
+export class EquithermCurveCardEditor extends LitElement implements LovelaceCardEditor {
   @property({ attribute: false }) hass!: HomeAssistant;
   @state() private _config!: CurveCardConfig;
 
