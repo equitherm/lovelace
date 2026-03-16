@@ -47,7 +47,7 @@ export class EquithermCurveCard extends LitElement {
   private _chartInitialized = false;
 
   public getGridOptions(): LovelaceGridOptions {
-    return { columns: 6, rows: 3, min_rows: 2 };
+    return { columns: 12, rows: 5, min_rows: 5 };
   }
 
   static getStubConfig(): CurveCardConfig {
