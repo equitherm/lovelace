@@ -1,6 +1,6 @@
 import { html, css, nothing } from 'lit';
-import { customElement, state } from 'lit/decorators.js';
-import type { StatusCardConfig, LovelaceGridOptions, ClimateEntityAttributes, HassEntity } from '../types';
+import { customElement } from 'lit/decorators.js';
+import type { StatusCardConfig, LovelaceGridOptions, ClimateEntityAttributes, HomeAssistant } from '../types';
 import { EquithermBaseCard } from '../utils/base-card';
 import { tokens, cardBase } from '../styles/tokens';
 import '../components/action-badge';
