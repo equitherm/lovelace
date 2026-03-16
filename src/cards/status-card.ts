@@ -35,7 +35,8 @@ export class EquithermStatusCard extends LitElement {
     return { type: 'custom:equitherm-status-card' } as StatusCardConfig;
   }
 
-  static getConfigElement(): HTMLElement {
+  static async getConfigElement() {
+    await import('../editors/status-card-editor');
     return document.createElement('equitherm-status-card-editor');
   }
 

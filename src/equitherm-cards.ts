@@ -1,7 +1,5 @@
 import './cards/status-card';
 import './cards/curve-card';
-import './editors/status-card-editor';
-import './editors/curve-card-editor';
 
 declare global {
   interface Window {
