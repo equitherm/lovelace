@@ -1,5 +1,5 @@
 import { html, css, nothing } from 'lit';
-import { customElement } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 import type { StatusCardConfig, LovelaceGridOptions, ClimateEntityAttributes, HomeAssistant } from '../types';
 import { EquithermBaseCard } from '../utils/base-card';
 import { tokens, cardBase } from '../styles/tokens';
@@ -9,6 +9,9 @@ import '../components/action-badge';
 
 @customElement('equitherm-status-card')
 export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
+  // Layout property reflected to attribute for CSS styling
+  @property({ reflect: true, type: String }) layout: 'default' | 'vertical' | 'horizontal' = 'default';
+
   protected _watchedEntities(): (string | undefined)[] {
     return [
       this._config?.climate_entity,
@@ -49,9 +52,8 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
 
     this._config = { ...STATUS_CARD_DEFAULTS, ...config };
 
-    // Reflect layout to attribute for CSS
-    const layout = this._config.layout ?? 'default';
-    this.setAttribute('layout', layout);
+    // Set layout property (reflected to attribute via @property decorator)
+    this.layout = (this._config.layout ?? 'default') as 'default' | 'vertical' | 'horizontal';
   }
 
   private get _climate(): { state: string; attributes: Partial<ClimateEntityAttributes> } | undefined {
