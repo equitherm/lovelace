@@ -1,42 +1,40 @@
-import { string, number, optional, define, assert } from 'superstruct';
+// src/config/curve-card-config.ts
+import { object, string, number, optional } from 'superstruct';
 import type { CurveCardConfig } from '../types';
 
-/** Custom type validator for entity IDs */
-const entityId = define<string>('entityId', (value) => {
-  if (typeof value !== 'string') return false;
-  return /^\w+\.\w+$/.test(value);
+/** Runtime validation schema for CurveCardConfig */
+export const CurveCardConfigStruct = object({
+  type: string(),
+  climate_entity: string(),
+  outdoor_entity: string(),
+  curve_output_entity: string(),
+  flow_entity: string(),
+  rate_limiting_entity: optional(string()),
+  title: optional(string()),
+  hc: optional(number()),
+  n: optional(number()),
+  shift: optional(number()),
+  min_flow: optional(number()),
+  max_flow: optional(number()),
+  t_out_min: optional(number()),
+  t_out_max: optional(number()),
 });
 
-/** Validate curve card config and throw descriptive error if invalid */
-export function validateCurveCardConfig(config: unknown): asserts config is CurveCardConfig {
-  if (!config || typeof config !== 'object') {
-    throw new Error('Config must be an object');
-  }
+/** Default curve parameter values (matching @equitherm/core defaults) */
+export const CURVE_CARD_DEFAULTS: Required<
+  Pick<CurveCardConfig, 'hc' | 'n' | 'shift' | 'min_flow' | 'max_flow' | 't_out_min' | 't_out_max'>
+> = {
+  hc: 0.9,
+  n: 1.25,
+  shift: 0,
+  min_flow: 20,
+  max_flow: 70,
+  t_out_min: -20,
+  t_out_max: 20,
+};
 
-  const cfg = config as Record<string, unknown>;
-
-  // Required entities
-  assert(cfg.climate_entity, entityId);
-  assert(cfg.outdoor_entity, entityId);
-  assert(cfg.curve_output_entity, entityId);
-  assert(cfg.flow_entity, entityId);
-
-  // Optional entities
-  if (cfg.rate_limiting_entity !== undefined) {
-    assert(cfg.rate_limiting_entity, optional(entityId));
-  }
-
-  // Curve parameters (all required)
-  assert(cfg.hc, number());
-  assert(cfg.n, number());
-  assert(cfg.shift, number());
-  assert(cfg.min_flow, number());
-  assert(cfg.max_flow, number());
-  assert(cfg.t_out_min, number());
-  assert(cfg.t_out_max, number());
-
-  // Optional title
-  if (cfg.title !== undefined) {
-    assert(cfg.title, optional(string()));
-  }
+/** Validate and apply defaults */
+export function validateCurveCardConfig(config: unknown): CurveCardConfig {
+  const cfg = config as CurveCardConfig;
+  return { ...CURVE_CARD_DEFAULTS, ...cfg };
 }
