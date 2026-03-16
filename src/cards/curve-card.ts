@@ -238,7 +238,6 @@ export class EquithermCurveCard extends LitElement {
         // Negated min/max for reversed display: warm (left) → cold (right)
         min: -cfg.t_out_max,
         max: -cfg.t_out_min,
-        tickAmount: undefined,  // Let ApexCharts auto-calculate
         forceNiceScale: false,  // Don't adjust min/max
         title: { text: '°C outdoor', style: { color: 'var(--secondary-text-color)', fontWeight: 400 } },
         labels: {
