@@ -31,4 +31,9 @@ npm-debug.log*
 docs/plans/
 
 # Home Assistant dev environment
-.hass_dev/
+.hass_dev/*
+!.hass_dev/configuration.yaml
+!.hass_dev/lovelace/
+!.hass_dev/lovelace/dev-dashboard.yaml
+!.hass_dev/packages/
+!.hass_dev/packages/mock_equitherm.yaml
