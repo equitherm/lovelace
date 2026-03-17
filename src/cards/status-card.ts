@@ -7,6 +7,7 @@ import { EquithermBaseCard } from '../utils/base-card';
 import { tokens, cardBase } from '../styles/tokens';
 import { localize } from '../localize';
 import { STATUS_CARD_DEFAULTS } from '../config/status-card-config';
+import { getIconStyleVars, getActionBadgeIcon, normalizeHvacAction } from '../utils/colors';
 import '../components/shape-icon';
 import '../components/badge-icon';
 
@@ -216,31 +217,15 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
   render() {
     if (!this._config || !this._hass) return nothing;
     const layout = this._config.layout ?? 'default';
-    const action = this._climate?.attributes.hvac_action ?? 'off';
+    const rawAction = this._climate?.attributes.hvac_action ?? 'off';
+    const hvacAction = normalizeHvacAction(rawAction);
     const adjustingDir = this._adjustingDirection;
     const curveOutput = this._curveOutputTemp;
     const title = this._config.title ?? this._entityAttr<string>(this._config.climate_entity, 'friendly_name') ?? localize('status_card.default_title');
 
-    // Badge icon based on HVAC action
-    const badgeIcon = action === 'heating' ? 'mdi:fire'
-      : action === 'cooling' ? 'mdi:snowflake'
-      : null;
-
-    // Icon colors based on HVAC action - use CSS variables
-    const iconStyles = action === 'heating' ? styleMap({
-      '--icon-color': 'rgb(var(--rgb-heating, 249, 115, 22))',
-      '--shape-color': 'rgba(var(--rgb-heating, 249, 115, 22), 0.15)',
-      '--badge-color': 'rgb(var(--rgb-heating, 249, 115, 22))',
-      '--badge-bg': 'rgba(var(--rgb-heating, 249, 115, 22), 0.2)',
-    }) : action === 'cooling' ? styleMap({
-      '--icon-color': 'rgb(var(--rgb-cold, 59, 130, 246))',
-      '--shape-color': 'rgba(var(--rgb-cold, 59, 130, 246), 0.15)',
-      '--badge-color': 'rgb(var(--rgb-cold, 59, 130, 246))',
-      '--badge-bg': 'rgba(var(--rgb-cold, 59, 130, 246), 0.2)',
-    }) : styleMap({
-      '--icon-color': 'var(--secondary-text-color)',
-      '--shape-color': 'var(--secondary-background-color, rgba(0,0,0,0.05))',
-    });
+    // Use centralized color utilities
+    const badgeIcon = getActionBadgeIcon(hvacAction);
+    const iconStyles = styleMap(getIconStyleVars(hvacAction));
 
     return html`
       <ha-card>
