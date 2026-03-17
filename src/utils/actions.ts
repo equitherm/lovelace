@@ -3,7 +3,7 @@
  * Action handling utilities for Lovelace cards.
  * Based on Mushroom's action patterns.
  */
-import { fireEvent } from 'custom-card-helpers';
+import { fireEvent } from '../ha/common/dom/fire_event';
 import type { HomeAssistant, ActionConfig } from '../types';
 
 /** Check if an action is configured (not 'none') */

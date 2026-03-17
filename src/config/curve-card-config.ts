@@ -17,6 +17,7 @@ export interface CurveCardConfig {
   max_flow: number;
   t_out_min: number;
   t_out_max: number;
+  [key: string]: unknown;
 }
 
 /** Runtime validation schema for CurveCardConfig */

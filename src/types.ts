@@ -1,12 +1,8 @@
 // src/types.ts
 
-// Re-export from custom-card-helpers
-export type {
-  HomeAssistant,
-  LovelaceCard,
-  LovelaceCardEditor,
-  LovelaceCardConfig,
-} from 'custom-card-helpers';
+// Re-export from vendored HA types
+export type { HomeAssistant, HassEntity } from './ha/types';
+export type { LovelaceCard, LovelaceCardEditor, LovelaceCardConfig } from './ha/panels/lovelace/types';
 
 // ─── HVAC Action Types ─────────────────────────────────────────────────────────
 
@@ -14,14 +10,6 @@ export type {
 export type HvacAction = 'heating' | 'cooling' | 'idle' | 'off' | 'fault';
 
 // ─── HA entity state helpers ───────────────────────────────────────────────────
-
-export interface HassEntity {
-  entity_id: string;
-  state: string;
-  attributes: Record<string, unknown>;
-  last_changed: string;
-  last_updated: string;
-}
 
 export interface ClimateEntityAttributes {
   current_temperature?: number;
