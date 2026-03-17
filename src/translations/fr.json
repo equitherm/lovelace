@@ -5,6 +5,8 @@
     "room": "Pièce",
     "adjusting": "Ajustement",
     "heating": "Chauffage",
+    "cooling": "Refroidissement",
+    "drying": "Déshumidification",
     "idle": "Inactif",
     "off": "Éteint",
     "not_found": "{entity} introuvable"

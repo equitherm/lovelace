@@ -51,10 +51,12 @@ export const tokens = css`
     /* Badge colors */
     --eq-badge-heating-bg: var(--eq-user-badge-heating-bg, #f97316);
     --eq-badge-heating-color: var(--eq-user-badge-heating-color, #ffffff);
+    --eq-badge-cooling-bg: var(--eq-user-badge-cooling-bg, #3b82f6);
+    --eq-badge-cooling-color: var(--eq-user-badge-cooling-color, #ffffff);
+    --eq-badge-drying-bg: var(--eq-user-badge-drying-bg, #4caf50);
+    --eq-badge-drying-color: var(--eq-user-badge-drying-color, #ffffff);
     --eq-badge-idle-bg: var(--eq-user-badge-idle-bg, var(--secondary-background-color, #e5e5e5));
     --eq-badge-idle-color: var(--eq-user-badge-idle-color, var(--secondary-text-color, #666));
-    --eq-badge-fault-bg: var(--eq-user-badge-fault-bg, var(--error-color, #db4437));
-    --eq-badge-fault-color: var(--eq-user-badge-fault-color, #ffffff);
 
     /* Gradients */
     --eq-gradient-cold: var(--eq-user-gradient-cold, #3b82f6);
