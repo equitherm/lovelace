@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit';
-import { localize } from '../localize';
+import setupCustomlocalize from '../localize';
 import { customElement, property } from 'lit/decorators.js';
 import type { HvacAction } from '../types';
 
@@ -50,6 +50,7 @@ export class ActionBadge extends LitElement {
   `;
 
   render() {
+    const localize = setupCustomlocalize();
     const label = this.action === 'heating' ? localize('common.heating')
       : this.action === 'idle' ? localize('common.idle')
       : localize('common.off');

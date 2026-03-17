@@ -5,7 +5,7 @@ import type { HomeAssistant, LovelaceGridOptions, HassEntity, ActionConfig } fro
 import { entitiesChanged } from './hass';
 import { applyDarkMode } from '../styles/tokens';
 import { executeAction, hasAction } from './actions';
-import { localize } from '../localize';
+import setupCustomlocalize from '../localize';
 
 /**
  * Base class for equitherm cards.
@@ -98,6 +98,7 @@ export abstract class EquithermBaseCard<TConfig> extends LitElement {
   protected _renderNotFound(entityId: string | undefined, label?: string): typeof nothing | ReturnType<typeof html> {
     if (!entityId || this._entityExists(entityId)) return nothing;
 
+    const localize = setupCustomlocalize(this._hass);
     const display = label ?? entityId;
     return html`
       <div class="not-found">

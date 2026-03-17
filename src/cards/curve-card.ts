@@ -6,7 +6,7 @@ import { EquithermBaseCard } from '../utils/base-card';
 import { tokens, cardBase, applyDarkMode } from '../styles/tokens';
 import { resolveRgbColor } from '../utils/colors';
 import { buildCurveSeries, flowAtOutdoor } from '../utils/curve';
-import { localize } from '../localize';
+import setupCustomlocalize from '../localize';
 import '../components/action-badge';
 
 /** Curve parameters that affect the curve shape (require full rebuild) */
@@ -131,6 +131,7 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
   }
 
   private _buildChartOptions() {
+    const localize = setupCustomlocalize(this._hass);
     const cfg = this._config;
     const curveParams = {
       tTarget: this._tTarget,
@@ -350,6 +351,7 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
 
   render() {
     if (!this._config || !this._hass) return nothing;
+    const localize = setupCustomlocalize(this._hass);
     const action = this._climate?.attributes.hvac_action ?? 'off';
     const title = this._config.title ?? this._entityAttr<string>(this._config.climate_entity, 'friendly_name') ?? localize('curve_card.default_title');
 
