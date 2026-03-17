@@ -1,5 +1,4 @@
 // src/types.ts
-import type { HvacAction as HvacActionType } from './utils/colors';
 
 // Re-export from custom-card-helpers
 export type {
@@ -9,10 +8,13 @@ export type {
   LovelaceCardConfig,
 } from 'custom-card-helpers';
 
-// Re-export HvacAction from colors (canonical source)
-export type HvacAction = HvacActionType;
+// ─── HVAC Action Types ─────────────────────────────────────────────────────────
 
-// HA entity state object
+/** HVAC action states from Home Assistant climate entities */
+export type HvacAction = 'heating' | 'cooling' | 'idle' | 'off' | 'fault';
+
+// ─── HA entity state helpers ───────────────────────────────────────────────────
+
 export interface HassEntity {
   entity_id: string;
   state: string;
@@ -21,12 +23,22 @@ export interface HassEntity {
   last_updated: string;
 }
 
-// Project types
+export interface ClimateEntityAttributes {
+  current_temperature?: number;
+  temperature?: number;
+  hvac_action?: HvacAction;
+  hvac_modes?: string[];
+  min_temp?: number;
+  max_temp?: number;
+}
+
+// ─── Project Types ─────────────────────────────────────────────────────────────
+
 export type { StatusCardConfig } from './config/status-card-config';
 export type { CurveCardConfig } from './config/curve-card-config';
 export type { Layout, Info, IconType, AppearanceConfig } from './shared/config/appearance-config';
 
-// ─── Lovelace action config ───────────────────────────────────────────────────
+// ─── Lovelace Action Config ───────────────────────────────────────────────────
 
 export interface ActionConfig {
   action: 'more-info' | 'navigate' | 'call-service' | 'url' | 'none' | 'assist';
@@ -37,7 +49,7 @@ export interface ActionConfig {
   service_data?: Record<string, unknown>;
 }
 
-// ─── Lovelace grid options (sections view) ────────────────────────────────────
+// ─── Lovelace Grid Options ────────────────────────────────────────────────────
 
 export interface LovelaceGridOptions {
   columns?: number;
@@ -46,15 +58,4 @@ export interface LovelaceGridOptions {
   max_columns?: number;
   min_rows?: number;
   max_rows?: number;
-}
-
-// ─── HA entity state helpers ───────────────────────────────────────────────────
-
-export interface ClimateEntityAttributes {
-  current_temperature?: number;
-  temperature?: number;
-  hvac_action?: HvacAction;
-  hvac_modes?: string[];
-  min_temp?: number;
-  max_temp?: number;
 }

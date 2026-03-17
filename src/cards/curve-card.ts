@@ -3,7 +3,8 @@ import { customElement, query } from 'lit/decorators.js';
 import ApexCharts from 'apexcharts';
 import type { CurveCardConfig, LovelaceGridOptions, ClimateEntityAttributes, HomeAssistant } from '../types';
 import { EquithermBaseCard } from '../utils/base-card';
-import { tokens, cardBase, COLOR_HEATING, COLOR_COLD, applyDarkMode } from '../styles/tokens';
+import { tokens, cardBase, applyDarkMode } from '../styles/tokens';
+import { resolveRgbColor } from '../utils/colors';
 import { buildCurveSeries, flowAtOutdoor } from '../utils/curve';
 import { localize } from '../localize';
 import '../components/action-badge';
@@ -140,6 +141,10 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
       maxFlow: cfg.max_flow,
     };
 
+    // Resolve colors at runtime from CSS variables
+    const heatingColor = resolveRgbColor(this, 'heating');
+    const coolingColor = resolveRgbColor(this, 'cooling');
+
     const curveSeries = buildCurveSeries(curveParams, cfg.t_out_min, cfg.t_out_max);
     const tOutdoor = this._tOutdoor;
 
@@ -154,19 +159,19 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
           {
             x: -tOutdoor,
             y: curveOutputValue,
-            marker: { size: MARKER_CURVE_OUTPUT, fillColor: COLOR_HEATING, strokeColor: '#ffffff', strokeWidth: 2 },
+            marker: { size: MARKER_CURVE_OUTPUT, fillColor: heatingColor, strokeColor: '#ffffff', strokeWidth: 2 },
           },
           {
             x: -tOutdoor,
             y: this._flowTemp,
-            marker: { size: MARKER_RATE_LIMITED, fillColor: 'transparent', strokeColor: COLOR_HEATING, strokeWidth: 2 },
+            marker: { size: MARKER_RATE_LIMITED, fillColor: 'transparent', strokeColor: heatingColor, strokeWidth: 2 },
           }
         );
       } else {
         annotationPoints.push({
           x: -tOutdoor,
           y: currentFlow,
-          marker: { size: MARKER_SINGLE, fillColor: COLOR_HEATING, strokeColor: '#ffffff', strokeWidth: 2 },
+          marker: { size: MARKER_SINGLE, fillColor: heatingColor, strokeColor: '#ffffff', strokeWidth: 2 },
         });
       }
     }
@@ -195,11 +200,11 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
         type: 'gradient',
         gradient: {
           type: 'vertical',
-          gradientToColors: [COLOR_COLD],
+          gradientToColors: [coolingColor],
           stops: [0, 100],
           colorStops: [
-            { offset: 0, color: COLOR_HEATING, opacity: 0.8 },
-            { offset: 100, color: COLOR_COLD, opacity: 0.3 },
+            { offset: 0, color: heatingColor, opacity: 0.8 },
+            { offset: 100, color: coolingColor, opacity: 0.3 },
           ],
         },
       },
