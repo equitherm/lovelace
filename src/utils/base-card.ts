@@ -1,49 +1,22 @@
-import { LitElement } from 'lit';
 import { html, nothing } from 'lit';
 import { state } from 'lit/decorators.js';
-import type { HomeAssistant } from '../ha/types';
 import type { HassEntity } from 'home-assistant-js-websocket';
 import type { LovelaceGridOptions, ActionConfig } from '../ha/data/lovelace';
-import { entitiesChanged } from './hass';
-import { applyDarkMode } from '../styles/tokens';
+import { EquithermBaseElement } from './base-element';
 import { executeAction, hasAction } from './actions';
 import setupCustomlocalize from '../localize';
 
 /**
  * Base class for equitherm cards.
- * Provides shared hass setter with change detection, entity access, and formatting.
+ * Extends EquithermBaseElement with card-specific helpers.
  */
-export abstract class EquithermBaseCard<TConfig> extends LitElement {
-  @state() protected _hass?: HomeAssistant;
+export abstract class EquithermBaseCard<TConfig> extends EquithermBaseElement {
   @state() protected _config!: TConfig;
 
-  get hass() { return this._hass!; }
-
-  set hass(hass: HomeAssistant) {
-    // Apply dark mode based on HA theme
-    applyDarkMode(this, hass);
-
-    // Only trigger re-render when watched entities change
-    if (entitiesChanged(this._hass, hass, this._watchedEntities())) {
-      this._hass = hass;
-      this._onHassUpdate();
-    }
-  }
-
-  /** Entities to watch for changes. Override in subclass. */
-  protected _watchedEntities(): (string | undefined)[] {
-    return [];
-  }
-
-  /** Called after hass updates (entity states changed). Override in subclass. */
-  protected _onHassUpdate(): void {
-    // Default: no-op
-  }
-
-  /** Safely access entity state by ID */
+  /** Get entity state by ID */
   protected _entityState(entityId: string | undefined): HassEntity | undefined {
-    if (!entityId || !this._hass) return undefined;
-    return this._hass.states[entityId] as HassEntity | undefined;
+    if (!entityId || !this.hass) return undefined;
+    return this.hass.states[entityId] as HassEntity | undefined;
   }
 
   /** Get entity attribute value (typed) */
@@ -55,7 +28,7 @@ export abstract class EquithermBaseCard<TConfig> extends LitElement {
   protected _formatTemp(value: number | undefined | null, entityUnit?: string): string {
     if (value == null || isNaN(value)) return '—';
 
-    const haUnit = this._hass?.config?.unit_system?.temperature ?? '°C';
+    const haUnit = this.hass?.config?.unit_system?.temperature ?? '°C';
     const sourceUnit = entityUnit ?? '°C';
 
     let displayValue = value;
@@ -76,14 +49,14 @@ export abstract class EquithermBaseCard<TConfig> extends LitElement {
 
   /** Execute an action on an entity */
   protected _handleAction(action: ActionConfig | undefined, entityId?: string): void {
-    if (!this._hass) return;
-    executeAction(this, this._hass, action, entityId);
+    if (!this.hass) return;
+    executeAction(this, this.hass, action, entityId);
   }
 
   /** Open more-info panel for an entity */
   protected _openMoreInfo(entityId: string | undefined): void {
-    if (entityId && this._hass) {
-      executeAction(this, this._hass, { action: 'more-info' }, entityId);
+    if (entityId && this.hass) {
+      executeAction(this, this.hass, { action: 'more-info' }, entityId);
     }
   }
 
@@ -100,7 +73,7 @@ export abstract class EquithermBaseCard<TConfig> extends LitElement {
   protected _renderNotFound(entityId: string | undefined, label?: string): typeof nothing | ReturnType<typeof html> {
     if (!entityId || this._entityExists(entityId)) return nothing;
 
-    const localize = setupCustomlocalize(this._hass);
+    const localize = setupCustomlocalize(this.hass);
     const display = label ?? entityId;
     return html`
       <div class="not-found">

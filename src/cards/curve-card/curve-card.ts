@@ -2,11 +2,10 @@ import { html, css, nothing } from 'lit';
 import { customElement, query } from 'lit/decorators.js';
 import ApexCharts from 'apexcharts';
 import type { CurveCardConfig } from './curve-card-config';
-import type { HomeAssistant } from '../../ha/types';
 import type { LovelaceGridOptions } from '../../ha/data/lovelace';
 import type { ClimateEntity } from '../../ha/data/climate';
 import { EquithermBaseCard } from '../../utils/base-card';
-import { tokens, cardBase, applyDarkMode } from '../../styles/tokens';
+import { tokens, cardBase } from '../../styles/tokens';
 import { resolveRgbColor } from '../../utils/colors';
 import { buildCurveSeries, flowAtOutdoor } from '../../utils/curve';
 import setupCustomlocalize from '../../localize';
@@ -37,31 +36,27 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
   private _resizeObserver?: ResizeObserver;
   private _chartInitialized = false;
 
-  protected _watchedEntities(): (string | undefined)[] {
-    return [
-      this._config?.climate_entity,
-      this._config?.outdoor_entity,
-      this._config?.curve_output_entity,
-      this._config?.flow_entity,
-      this._config?.rate_limiting_entity,
-    ];
-  }
-
-  // Override hass setter to track dark mode changes for chart theme
-  set hass(hass: HomeAssistant) {
-    const isDark = applyDarkMode(this, hass);
-    const darkChanged = this._prevDarkMode !== undefined && this._prevDarkMode !== isDark;
-    this._prevDarkMode = isDark;
-
-    const oldHass = this._hass;
-    super.hass = hass;
-
-    // Additional chart update for theme changes
-    if (darkChanged && this._chart && oldHass === this._hass) {
-      this._updateChartOptions();
+  protected updated(changedProps: Map<string, unknown>): void {
+    super.updated(changedProps);
+    // Handle dark mode changes for chart theme
+    if (changedProps.has('hass') && this.hass) {
+      const isDark = (this.hass.themes as any).darkMode as boolean;
+      const darkChanged = this._prevDarkMode !== undefined && this._prevDarkMode !== isDark;
+      this._prevDarkMode = isDark;
+      if (darkChanged && this._chart) {
+        this._updateChartOptions();
+      }
+    }
+    // Handle config changes
+    if (changedProps.has('_config') && this._chart) {
+      const prevConfig = changedProps.get('_config') as CurveCardConfig | undefined;
+      if (this._structuralParamsChanged(prevConfig, this._config)) {
+        this._updateChartOptions();
+      } else {
+        this._updateChartSeries();
+      }
     }
   }
-  get hass() { return super.hass; }
 
   public getGridOptions(): LovelaceGridOptions {
     return { columns: 12, rows: 5, min_rows: 5 };
@@ -134,7 +129,7 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
   }
 
   private _buildChartOptions() {
-    const localize = setupCustomlocalize(this._hass);
+    const localize = setupCustomlocalize(this.hass);
     const cfg = this._config;
     const curveParams = {
       tTarget: this._tTarget,
@@ -291,17 +286,6 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
     return keys.some(key => prev[key] !== next[key]);
   }
 
-  protected updated(changedProps: Map<string, unknown>) {
-    if (changedProps.has('_config') && this._chart) {
-      const prevConfig = changedProps.get('_config') as CurveCardConfig | undefined;
-      if (this._structuralParamsChanged(prevConfig, this._config)) {
-        this._updateChartOptions();
-      } else {
-        this._updateChartSeries();
-      }
-    }
-  }
-
   disconnectedCallback() {
     super.disconnectedCallback();
     this._resizeObserver?.disconnect();
@@ -313,7 +297,7 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
   connectedCallback() {
     super.connectedCallback();
     // Reinitialize chart if destroyed (e.g., after exiting HA edit mode)
-    if (this._config && this._hass && !this._chartInitialized) {
+    if (this._config && this.hass && !this._chartInitialized) {
       requestAnimationFrame(async () => {
         await this.updateComplete;
         this._initChart();
@@ -353,8 +337,8 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
   ];
 
   render() {
-    if (!this._config || !this._hass) return nothing;
-    const localize = setupCustomlocalize(this._hass);
+    if (!this._config || !this.hass) return nothing;
+    const localize = setupCustomlocalize(this.hass);
     const action = this._climate?.attributes.hvac_action ?? 'off';
     const title = this._config.title ?? this._entityAttr<string>(this._config.climate_entity, 'friendly_name') ?? localize('curve_card.default_title');
 
