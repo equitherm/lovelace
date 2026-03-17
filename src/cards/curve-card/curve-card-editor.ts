@@ -1,12 +1,12 @@
-// src/editors/curve-card-editor.ts
+// src/cards/curve-card/curve-card-editor.ts
 import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import memoizeOne from 'memoize-one';
-import type { HomeAssistant, CurveCardConfig, LovelaceCardEditor } from '../types';
-import { fireEvent } from '../ha/common/dom/fire_event';
-import { schemaHelpers } from '../utils/form';
-import type { HaFormSchema } from '../utils/form';
-import setupCustomlocalize from '../localize';
+import type { HomeAssistant, CurveCardConfig, LovelaceCardEditor } from '../../types';
+import { fireEvent } from '../../ha/common/dom/fire_event';
+import { schemaHelpers } from '../../utils/form';
+import type { HaFormSchema } from '../../utils/form';
+import setupCustomlocalize from '../../localize';
 
 @customElement('equitherm-curve-card-editor')
 export class EquithermCurveCardEditor extends LitElement implements LovelaceCardEditor {

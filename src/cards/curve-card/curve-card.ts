@@ -1,13 +1,13 @@
 import { html, css, nothing } from 'lit';
 import { customElement, query } from 'lit/decorators.js';
 import ApexCharts from 'apexcharts';
-import type { CurveCardConfig, LovelaceGridOptions, ClimateEntityAttributes, HomeAssistant } from '../types';
-import { EquithermBaseCard } from '../utils/base-card';
-import { tokens, cardBase, applyDarkMode } from '../styles/tokens';
-import { resolveRgbColor } from '../utils/colors';
-import { buildCurveSeries, flowAtOutdoor } from '../utils/curve';
-import setupCustomlocalize from '../localize';
-import '../components/action-badge';
+import type { CurveCardConfig, LovelaceGridOptions, ClimateEntityAttributes, HomeAssistant } from '../../types';
+import { EquithermBaseCard } from '../../utils/base-card';
+import { tokens, cardBase, applyDarkMode } from '../../styles/tokens';
+import { resolveRgbColor } from '../../utils/colors';
+import { buildCurveSeries, flowAtOutdoor } from '../../utils/curve';
+import setupCustomlocalize from '../../localize';
+import '../../shared/action-badge';
 
 /** Curve parameters that affect the curve shape (require full rebuild) */
 type CurveStructuralParams = Pick<CurveCardConfig,
@@ -82,7 +82,7 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
   }
 
   static async getConfigElement() {
-    await import('../editors/curve-card-editor');
+    await import('./curve-card-editor');
     return document.createElement('equitherm-curve-card-editor');
   }
 
