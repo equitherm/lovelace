@@ -142,6 +142,10 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
     return this._entityState(this._config.rate_limiting_entity)?.state === 'on';
   }
 
+  private get _isDark(): boolean {
+    return (this.hass?.themes as any)?.darkMode ?? false;
+  }
+
   private _buildChartOptions() {
     const localize = setupCustomLocalize(this.hass);
     const cfg = this._config;
@@ -199,7 +203,7 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
         animations: { enabled: true, speed: 400 },
         background: 'transparent',
       },
-      theme: { mode: this._prevDarkMode ? 'dark' : 'light' },
+      theme: { mode: this._isDark ? 'dark' : 'light' },
       series: [
         {
           name: localize('curve_card.flow_temp'),
@@ -249,6 +253,7 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
       legend: { show: false },
       dataLabels: { enabled: false },
       tooltip: {
+        theme: this._isDark ? 'dark' : 'light',
         x: { formatter: (v: number) => localize('curve_card.outdoor_tooltip', { temp: (-v).toFixed(1) }) },
         y: { formatter: (v: number) => localize('curve_card.flow_tooltip', { temp: v.toFixed(1) }) },
       },
