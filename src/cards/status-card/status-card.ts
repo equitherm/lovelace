@@ -79,7 +79,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
 
   private get _roomTemp(): string {
     const temp = this._climate?.attributes.current_temperature;
-    return this._formatTemp(temp, this._hass?.config?.unit_system?.temperature);
+    return this._formatTemp(temp, this.hass?.config?.unit_system?.temperature);
   }
 
   private get _controlMode(): string {
@@ -218,8 +218,8 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
   ];
 
   render() {
-    if (!this._config || !this._hass) return nothing;
-    const localize = setupCustomlocalize(this._hass);
+    if (!this._config || !this.hass) return nothing;
+    const localize = setupCustomlocalize(this.hass);
     const layout = this._config.layout ?? 'default';
     const rawAction = this._climate?.attributes.hvac_action ?? 'off';
     const hvacAction = normalizeHvacAction(rawAction);
