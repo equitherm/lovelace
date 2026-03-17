@@ -1,52 +1,72 @@
 // src/components/shape-icon.ts
 import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { classMap } from 'lit/directives/class-map.js';
 
 export type IconShape = 'circle' | 'square' | 'pill';
 
 /**
  * Icon with a colored background shape.
- * Used for consistent entity icon presentation across cards.
+ * Colors are controlled via CSS variables set on the parent:
+ * - --icon-color: Icon color
+ * - --shape-color: Background color
+ *
+ * Supports a badge slot for positioning small badges on the icon.
  */
 @customElement('eq-shape-icon')
 export class ShapeIcon extends LitElement {
   @property() icon?: string;
-  @property() color?: string;
-  @property({ attribute: 'bg-color' }) bgColor?: string;
   @property() shape: IconShape = 'circle';
   @property({ type: Number }) size = 40;
+  @property({ type: Boolean }) disabled = false;
 
   static styles = css`
     :host {
-      display: inline-flex;
+      --icon-color: var(--primary-text-color);
+      --shape-color: var(--card-background-color, #fff);
+      --icon-size: 24px;
+      flex: none;
+    }
+    .shape {
+      position: relative;
+      width: var(--shape-size, 40px);
+      height: var(--shape-size, 40px);
+      border-radius: 50%;
+      display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: var(--eq-shape-radius, 50%);
-      background: var(--eq-shape-bg, var(--card-background-color, #fff));
+      background-color: var(--shape-color);
+      transition: background-color 280ms ease-in-out;
     }
-    :host([shape="square"]) {
-      --eq-shape-radius: 12px;
+    :host([shape="square"]) .shape {
+      border-radius: 12px;
     }
-    :host([shape="pill"]) {
-      --eq-shape-radius: 4px;
+    :host([shape="pill"]) .shape {
+      border-radius: 4px;
+    }
+    .shape.disabled {
+      opacity: 0.5;
     }
     ha-icon {
-      --mdc-icon-size: var(--eq-icon-size, 24px);
-      color: var(--eq-shape-color, var(--primary-text-color));
+      color: var(--icon-color);
+      --mdc-icon-size: var(--icon-size);
+    }
+    /* Badge positioning - matches mushroom */
+    .shape ::slotted(*[slot="badge"]) {
+      position: absolute;
+      top: -3px;
+      right: -3px;
     }
   `;
 
   protected render() {
-    const styles = `
-      width: ${this.size}px;
-      height: ${this.size}px;
-      ${this.bgColor ? `--eq-shape-bg: ${this.bgColor};` : ''}
-      ${this.color ? `--eq-shape-color: ${this.color};` : ''}
-    `;
-
     return html`
-      <div style=${styles}>
+      <div
+        class=${classMap({ shape: true, disabled: this.disabled })}
+        style=${`--shape-size: ${this.size}px;`}
+      >
         <ha-icon .icon=${this.icon}></ha-icon>
+        <slot name="badge"></slot>
       </div>
     `;
   }

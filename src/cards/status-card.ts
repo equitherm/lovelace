@@ -1,12 +1,14 @@
 import { html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
+import { styleMap } from 'lit/directives/style-map.js';
 import type { StatusCardConfig, LovelaceGridOptions, ClimateEntityAttributes, HomeAssistant } from '../types';
 import { EquithermBaseCard } from '../utils/base-card';
 import { tokens, cardBase } from '../styles/tokens';
 import { localize } from '../localize';
 import { STATUS_CARD_DEFAULTS } from '../config/status-card-config';
-import '../components/action-badge';
+import '../components/shape-icon';
+import '../components/badge-icon';
 
 @customElement('equitherm-status-card')
 export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
@@ -114,18 +116,49 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
     css`
       .header {
         display: flex;
-        justify-content: space-between;
         align-items: center;
         margin-bottom: 12px;
-        gap: 8px;
+        gap: 12px;
+        flex-shrink: 0;
       }
-      .header eq-action-badge { cursor: pointer; }
+      eq-shape-icon {
+        cursor: pointer;
+        flex-shrink: 0;
+      }
+      .header-info {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
       .title {
         font-size: var(--eq-font-size-medium);
         font-weight: 600;
         color: var(--primary-text-color);
+        line-height: 1.2;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
-      .mode { cursor: pointer; }
+      .state {
+        font-size: var(--eq-font-size-small);
+        color: var(--secondary-text-color);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-shrink: 0;
+      }
+      .mode {
+        font-size: var(--eq-font-size-small);
+        color: var(--secondary-text-color);
+        cursor: pointer;
+      }
       .temps {
         display: grid;
         grid-template-columns: 1fr auto 1fr auto 1fr;
@@ -164,21 +197,6 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
         padding-bottom: calc(var(--eq-font-size-small) + 4px);
       }
       .divider { width: 1px; background: var(--divider-color, #e0e0e0); height: 40px; flex-shrink: 0; }
-      .mode { font-size: var(--eq-font-size-small); color: var(--secondary-text-color); cursor: pointer; }
-      .ramping {
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-        padding: 3px 8px;
-        border-radius: 999px;
-        font-size: 0.7rem;
-        font-weight: 600;
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
-        background: var(--eq-badge-idle-bg, #e5e5e5);
-        color: var(--eq-badge-idle-color, #666);
-      }
-      .ramping ha-icon { --mdc-icon-size: 14px; }
       .flow-dual { display: flex; flex-direction: column; align-items: center; gap: 2px; }
       .flow-dual .target { font-size: 0.7rem; color: var(--secondary-text-color); }
 
@@ -203,18 +221,54 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
     const curveOutput = this._curveOutputTemp;
     const title = this._config.title ?? this._entityAttr<string>(this._config.climate_entity, 'friendly_name') ?? localize('status_card.default_title');
 
+    // Badge icon based on HVAC action
+    const badgeIcon = action === 'heating' ? 'mdi:fire'
+      : action === 'cooling' ? 'mdi:snowflake'
+      : null;
+
+    // Icon colors based on HVAC action - use CSS variables
+    const iconStyles = action === 'heating' ? styleMap({
+      '--icon-color': 'rgb(var(--rgb-heating, 249, 115, 22))',
+      '--shape-color': 'rgba(var(--rgb-heating, 249, 115, 22), 0.15)',
+      '--badge-color': 'rgb(var(--rgb-heating, 249, 115, 22))',
+      '--badge-bg': 'rgba(var(--rgb-heating, 249, 115, 22), 0.2)',
+    }) : action === 'cooling' ? styleMap({
+      '--icon-color': 'rgb(var(--rgb-cold, 59, 130, 246))',
+      '--shape-color': 'rgba(var(--rgb-cold, 59, 130, 246), 0.15)',
+      '--badge-color': 'rgb(var(--rgb-cold, 59, 130, 246))',
+      '--badge-bg': 'rgba(var(--rgb-cold, 59, 130, 246), 0.2)',
+    }) : styleMap({
+      '--icon-color': 'var(--secondary-text-color)',
+      '--shape-color': 'var(--secondary-background-color, rgba(0,0,0,0.05))',
+    });
+
     return html`
       <ha-card>
         <div class="header">
-          <span class="title">${title}</span>
-          <eq-action-badge .action=${action} @click=${() => this._openMoreInfo(this._config.climate_entity)}></eq-action-badge>
-          ${adjustingDir ? html`
-            <span class="ramping">
-              <ha-icon .icon=${adjustingDir === 'rising' ? 'mdi:trending-up' : 'mdi:trending-down'}></ha-icon>
-              ${localize('common.adjusting')}
-            </span>
+          <eq-shape-icon
+              .icon=${'mdi:thermostat'}
+              .size=${42}
+              style=${iconStyles}
+              @click=${() => this._openMoreInfo(this._config.climate_entity)}
+            >
+              ${badgeIcon ? html`
+                <eq-badge-icon slot="badge" .icon=${badgeIcon}></eq-badge-icon>
+              ` : nothing}
+            </eq-shape-icon>
+          <div class="header-info">
+            <span class="title">${title}</span>
+            ${adjustingDir ? html`
+              <span class="state">
+                <ha-icon .icon=${adjustingDir === 'rising' ? 'mdi:trending-up' : 'mdi:trending-down'} style="--mdc-icon-size: 14px; vertical-align: middle;"></ha-icon>
+                ${localize('common.adjusting')}
+              </span>
+            ` : nothing}
+          </div>
+          ${this._controlMode ? html`
+            <div class="header-actions">
+              <span class="mode" @click=${() => this._openMoreInfo(this._config.control_mode_entity!)}>${this._controlMode}</span>
+            </div>
           ` : nothing}
-          ${this._controlMode ? html`<span class="mode" @click=${() => this._openMoreInfo(this._config.control_mode_entity!)}>${this._controlMode}</span>` : nothing}
         </div>
 
         <div class=${classMap({ temps: true, vertical: layout === 'vertical', horizontal: layout === 'horizontal' })}>
