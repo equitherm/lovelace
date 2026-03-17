@@ -23,7 +23,7 @@ export function executeAction(
   switch (action.action) {
     case 'more-info':
       fireEvent(element, 'hass-more-info', {
-        entityId: entityId ?? action.entity,
+        entityId,
       });
       break;
 
