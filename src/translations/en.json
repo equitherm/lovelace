@@ -1,0 +1,55 @@
+{
+  "common": {
+    "outdoor": "Outdoor",
+    "flow": "Flow",
+    "room": "Room",
+    "adjusting": "Adjusting",
+    "heating": "Heating",
+    "cooling": "Cooling",
+    "drying": "Drying",
+    "idle": "Idle",
+    "off": "Off",
+    "not_found": "{entity} not found"
+  },
+  "status_card": {
+    "name": "Equitherm Status Card",
+    "description": "Display heating status with temperature readings",
+    "default_title": "Heating Status"
+  },
+  "curve_card": {
+    "name": "Equitherm Curve Card",
+    "description": "Interactive heating curve visualization",
+    "default_title": "Heating Curve",
+    "flow_temp": "Flow Temp",
+    "outdoor_axis": "°C outdoor",
+    "flow_axis": "°C flow",
+    "outdoor_tooltip": "{temp}°C outdoor",
+    "flow_tooltip": "{temp}°C flow"
+  },
+  "editor": {
+    "required": "Required",
+    "optional": "Optional",
+    "appearance": "Appearance",
+    "layout": "Layout",
+    "layout_default": "Default",
+    "layout_vertical": "Vertical",
+    "layout_horizontal": "Horizontal",
+    "climate_entity": "Climate Entity",
+    "outdoor_entity": "Outdoor Temperature",
+    "flow_entity": "Flow Setpoint",
+    "curve_output_entity": "Curve Output",
+    "rate_limiting_entity": "Rate Limiting",
+    "control_mode_entity": "Control Mode",
+    "title": "Title (optional)",
+    "entities": "Entities",
+    "curve_parameters": "Curve Parameters",
+    "display_range": "Display Range",
+    "hc": "Heat Curve (hc)",
+    "n": "Exponent (n)",
+    "shift": "Shift (°C)",
+    "min_flow": "Min Flow (°C)",
+    "max_flow": "Max Flow (°C)",
+    "t_out_min": "Min Outdoor (°C)",
+    "t_out_max": "Max Outdoor (°C)"
+  }
+}
