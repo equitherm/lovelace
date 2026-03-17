@@ -7,8 +7,7 @@ export const cardStyle = css`
     flex-direction: column;
     justify-content: var(--layout-align);
     height: auto;
-    display: flex;
-    flex-direction: column;
+    padding: var(--spacing);
   }
   ha-card.fill-container {
     height: 100%;
@@ -39,8 +38,5 @@ export const cardStyle = css`
   }
   .not-found {
     --main-color: rgb(var(--rgb-danger));
-  }
-  eq-state-item[disabled] {
-    cursor: initial;
   }
 `;

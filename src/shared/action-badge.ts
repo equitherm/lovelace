@@ -25,8 +25,8 @@ export class ActionBadge extends LitElement {
       border-radius: 50%;
     }
     .badge.heating {
-      background: var(--eq-badge-heating-bg, #f97316);
-      color: var(--eq-badge-heating-color, #fff);
+      background: var(--badge-heating-bg);
+      color: var(--badge-heating-color);
     }
     .badge.heating .dot {
       background: #fff;
@@ -34,8 +34,8 @@ export class ActionBadge extends LitElement {
       animation: pulse 1.5s ease-in-out infinite;
     }
     .badge.cooling {
-      background: var(--eq-badge-cooling-bg, #3b82f6);
-      color: var(--eq-badge-cooling-color, #fff);
+      background: var(--badge-cooling-bg);
+      color: var(--badge-cooling-color);
     }
     .badge.cooling .dot {
       background: #fff;
@@ -43,8 +43,8 @@ export class ActionBadge extends LitElement {
       animation: pulse 1.5s ease-in-out infinite;
     }
     .badge.drying {
-      background: var(--eq-badge-drying-bg, #4caf50);
-      color: var(--eq-badge-drying-color, #fff);
+      background: var(--badge-drying-bg);
+      color: var(--badge-drying-color);
     }
     .badge.drying .dot {
       background: #fff;
@@ -52,8 +52,8 @@ export class ActionBadge extends LitElement {
       animation: pulse 1.5s ease-in-out infinite;
     }
     .badge.idle, .badge.off {
-      background: var(--eq-badge-idle-bg, #e5e5e5);
-      color: var(--eq-badge-idle-color, #666);
+      background: var(--badge-idle-bg);
+      color: var(--badge-idle-color);
     }
     .badge.idle .dot, .badge.off .dot {
       background: currentColor;

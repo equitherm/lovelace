@@ -7,7 +7,7 @@ import type { HomeAssistant } from '../../ha/types';
 import type { LovelaceGridOptions } from '../../ha/data/lovelace';
 import type { ClimateEntity } from '../../ha/data/climate';
 import { EquithermBaseCard } from '../../utils/base-card';
-import { tokens } from '../../styles/tokens';
+import { cardStyle } from '../../utils/card-styles';
 import setupCustomlocalize from '../../localize';
 import { STATUS_CARD_DEFAULTS } from './status-card-config';
 import { getIconStyleVars, getActionBadgeIcon, normalizeHvacAction } from '../../utils/colors';
@@ -117,7 +117,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
   static get styles() {
     return [
       super.styles,
-      tokens,
+      cardStyle,
       css`
         .header {
           display: flex;
@@ -138,7 +138,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
           gap: 2px;
         }
         .title {
-          font-size: var(--eq-font-size-medium);
+          font-size: var(--font-size-md);
           font-weight: 600;
           color: var(--primary-text-color);
           line-height: 1.2;
@@ -147,7 +147,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
           white-space: nowrap;
         }
         .state {
-          font-size: var(--eq-font-size-small);
+          font-size: var(--font-size-sm);
           color: var(--secondary-text-color);
           overflow: hidden;
           text-overflow: ellipsis;
@@ -160,7 +160,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
           flex-shrink: 0;
         }
         .mode {
-          font-size: var(--eq-font-size-small);
+          font-size: var(--font-size-sm);
           color: var(--secondary-text-color);
           cursor: pointer;
         }
@@ -184,14 +184,14 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
           background: var(--secondary-background-color, rgba(0,0,0,0.05));
         }
         .temp-value {
-          font-size: var(--eq-font-size-large);
+          font-size: var(--font-size-lg);
           font-weight: 600;
           line-height: 1;
           color: var(--primary-text-color);
           white-space: nowrap;
         }
         .temp-label {
-          font-size: var(--eq-font-size-small);
+          font-size: var(--font-size-sm);
           color: var(--secondary-text-color);
           margin-top: 4px;
           white-space: nowrap;
@@ -199,7 +199,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
         .arrow {
           color: var(--secondary-text-color);
           font-size: 1.2rem;
-          padding-bottom: calc(var(--eq-font-size-small) + 4px);
+          padding-bottom: calc(var(--font-size-sm) + 4px);
         }
         .divider { width: 1px; background: var(--divider-color, #e0e0e0); height: 40px; flex-shrink: 0; }
         .flow-dual { display: flex; flex-direction: column; align-items: center; gap: 2px; }
@@ -209,7 +209,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
         .temps.vertical {
           grid-template-columns: 1fr;
           grid-template-rows: auto auto auto;
-          gap: var(--eq-spacing-md);
+          gap: var(--spacing-md);
         }
         .temps.vertical .arrow,
         .temps.vertical .divider {

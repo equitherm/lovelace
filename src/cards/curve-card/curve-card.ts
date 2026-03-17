@@ -5,7 +5,7 @@ import type { CurveCardConfig } from './curve-card-config';
 import type { LovelaceGridOptions } from '../../ha/data/lovelace';
 import type { ClimateEntity } from '../../ha/data/climate';
 import { EquithermBaseCard } from '../../utils/base-card';
-import { tokens } from '../../styles/tokens';
+import { cardStyle } from '../../utils/card-styles';
 import { resolveRgbColor } from '../../utils/colors';
 import { buildCurveSeries, flowAtOutdoor } from '../../utils/curve';
 import setupCustomlocalize from '../../localize';
@@ -309,16 +309,21 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
   static get styles() {
     return [
       super.styles,
-      tokens,
+      cardStyle,
       css`
+        ha-card {
+          height: 100%;
+          overflow: hidden;
+        }
         .header {
           display: flex;
           justify-content: space-between;
           align-items: center;
           margin-bottom: 8px;
+          flex-shrink: 0;
         }
         .title {
-          font-size: var(--eq-font-size-medium);
+          font-size: var(--font-size-md);
           font-weight: 600;
           color: var(--primary-text-color);
         }
@@ -328,12 +333,13 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
           display: flex;
           justify-content: center;
           gap: 8px;
-          font-size: var(--eq-font-size-small);
+          font-size: var(--font-size-sm);
           color: var(--secondary-text-color);
           margin-top: 4px;
+          flex-shrink: 0;
         }
         .footer strong { color: var(--primary-text-color); }
-        .footer .flow-temp { color: var(--eq-gradient-hot); }
+        .footer .flow-temp { color: var(--gradient-hot); }
       `,
     ];
   }
