@@ -12,6 +12,7 @@ export interface StatusCardConfig {
   control_mode_entity?: string;
   layout?: Layout;
   title?: string;
+  [key: string]: unknown;
 }
 
 /** Runtime validation schema for StatusCardConfig */

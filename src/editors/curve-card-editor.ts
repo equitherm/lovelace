@@ -2,9 +2,8 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import memoizeOne from 'memoize-one';
-import type { HomeAssistant, CurveCardConfig } from '../types';
-import type { LovelaceCardEditor } from 'custom-card-helpers';
-import { fireEvent } from 'custom-card-helpers';
+import type { HomeAssistant, CurveCardConfig, LovelaceCardEditor } from '../types';
+import { fireEvent } from '../ha/common/dom/fire_event';
 import { schemaHelpers } from '../utils/form';
 import type { HaFormSchema } from '../utils/form';
 import { localize } from '../localize';
