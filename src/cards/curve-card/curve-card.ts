@@ -5,7 +5,7 @@ import type { CurveCardConfig } from './curve-card-config';
 import type { LovelaceGridOptions } from '../../ha/data/lovelace';
 import type { ClimateEntity } from '../../ha/data/climate';
 import { EquithermBaseCard } from '../../utils/base-card';
-import { tokens, cardBase } from '../../styles/tokens';
+import { tokens } from '../../styles/tokens';
 import { resolveRgbColor } from '../../utils/colors';
 import { buildCurveSeries, flowAtOutdoor } from '../../utils/curve';
 import setupCustomlocalize from '../../localize';
@@ -306,35 +306,37 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
     }
   }
 
-  static styles = [
-    tokens,
-    cardBase,
-    css`
-      .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 8px;
-      }
-      .title {
-        font-size: var(--eq-font-size-medium);
-        font-weight: 600;
-        color: var(--primary-text-color);
-      }
-      .chart-wrapper { flex: 1; min-height: 0; }
-      #chart { width: 100%; height: 100%; }
-      .footer {
-        display: flex;
-        justify-content: center;
-        gap: 8px;
-        font-size: var(--eq-font-size-small);
-        color: var(--secondary-text-color);
-        margin-top: 4px;
-      }
-      .footer strong { color: var(--primary-text-color); }
-      .footer .flow-temp { color: var(--eq-gradient-hot); }
-    `,
-  ];
+  static get styles() {
+    return [
+      super.styles,
+      tokens,
+      css`
+        .header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 8px;
+        }
+        .title {
+          font-size: var(--eq-font-size-medium);
+          font-weight: 600;
+          color: var(--primary-text-color);
+        }
+        .chart-wrapper { flex: 1; min-height: 0; }
+        #chart { width: 100%; height: 100%; }
+        .footer {
+          display: flex;
+          justify-content: center;
+          gap: 8px;
+          font-size: var(--eq-font-size-small);
+          color: var(--secondary-text-color);
+          margin-top: 4px;
+        }
+        .footer strong { color: var(--primary-text-color); }
+        .footer .flow-temp { color: var(--eq-gradient-hot); }
+      `,
+    ];
+  }
 
   render() {
     if (!this._config || !this.hass) return nothing;
