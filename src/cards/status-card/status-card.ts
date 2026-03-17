@@ -8,13 +8,21 @@ import type { LovelaceGridOptions } from '../../ha/data/lovelace';
 import type { ClimateEntity } from '../../ha/data/climate';
 import { EquithermBaseCard } from '../../utils/base-card';
 import { cardStyle } from '../../utils/card-styles';
-import setupCustomlocalize from '../../localize';
+import { registerCustomCard } from '../../utils/register-card';
+import setupCustomLocalize from '../../localize';
 import { STATUS_CARD_DEFAULTS } from './status-card-config';
+import { STATUS_CARD_NAME, STATUS_CARD_EDITOR_NAME } from './const';
 import { getHvacActionColor, getHvacActionIcon, normalizeHvacAction } from '../../utils/hvac-colors';
 import '../../shared/shape-icon';
 import '../../shared/badge-icon';
 
-@customElement('equitherm-status-card')
+registerCustomCard({
+  type: STATUS_CARD_NAME,
+  name: 'Equitherm Status',
+  description: 'Compact heating status tile with temperature displays',
+});
+
+@customElement(STATUS_CARD_NAME)
 export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
   // Layout property reflected to attribute for CSS styling
   @property({ reflect: true, type: String }) layout: 'default' | 'vertical' | 'horizontal' = 'default';
@@ -47,7 +55,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
 
   static async getConfigElement() {
     await import('./status-card-editor');
-    return document.createElement('equitherm-status-card-editor');
+    return document.createElement(STATUS_CARD_EDITOR_NAME);
   }
 
   setConfig(config: StatusCardConfig) {
@@ -221,7 +229,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
 
   render() {
     if (!this._config || !this.hass) return nothing;
-    const localize = setupCustomlocalize(this.hass);
+    const localize = setupCustomLocalize(this.hass);
     const layout = this._config.layout ?? 'default';
     const rawAction = this._climate?.attributes.hvac_action ?? 'off';
     const hvacAction = normalizeHvacAction(rawAction);

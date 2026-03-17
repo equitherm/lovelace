@@ -6,15 +6,16 @@ import type { StatusCardConfig } from './status-card-config';
 import type { HomeAssistant } from '../../ha/types';
 import type { LovelaceCardEditor } from '../../ha/panels/lovelace/types';
 import type { HaFormSchema } from '../../utils/form';
-import setupCustomlocalize from '../../localize';
+import setupCustomLocalize from '../../localize';
+import { STATUS_CARD_EDITOR_NAME } from './const';
 
-@customElement('equitherm-status-card-editor')
+@customElement(STATUS_CARD_EDITOR_NAME)
 export class StatusCardEditor extends LitElement implements LovelaceCardEditor {
   @property({ attribute: false }) public hass?: HomeAssistant;
   @state() private _config?: StatusCardConfig;
 
   private _getSchema(): HaFormSchema[] {
-    const localize = setupCustomlocalize(this.hass);
+    const localize = setupCustomLocalize(this.hass);
     return [
       // Title
       {
@@ -113,7 +114,7 @@ export class StatusCardEditor extends LitElement implements LovelaceCardEditor {
   }
 
   private _computeLabel = (schema: { name: string }): string => {
-    const localize = setupCustomlocalize(this.hass);
+    const localize = setupCustomLocalize(this.hass);
     const key = `editor.${schema.name}`;
     const localized = localize(key);
     return localized !== key ? localized : schema.name;
