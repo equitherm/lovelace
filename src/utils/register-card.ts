@@ -1,14 +1,4 @@
-declare global {
-  interface Window {
-    customCards: Array<{
-      type: string;
-      name: string;
-      description: string;
-      preview?: boolean;
-      documentationURL?: string;
-    }>;
-  }
-}
+declare const __REPOSITORY_URL__: string;
 
 interface RegisterCardParams {
   type: string;
@@ -16,14 +6,16 @@ interface RegisterCardParams {
   description: string;
 }
 
-/**
- * Register a custom card with Home Assistant's Lovelace UI.
- * Ensures consistent structure and type safety.
- */
-export function registerCustomCard(params: RegisterCardParams): void {
-  window.customCards = window.customCards || [];
-  window.customCards.push({
+export function registerCustomCard(params: RegisterCardParams) {
+  const windowWithCards = window as unknown as Window & {
+    customCards: unknown[];
+  };
+  windowWithCards.customCards = windowWithCards.customCards || [];
+
+  const cardPage = params.type.replace("-card", "").replace("equitherm-", "");
+  windowWithCards.customCards.push({
     ...params,
     preview: true,
+    documentationURL: `${__REPOSITORY_URL__}/blob/main/docs/cards/${cardPage}.md`,
   });
 }

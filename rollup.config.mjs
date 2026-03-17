@@ -18,14 +18,15 @@ export default {
     sourcemap: !!dev,
   },
   plugins: [
+    typescript({ declaration: false }),
     json(),
     replace({
       preventAssignment: true,
       __VERSION__: pkg.version,
+      __REPOSITORY_URL__: JSON.stringify(pkg.repository.url),
     }),
     resolve({ browser: true }),
     commonjs(),
-    typescript(),
     !dev && terser(),
     dev &&
       serve({

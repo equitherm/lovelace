@@ -5,6 +5,10 @@
   "author": "P4uLT",
   "license": "MIT",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/equitherm/lovelace"
+  },
   "main": "dist/equitherm-cards.js",
   "scripts": {
     "start": "rollup -c --watch --bundleConfigAsCjs",
