@@ -2,7 +2,9 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { fireEvent } from '../../ha/common/dom/fire_event';
-import type { HomeAssistant, LovelaceCardEditor, StatusCardConfig } from '../../types';
+import type { StatusCardConfig } from './status-card-config';
+import type { HomeAssistant } from '../../ha/types';
+import type { LovelaceCardEditor } from '../../ha/panels/lovelace/types';
 import type { HaFormSchema } from '../../utils/form';
 import setupCustomlocalize from '../../localize';
 
