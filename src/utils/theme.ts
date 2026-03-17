@@ -1,7 +1,45 @@
 import { css } from "lit";
 
 export const themeVariables = css`
+  /* Spacing scale */
   --spacing: var(--eq-spacing, 10px);
+  --spacing-xs: var(--eq-spacing-xs, 4px);
+  --spacing-sm: var(--eq-spacing-sm, 8px);
+  --spacing-md: var(--eq-spacing-md, 12px);
+  --spacing-lg: var(--eq-spacing-lg, 16px);
+
+  /* Typography scale */
+  --font-size-xs: var(--eq-font-size-xs, 0.7rem);
+  --font-size-sm: var(--eq-font-size-sm, 0.8rem);
+  --font-size-md: var(--eq-font-size-md, 1rem);
+  --font-size-lg: var(--eq-font-size-lg, 1.4rem);
+  --font-size-xl: var(--eq-font-size-xl, 1.8rem);
+
+  /* Icons */
+  --icon-size-sm: var(--eq-icon-size-sm, 16px);
+  --icon-size-lg: var(--eq-icon-size-lg, 36px);
+
+  /* Shapes */
+  --border-radius: var(--eq-border-radius, 12px);
+  --border-radius-sm: var(--eq-border-radius-sm, 8px);
+  --border-radius-pill: var(--eq-border-radius-pill, 999px);
+
+  /* Equitherm-specific colors */
+  --rgb-heating: var(--eq-rgb-heating, 249, 115, 22);
+  --rgb-cold: var(--eq-rgb-cold, 59, 130, 246);
+  --gradient-cold: var(--eq-gradient-cold, #3b82f6);
+  --gradient-hot: var(--eq-gradient-hot, #f97316);
+  --dot-glow: var(--eq-dot-glow, rgba(var(--rgb-heating), 0.4));
+
+  /* Badge colors */
+  --badge-heating-bg: var(--eq-badge-heating-bg, #f97316);
+  --badge-heating-color: var(--eq-badge-heating-color, #ffffff);
+  --badge-cooling-bg: var(--eq-badge-cooling-bg, #3b82f6);
+  --badge-cooling-color: var(--eq-badge-cooling-color, #ffffff);
+  --badge-drying-bg: var(--eq-badge-drying-bg, #4caf50);
+  --badge-drying-color: var(--eq-badge-drying-color, #ffffff);
+  --badge-idle-bg: var(--eq-badge-idle-bg, var(--secondary-background-color, #e5e5e5));
+  --badge-idle-color: var(--eq-badge-idle-color, var(--secondary-text-color, #666));
 
   /* Title */
   --title-padding: var(--eq-title-padding, 24px 12px 8px);
