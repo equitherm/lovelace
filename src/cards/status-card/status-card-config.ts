@@ -1,6 +1,6 @@
-// src/config/status-card-config.ts
+// src/cards/status-card/status-card-config.ts
 import { object, string, optional } from 'superstruct';
-import { layoutStruct, type Layout } from '../utils/layout';
+import { layoutStruct, type Layout } from '../../utils/layout';
 
 export interface StatusCardConfig {
   type: string;

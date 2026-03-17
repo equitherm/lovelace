@@ -167,6 +167,33 @@ function ft(t,e){return(e,i,a)=>((t,e,i)=>(i.configurable=!0,i.enumerable=!0,Ref
   --rgb-state-climate-idle: 158, 158, 158;
   --rgb-state-climate-off: 158, 158, 158;
   --rgb-error-color: 219, 68, 55;
+  /* Mushroom-compatible default colors */
+  --default-red: 244, 67, 54;
+  --default-pink: 233, 30, 99;
+  --default-purple: 146, 107, 199;
+  --default-deep-purple: 110, 65, 171;
+  --default-indigo: 63, 81, 181;
+  --default-blue: 33, 150, 243;
+  --default-light-blue: 3, 169, 244;
+  --default-cyan: 0, 188, 212;
+  --default-teal: 0, 150, 136;
+  --default-green: 76, 175, 80;
+  --default-light-green: 139, 195, 74;
+  --default-lime: 205, 220, 57;
+  --default-yellow: 255, 235, 59;
+  --default-amber: 255, 193, 7;
+  --default-orange: 255, 152, 0;
+  --default-deep-orange: 255, 111, 34;
+  --default-brown: 121, 85, 72;
+  --default-light-grey: 189, 189, 189;
+  --default-grey: 158, 158, 158;
+  --default-dark-grey: 96, 96, 96;
+  --default-blue-grey: 96, 125, 139;
+  --default-black: 0, 0, 0;
+  --default-white: 255, 255, 255;
+  --default-disabled: 189, 189, 189;
+`,o`
+  --default-disabled: 111, 111, 111;
 `;let wi=class extends lt{constructor(){super(...arguments),this.shape="circle",this.size=40,this.disabled=!1}render(){return W`
       <div
         class=${vt({shape:!0,disabled:this.disabled})}
@@ -231,7 +258,7 @@ function ft(t,e){return(e,i,a)=>((t,e,i)=>(i.configurable=!0,i.enumerable=!0,Ref
       --mdc-icon-size: var(--badge-icon-size);
       color: var(--badge-color);
     }
-  `,t([gt()],Ai.prototype,"icon",void 0),Ai=t([ct("eq-badge-icon")],Ai);let ki=class extends ti{constructor(){super(...arguments),this.layout="default"}_watchedEntities(){return[this._config?.climate_entity,this._config?.outdoor_entity,this._config?.flow_entity,this._config?.curve_output_entity,this._config?.rate_limiting_entity,this._config?.control_mode_entity]}getGridOptions(){return"vertical"===(this._config?.layout??"default")?{columns:6,rows:4,min_rows:4}:{columns:12,rows:3,min_rows:1}}static getStubConfig(){return{type:"custom:equitherm-status-card"}}static async getConfigElement(){return await Promise.resolve().then(function(){return zi}),document.createElement("equitherm-status-card-editor")}setConfig(t){if(!t.climate_entity)throw new Error("climate_entity is required");if(!t.outdoor_entity)throw new Error("outdoor_entity is required");if(!t.flow_entity)throw new Error("flow_entity is required");this._config={...fi,...t},this.layout=this._config.layout??"default"}get _climate(){return this._entityState(this._config.climate_entity)}get _outdoorTemp(){const t=this._entityState(this._config.outdoor_entity);return t?this._formatTemp(parseFloat(t.state),this._entityAttr(this._config.outdoor_entity,"unit_of_measurement")):"—"}get _flowTemp(){const t=this._entityState(this._config.flow_entity);return t?this._formatTemp(parseFloat(t.state),this._entityAttr(this._config.flow_entity,"unit_of_measurement")):"—"}get _roomTemp(){const t=this._climate?.attributes.current_temperature;return this._formatTemp(t,this._hass?.config?.unit_system?.temperature)}get _controlMode(){return this._entityState(this._config.control_mode_entity)?.state??""}get _rateLimitingActive(){return"on"===this._entityState(this._config.rate_limiting_entity)?.state}get _adjustingDirection(){if(!this._rateLimitingActive||!this._config.curve_output_entity)return null;const t=this._entityState(this._config.flow_entity),e=this._entityState(this._config.curve_output_entity);if(!t||!e)return null;const i=parseFloat(t.state),a=parseFloat(e.state);return isNaN(i)||isNaN(a)?null:i<a?"rising":i>a?"falling":null}get _curveOutputTemp(){const t=this._entityState(this._config.curve_output_entity);if(!t)return"";const e=parseFloat(t.state);return isNaN(e)?"":this._formatTemp(e,this._entityAttr(this._config.curve_output_entity,"unit_of_measurement"))}render(){if(!this._config||!this._hass)return V;const t=Qe(this._hass),e=this._config.layout??"default",i=function(t){switch(t){case"heating":case"heat":return"heating";case"cooling":case"cool":return"cooling";case"off":return"off";case"fault":return"fault";default:return"idle"}}(this._climate?.attributes.hvac_action??"off"),a=this._adjustingDirection,s=this._curveOutputTemp,r=this._config.title??this._entityAttr(this._config.climate_entity,"friendly_name")??t("status_card.default_title"),o=yi[i];const n=At(vi(i));return W`
+  `,t([gt()],Ai.prototype,"icon",void 0),Ai=t([ct("eq-badge-icon")],Ai);let ki=class extends ti{constructor(){super(...arguments),this.layout="default"}_watchedEntities(){return[this._config?.climate_entity,this._config?.outdoor_entity,this._config?.flow_entity,this._config?.curve_output_entity,this._config?.rate_limiting_entity,this._config?.control_mode_entity]}getGridOptions(){return"vertical"===(this._config?.layout??"default")?{columns:6,rows:4,min_rows:4}:{columns:12,rows:3,min_rows:1}}static getStubConfig(){return{type:"custom:equitherm-status-card"}}static async getConfigElement(){return await Promise.resolve().then(function(){return Bi}),document.createElement("equitherm-status-card-editor")}setConfig(t){if(!t.climate_entity)throw new Error("climate_entity is required");if(!t.outdoor_entity)throw new Error("outdoor_entity is required");if(!t.flow_entity)throw new Error("flow_entity is required");this._config={...fi,...t},this.layout=this._config.layout??"default"}get _climate(){return this._entityState(this._config.climate_entity)}get _outdoorTemp(){const t=this._entityState(this._config.outdoor_entity);return t?this._formatTemp(parseFloat(t.state),this._entityAttr(this._config.outdoor_entity,"unit_of_measurement")):"—"}get _flowTemp(){const t=this._entityState(this._config.flow_entity);return t?this._formatTemp(parseFloat(t.state),this._entityAttr(this._config.flow_entity,"unit_of_measurement")):"—"}get _roomTemp(){const t=this._climate?.attributes.current_temperature;return this._formatTemp(t,this._hass?.config?.unit_system?.temperature)}get _controlMode(){return this._entityState(this._config.control_mode_entity)?.state??""}get _rateLimitingActive(){return"on"===this._entityState(this._config.rate_limiting_entity)?.state}get _adjustingDirection(){if(!this._rateLimitingActive||!this._config.curve_output_entity)return null;const t=this._entityState(this._config.flow_entity),e=this._entityState(this._config.curve_output_entity);if(!t||!e)return null;const i=parseFloat(t.state),a=parseFloat(e.state);return isNaN(i)||isNaN(a)?null:i<a?"rising":i>a?"falling":null}get _curveOutputTemp(){const t=this._entityState(this._config.curve_output_entity);if(!t)return"";const e=parseFloat(t.state);return isNaN(e)?"":this._formatTemp(e,this._entityAttr(this._config.curve_output_entity,"unit_of_measurement"))}render(){if(!this._config||!this._hass)return V;const t=Qe(this._hass),e=this._config.layout??"default",i=function(t){switch(t){case"heating":case"heat":return"heating";case"cooling":case"cool":return"cooling";case"off":return"off";case"fault":return"fault";default:return"idle"}}(this._climate?.attributes.hvac_action??"off"),a=this._adjustingDirection,s=this._curveOutputTemp,r=this._config.title??this._entityAttr(this._config.climate_entity,"friendly_name")??t("status_card.default_title"),o=yi[i];const n=At(vi(i));return W`
       <ha-card>
         <div class="header">
           <eq-shape-icon
@@ -439,7 +466,7 @@ function(){function t(t){t.remember("_draggable",this),this.el=t}t.prototype.ini
       0%, 100% { opacity: 1; }
       50% { opacity: 0.4; }
     }
-  `,t([gt()],Mi.prototype,"action",void 0),Mi=t([ct("eq-action-badge")],Mi);let _i=class extends ti{constructor(){super(...arguments),this._chartInitialized=!1}_watchedEntities(){return[this._config?.climate_entity,this._config?.outdoor_entity,this._config?.curve_output_entity,this._config?.flow_entity,this._config?.rate_limiting_entity]}set hass(t){const e=Ct(this,t),i=void 0!==this._prevDarkMode&&this._prevDarkMode!==e;this._prevDarkMode=e;const a=this._hass;super.hass=t,i&&this._chart&&a===this._hass&&this._updateChartOptions()}get hass(){return super.hass}getGridOptions(){return{columns:12,rows:5,min_rows:5}}static getStubConfig(){return{type:"custom:equitherm-curve-card",climate_entity:"climate.equitherm",outdoor_entity:"sensor.outdoor_temperature",curve_output_entity:"sensor.heating_curve_output",flow_entity:"sensor.flow_setpoint",hc:1.2,n:1.25,shift:0,min_flow:25,max_flow:70,t_out_min:-20,t_out_max:20}}static async getConfigElement(){return await Promise.resolve().then(function(){return Di}),document.createElement("equitherm-curve-card-editor")}setConfig(t){const e=t;if(!e.climate_entity)throw new Error("climate_entity is required");if(!e.outdoor_entity)throw new Error("outdoor_entity is required");if(!e.flow_entity)throw new Error("flow_entity is required");this._config={...e}}getCardSize(){return 3}get _climate(){return this._entityState(this._config.climate_entity)}get _tTarget(){return this._climate?.attributes.temperature??21}get _tOutdoor(){const t=this._entityState(this._config.outdoor_entity);if(!t)return null;const e=parseFloat(t.state);return isNaN(e)?null:e}get _tOutdoorUnit(){return this._entityAttr(this._config.outdoor_entity,"unit_of_measurement")}get _flowTemp(){const t=this._entityState(this._config.flow_entity);return t?parseFloat(t.state):this._config.min_flow}get _flowTempUnit(){return this._entityAttr(this._config.flow_entity,"unit_of_measurement")}get _rateLimitingActive(){return!!this._config.rate_limiting_entity&&"on"===this._entityState(this._config.rate_limiting_entity)?.state}_buildChartOptions(){const t=Qe(this._hass),e=this._config,i={tTarget:this._tTarget,hc:e.hc,n:e.n,shift:e.shift,minFlow:e.min_flow,maxFlow:e.max_flow},a=mi(this,"heating"),s=mi(this,"cooling"),r=function(t,e,i){const a=Math.round((i-e)/.1)+1;return Array.from({length:a},(i,a)=>{const s=e+.1*a,r=Ti({...t,tOutdoor:s});return{x:s,y:parseFloat(r.toFixed(1))}})}(i,e.t_out_min,e.t_out_max),o=this._tOutdoor,n=[];if(null!==o){const t=function(t,e){return Ti({...t,tOutdoor:e})}(i,o);if(this._rateLimitingActive){const e=this._entityState(this._config.curve_output_entity),i=e?parseFloat(e.state):t;n.push({x:-o,y:i,marker:{size:8,fillColor:a,strokeColor:"#ffffff",strokeWidth:2}},{x:-o,y:this._flowTemp,marker:{size:6,fillColor:"transparent",strokeColor:a,strokeWidth:2}})}else n.push({x:-o,y:t,marker:{size:10,fillColor:a,strokeColor:"#ffffff",strokeWidth:2}})}return{chart:{type:"area",width:"100%",height:"100%",toolbar:{show:!1},zoom:{enabled:!1},animations:{enabled:!0,speed:400},background:"transparent"},theme:{mode:this._prevDarkMode?"dark":"light"},series:[{name:t("curve_card.flow_temp"),data:r.map(t=>({x:-t.x,y:t.y}))}],annotations:{points:n},stroke:{curve:"straight",width:2},fill:{type:"gradient",gradient:{type:"vertical",gradientToColors:[s],stops:[0,100],colorStops:[{offset:0,color:a,opacity:.8},{offset:100,color:s,opacity:.3}]}},markers:{size:0,hover:{size:6}},xaxis:{type:"numeric",min:-e.t_out_max,max:-e.t_out_min,forceNiceScale:!1,title:{text:t("curve_card.outdoor_axis"),style:{color:"var(--secondary-text-color)",fontWeight:400}},labels:{style:{colors:"var(--secondary-text-color)",fontWeight:400},formatter:t=>`${(-t).toFixed(1)}`},axisBorder:{show:!1},axisTicks:{show:!1}},yaxis:{title:{text:t("curve_card.flow_axis"),style:{color:"var(--secondary-text-color)",fontWeight:400}},labels:{style:{colors:"var(--secondary-text-color)",fontWeight:400}},min:e.min_flow-5,max:e.max_flow+5},grid:{show:!1},legend:{show:!1},dataLabels:{enabled:!1},tooltip:{x:{formatter:e=>t("curve_card.outdoor_tooltip",{temp:(-e).toFixed(1)})},y:{formatter:e=>t("curve_card.flow_tooltip",{temp:e.toFixed(1)})}}}}async firstUpdated(){await new Promise(t=>requestAnimationFrame(()=>t())),await this.updateComplete,this._initChart(),this._setupResizeObserver()}_initChart(){this._chartInitialized||(this._chart=new Pi(this._chartEl,this._buildChartOptions()),this._chart.render(),this._chartInitialized=!0)}_setupResizeObserver(){let t;this._resizeObserver=new ResizeObserver(()=>{this._chartInitialized&&this._chart&&(clearTimeout(t),t=setTimeout(()=>{window.dispatchEvent(new Event("resize"))},100))}),this._resizeObserver.observe(this._chartWrapper)}_updateChartSeries(){if(!this._chart)return;const t=this._buildChartOptions();this._chart.updateSeries(t.series,!1)}_updateChartOptions(){if(!this._chart)return;const t=this._buildChartOptions();this._chart.updateOptions(t,!1,!1)}_structuralParamsChanged(t,e){if(!t)return!0;return["hc","n","shift","min_flow","max_flow","t_out_min","t_out_max"].some(i=>t[i]!==e[i])}updated(t){if(t.has("_config")&&this._chart){const e=t.get("_config");this._structuralParamsChanged(e,this._config)?this._updateChartOptions():this._updateChartSeries()}}disconnectedCallback(){super.disconnectedCallback(),this._resizeObserver?.disconnect(),this._chart?.destroy(),this._chart=void 0,this._chartInitialized=!1}connectedCallback(){super.connectedCallback(),this._config&&this._hass&&!this._chartInitialized&&requestAnimationFrame(async()=>{await this.updateComplete,this._initChart(),this._setupResizeObserver()})}render(){if(!this._config||!this._hass)return V;const t=Qe(this._hass),e=this._climate?.attributes.hvac_action??"off",i=this._config.title??this._entityAttr(this._config.climate_entity,"friendly_name")??t("curve_card.default_title");return W`
+  `,t([gt()],Mi.prototype,"action",void 0),Mi=t([ct("eq-action-badge")],Mi);let _i=class extends ti{constructor(){super(...arguments),this._chartInitialized=!1}_watchedEntities(){return[this._config?.climate_entity,this._config?.outdoor_entity,this._config?.curve_output_entity,this._config?.flow_entity,this._config?.rate_limiting_entity]}set hass(t){const e=Ct(this,t),i=void 0!==this._prevDarkMode&&this._prevDarkMode!==e;this._prevDarkMode=e;const a=this._hass;super.hass=t,i&&this._chart&&a===this._hass&&this._updateChartOptions()}get hass(){return super.hass}getGridOptions(){return{columns:12,rows:5,min_rows:5}}static getStubConfig(){return{type:"custom:equitherm-curve-card",climate_entity:"climate.equitherm",outdoor_entity:"sensor.outdoor_temperature",curve_output_entity:"sensor.heating_curve_output",flow_entity:"sensor.flow_setpoint",hc:1.2,n:1.25,shift:0,min_flow:25,max_flow:70,t_out_min:-20,t_out_max:20}}static async getConfigElement(){return await Promise.resolve().then(function(){return Gi}),document.createElement("equitherm-curve-card-editor")}setConfig(t){const e=t;if(!e.climate_entity)throw new Error("climate_entity is required");if(!e.outdoor_entity)throw new Error("outdoor_entity is required");if(!e.flow_entity)throw new Error("flow_entity is required");this._config={...e}}getCardSize(){return 3}get _climate(){return this._entityState(this._config.climate_entity)}get _tTarget(){return this._climate?.attributes.temperature??21}get _tOutdoor(){const t=this._entityState(this._config.outdoor_entity);if(!t)return null;const e=parseFloat(t.state);return isNaN(e)?null:e}get _tOutdoorUnit(){return this._entityAttr(this._config.outdoor_entity,"unit_of_measurement")}get _flowTemp(){const t=this._entityState(this._config.flow_entity);return t?parseFloat(t.state):this._config.min_flow}get _flowTempUnit(){return this._entityAttr(this._config.flow_entity,"unit_of_measurement")}get _rateLimitingActive(){return!!this._config.rate_limiting_entity&&"on"===this._entityState(this._config.rate_limiting_entity)?.state}_buildChartOptions(){const t=Qe(this._hass),e=this._config,i={tTarget:this._tTarget,hc:e.hc,n:e.n,shift:e.shift,minFlow:e.min_flow,maxFlow:e.max_flow},a=mi(this,"heating"),s=mi(this,"cooling"),r=function(t,e,i){const a=Math.round((i-e)/.1)+1;return Array.from({length:a},(i,a)=>{const s=e+.1*a,r=Ti({...t,tOutdoor:s});return{x:s,y:parseFloat(r.toFixed(1))}})}(i,e.t_out_min,e.t_out_max),o=this._tOutdoor,n=[];if(null!==o){const t=function(t,e){return Ti({...t,tOutdoor:e})}(i,o);if(this._rateLimitingActive){const e=this._entityState(this._config.curve_output_entity),i=e?parseFloat(e.state):t;n.push({x:-o,y:i,marker:{size:8,fillColor:a,strokeColor:"#ffffff",strokeWidth:2}},{x:-o,y:this._flowTemp,marker:{size:6,fillColor:"transparent",strokeColor:a,strokeWidth:2}})}else n.push({x:-o,y:t,marker:{size:10,fillColor:a,strokeColor:"#ffffff",strokeWidth:2}})}return{chart:{type:"area",width:"100%",height:"100%",toolbar:{show:!1},zoom:{enabled:!1},animations:{enabled:!0,speed:400},background:"transparent"},theme:{mode:this._prevDarkMode?"dark":"light"},series:[{name:t("curve_card.flow_temp"),data:r.map(t=>({x:-t.x,y:t.y}))}],annotations:{points:n},stroke:{curve:"straight",width:2},fill:{type:"gradient",gradient:{type:"vertical",gradientToColors:[s],stops:[0,100],colorStops:[{offset:0,color:a,opacity:.8},{offset:100,color:s,opacity:.3}]}},markers:{size:0,hover:{size:6}},xaxis:{type:"numeric",min:-e.t_out_max,max:-e.t_out_min,forceNiceScale:!1,title:{text:t("curve_card.outdoor_axis"),style:{color:"var(--secondary-text-color)",fontWeight:400}},labels:{style:{colors:"var(--secondary-text-color)",fontWeight:400},formatter:t=>`${(-t).toFixed(1)}`},axisBorder:{show:!1},axisTicks:{show:!1}},yaxis:{title:{text:t("curve_card.flow_axis"),style:{color:"var(--secondary-text-color)",fontWeight:400}},labels:{style:{colors:"var(--secondary-text-color)",fontWeight:400}},min:e.min_flow-5,max:e.max_flow+5},grid:{show:!1},legend:{show:!1},dataLabels:{enabled:!1},tooltip:{x:{formatter:e=>t("curve_card.outdoor_tooltip",{temp:(-e).toFixed(1)})},y:{formatter:e=>t("curve_card.flow_tooltip",{temp:e.toFixed(1)})}}}}async firstUpdated(){await new Promise(t=>requestAnimationFrame(()=>t())),await this.updateComplete,this._initChart(),this._setupResizeObserver()}_initChart(){this._chartInitialized||(this._chart=new Pi(this._chartEl,this._buildChartOptions()),this._chart.render(),this._chartInitialized=!0)}_setupResizeObserver(){let t;this._resizeObserver=new ResizeObserver(()=>{this._chartInitialized&&this._chart&&(clearTimeout(t),t=setTimeout(()=>{window.dispatchEvent(new Event("resize"))},100))}),this._resizeObserver.observe(this._chartWrapper)}_updateChartSeries(){if(!this._chart)return;const t=this._buildChartOptions();this._chart.updateSeries(t.series,!1)}_updateChartOptions(){if(!this._chart)return;const t=this._buildChartOptions();this._chart.updateOptions(t,!1,!1)}_structuralParamsChanged(t,e){if(!t)return!0;return["hc","n","shift","min_flow","max_flow","t_out_min","t_out_max"].some(i=>t[i]!==e[i])}updated(t){if(t.has("_config")&&this._chart){const e=t.get("_config");this._structuralParamsChanged(e,this._config)?this._updateChartOptions():this._updateChartSeries()}}disconnectedCallback(){super.disconnectedCallback(),this._resizeObserver?.disconnect(),this._chart?.destroy(),this._chart=void 0,this._chartInitialized=!1}connectedCallback(){super.connectedCallback(),this._config&&this._hass&&!this._chartInitialized&&requestAnimationFrame(async()=>{await this.updateComplete,this._initChart(),this._setupResizeObserver()})}render(){if(!this._config||!this._hass)return V;const t=Qe(this._hass),e=this._climate?.attributes.hvac_action??"off",i=this._config.title??this._entityAttr(this._config.climate_entity,"friendly_name")??t("curve_card.default_title");return W`
       <ha-card>
         <div class="header">
           <span class="title">${i}</span>
@@ -454,7 +481,7 @@ function(){function t(t){t.remember("_draggable",this),this.el=t}t.prototype.ini
           <span><strong class="flow-temp">${this._formatTemp(this._flowTemp,this._flowTempUnit)}</strong> ${t("common.flow").toLowerCase()}</span>
         </div>
       </ha-card>
-    `}};function Ii(t){window.customCards=window.customCards||[],window.customCards.push({...t,preview:!0})}_i.styles=[kt,St,o`
+    `}};_i.styles=[kt,St,o`
       .header {
         display: flex;
         justify-content: space-between;
@@ -478,7 +505,173 @@ function(){function t(t){t.remember("_draggable",this),this.el=t}t.prototype.ini
       }
       .footer strong { color: var(--primary-text-color); }
       .footer .flow-temp { color: var(--eq-gradient-hot); }
-    `],t([ft("#chart")],_i.prototype,"_chartEl",void 0),t([ft(".chart-wrapper")],_i.prototype,"_chartWrapper",void 0),_i=t([ct("equitherm-curve-card")],_i),console.info("%c EQUITHERM-CARDS %c 1.0.1 ","color: white; background: #f97316; font-weight: bold;","color: #f97316; background: white; font-weight: bold;"),Ii({type:"equitherm-status-card",name:"Equitherm Status",description:"Compact heating status tile with temperature displays"}),Ii({type:"equitherm-curve-card",name:"Equitherm Curve",description:"Heating curve visualization with current operating point"});let Hi=class extends lt{constructor(){super(...arguments),this._computeLabel=t=>{const e=Qe(this.hass),i=`editor.${t.name}`,a=e(i);return a!==i?a:t.name}}_getSchema(){const t=Qe(this.hass);return[{name:"title",selector:{text:{}}},{name:"climate_entity",required:!0,selector:{entity:{domain:"climate"}}},{name:"outdoor_entity",required:!0,selector:{entity:{device_class:"temperature"}}},{name:"flow_entity",required:!0,selector:{entity:{device_class:"temperature"}}},{type:"expandable",flatten:!0,name:"optional_entities",title:t("editor.optional"),icon:"mdi:chevron-down",schema:[{name:"curve_output_entity",selector:{entity:{device_class:"temperature"}}},{name:"rate_limiting_entity",selector:{entity:{domain:"binary_sensor"}}},{name:"control_mode_entity",selector:{entity:{}}}]},{type:"expandable",flatten:!0,name:"appearance",title:t("editor.appearance"),icon:"mdi:palette",schema:[{name:"layout",selector:{select:{options:[{value:"default",label:t("editor.layout_default")},{value:"vertical",label:t("editor.layout_vertical")},{value:"horizontal",label:t("editor.layout_horizontal")}],mode:"dropdown"}}}]}]}setConfig(t){this._config=t}_valueChanged(t){if(!this._config)return;const e={...this._config,...t.detail.value};Et(this,"config-changed",{config:e})}render(){return this.hass&&this._config?W`
+    `],t([ft("#chart")],_i.prototype,"_chartEl",void 0),t([ft(".chart-wrapper")],_i.prototype,"_chartWrapper",void 0),_i=t([ct("equitherm-curve-card")],_i);let Ii=class extends lt{render(){return W`
+      <div
+        class=${vt({container:!0,horizontal:"horizontal"===this.appearance?.layout,"no-info":"none"===this.appearance?.primary_info&&"none"===this.appearance?.secondary_info,"no-content":"none"===this.appearance?.primary_info&&"none"===this.appearance?.secondary_info&&"none"===this.appearance?.icon_type})}
+      >
+        <slot></slot>
+      </div>
+    `}static get styles(){return o`
+      :host {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        margin: calc(-1 * var(--ha-card-border-width, 1px));
+      }
+      .container {
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+        flex-grow: 0;
+        box-sizing: border-box;
+        justify-content: space-between;
+        height: 100%;
+      }
+      .container.horizontal {
+        flex-direction: row;
+      }
+      .container.horizontal > ::slotted(*) {
+        flex: 1;
+        min-width: 0;
+      }
+      .container.horizontal > ::slotted(*.actions) {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        padding-left: 0 !important;
+        --control-spacing: var(--spacing);
+        --control-height: var(--icon-size);
+      }
+      .container > ::slotted(eq-state-item) {
+        flex: 1;
+      }
+      .container.horizontal.no-info > ::slotted(eq-state-item) {
+        flex: none;
+      }
+      .container.no-content > ::slotted(eq-state-item) {
+        display: none;
+      }
+      .container.no-content > ::slotted(.actions) {
+        --control-spacing: var(--spacing);
+        --control-height: var(--icon-size);
+        padding: var(--control-spacing) !important;
+      }
+    `}};t([gt()],Ii.prototype,"appearance",void 0),Ii=t([ct("eq-card")],Ii);let Hi=class extends lt{render(){return W`
+      <div class="shape">
+        ${this.picture_url?W`<img src=${this.picture_url} />`:W`<slot></slot>`}
+      </div>
+    `}static get styles(){return o`
+      :host {
+        flex: none;
+      }
+      .shape {
+        position: relative;
+        width: var(--icon-size);
+        height: var(--icon-size);
+        border-radius: var(--icon-border-radius);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    `}};t([gt()],Hi.prototype,"picture_url",void 0),Hi=t([ct("eq-shape-avatar")],Hi);let zi=class extends lt{constructor(){super(...arguments),this.multiline_secondary=!1}render(){return W`
+      <div class="container">
+        <span class="primary">${this.primary??""}</span>
+        ${this.secondary?W`<span
+              class="secondary${this.multiline_secondary?" multiline_secondary":""}"
+              >${this.secondary}</span
+            >`:V}
+      </div>
+    `}static get styles(){return o`
+      .container {
+        min-width: 0;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+      .primary {
+        font-weight: var(--card-primary-font-weight);
+        font-size: var(--card-primary-font-size);
+        line-height: var(--card-primary-line-height);
+        color: var(--card-primary-color);
+        letter-spacing: var(--card-primary-letter-spacing);
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+      .secondary {
+        font-weight: var(--card-secondary-font-weight);
+        font-size: var(--card-secondary-font-size);
+        line-height: var(--card-secondary-line-height);
+        color: var(--card-secondary-color);
+        letter-spacing: var(--card-secondary-letter-spacing);
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+      .multiline_secondary {
+        white-space: pre-wrap;
+      }
+    `}};t([gt({attribute:!1})],zi.prototype,"primary",void 0),t([gt({attribute:!1})],zi.prototype,"secondary",void 0),t([gt({type:Boolean})],zi.prototype,"multiline_secondary",void 0),zi=t([ct("eq-state-info")],zi);let Ri=class extends lt{render(){return W`
+      <div
+        class=${vt({container:!0,vertical:"vertical"===this.appearance?.layout})}
+      >
+        ${"none"!==this.appearance?.icon_type?W`
+              <div class="icon">
+                <slot name="icon"></slot>
+                <slot name="badge"></slot>
+              </div>
+            `:V}
+        ${"none"!==this.appearance?.primary_info||"none"!==this.appearance?.secondary_info?W`
+              <div class="info">
+                <slot name="info"></slot>
+              </div>
+            `:V}
+      </div>
+    `}static get styles(){return o`
+      :host {
+        display: block;
+        height: 100%;
+      }
+      .container {
+        height: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        padding: var(--spacing);
+        gap: var(--spacing);
+      }
+      .icon {
+        position: relative;
+      }
+      .icon ::slotted(*[slot="badge"]) {
+        position: absolute;
+        top: -3px;
+        right: -3px;
+      }
+      :host([rtl]) .icon ::slotted(*[slot="badge"]) {
+        right: initial;
+        left: -3px;
+      }
+      .info {
+        min-width: 0;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+      .container.vertical {
+        flex-direction: column;
+      }
+      .container.vertical .info {
+        text-align: center;
+      }
+    `}};function Xi(t){window.customCards=window.customCards||[],window.customCards.push({...t,preview:!0})}t([gt()],Ri.prototype,"appearance",void 0),Ri=t([ct("eq-state-item")],Ri),console.info("%c EQUITHERM-CARDS %c 1.0.1 ","color: white; background: #f97316; font-weight: bold;","color: #f97316; background: white; font-weight: bold;"),Xi({type:"equitherm-status-card",name:"Equitherm Status",description:"Compact heating status tile with temperature displays"}),Xi({type:"equitherm-curve-card",name:"Equitherm Curve",description:"Heating curve visualization with current operating point"});let Oi=class extends lt{constructor(){super(...arguments),this._computeLabel=t=>{const e=Qe(this.hass),i=`editor.${t.name}`,a=e(i);return a!==i?a:t.name}}_getSchema(){const t=Qe(this.hass);return[{name:"title",selector:{text:{}}},{name:"climate_entity",required:!0,selector:{entity:{domain:"climate"}}},{name:"outdoor_entity",required:!0,selector:{entity:{device_class:"temperature"}}},{name:"flow_entity",required:!0,selector:{entity:{device_class:"temperature"}}},{type:"expandable",flatten:!0,name:"optional_entities",title:t("editor.optional"),icon:"mdi:chevron-down",schema:[{name:"curve_output_entity",selector:{entity:{device_class:"temperature"}}},{name:"rate_limiting_entity",selector:{entity:{domain:"binary_sensor"}}},{name:"control_mode_entity",selector:{entity:{}}}]},{type:"expandable",flatten:!0,name:"appearance",title:t("editor.appearance"),icon:"mdi:palette",schema:[{name:"layout",selector:{select:{options:[{value:"default",label:t("editor.layout_default")},{value:"vertical",label:t("editor.layout_vertical")},{value:"horizontal",label:t("editor.layout_horizontal")}],mode:"dropdown"}}}]}]}setConfig(t){this._config=t}_valueChanged(t){if(!this._config)return;const e={...this._config,...t.detail.value};Et(this,"config-changed",{config:e})}render(){return this.hass&&this._config?W`
       <ha-form
         .hass=${this.hass}
         .data=${this._config}
@@ -486,11 +679,11 @@ function(){function t(t){t.remember("_draggable",this),this.el=t}t.prototype.ini
         .computeLabel=${this._computeLabel}
         @value-changed=${this._valueChanged}
       ></ha-form>
-    `:W``}};Hi.styles=o`
+    `:W``}};Oi.styles=o`
     ha-form {
       display: block;
     }
-  `,t([gt({attribute:!1})],Hi.prototype,"hass",void 0),t([pt()],Hi.prototype,"_config",void 0),Hi=t([ct("equitherm-status-card-editor")],Hi);var zi=Object.freeze({__proto__:null,get StatusCardEditor(){return Hi}}),Ri=Number.isNaN||function(t){return"number"==typeof t&&t!=t};function Xi(t,e){return t===e||!(!Ri(t)||!Ri(e))}function Oi(t,e){if(t.length!==e.length)return!1;for(var i=0;i<t.length;i++)if(!Xi(t[i],e[i]))return!1;return!0}const Bi={entity:function(t,e={}){return{name:t,required:e.required??!0,selector:{entity:{domain:e.domain,device_class:e.device_class}}}},number:function(t,e,i,a=1,s="slider"){return{name:t,required:!0,selector:{number:{min:e,max:i,step:a,mode:s}}}},text:function(t,e=!1){return{name:t,required:e,selector:{text:{}}}},grid:function(t){return{type:"grid",name:"",schema:t}},expandable:function(t,e,i){return{type:"expandable",title:t,icon:e,name:"",schema:i}}};let Ni=class extends lt{constructor(){super(...arguments),this._getSchema=function(t,e){void 0===e&&(e=Oi);var i=null;function a(){for(var a=[],s=0;s<arguments.length;s++)a[s]=arguments[s];if(i&&i.lastThis===this&&e(a,i.lastArgs))return i.lastResult;var r=t.apply(this,a);return i={lastResult:r,lastArgs:a,lastThis:this},r}return a.clear=function(){i=null},a}(()=>{const t=Qe(this.hass);return[Bi.text("title",!1),Bi.expandable(t("editor.entities"),"mdi:connection",[Bi.entity("climate_entity",{domain:"climate"}),Bi.entity("outdoor_entity",{domain:["sensor","input_number"],device_class:"temperature"}),Bi.entity("curve_output_entity",{domain:["sensor"],device_class:"temperature"}),Bi.entity("flow_entity",{domain:["sensor","number","input_number"],device_class:"temperature"}),Bi.entity("rate_limiting_entity",{domain:["binary_sensor"],required:!1})]),Bi.expandable(t("editor.curve_parameters"),"mdi:chart-bell-curve",[Bi.grid([Bi.number("hc",.5,3,.1),Bi.number("n",1,2,.05)]),Bi.number("shift",-15,15,1),Bi.grid([Bi.number("min_flow",15,35,1),Bi.number("max_flow",50,90,1)])]),Bi.expandable(t("editor.display_range"),"mdi:arrow-expand-horizontal",[Bi.grid([Bi.number("t_out_min",-30,5,1),Bi.number("t_out_max",0,30,1)])])]}),this._computeLabel=t=>{const e=Qe(this.hass),i=`editor.${t.name}`,a=e(i);return a!==i?a:t.name}}setConfig(t){this._config={...t}}_valueChanged(t){if(!this._config)return;const e={...t.detail.value};JSON.stringify(e)!==JSON.stringify(this._config)&&Et(this,"config-changed",{config:e})}render(){return this._config?W`
+  `,t([gt({attribute:!1})],Oi.prototype,"hass",void 0),t([pt()],Oi.prototype,"_config",void 0),Oi=t([ct("equitherm-status-card-editor")],Oi);var Bi=Object.freeze({__proto__:null,get StatusCardEditor(){return Oi}}),Ni=Number.isNaN||function(t){return"number"==typeof t&&t!=t};function Di(t,e){return t===e||!(!Ni(t)||!Ni(e))}function Fi(t,e){if(t.length!==e.length)return!1;for(var i=0;i<t.length;i++)if(!Di(t[i],e[i]))return!1;return!0}const Yi={entity:function(t,e={}){return{name:t,required:e.required??!0,selector:{entity:{domain:e.domain,device_class:e.device_class}}}},number:function(t,e,i,a=1,s="slider"){return{name:t,required:!0,selector:{number:{min:e,max:i,step:a,mode:s}}}},text:function(t,e=!1){return{name:t,required:e,selector:{text:{}}}},grid:function(t){return{type:"grid",name:"",schema:t}},expandable:function(t,e,i){return{type:"expandable",title:t,icon:e,name:"",schema:i}}};let Wi=class extends lt{constructor(){super(...arguments),this._getSchema=function(t,e){void 0===e&&(e=Fi);var i=null;function a(){for(var a=[],s=0;s<arguments.length;s++)a[s]=arguments[s];if(i&&i.lastThis===this&&e(a,i.lastArgs))return i.lastResult;var r=t.apply(this,a);return i={lastResult:r,lastArgs:a,lastThis:this},r}return a.clear=function(){i=null},a}(()=>{const t=Qe(this.hass);return[Yi.text("title",!1),Yi.expandable(t("editor.entities"),"mdi:connection",[Yi.entity("climate_entity",{domain:"climate"}),Yi.entity("outdoor_entity",{domain:["sensor","input_number"],device_class:"temperature"}),Yi.entity("curve_output_entity",{domain:["sensor"],device_class:"temperature"}),Yi.entity("flow_entity",{domain:["sensor","number","input_number"],device_class:"temperature"}),Yi.entity("rate_limiting_entity",{domain:["binary_sensor"],required:!1})]),Yi.expandable(t("editor.curve_parameters"),"mdi:chart-bell-curve",[Yi.grid([Yi.number("hc",.5,3,.1),Yi.number("n",1,2,.05)]),Yi.number("shift",-15,15,1),Yi.grid([Yi.number("min_flow",15,35,1),Yi.number("max_flow",50,90,1)])]),Yi.expandable(t("editor.display_range"),"mdi:arrow-expand-horizontal",[Yi.grid([Yi.number("t_out_min",-30,5,1),Yi.number("t_out_max",0,30,1)])])]}),this._computeLabel=t=>{const e=Qe(this.hass),i=`editor.${t.name}`,a=e(i);return a!==i?a:t.name}}setConfig(t){this._config={...t}}_valueChanged(t){if(!this._config)return;const e={...t.detail.value};JSON.stringify(e)!==JSON.stringify(this._config)&&Et(this,"config-changed",{config:e})}render(){return this._config?W`
       <ha-form
         .hass=${this.hass}
         .data=${this._config}
@@ -498,10 +691,10 @@ function(){function t(t){t.remember("_draggable",this),this.el=t}t.prototype.ini
         .computeLabel=${this._computeLabel}
         @value-changed=${this._valueChanged}
       ></ha-form>
-    `:W``}};Ni.styles=o`
+    `:W``}};Wi.styles=o`
     ha-form { display: block; }
     ha-expandable {
       margin: 8px 0;
       --ha-card-border-radius: 8px;
     }
-  `,t([gt({attribute:!1})],Ni.prototype,"hass",void 0),t([pt()],Ni.prototype,"_config",void 0),Ni=t([ct("equitherm-curve-card-editor")],Ni);var Di=Object.freeze({__proto__:null,get EquithermCurveCardEditor(){return Ni}});
+  `,t([gt({attribute:!1})],Wi.prototype,"hass",void 0),t([pt()],Wi.prototype,"_config",void 0),Wi=t([ct("equitherm-curve-card-editor")],Wi);var Gi=Object.freeze({__proto__:null,get EquithermCurveCardEditor(){return Wi}});

@@ -1,10 +1,10 @@
-// src/editors/status-card-editor.ts
+// src/cards/status-card/status-card-editor.ts
 import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { fireEvent } from '../ha/common/dom/fire_event';
-import type { HomeAssistant, LovelaceCardEditor, StatusCardConfig } from '../types';
-import type { HaFormSchema } from '../utils/form';
-import setupCustomlocalize from '../localize';
+import { fireEvent } from '../../ha/common/dom/fire_event';
+import type { HomeAssistant, LovelaceCardEditor, StatusCardConfig } from '../../types';
+import type { HaFormSchema } from '../../utils/form';
+import setupCustomlocalize from '../../localize';
 
 @customElement('equitherm-status-card-editor')
 export class StatusCardEditor extends LitElement implements LovelaceCardEditor {

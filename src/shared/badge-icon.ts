@@ -1,4 +1,4 @@
-// src/components/badge-icon.ts
+// src/shared/badge-icon.ts
 import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 

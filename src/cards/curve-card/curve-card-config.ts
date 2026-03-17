@@ -1,4 +1,4 @@
-// src/config/curve-card-config.ts
+// src/cards/curve-card/curve-card-config.ts
 import { object, string, number, optional } from 'superstruct';
 
 export interface CurveCardConfig {

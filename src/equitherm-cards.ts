@@ -1,6 +1,15 @@
-import './cards/status-card';
-import './cards/curve-card';
-import './components/shape-icon';
+// Cards
+import './cards/status-card/status-card';
+import './cards/curve-card/curve-card';
+
+// Shared components (Mushroom pattern)
+import './shared/badge-icon';
+import './shared/card';
+import './shared/shape-avatar';
+import './shared/shape-icon';
+import './shared/state-info';
+import './shared/state-item';
+
 import { registerCustomCard } from './utils/register-card';
 
 console.info(

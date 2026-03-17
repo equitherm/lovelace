@@ -2,14 +2,14 @@ import { html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { styleMap } from 'lit/directives/style-map.js';
-import type { StatusCardConfig, LovelaceGridOptions, ClimateEntityAttributes, HomeAssistant } from '../types';
-import { EquithermBaseCard } from '../utils/base-card';
-import { tokens, cardBase } from '../styles/tokens';
-import setupCustomlocalize from '../localize';
-import { STATUS_CARD_DEFAULTS } from '../config/status-card-config';
-import { getIconStyleVars, getActionBadgeIcon, normalizeHvacAction } from '../utils/colors';
-import '../components/shape-icon';
-import '../components/badge-icon';
+import type { StatusCardConfig, LovelaceGridOptions, ClimateEntityAttributes, HomeAssistant } from '../../types';
+import { EquithermBaseCard } from '../../utils/base-card';
+import { tokens, cardBase } from '../../styles/tokens';
+import setupCustomlocalize from '../../localize';
+import { STATUS_CARD_DEFAULTS } from './status-card-config';
+import { getIconStyleVars, getActionBadgeIcon, normalizeHvacAction } from '../../utils/colors';
+import '../../shared/shape-icon';
+import '../../shared/badge-icon';
 
 @customElement('equitherm-status-card')
 export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
@@ -43,7 +43,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
   }
 
   static async getConfigElement() {
-    await import('../editors/status-card-editor');
+    await import('./status-card-editor');
     return document.createElement('equitherm-status-card-editor');
   }
 

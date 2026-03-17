@@ -24,8 +24,8 @@ export interface ClimateEntityAttributes {
 
 // ─── Project Types ─────────────────────────────────────────────────────────────
 
-export type { StatusCardConfig } from './config/status-card-config';
-export type { CurveCardConfig } from './config/curve-card-config';
+export type { StatusCardConfig } from './cards/status-card/status-card-config';
+export type { CurveCardConfig } from './cards/curve-card/curve-card-config';
 
 // Appearance types - import from utils (Mushroom pattern)
 export type { Layout } from './utils/layout';
