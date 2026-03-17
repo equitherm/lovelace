@@ -1,7 +1,9 @@
 import { html, css, nothing } from 'lit';
 import { customElement, query } from 'lit/decorators.js';
 import ApexCharts from 'apexcharts';
-import type { CurveCardConfig, LovelaceGridOptions, HomeAssistant } from '../../types';
+import type { CurveCardConfig } from './curve-card-config';
+import type { HomeAssistant } from '../../ha/types';
+import type { LovelaceGridOptions } from '../../ha/data/lovelace';
 import type { ClimateEntity } from '../../ha/data/climate';
 import { EquithermBaseCard } from '../../utils/base-card';
 import { tokens, cardBase, applyDarkMode } from '../../styles/tokens';

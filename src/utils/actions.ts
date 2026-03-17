@@ -4,7 +4,8 @@
  * Based on Mushroom's action patterns.
  */
 import { fireEvent } from '../ha/common/dom/fire_event';
-import type { HomeAssistant, ActionConfig } from '../types';
+import type { HomeAssistant } from '../ha/types';
+import type { ActionConfig } from '../ha/data/lovelace';
 
 /** Check if an action is configured (not 'none') */
 export function hasAction(action?: ActionConfig): boolean {

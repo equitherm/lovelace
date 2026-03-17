@@ -6,7 +6,7 @@ import {
 } from "home-assistant-js-websocket";
 import { HASSDomEvent } from "../common/dom/fire_event";
 import { Lovelace, LovelaceCard } from "../panels/lovelace/types";
-import { HomeAssistant } from "../types";
+import type { HomeAssistant } from "../types";
 
 export interface LovelacePanelConfig {
   mode: "yaml" | "storage";

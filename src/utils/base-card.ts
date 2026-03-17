@@ -1,7 +1,9 @@
 import { LitElement } from 'lit';
 import { html, nothing } from 'lit';
 import { state } from 'lit/decorators.js';
-import type { HomeAssistant, LovelaceGridOptions, HassEntity, ActionConfig } from '../types';
+import type { HomeAssistant } from '../ha/types';
+import type { HassEntity } from 'home-assistant-js-websocket';
+import type { LovelaceGridOptions, ActionConfig } from '../ha/data/lovelace';
 import { entitiesChanged } from './hass';
 import { applyDarkMode } from '../styles/tokens';
 import { executeAction, hasAction } from './actions';

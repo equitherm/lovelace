@@ -1,4 +1,4 @@
-import type { HomeAssistant } from '../types';
+import type { HomeAssistant } from '../ha/types';
 
 /**
  * Returns true only if any of the watched entity IDs changed state since last hass.
