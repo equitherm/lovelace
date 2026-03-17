@@ -6,7 +6,7 @@ import type { HomeAssistant, CurveCardConfig, LovelaceCardEditor } from '../type
 import { fireEvent } from '../ha/common/dom/fire_event';
 import { schemaHelpers } from '../utils/form';
 import type { HaFormSchema } from '../utils/form';
-import { localize } from '../localize';
+import setupCustomlocalize from '../localize';
 
 @customElement('equitherm-curve-card-editor')
 export class EquithermCurveCardEditor extends LitElement implements LovelaceCardEditor {
@@ -33,7 +33,9 @@ export class EquithermCurveCardEditor extends LitElement implements LovelaceCard
     }
   `;
 
-  private _getSchema = memoizeOne((): HaFormSchema[] => [
+  private _getSchema = memoizeOne((): HaFormSchema[] => {
+    const localize = setupCustomlocalize(this.hass);
+    return [
     schemaHelpers.text('title', false),
     schemaHelpers.expandable(localize('editor.entities'), 'mdi:connection', [
       schemaHelpers.entity('climate_entity', { domain: 'climate' }),
@@ -59,9 +61,10 @@ export class EquithermCurveCardEditor extends LitElement implements LovelaceCard
         schemaHelpers.number('t_out_max', 0, 30, 1),
       ]),
     ]),
-  ]);
+  ]});
 
   private _computeLabel = (schema: { name: string }): string => {
+    const localize = setupCustomlocalize(this.hass);
     const key = `editor.${schema.name}`;
     const localized = localize(key);
     return localized !== key ? localized : schema.name;

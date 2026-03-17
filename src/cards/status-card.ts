@@ -5,7 +5,7 @@ import { styleMap } from 'lit/directives/style-map.js';
 import type { StatusCardConfig, LovelaceGridOptions, ClimateEntityAttributes, HomeAssistant } from '../types';
 import { EquithermBaseCard } from '../utils/base-card';
 import { tokens, cardBase } from '../styles/tokens';
-import { localize } from '../localize';
+import setupCustomlocalize from '../localize';
 import { STATUS_CARD_DEFAULTS } from '../config/status-card-config';
 import { getIconStyleVars, getActionBadgeIcon, normalizeHvacAction } from '../utils/colors';
 import '../components/shape-icon';
@@ -216,6 +216,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
 
   render() {
     if (!this._config || !this._hass) return nothing;
+    const localize = setupCustomlocalize(this._hass);
     const layout = this._config.layout ?? 'default';
     const rawAction = this._climate?.attributes.hvac_action ?? 'off';
     const hvacAction = normalizeHvacAction(rawAction);
