@@ -33,16 +33,31 @@ export class ActionBadge extends LitElement {
       box-shadow: 0 0 6px rgba(255,255,255,0.8);
       animation: pulse 1.5s ease-in-out infinite;
     }
-    .badge.idle {
+    .badge.cooling {
+      background: var(--eq-badge-cooling-bg, #3b82f6);
+      color: var(--eq-badge-cooling-color, #fff);
+    }
+    .badge.cooling .dot {
+      background: #fff;
+      box-shadow: 0 0 6px rgba(255,255,255,0.8);
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    .badge.drying {
+      background: var(--eq-badge-drying-bg, #4caf50);
+      color: var(--eq-badge-drying-color, #fff);
+    }
+    .badge.drying .dot {
+      background: #fff;
+      box-shadow: 0 0 6px rgba(255,255,255,0.8);
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    .badge.idle, .badge.off {
       background: var(--eq-badge-idle-bg, #e5e5e5);
       color: var(--eq-badge-idle-color, #666);
     }
-    .badge.idle .dot { background: currentColor; }
-    .badge.off {
-      background: var(--eq-badge-idle-bg, #e5e5e5);
-      color: var(--eq-badge-idle-color, #666);
+    .badge.idle .dot, .badge.off .dot {
+      background: currentColor;
     }
-    .badge.off .dot { background: currentColor; }
     @keyframes pulse {
       0%, 100% { opacity: 1; }
       50% { opacity: 0.4; }
@@ -51,9 +66,25 @@ export class ActionBadge extends LitElement {
 
   render() {
     const localize = setupCustomlocalize();
-    const label = this.action === 'heating' ? localize('common.heating')
-      : this.action === 'idle' ? localize('common.idle')
-      : localize('common.off');
+    let label: string;
+    switch (this.action) {
+      case 'heating':
+        label = localize('common.heating');
+        break;
+      case 'cooling':
+        label = localize('common.cooling');
+        break;
+      case 'drying':
+        label = localize('common.drying');
+        break;
+      case 'idle':
+        label = localize('common.idle');
+        break;
+      case 'off':
+      default:
+        label = localize('common.off');
+        break;
+    }
     return html`
       <span class="badge ${this.action}">
         <span class="dot"></span>

@@ -5,6 +5,8 @@
     "room": "Room",
     "adjusting": "Adjusting",
     "heating": "Heating",
+    "cooling": "Cooling",
+    "drying": "Drying",
     "idle": "Idle",
     "off": "Off",
     "not_found": "{entity} not found"
