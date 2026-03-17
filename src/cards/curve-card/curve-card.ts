@@ -38,17 +38,23 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
 
   protected updated(changedProps: Map<string, unknown>): void {
     super.updated(changedProps);
-    // Handle dark mode changes for chart theme
+    if (!this._chart) return;
+
+    // Handle hass changes (entity states + dark mode)
     if (changedProps.has('hass') && this.hass) {
       const isDark = (this.hass.themes as any).darkMode as boolean;
       const darkChanged = this._prevDarkMode !== undefined && this._prevDarkMode !== isDark;
       this._prevDarkMode = isDark;
-      if (darkChanged && this._chart) {
+
+      if (darkChanged) {
         this._updateChartOptions();
+      } else {
+        // Entity states changed, update series (marker position)
+        this._updateChartSeries();
       }
     }
     // Handle config changes
-    if (changedProps.has('_config') && this._chart) {
+    if (changedProps.has('_config')) {
       const prevConfig = changedProps.get('_config') as CurveCardConfig | undefined;
       if (this._structuralParamsChanged(prevConfig, this._config)) {
         this._updateChartOptions();
@@ -271,6 +277,8 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
     if (!this._chart) return;
     const opts = this._buildChartOptions();
     this._chart.updateSeries(opts.series, false);
+    // Annotations are part of options, not series - must update separately
+    this._chart.updateOptions({ annotations: opts.annotations }, false, false);
   }
 
   private _updateChartOptions(): void {
