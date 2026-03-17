@@ -1,6 +1,6 @@
 // src/config/status-card-config.ts
 import { object, string, optional } from 'superstruct';
-import { LayoutStruct, type Layout } from '../shared/config/appearance-config';
+import { layoutStruct, type Layout } from '../utils/layout';
 
 export interface StatusCardConfig {
   type: string;
@@ -24,7 +24,7 @@ export const StatusCardConfigStruct = object({
   curve_output_entity: optional(string()),
   rate_limiting_entity: optional(string()),
   control_mode_entity: optional(string()),
-  layout: LayoutStruct,
+  layout: optional(layoutStruct),
   title: optional(string()),
 });
 

@@ -26,7 +26,11 @@ export interface ClimateEntityAttributes {
 
 export type { StatusCardConfig } from './config/status-card-config';
 export type { CurveCardConfig } from './config/curve-card-config';
-export type { Layout, Info, IconType, AppearanceConfig } from './shared/config/appearance-config';
+
+// Appearance types - import from utils (Mushroom pattern)
+export type { Layout } from './utils/layout';
+export type { Info, IconType } from './utils/info';
+export type { AppearanceSharedConfig, Appearance } from './shared/config/appearance-config';
 
 // ─── Lovelace Grid Options ────────────────────────────────────────────────────
 

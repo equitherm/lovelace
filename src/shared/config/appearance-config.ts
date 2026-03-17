@@ -1,52 +1,118 @@
-// src/shared/config/appearance-config.ts
-import { optional, enums, object, boolean } from 'superstruct';
+import { boolean, enums, Infer, object, optional } from "superstruct";
+import setupCustomlocalize from "../../localize";
+import { HaFormSchema } from "../../utils/form/ha-form";
+import { IconType, ICON_TYPES, Info, INFOS } from "../../utils/info";
+import { Layout, LAYOUTS, layoutStruct } from "../../utils/layout";
 
-// Layout options
-export const LAYOUTS = ['default', 'vertical', 'horizontal'] as const;
-export type Layout = (typeof LAYOUTS)[number];
-export const LayoutStruct = optional(enums(LAYOUTS));
-
-// Info display options
-export const INFOS = ['name', 'state', 'last-changed', 'last-updated', 'none'] as const;
-export type Info = (typeof INFOS)[number];
-export const InfoStruct = optional(enums(INFOS));
-
-// Icon type options
-export const ICON_TYPES = ['icon', 'entity-picture', 'none'] as const;
-export type IconType = (typeof ICON_TYPES)[number];
-export const IconTypeStruct = optional(enums(ICON_TYPES));
-
-// Appearance configuration interface
-export interface AppearanceConfig {
-  layout?: Layout;
-  hide_icon?: boolean;
-  hide_state?: boolean;
-  primary_info?: Info;
-  secondary_info?: Info;
-  icon_type?: IconType;
-}
-
-// Superstruct schema for validation
-export const AppearanceConfigStruct = object({
-  layout: LayoutStruct,
-  hide_icon: optional(boolean()),
-  hide_state: optional(boolean()),
-  primary_info: InfoStruct,
-  secondary_info: InfoStruct,
-  icon_type: IconTypeStruct,
+export const appearanceSharedConfigStruct = object({
+  layout: optional(layoutStruct),
+  fill_container: optional(boolean()),
+  primary_info: optional(enums(INFOS)),
+  secondary_info: optional(enums(INFOS)),
+  icon_type: optional(enums(ICON_TYPES)),
 });
 
-// Default values
-export const APPEARANCE_DEFAULTS: AppearanceConfig = {
-  layout: 'default',
-  hide_icon: false,
-  hide_state: false,
-  primary_info: 'state',
-  secondary_info: 'none',
-  icon_type: 'icon',
+export type AppearanceSharedConfig = Infer<typeof appearanceSharedConfigStruct>;
+
+export type Appearance = {
+  layout: Layout;
+  fill_container: boolean;
+  primary_info: Info;
+  secondary_info: Info;
+  icon_type: IconType;
 };
 
-// Helper to merge with defaults
-export function createAppearanceConfig(config?: Partial<AppearanceConfig>): AppearanceConfig {
-  return { ...APPEARANCE_DEFAULTS, ...config };
+type CustomLocalize = ReturnType<typeof setupCustomlocalize>;
+
+function capitalizeFirstLetter(string: string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+export function computeInfoOptions(customLocalize: CustomLocalize) {
+  return INFOS.map((info) => ({
+    value: info,
+    label:
+      customLocalize(`editor.form.info_picker.values.${info}`) ||
+      capitalizeFirstLetter(info),
+  }));
+}
+
+export function computeIconTypeOptions(customLocalize: CustomLocalize) {
+  return ICON_TYPES.map((iconType) => ({
+    value: iconType,
+    label:
+      customLocalize(`editor.form.icon_type_picker.values.${iconType}`) ||
+      capitalizeFirstLetter(iconType),
+  }));
+}
+
+export function computeAlignmentOptions(customLocalize: CustomLocalize) {
+  const ALIGNMENT = ["start", "center", "end", "justify"] as const;
+  return ALIGNMENT.map((alignment) => ({
+    value: alignment,
+    label: customLocalize(`editor.form.alignment_picker.values.${alignment}`),
+  }));
+}
+
+export function computeLayoutOptions(customLocalize: CustomLocalize) {
+  return LAYOUTS.map((layout) => ({
+    value: layout,
+    label: customLocalize(`editor.form.layout_picker.values.${layout}`),
+  }));
+}
+
+export function computeAppearanceFormSchema(
+  customLocalize: CustomLocalize
+): HaFormSchema[] {
+  return [
+    {
+      type: "grid",
+      name: "",
+      schema: [
+        {
+          name: "layout",
+          selector: {
+            select: {
+              options: computeLayoutOptions(customLocalize),
+              mode: "dropdown",
+            },
+          },
+        },
+        { name: "fill_container", selector: { boolean: {} } },
+      ],
+    },
+    {
+      type: "grid",
+      name: "",
+      schema: [
+        {
+          name: "primary_info",
+          selector: {
+            select: {
+              options: computeInfoOptions(customLocalize),
+              mode: "dropdown",
+            },
+          },
+        },
+        {
+          name: "secondary_info",
+          selector: {
+            select: {
+              options: computeInfoOptions(customLocalize),
+              mode: "dropdown",
+            },
+          },
+        },
+        {
+          name: "icon_type",
+          selector: {
+            select: {
+              options: computeIconTypeOptions(customLocalize),
+              mode: "dropdown",
+            },
+          },
+        },
+      ],
+    },
+  ];
 }
