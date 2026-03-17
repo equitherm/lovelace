@@ -6,9 +6,17 @@ import type { LovelaceGridOptions } from '../../ha/data/lovelace';
 import type { ClimateEntity } from '../../ha/data/climate';
 import { EquithermBaseCard } from '../../utils/base-card';
 import { cardStyle } from '../../utils/card-styles';
+import { registerCustomCard } from '../../utils/register-card';
+import { CURVE_CARD_NAME, CURVE_CARD_EDITOR_NAME } from './const';
 import { resolveRgbColor } from '../../utils/hvac-colors';
+
+registerCustomCard({
+  type: CURVE_CARD_NAME,
+  name: 'Equitherm Curve',
+  description: 'Heating curve visualization with current operating point',
+});
 import { buildCurveSeries, flowAtOutdoor } from '../../utils/curve';
-import setupCustomlocalize from '../../localize';
+import setupCustomLocalize from '../../localize';
 import '../../shared/action-badge';
 
 /** Curve parameters that affect the curve shape (require full rebuild) */
@@ -27,7 +35,7 @@ const MARKER_SINGLE = 10;
 const MARKER_CURVE_OUTPUT = 8;
 const MARKER_RATE_LIMITED = 6;
 
-@customElement('equitherm-curve-card')
+@customElement(CURVE_CARD_NAME)
 export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
   private _prevDarkMode?: boolean;
   @query('#chart') private _chartEl!: HTMLElement;
@@ -87,7 +95,7 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
 
   static async getConfigElement() {
     await import('./curve-card-editor');
-    return document.createElement('equitherm-curve-card-editor');
+    return document.createElement(CURVE_CARD_EDITOR_NAME);
   }
 
   setConfig(config: unknown) {
@@ -135,7 +143,7 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
   }
 
   private _buildChartOptions() {
-    const localize = setupCustomlocalize(this.hass);
+    const localize = setupCustomLocalize(this.hass);
     const cfg = this._config;
     const curveParams = {
       tTarget: this._tTarget,
@@ -354,7 +362,7 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
 
   render() {
     if (!this._config || !this.hass) return nothing;
-    const localize = setupCustomlocalize(this.hass);
+    const localize = setupCustomLocalize(this.hass);
     const action = this._climate?.attributes.hvac_action ?? 'off';
     const title = this._config.title ?? this._entityAttr<string>(this._config.climate_entity, 'friendly_name') ?? localize('curve_card.default_title');
 

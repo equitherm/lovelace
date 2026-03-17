@@ -8,9 +8,10 @@ import type { LovelaceCardEditor } from '../../ha/panels/lovelace/types';
 import { fireEvent } from '../../ha/common/dom/fire_event';
 import { schemaHelpers } from '../../utils/form';
 import type { HaFormSchema } from '../../utils/form';
-import setupCustomlocalize from '../../localize';
+import setupCustomLocalize from '../../localize';
+import { CURVE_CARD_EDITOR_NAME } from './const';
 
-@customElement('equitherm-curve-card-editor')
+@customElement(CURVE_CARD_EDITOR_NAME)
 export class EquithermCurveCardEditor extends LitElement implements LovelaceCardEditor {
   @property({ attribute: false }) hass!: HomeAssistant;
   @state() private _config!: CurveCardConfig;
@@ -36,7 +37,7 @@ export class EquithermCurveCardEditor extends LitElement implements LovelaceCard
   `;
 
   private _getSchema = memoizeOne((): HaFormSchema[] => {
-    const localize = setupCustomlocalize(this.hass);
+    const localize = setupCustomLocalize(this.hass);
     return [
     schemaHelpers.text('title', false),
     schemaHelpers.expandable(localize('editor.entities'), 'mdi:connection', [
@@ -66,7 +67,7 @@ export class EquithermCurveCardEditor extends LitElement implements LovelaceCard
   ]});
 
   private _computeLabel = (schema: { name: string }): string => {
-    const localize = setupCustomlocalize(this.hass);
+    const localize = setupCustomLocalize(this.hass);
     const key = `editor.${schema.name}`;
     const localized = localize(key);
     return localized !== key ? localized : schema.name;
