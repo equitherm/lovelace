@@ -7,7 +7,7 @@ import type { HomeAssistant } from '../../ha/types';
 import type { LovelaceGridOptions } from '../../ha/data/lovelace';
 import type { ClimateEntity } from '../../ha/data/climate';
 import { EquithermBaseCard } from '../../utils/base-card';
-import { tokens, cardBase } from '../../styles/tokens';
+import { tokens } from '../../styles/tokens';
 import setupCustomlocalize from '../../localize';
 import { STATUS_CARD_DEFAULTS } from './status-card-config';
 import { getIconStyleVars, getActionBadgeIcon, normalizeHvacAction } from '../../utils/colors';
@@ -114,108 +114,110 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
     return this._formatTemp(value, this._entityAttr<string>(this._config.curve_output_entity, 'unit_of_measurement'));
   }
 
-  static styles = [
-    tokens,
-    cardBase,
-    css`
-      .header {
-        display: flex;
-        align-items: center;
-        margin-bottom: 12px;
-        gap: 12px;
-        flex-shrink: 0;
-      }
-      eq-shape-icon {
-        cursor: pointer;
-        flex-shrink: 0;
-      }
-      .header-info {
-        flex: 1;
-        min-width: 0;
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
-      }
-      .title {
-        font-size: var(--eq-font-size-medium);
-        font-weight: 600;
-        color: var(--primary-text-color);
-        line-height: 1.2;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-      .state {
-        font-size: var(--eq-font-size-small);
-        color: var(--secondary-text-color);
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-      .header-actions {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        flex-shrink: 0;
-      }
-      .mode {
-        font-size: var(--eq-font-size-small);
-        color: var(--secondary-text-color);
-        cursor: pointer;
-      }
-      .temps {
-        display: grid;
-        grid-template-columns: 1fr auto 1fr auto 1fr;
-        align-items: center;
-        gap: 8px;
-        flex: 1;
-        min-width: 0;
-      }
-      .temp-block {
-        text-align: center;
-        min-width: 0;
-        cursor: pointer;
-        padding: 4px;
-        border-radius: 8px;
-        transition: background 0.2s;
-      }
-      .temp-block:hover {
-        background: var(--secondary-background-color, rgba(0,0,0,0.05));
-      }
-      .temp-value {
-        font-size: var(--eq-font-size-large);
-        font-weight: 600;
-        line-height: 1;
-        color: var(--primary-text-color);
-        white-space: nowrap;
-      }
-      .temp-label {
-        font-size: var(--eq-font-size-small);
-        color: var(--secondary-text-color);
-        margin-top: 4px;
-        white-space: nowrap;
-      }
-      .arrow {
-        color: var(--secondary-text-color);
-        font-size: 1.2rem;
-        padding-bottom: calc(var(--eq-font-size-small) + 4px);
-      }
-      .divider { width: 1px; background: var(--divider-color, #e0e0e0); height: 40px; flex-shrink: 0; }
-      .flow-dual { display: flex; flex-direction: column; align-items: center; gap: 2px; }
-      .flow-dual .target { font-size: 0.7rem; color: var(--secondary-text-color); }
+  static get styles() {
+    return [
+      super.styles,
+      tokens,
+      css`
+        .header {
+          display: flex;
+          align-items: center;
+          margin-bottom: 12px;
+          gap: 12px;
+          flex-shrink: 0;
+        }
+        eq-shape-icon {
+          cursor: pointer;
+          flex-shrink: 0;
+        }
+        .header-info {
+          flex: 1;
+          min-width: 0;
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+        }
+        .title {
+          font-size: var(--eq-font-size-medium);
+          font-weight: 600;
+          color: var(--primary-text-color);
+          line-height: 1.2;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+        .state {
+          font-size: var(--eq-font-size-small);
+          color: var(--secondary-text-color);
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+        .header-actions {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          flex-shrink: 0;
+        }
+        .mode {
+          font-size: var(--eq-font-size-small);
+          color: var(--secondary-text-color);
+          cursor: pointer;
+        }
+        .temps {
+          display: grid;
+          grid-template-columns: 1fr auto 1fr auto 1fr;
+          align-items: center;
+          gap: 8px;
+          flex: 1;
+          min-width: 0;
+        }
+        .temp-block {
+          text-align: center;
+          min-width: 0;
+          cursor: pointer;
+          padding: 4px;
+          border-radius: 8px;
+          transition: background 0.2s;
+        }
+        .temp-block:hover {
+          background: var(--secondary-background-color, rgba(0,0,0,0.05));
+        }
+        .temp-value {
+          font-size: var(--eq-font-size-large);
+          font-weight: 600;
+          line-height: 1;
+          color: var(--primary-text-color);
+          white-space: nowrap;
+        }
+        .temp-label {
+          font-size: var(--eq-font-size-small);
+          color: var(--secondary-text-color);
+          margin-top: 4px;
+          white-space: nowrap;
+        }
+        .arrow {
+          color: var(--secondary-text-color);
+          font-size: 1.2rem;
+          padding-bottom: calc(var(--eq-font-size-small) + 4px);
+        }
+        .divider { width: 1px; background: var(--divider-color, #e0e0e0); height: 40px; flex-shrink: 0; }
+        .flow-dual { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+        .flow-dual .target { font-size: 0.7rem; color: var(--secondary-text-color); }
 
-      /* Layout variations */
-      .temps.vertical {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto auto auto;
-        gap: var(--eq-spacing-md);
-      }
-      .temps.vertical .arrow,
-      .temps.vertical .divider {
-        display: none;
-      }
-    `,
-  ];
+        /* Layout variations */
+        .temps.vertical {
+          grid-template-columns: 1fr;
+          grid-template-rows: auto auto auto;
+          gap: var(--eq-spacing-md);
+        }
+        .temps.vertical .arrow,
+        .temps.vertical .divider {
+          display: none;
+        }
+      `,
+    ];
+  }
 
   render() {
     if (!this._config || !this.hass) return nothing;
