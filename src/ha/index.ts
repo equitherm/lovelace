@@ -19,6 +19,7 @@ export * from "./common/util/debounce";
 export * from "./common/util/deep-equal";
 
 // Data layer
+export * from "./data/climate";
 export * from "./data/entity";
 export * from "./data/lovelace";
 export * from "./data/translation";
