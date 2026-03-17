@@ -6,7 +6,7 @@ import type { LovelaceGridOptions } from '../../ha/data/lovelace';
 import type { ClimateEntity } from '../../ha/data/climate';
 import { EquithermBaseCard } from '../../utils/base-card';
 import { cardStyle } from '../../utils/card-styles';
-import { resolveRgbColor } from '../../utils/colors';
+import { resolveRgbColor } from '../../utils/hvac-colors';
 import { buildCurveSeries, flowAtOutdoor } from '../../utils/curve';
 import setupCustomlocalize from '../../localize';
 import '../../shared/action-badge';

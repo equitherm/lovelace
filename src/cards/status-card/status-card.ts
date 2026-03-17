@@ -10,7 +10,7 @@ import { EquithermBaseCard } from '../../utils/base-card';
 import { cardStyle } from '../../utils/card-styles';
 import setupCustomlocalize from '../../localize';
 import { STATUS_CARD_DEFAULTS } from './status-card-config';
-import { getIconStyleVars, getActionBadgeIcon, normalizeHvacAction } from '../../utils/colors';
+import { getHvacActionColor, getHvacActionIcon, normalizeHvacAction } from '../../utils/hvac-colors';
 import '../../shared/shape-icon';
 import '../../shared/badge-icon';
 
@@ -229,9 +229,13 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
     const curveOutput = this._curveOutputTemp;
     const title = this._config.title ?? this._entityAttr<string>(this._config.climate_entity, 'friendly_name') ?? localize('status_card.default_title');
 
-    // Use centralized color utilities
-    const badgeIcon = getActionBadgeIcon(hvacAction);
-    const iconStyles = styleMap(getIconStyleVars(hvacAction));
+    // Build icon styles from action color (Mushroom pattern)
+    const badgeIcon = getHvacActionIcon(hvacAction);
+    const color = getHvacActionColor(hvacAction);
+    const iconStyles = styleMap({
+      '--icon-color': `rgb(${color})`,
+      '--shape-color': `rgba(${color}, 0.2)`,
+    });
 
     return html`
       <ha-card>
