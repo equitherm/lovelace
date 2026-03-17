@@ -1,7 +1,7 @@
 import { LitElement, html, css } from 'lit';
 import setupCustomlocalize from '../localize';
 import { customElement, property } from 'lit/decorators.js';
-import type { HvacAction } from '../types';
+import type { HvacAction } from '../ha/data/climate';
 
 @customElement('eq-action-badge')
 export class ActionBadge extends LitElement {

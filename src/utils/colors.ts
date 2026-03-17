@@ -5,29 +5,28 @@
  */
 
 import { css } from 'lit';
-import type { HvacAction } from '../types';
+import type { HvacAction } from '../ha/data/climate';
 
 // CSS variable names for HA state colors (RGB format)
 const HA_RGB_VARS: Record<HvacAction, string> = {
   heating: '--rgb-state-climate-heat',
   cooling: '--rgb-state-climate-cool',
+  drying: '--rgb-state-climate-dry',
   idle: '--rgb-state-climate-idle',
   off: '--rgb-state-climate-off',
-  fault: '--rgb-error-color',
 };
 
 // Default RGB fallback values
 const DEFAULT_RGB: Record<HvacAction, string> = {
   heating: '249, 115, 22',
   cooling: '59, 130, 246',
+  drying: '76, 175, 80',
   idle: '158, 158, 158',
   off: '158, 158, 158',
-  fault: '219, 68, 55',
 };
 
 /**
  * Get CSS variable expression with fallback.
- * Returns "var(--rgb-state-climate-heat, 249, 115, 22)"
  */
 export function getHvacRgbVar(action: HvacAction): string {
   const cssVar = HA_RGB_VARS[action] ?? HA_RGB_VARS.idle;
@@ -50,7 +49,7 @@ export function resolveRgbColor(element: Element, action: HvacAction): string {
  * Get CSS variables for icon styling based on HVAC action.
  */
 export function getIconStyleVars(action: HvacAction): Record<string, string> {
-  if (action === 'heating' || action === 'cooling' || action === 'fault') {
+  if (action === 'heating' || action === 'cooling' || action === 'drying') {
     const rgbVar = getHvacRgbVar(action);
     return {
       '--icon-color': `rgb(${rgbVar})`,
@@ -71,9 +70,9 @@ export function getIconStyleVars(action: HvacAction): Record<string, string> {
 export const ACTION_ICONS: Record<HvacAction, string | null> = {
   heating: 'mdi:fire',
   cooling: 'mdi:snowflake',
+  drying: 'mdi:water-percent',
   idle: null,
   off: null,
-  fault: 'mdi:alert',
 };
 
 export function getActionBadgeIcon(action: HvacAction): string | null {
@@ -81,7 +80,7 @@ export function getActionBadgeIcon(action: HvacAction): string | null {
 }
 
 /**
- * Normalize HVAC action string to our standard types.
+ * Normalize HVAC action string to standard types.
  */
 export function normalizeHvacAction(action: string | undefined): HvacAction {
   switch (action) {
@@ -91,20 +90,22 @@ export function normalizeHvacAction(action: string | undefined): HvacAction {
     case 'cooling':
     case 'cool':
       return 'cooling';
+    case 'drying':
+    case 'dry':
+      return 'drying';
     case 'off':
       return 'off';
-    case 'fault':
-      return 'fault';
     case 'idle':
     default:
       return 'idle';
   }
 }
 
-// Default color CSS for theme fallbacks - inject into :host
+// Default color CSS for theme fallbacks
 export const defaultColorCss = css`
   --rgb-state-climate-heat: 249, 115, 22;
   --rgb-state-climate-cool: 59, 130, 246;
+  --rgb-state-climate-dry: 76, 175, 80;
   --rgb-state-climate-idle: 158, 158, 158;
   --rgb-state-climate-off: 158, 158, 158;
   --rgb-error-color: 219, 68, 55;

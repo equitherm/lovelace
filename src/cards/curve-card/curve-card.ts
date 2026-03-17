@@ -1,7 +1,8 @@
 import { html, css, nothing } from 'lit';
 import { customElement, query } from 'lit/decorators.js';
 import ApexCharts from 'apexcharts';
-import type { CurveCardConfig, LovelaceGridOptions, ClimateEntityAttributes, HomeAssistant } from '../../types';
+import type { CurveCardConfig, LovelaceGridOptions, HomeAssistant } from '../../types';
+import type { ClimateEntity } from '../../ha/data/climate';
 import { EquithermBaseCard } from '../../utils/base-card';
 import { tokens, cardBase, applyDarkMode } from '../../styles/tokens';
 import { resolveRgbColor } from '../../utils/colors';
@@ -97,8 +98,8 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
 
   getCardSize() { return 3; }
 
-  private get _climate(): { state: string; attributes: Partial<ClimateEntityAttributes> } | undefined {
-    return this._entityState(this._config.climate_entity) as { state: string; attributes: Partial<ClimateEntityAttributes> } | undefined;
+  private get _climate(): ClimateEntity | undefined {
+    return this._entityState(this._config.climate_entity) as ClimateEntity | undefined;
   }
 
   private get _tTarget(): number {

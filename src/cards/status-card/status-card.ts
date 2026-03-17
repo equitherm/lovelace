@@ -2,7 +2,8 @@ import { html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { styleMap } from 'lit/directives/style-map.js';
-import type { StatusCardConfig, LovelaceGridOptions, ClimateEntityAttributes, HomeAssistant } from '../../types';
+import type { StatusCardConfig, LovelaceGridOptions, HomeAssistant } from '../../types';
+import type { ClimateEntity } from '../../ha/data/climate';
 import { EquithermBaseCard } from '../../utils/base-card';
 import { tokens, cardBase } from '../../styles/tokens';
 import setupCustomlocalize from '../../localize';
@@ -58,8 +59,8 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
     this.layout = this._config.layout ?? 'default';
   }
 
-  private get _climate(): { state: string; attributes: Partial<ClimateEntityAttributes> } | undefined {
-    return this._entityState(this._config.climate_entity) as { state: string; attributes: Partial<ClimateEntityAttributes> } | undefined;
+  private get _climate(): ClimateEntity | undefined {
+    return this._entityState(this._config.climate_entity) as ClimateEntity | undefined;
   }
 
   private get _outdoorTemp(): string {
