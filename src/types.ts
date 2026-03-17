@@ -1,8 +1,10 @@
 // src/types.ts
 
 // Re-export from vendored HA types
-export type { HomeAssistant, HassEntity } from './ha/types';
-export type { LovelaceCard, LovelaceCardEditor, LovelaceCardConfig } from './ha/panels/lovelace/types';
+export type { HomeAssistant } from './ha/types';
+export type { HassEntity } from 'home-assistant-js-websocket';
+export type { LovelaceCard, LovelaceCardEditor } from './ha/panels/lovelace/types';
+export type { LovelaceCardConfig, ActionConfig } from './ha/data/lovelace';
 
 // ─── HVAC Action Types ─────────────────────────────────────────────────────────
 
@@ -25,17 +27,6 @@ export interface ClimateEntityAttributes {
 export type { StatusCardConfig } from './config/status-card-config';
 export type { CurveCardConfig } from './config/curve-card-config';
 export type { Layout, Info, IconType, AppearanceConfig } from './shared/config/appearance-config';
-
-// ─── Lovelace Action Config ───────────────────────────────────────────────────
-
-export interface ActionConfig {
-  action: 'more-info' | 'navigate' | 'call-service' | 'url' | 'none' | 'assist';
-  entity?: string;
-  navigation_path?: string;
-  url_path?: string;
-  service?: string;
-  service_data?: Record<string, unknown>;
-}
 
 // ─── Lovelace Grid Options ────────────────────────────────────────────────────
 
