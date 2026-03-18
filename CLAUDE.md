@@ -41,11 +41,13 @@ The dev dashboard is at `.hass_dev/lovelace/dev-dashboard.yaml`.
 lovelace/
 ├── src/
 │   ├── equitherm-cards.ts    # Entry point, card registration
-│   ├── cards/                 # Card implementations
-│   ├── editors/               # HA visual editor configs
-│   ├── components/            # Shared Lit components
-│   ├── utils/                 # Helper functions
-│   └── styles/                # Shared CSS/styles
+│   ├── cards/                 # Card implementations (co-located)
+│   │   ├── status-card/       # Status card + editor + config + const
+│   │   └── curve-card/        # Curve card + editor + config + const
+│   ├── shared/                # Shared Lit components
+│   ├── utils/                 # Helper functions and base classes
+│   ├── ha/                    # Vendored HA types (from Mushroom)
+│   └── localize.ts            # i18n setup
 ├── dist/
 │   └── equitherm-cards.js    # Built bundle (committed for HACS)
 ├── .github/workflows/
@@ -57,6 +59,62 @@ lovelace/
 └── tsconfig.json              # TypeScript config
 ```
 
+## Architecture
+
+This project follows the **Mushroom pattern** from [lovelace-mushroom](https://github.com/piitaya/lovelace-mushroom).
+
+### Base Class Hierarchy
+
+```
+LitElement
+    └── EquithermBaseElement (src/utils/base-element.ts)
+            ├── Dark mode handling via :host([dark-mode])
+            ├── Theme CSS variables injection
+            └── EquithermBaseCard<TConfig> (src/utils/base-card.ts)
+                    ├── @state() _config
+                    ├── Entity access helpers
+                    ├── Temperature formatting
+                    └── Action handling
+```
+
+**EquithermBaseElement** provides:
+- `computeDarkMode(hass)` - Detects dark mode from HA themes
+- Auto-toggles `dark-mode` attribute on theme change
+- Default color CSS variables
+
+**EquithermBaseCard<TConfig>** provides:
+- `@state() _config` - Card configuration
+- Entity access: `_entityState()`, `_entityAttr()`, `_entityExists()`
+- Formatting: `_formatTemp()` with unit conversion
+- Actions: `_openMoreInfo()`, `_handleAction()`, `_hasAction`
+- Rendering: `_renderNotFound()`
+- Grid options: `getGridOptions()`, `getCardSize()`
+
+### Vendored HA Types (`src/ha/`)
+
+Backported from lovelace-mushroom to avoid `custom-card-helpers` dependency:
+
+```
+src/ha/
+├── index.ts                    # Barrel export
+├── types.ts                    # HomeAssistant type
+├── common/
+│   ├── const.ts                # Domain constants
+│   ├── dom/fire_event.ts       # Event firing
+│   ├── entity/compute_domain.ts
+│   ├── translations/localize.ts
+│   └── util/                   # debounce, deep-equal, compute_rtl
+├── data/
+│   ├── climate.ts              # ClimateEntity types
+│   ├── entity.ts               # HassEntity helpers
+│   ├── lovelace.ts             # Lovelace types
+│   ├── translation.ts
+│   └── ws-themes.ts
+└── panels/lovelace/
+    ├── types.ts
+    └── common/                 # handle-actions, has-action
+```
+
 ## Tech Stack
 
 | Layer | Technology |
@@ -66,11 +124,12 @@ lovelace/
 | UI Framework | Lit 3 |
 | Bundler | Rollup 4 |
 | Charts | ApexCharts |
+| HA Connection | home-assistant-js-websocket |
 | Release | semantic-release |
 
 ## Implemented Cards
 
-### Equitherm Status Card (`src/cards/status-card.ts`)
+### Equitherm Status Card (`src/cards/status-card/`)
 
 Compact tile showing heating status with temperature displays.
 
@@ -83,6 +142,7 @@ Compact tile showing heating status with temperature displays.
 - `curve_output_entity` - When set, shows "ADJUSTING" indicator with target
 - `rate_limiting_entity` - Binary sensor, enables ramping display
 - `control_mode_entity` - Shows control mode text
+- `layout` - `'default'` | `'vertical'` | `'horizontal'`
 
 **Features:**
 - HVAC action badge (heating/idle/off) - click opens climate more-info
@@ -90,76 +150,79 @@ Compact tile showing heating status with temperature displays.
 - Temperature unit conversion (°C/°F) via HA's unit system
 - Rate-limiting indicator with rising/falling direction
 
-## Shared Utilities
+### Equitherm Curve Card (`src/cards/curve-card/`)
 
-### Editor Utilities (`src/utils/editor.ts`)
+Heating curve visualization with ApexCharts.
 
-Provides `schemaHelpers` for building ha-form schemas:
+**Required config:**
+- `climate_entity` - Climate entity with curve parameters
+- `outdoor_entity` - Outdoor temperature sensor
+- `flow_entity` - Flow setpoint sensor
 
-```typescript
-import { schemaHelpers, HaFormSchema } from '../utils/editor';
+**Features:**
+- Interactive ApexCharts visualization
+- Current operating point marker
+- Dark mode support
+- Rate-limiting indicator
 
-const schema: HaFormSchema[] = [
-  schemaHelpers.entity('climate_entity', { domain: 'climate' }),
-  schemaHelpers.expandable('Parameters', 'mdi:tune', [
-    schemaHelpers.grid([
-      schemaHelpers.number('hc', 0.5, 3.0, 0.1),
-      schemaHelpers.number('n', 1.0, 2.0, 0.05),
-    ]),
-  ]),
-];
-```
+## Utilities (`src/utils/`)
 
-### Action Utilities (`src/utils/actions.ts`)
+| File | Purpose |
+|------|---------|
+| `base-element.ts` | Base Lit class with dark mode + theme CSS |
+| `base-card.ts` | Card base class with entity/action helpers |
+| `theme.ts` | Theme CSS variables (`--rgb-primary`, etc.) |
+| `colors.ts` | Default color definitions |
+| `hvac-colors.ts` | HVAC action colors and icons |
+| `card-styles.ts` | Shared card CSS |
+| `entity-styles.ts` | Entity animations + styles |
+| `curve.ts` | Curve calculation (`buildCurveSeries`, `flowAtOutdoor`) |
+| `register-card.ts` | `registerCustomCard()` helper |
+| `actions.ts` | Action execution (`executeAction`, `hasAction`) |
+| `appearance.ts` | Appearance config helpers |
+| `layout.ts` | Layout utilities |
+| `info.ts` | Info utilities |
 
-- `executeAction(element, hass, action, entityId)` - Execute tap/hold actions
-- `hasAction(action)` - Check if action is configured
-- `DEFAULT_TAP_ACTION`, `DEFAULT_HOLD_ACTION` - Common action presets
+### Shared Components (`src/shared/`)
 
-### Base Class (`src/utils/base-card.ts`)
-
-All cards extend `EquithermBaseCard<TConfig>` which provides:
-
-- Entity access: `_entityState()`, `_entityAttr()`, `_entityExists()`
-- Formatting: `_formatTemp()` with unit conversion
-- Actions: `_openMoreInfo()`, `_handleAction()`, `_hasAction`
-- Rendering: `_renderNotFound()`
-- Lifecycle: `_watchedEntities()`, `_onHassUpdate()`
-
-### Config Validation (`src/config/`)
-
-Superstruct schemas for runtime config validation:
-- `status-card-config.ts` - StatusCardConfig schema and defaults
-- `curve-card-config.ts` - CurveCardConfig schema and defaults
-
-### Shared Components (`src/components/`)
-
-- `shape-icon.ts` - Icon with background shape (circle/square/pill)
+| Component | Purpose |
+|-----------|---------|
+| `shape-icon.ts` | Icon with colored background shape |
+| `badge-icon.ts` | Small badge overlay (e.g., HVAC action indicator) |
+| `card.ts` | Card wrapper component |
+| `state-info.ts` | State value display |
+| `state-item.ts` | State item container |
+| `shape-avatar.ts` | Avatar with shape background |
 
 ## Key Conventions
 
 1. **Lit components**: All cards are Lit elements
 2. **TypeScript strict mode**: Full type safety
 3. **HACS distribution**: Built bundle is attached to GitHub releases
-4. **Card registration**: New cards must be registered in `src/equitherm-cards.ts`
-5. **Custom card helpers**: Use `custom-card-helpers` for HA integration
-6. **Entity change detection**: Use `entitiesChanged()` helper to gate re-renders
+4. **Card registration**: Use `registerCustomCard()` from `src/utils/register-card.ts`
+5. **Co-located files**: Card, editor, config, and const files in `src/cards/<card-name>/`
+6. **Theme support**: All cards get dark mode via `:host([dark-mode])` CSS
+7. **No custom-card-helpers**: Use vendored types from `src/ha/`
 
 ## Adding a New Card
 
-1. Create card file in `src/cards/my-card.ts`
-2. Create editor in `src/editors/my-card-editor.ts` (optional)
+1. Create directory `src/cards/my-card/`
+2. Create files:
+   - `my-card.ts` - Card implementation extending `EquithermBaseCard`
+   - `my-card-editor.ts` - Visual editor (optional)
+   - `my-card-config.ts` - Superstruct schema + defaults
+   - `const.ts` - Card name constants
 3. Register in `src/equitherm-cards.ts`:
    ```typescript
-   window.customCards.push({
+   import './cards/my-card/my-card';
+
+   registerCustomCard({
      type: 'equitherm-my-card',
      name: 'My Card',
      description: 'Description here',
-     preview: true,
    });
    ```
-4. Import and register the card class
-5. Build and test
+4. Build and test
 
 ## Commit Convention
 
@@ -169,6 +232,7 @@ Use [Conventional Commits](https://www.conventionalcommits.org/):
 - `fix:` - Bug fix (triggers release)
 - `docs:` - Documentation only
 - `chore:` - Maintenance, deps, tooling
+- `refactor:` - Code restructuring without behavior change
 - `ci:` - CI/CD changes
 
 ## Release
