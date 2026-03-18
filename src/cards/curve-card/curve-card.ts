@@ -17,7 +17,7 @@ registerCustomCard({
 });
 import { buildCurveSeries, flowAtOutdoor } from '../../utils/curve';
 import setupCustomLocalize from '../../localize';
-import '../../shared/action-badge';
+import '../../shared/badge-action';
 
 /** Curve parameters that affect the curve shape (require full rebuild) */
 type CurveStructuralParams = Pick<CurveCardConfig,
@@ -375,7 +375,7 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
       <ha-card>
         <div class="header">
           <span class="title">${title}</span>
-          <eq-action-badge .action=${action}></eq-action-badge>
+          <eq-badge-action .action=${action}></eq-badge-action>
         </div>
         <div class="chart-wrapper">
           <div id="chart"></div>

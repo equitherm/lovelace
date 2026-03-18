@@ -22,11 +22,11 @@ const ACTIVE_ACTIONS = new Set(['heating', 'cooling', 'drying']);
  *
  * Usage:
  * ```html
- * <eq-action-badge .action=${'heating'}></eq-action-badge>
+ * <eq-badge-action .action=${'heating'}></eq-badge-action>
  * ```
  */
-@customElement('eq-action-badge')
-export class ActionBadge extends LitElement {
+@customElement('eq-badge-action')
+export class BadgeAction extends LitElement {
   @property() action: HvacAction = 'idle';
 
   static get styles(): CSSResultGroup {
@@ -86,6 +86,6 @@ export class ActionBadge extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'eq-action-badge': ActionBadge;
+    'eq-badge-action': BadgeAction;
   }
 }
