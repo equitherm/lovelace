@@ -27,17 +27,6 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
   // Layout property reflected to attribute for CSS styling
   @property({ reflect: true, type: String }) layout: 'default' | 'vertical' | 'horizontal' = 'default';
 
-  protected _watchedEntities(): (string | undefined)[] {
-    return [
-      this._config?.climate_entity,
-      this._config?.outdoor_entity,
-      this._config?.flow_entity,
-      this._config?.curve_output_entity,
-      this._config?.rate_limiting_entity,
-      this._config?.control_mode_entity,
-    ];
-  }
-
   public getGridOptions(): LovelaceGridOptions {
     const layout = this._config?.layout ?? 'default';
 
