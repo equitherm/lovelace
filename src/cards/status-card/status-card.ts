@@ -6,12 +6,13 @@ import type { StatusCardConfig } from './status-card-config';
 import type { HomeAssistant } from '../../ha/types';
 import type { LovelaceGridOptions } from '../../ha/data/lovelace';
 import type { ClimateEntity } from '../../ha/data/climate';
+import { computeDomain } from '../../ha/common/entity/compute_domain';
 import { EquithermBaseCard } from '../../utils/base-card';
 import { cardStyle } from '../../utils/card-styles';
 import { registerCustomCard } from '../../utils/register-card';
 import setupCustomLocalize from '../../localize';
 import { STATUS_CARD_DEFAULTS } from './status-card-config';
-import { STATUS_CARD_NAME, STATUS_CARD_EDITOR_NAME } from './const';
+import { STATUS_CARD_NAME, STATUS_CARD_EDITOR_NAME, CLIMATE_ENTITY_DOMAINS, SENSOR_ENTITY_DOMAINS } from './const';
 import { getHvacActionColor, getHvacActionIcon, normalizeHvacAction } from '../../utils/hvac-colors';
 import '../../shared/shape-icon';
 import '../../shared/badge-icon';
@@ -38,8 +39,38 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
     }
   }
 
-  static getStubConfig(): StatusCardConfig {
-    return { type: 'custom:equitherm-status-card' } as StatusCardConfig;
+  static async getStubConfig(hass: HomeAssistant): Promise<StatusCardConfig> {
+    const states = hass.states;
+    const entityIds = Object.keys(states);
+
+    // Find climate entity by domain
+    const climateEntity = entityIds.find(e =>
+      CLIMATE_ENTITY_DOMAINS.includes(computeDomain(e))
+    );
+
+    // Find temperature sensors by domain + device_class
+    const tempSensors = entityIds.filter(e => {
+      const state = states[e];
+      return SENSOR_ENTITY_DOMAINS.includes(computeDomain(e))
+        && state?.attributes?.device_class === 'temperature';
+    });
+
+    // Prefer outdoor/outside in name for outdoor temp
+    const outdoorEntity = tempSensors.find(e =>
+      e.includes('outdoor') || e.includes('outside') || e.includes('exterior')
+    ) ?? tempSensors[0];
+
+    // Prefer flow/supply in name for flow temp
+    const flowEntity = tempSensors.find(e =>
+      e.includes('flow') || e.includes('supply') || e.includes('forward')
+    ) ?? tempSensors[0];
+
+    return {
+      type: 'custom:equitherm-status-card',
+      climate_entity: climateEntity,
+      outdoor_entity: outdoorEntity,
+      flow_entity: flowEntity,
+    } as StatusCardConfig;
   }
 
   static async getConfigElement() {

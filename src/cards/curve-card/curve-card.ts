@@ -3,11 +3,13 @@ import { customElement, query } from 'lit/decorators.js';
 import ApexCharts from 'apexcharts';
 import type { CurveCardConfig } from './curve-card-config';
 import type { LovelaceGridOptions } from '../../ha/data/lovelace';
+import type { HomeAssistant } from '../../ha';
 import type { ClimateEntity } from '../../ha/data/climate';
+import { computeDomain } from '../../ha/common/entity/compute_domain';
 import { EquithermBaseCard } from '../../utils/base-card';
 import { cardStyle } from '../../utils/card-styles';
 import { registerCustomCard } from '../../utils/register-card';
-import { CURVE_CARD_NAME, CURVE_CARD_EDITOR_NAME } from './const';
+import { CURVE_CARD_NAME, CURVE_CARD_EDITOR_NAME, CLIMATE_ENTITY_DOMAINS, SENSOR_ENTITY_DOMAINS } from './const';
 import { resolveRgbColor } from '../../utils/hvac-colors';
 
 registerCustomCard({
@@ -76,13 +78,41 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
     return { columns: 12, rows: 5, min_rows: 5 };
   }
 
-  static getStubConfig(): CurveCardConfig {
+  static async getStubConfig(hass: HomeAssistant): Promise<CurveCardConfig> {
+    const states = hass.states;
+    const entityIds = Object.keys(states);
+
+    // Find climate entity by domain
+    const climateEntity = entityIds.find(e =>
+      CLIMATE_ENTITY_DOMAINS.includes(computeDomain(e))
+    );
+
+    // Find temperature sensors by domain + device_class
+    const tempSensors = entityIds.filter(e => {
+      const state = states[e];
+      return SENSOR_ENTITY_DOMAINS.includes(computeDomain(e))
+        && state?.attributes?.device_class === 'temperature';
+    });
+
+    // Prefer outdoor/outside in name for outdoor temp
+    const outdoorEntity = tempSensors.find(e =>
+      e.includes('outdoor') || e.includes('outside') || e.includes('exterior')
+    ) ?? tempSensors[0];
+
+    // Prefer flow/supply in name for flow temp
+    const flowEntity = tempSensors.find(e =>
+      e.includes('flow') || e.includes('supply') || e.includes('forward')
+    ) ?? tempSensors[0];
+
+    // Curve output sensor (optional)
+    const curveOutputEntity = tempSensors.find(e => e.includes('curve_output')) ?? '';
+
     return {
       type: 'custom:equitherm-curve-card',
-      climate_entity: 'climate.equitherm',
-      outdoor_entity: 'sensor.outdoor_temperature',
-      curve_output_entity: 'sensor.heating_curve_output',
-      flow_entity: 'sensor.flow_setpoint',
+      climate_entity: climateEntity,
+      outdoor_entity: outdoorEntity,
+      curve_output_entity: curveOutputEntity,
+      flow_entity: flowEntity,
       hc: 1.2,
       n: 1.25,
       shift: 0,
@@ -90,7 +120,7 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
       max_flow: 70,
       t_out_min: -20,
       t_out_max: 20,
-    };
+    } as CurveCardConfig;
   }
 
   static async getConfigElement() {
