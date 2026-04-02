@@ -16,6 +16,7 @@ import { STATUS_CARD_NAME, STATUS_CARD_EDITOR_NAME, CLIMATE_ENTITY_DOMAINS, SENS
 import { getHvacActionColor, getHvacActionIcon, normalizeHvacAction } from '../../utils/hvac-colors';
 import '../../shared/shape-icon';
 import '../../shared/badge-icon';
+import '../../shared/badge-action';
 
 registerCustomCard({
   type: STATUS_CARD_NAME,
@@ -175,17 +176,6 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
           text-overflow: ellipsis;
           white-space: nowrap;
         }
-        .header-actions {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          flex-shrink: 0;
-        }
-        .mode {
-          font-size: var(--font-size-sm);
-          color: var(--secondary-text-color);
-          cursor: pointer;
-        }
         .temps {
           display: grid;
           grid-template-columns: 1fr auto 1fr auto 1fr;
@@ -259,6 +249,16 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
       '--shape-color': `rgba(${color}, 0.2)`,
     });
 
+    // Build subtitle based on control mode entity and adjusting state
+    const subtitle = (() => {
+      if (!this._config.control_mode_entity) return nothing;
+      const mode = this._controlMode;
+      if (this._rateLimitingActive && curveOutput && this._config.curve_output_entity) {
+        return html`<span class="state">${mode} · → ${curveOutput}</span>`;
+      }
+      return html`<span class="state">${mode}</span>`;
+    })();
+
     return html`
       <ha-card>
         <div class="header">
@@ -274,18 +274,13 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
             </eq-shape-icon>
           <div class="header-info">
             <span class="title">${title}</span>
-            ${adjustingDir ? html`
-              <span class="state">
-                <ha-icon .icon=${adjustingDir === 'rising' ? 'mdi:trending-up' : 'mdi:trending-down'} style="--mdc-icon-size: 14px; vertical-align: middle;"></ha-icon>
-                ${localize('common.adjusting')}
-              </span>
-            ` : nothing}
+            ${subtitle}
           </div>
-          ${this._controlMode ? html`
-            <div class="header-actions">
-              <span class="mode" @click=${() => this._openMoreInfo(this._config.control_mode_entity!)}>${this._controlMode}</span>
-            </div>
-          ` : nothing}
+          <eq-badge-action
+            .action=${hvacAction}
+            .adjusting=${this._rateLimitingActive}
+            .direction=${this._adjustingDirection}
+          ></eq-badge-action>
         </div>
 
         <div class=${classMap({ temps: true, vertical: layout === 'vertical', horizontal: layout === 'horizontal' })}>
