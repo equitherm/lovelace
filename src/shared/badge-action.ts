@@ -29,7 +29,7 @@ const ACTIVE_ACTIONS = new Set(['heating', 'cooling', 'drying']);
 export class BadgeAction extends LitElement {
   @property() action: HvacAction = 'idle';
   @property({ type: Boolean }) adjusting = false;
-  @property() direction: 'rising' | 'falling' | null = null;
+  @property({ attribute: false }) direction: 'rising' | 'falling' | null = null;
 
   static get styles(): CSSResultGroup {
     return css`
@@ -44,6 +44,10 @@ export class BadgeAction extends LitElement {
         letter-spacing: 0.05em;
         text-transform: uppercase;
         transition: background-color 280ms ease-in-out;
+      }
+      .badge.adjusting {
+        color: var(--primary-color);
+        background-color: rgba(var(--rgb-primary-color, 98, 100, 167), 0.15);
       }
       .dot {
         width: 7px;
@@ -80,20 +84,15 @@ export class BadgeAction extends LitElement {
 
       const label = localize('common.adjusting');
 
-      const badgeStyle = styleMap({
-        'color': 'var(--primary-color)',
-        'background-color': 'rgba(var(--rgb-primary-color, 98, 100, 167), 0.15)',
-      });
-
       return html`
-        <span class="badge" style=${badgeStyle}>
+        <span class=${classMap({ badge: true, adjusting: true })}>
           <ha-icon class="trend-icon" icon=${trendIcon}></ha-icon>
           ${label}
         </span>
       `;
     }
 
-    const label = localize(ACTION_LABELS[this.action] ?? ACTION_LABELS.off);
+    const label = localize(ACTION_LABELS[this.action]);
     const color = getHvacActionColor(this.action); // "var(--rgb-state-climate-heat)"
     const isActive = ACTIVE_ACTIONS.has(this.action);
 
