@@ -10,6 +10,7 @@ import { EquithermBaseCard } from '../../utils/base-card';
 import { cardStyle } from '../../utils/card-styles';
 import { registerCustomCard } from '../../utils/register-card';
 import { CURVE_CARD_NAME, CURVE_CARD_EDITOR_NAME, CLIMATE_ENTITY_DOMAINS, SENSOR_ENTITY_DOMAINS } from './const';
+import { validateCurveCardConfig } from './curve-card-config';
 import { resolveRgbColor } from '../../utils/hvac-colors';
 
 registerCustomCard({
@@ -129,12 +130,7 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
   }
 
   setConfig(config: unknown) {
-    const cfg = config as CurveCardConfig;
-    if (!cfg.climate_entity) throw new Error('climate_entity is required');
-    if (!cfg.outdoor_entity) throw new Error('outdoor_entity is required');
-    if (!cfg.flow_entity) throw new Error('flow_entity is required');
-    // Config is frozen since HA 0.106 — must clone before storing
-    this._config = { ...cfg };
+    this._config = validateCurveCardConfig(config);
   }
 
   getCardSize() { return 3; }

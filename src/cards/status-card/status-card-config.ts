@@ -1,5 +1,5 @@
 // src/cards/status-card/status-card-config.ts
-import { object, string, optional } from 'superstruct';
+import { assert, object, string, optional } from 'superstruct';
 import { layoutStruct, type Layout } from '../../utils/layout';
 
 export interface StatusCardConfig {
@@ -35,8 +35,6 @@ export const STATUS_CARD_DEFAULTS: Partial<StatusCardConfig> = {
 
 /** Validate and apply defaults */
 export function validateStatusCardConfig(config: unknown): StatusCardConfig {
-  const validated = config as StatusCardConfig;
-  // Superstruct assert would go here if we wanted runtime validation
-  // For now, just spread defaults
-  return { ...STATUS_CARD_DEFAULTS, ...validated };
+  assert(config, StatusCardConfigStruct);
+  return { ...STATUS_CARD_DEFAULTS, ...config };
 }

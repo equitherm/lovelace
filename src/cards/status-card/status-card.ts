@@ -11,7 +11,7 @@ import { EquithermBaseCard } from '../../utils/base-card';
 import { cardStyle } from '../../utils/card-styles';
 import { registerCustomCard } from '../../utils/register-card';
 import setupCustomLocalize from '../../localize';
-import { STATUS_CARD_DEFAULTS } from './status-card-config';
+import { validateStatusCardConfig } from './status-card-config';
 import { STATUS_CARD_NAME, STATUS_CARD_EDITOR_NAME, CLIMATE_ENTITY_DOMAINS, SENSOR_ENTITY_DOMAINS } from './const';
 import { getHvacActionColor, getHvacActionIcon, normalizeHvacAction } from '../../utils/hvac-colors';
 import '../../shared/shape-icon';
@@ -78,14 +78,8 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
     return document.createElement(STATUS_CARD_EDITOR_NAME);
   }
 
-  setConfig(config: StatusCardConfig) {
-    if (!config.climate_entity) throw new Error('climate_entity is required');
-    if (!config.outdoor_entity) throw new Error('outdoor_entity is required');
-    if (!config.flow_entity) throw new Error('flow_entity is required');
-
-    this._config = { ...STATUS_CARD_DEFAULTS, ...config };
-
-    // Set layout property (reflected to attribute via @property decorator)
+  setConfig(config: unknown) {
+    this._config = validateStatusCardConfig(config);
     this.layout = this._config.layout ?? 'default';
   }
 

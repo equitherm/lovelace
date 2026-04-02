@@ -1,5 +1,5 @@
 // src/cards/curve-card/curve-card-config.ts
-import { object, string, number, optional } from 'superstruct';
+import { assert, object, string, number, optional } from 'superstruct';
 
 export interface CurveCardConfig {
   type: string;
@@ -53,6 +53,6 @@ export const CURVE_CARD_DEFAULTS: Required<
 
 /** Validate and apply defaults */
 export function validateCurveCardConfig(config: unknown): CurveCardConfig {
-  const cfg = config as CurveCardConfig;
-  return { ...CURVE_CARD_DEFAULTS, ...cfg };
+  assert(config, CurveCardConfigStruct);
+  return { ...CURVE_CARD_DEFAULTS, ...config };
 }
