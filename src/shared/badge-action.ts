@@ -46,8 +46,8 @@ export class BadgeAction extends LitElement {
         transition: background-color 280ms ease-in-out;
       }
       .badge.adjusting {
-        color: var(--primary-color);
-        background-color: rgba(var(--rgb-primary-color, 98, 100, 167), 0.15);
+        color: rgb(var(--rgb-state-climate-heat));
+        background-color: rgba(var(--rgb-state-climate-heat), 0.15);
       }
       .dot {
         width: 7px;
@@ -61,6 +61,9 @@ export class BadgeAction extends LitElement {
       @keyframes pulse {
         0%, 100% { opacity: 1; }
         50% { opacity: 0.4; }
+      }
+      .active .trend-icon {
+        animation: pulse 1.5s ease-in-out infinite;
       }
       .trend-icon {
         --mdc-icon-size: 14px;
@@ -85,7 +88,7 @@ export class BadgeAction extends LitElement {
       const label = localize('common.adjusting');
 
       return html`
-        <span class=${classMap({ badge: true, adjusting: true })}>
+        <span class=${classMap({ badge: true, adjusting: true, active: true })}>
           <ha-icon class="trend-icon" icon=${trendIcon}></ha-icon>
           ${label}
         </span>
