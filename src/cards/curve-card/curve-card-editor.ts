@@ -36,7 +36,7 @@ export class EquithermCurveCardEditor extends LitElement implements LovelaceCard
     }
   `;
 
-  private _getSchema = memoizeOne((): HaFormSchema[] => {
+  private _getSchema = memoizeOne((): readonly HaFormSchema[] => {
     const localize = setupCustomLocalize(this.hass);
     return [
     schemaHelpers.text('title', false),
@@ -64,7 +64,7 @@ export class EquithermCurveCardEditor extends LitElement implements LovelaceCard
         schemaHelpers.number('t_out_max', 0, 30, 1),
       ]),
     ]),
-  ]});
+  ] as const satisfies readonly HaFormSchema[]});
 
   private _computeLabel = (schema: { name: string }): string => {
     const localize = setupCustomLocalize(this.hass);

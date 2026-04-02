@@ -14,7 +14,7 @@ export class StatusCardEditor extends LitElement implements LovelaceCardEditor {
   @property({ attribute: false }) public hass?: HomeAssistant;
   @state() private _config?: StatusCardConfig;
 
-  private _getSchema(): HaFormSchema[] {
+  private _getSchema(): readonly HaFormSchema[] {
     const localize = setupCustomLocalize(this.hass);
     return [
       // Title
@@ -83,7 +83,7 @@ export class StatusCardEditor extends LitElement implements LovelaceCardEditor {
           },
         ],
       },
-    ];
+    ] as const satisfies readonly HaFormSchema[];
   }
 
   setConfig(config: StatusCardConfig): void {
