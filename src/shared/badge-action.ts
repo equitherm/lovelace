@@ -28,6 +28,8 @@ const ACTIVE_ACTIONS = new Set(['heating', 'cooling', 'drying']);
 @customElement('eq-badge-action')
 export class BadgeAction extends LitElement {
   @property() action: HvacAction = 'idle';
+  @property({ type: Boolean }) adjusting = false;
+  @property() direction: 'rising' | 'falling' | null = null;
 
   static get styles(): CSSResultGroup {
     return css`
@@ -56,11 +58,41 @@ export class BadgeAction extends LitElement {
         0%, 100% { opacity: 1; }
         50% { opacity: 0.4; }
       }
+      .trend-icon {
+        --mdc-icon-size: 14px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+      }
     `;
   }
 
   render() {
     const localize = setupCustomlocalize();
+
+    if (this.adjusting) {
+      const trendIcon =
+        this.direction === 'rising'
+          ? 'mdi:trending-up'
+          : this.direction === 'falling'
+            ? 'mdi:trending-down'
+            : 'mdi:trending-neutral';
+
+      const label = localize('common.adjusting');
+
+      const badgeStyle = styleMap({
+        'color': 'var(--primary-color)',
+        'background-color': 'rgba(var(--rgb-primary-color, 98, 100, 167), 0.15)',
+      });
+
+      return html`
+        <span class="badge" style=${badgeStyle}>
+          <ha-icon class="trend-icon" icon=${trendIcon}></ha-icon>
+          ${label}
+        </span>
+      `;
+    }
+
     const label = localize(ACTION_LABELS[this.action] ?? ACTION_LABELS.off);
     const color = getHvacActionColor(this.action); // "var(--rgb-state-climate-heat)"
     const isActive = ACTIVE_ACTIONS.has(this.action);
