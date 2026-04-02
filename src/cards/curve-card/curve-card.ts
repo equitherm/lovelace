@@ -11,7 +11,7 @@ import { cardStyle } from '../../utils/card-styles';
 import { registerCustomCard } from '../../utils/register-card';
 import { CURVE_CARD_NAME, CURVE_CARD_EDITOR_NAME, CLIMATE_ENTITY_DOMAINS, SENSOR_ENTITY_DOMAINS } from './const';
 import { validateCurveCardConfig } from './curve-card-config';
-import { resolveRgbColor } from '../../utils/hvac-colors';
+import { resolveRgbColor, normalizeHvacAction } from '../../utils/hvac-colors';
 
 registerCustomCard({
   type: CURVE_CARD_NAME,
@@ -166,6 +166,22 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
   private get _rateLimitingActive(): boolean {
     if (!this._config.rate_limiting_entity) return false;
     return this._entityState(this._config.rate_limiting_entity)?.state === 'on';
+  }
+
+  private get _adjustingDirection(): 'rising' | 'falling' | null {
+    if (!this._rateLimitingActive || !this._config.curve_output_entity) return null;
+
+    const flowState = this._entityState(this._config.flow_entity);
+    const curveState = this._entityState(this._config.curve_output_entity);
+    if (!flowState || !curveState) return null;
+
+    const flow = parseFloat(flowState.state);
+    const curve = parseFloat(curveState.state);
+    if (isNaN(flow) || isNaN(curve)) return null;
+
+    if (flow < curve) return 'rising';
+    if (flow > curve) return 'falling';
+    return null;
   }
 
   private get _isDark(): boolean {
@@ -394,14 +410,20 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
   render() {
     if (!this._config || !this.hass) return nothing;
     const localize = setupCustomLocalize(this.hass);
-    const action = this._climate?.attributes.hvac_action ?? 'off';
+    const rawAction = this._climate?.attributes.hvac_action ?? 'off';
+    const hvacAction = normalizeHvacAction(rawAction);
+    const adjustingDir = this._adjustingDirection;
     const title = this._config.title ?? this._entityAttr<string>(this._config.climate_entity, 'friendly_name') ?? localize('curve_card.default_title');
 
     return html`
       <ha-card>
         <div class="header">
           <span class="title">${title}</span>
-          <eq-badge-action .action=${action}></eq-badge-action>
+          <eq-badge-action
+            .action=${hvacAction}
+            .adjusting=${this._rateLimitingActive}
+            .direction=${adjustingDir}
+          ></eq-badge-action>
         </div>
         <div class="chart-wrapper">
           <div id="chart"></div>
