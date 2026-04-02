@@ -1,5 +1,5 @@
 // src/cards/status-card/status-card-editor.ts
-import { LitElement, html, css } from 'lit';
+import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { fireEvent } from '../../ha/common/dom/fire_event';
 import type { StatusCardConfig } from './status-card-config';
@@ -98,9 +98,7 @@ export class StatusCardEditor extends LitElement implements LovelaceCardEditor {
   }
 
   protected render() {
-    if (!this.hass || !this._config) {
-      return html``;
-    }
+    if (!this.hass || !this._config) return nothing;
 
     return html`
       <ha-form

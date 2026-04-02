@@ -1,5 +1,5 @@
 // src/cards/curve-card/curve-card-editor.ts
-import { LitElement, html, css } from 'lit';
+import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import memoizeOne from 'memoize-one';
 import type { CurveCardConfig } from './curve-card-config';
@@ -74,7 +74,7 @@ export class EquithermCurveCardEditor extends LitElement implements LovelaceCard
   };
 
   render() {
-    if (!this._config) return html``;
+    if (!this.hass || !this._config) return nothing;
     return html`
       <ha-form
         .hass=${this.hass}
