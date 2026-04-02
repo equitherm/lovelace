@@ -3,6 +3,7 @@ import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { fireEvent } from '../../ha/common/dom/fire_event';
 import type { StatusCardConfig } from './status-card-config';
+import { validateStatusCardConfig } from './status-card-config';
 import type { HomeAssistant } from '../../ha/types';
 import type { LovelaceCardEditor } from '../../ha/panels/lovelace/types';
 import type { HaFormSchema } from '../../utils/form';
@@ -13,6 +14,7 @@ import { STATUS_CARD_EDITOR_NAME } from './const';
 export class StatusCardEditor extends LitElement implements LovelaceCardEditor {
   @property({ attribute: false }) public hass?: HomeAssistant;
   @state() private _config?: StatusCardConfig;
+  @state() private _error?: Record<string, string>;
 
   private _getSchema(): readonly HaFormSchema[] {
     const localize = setupCustomLocalize(this.hass);
@@ -92,9 +94,14 @@ export class StatusCardEditor extends LitElement implements LovelaceCardEditor {
 
   private _valueChanged(ev: CustomEvent): void {
     if (!this._config) return;
-
     const newConfig = { ...this._config, ...ev.detail.value };
-    fireEvent(this, 'config-changed', { config: newConfig });
+    try {
+      validateStatusCardConfig(newConfig);
+      this._error = undefined;
+      fireEvent(this, 'config-changed', { config: newConfig });
+    } catch (err) {
+      this._error = { base: (err as Error).message };
+    }
   }
 
   protected render() {
@@ -106,6 +113,7 @@ export class StatusCardEditor extends LitElement implements LovelaceCardEditor {
         .data=${this._config}
         .schema=${this._getSchema()}
         .computeLabel=${this._computeLabel}
+        .error=${this._error}
         @value-changed=${this._valueChanged}
       ></ha-form>
     `;

@@ -3,6 +3,7 @@ import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import memoizeOne from 'memoize-one';
 import type { CurveCardConfig } from './curve-card-config';
+import { validateCurveCardConfig } from './curve-card-config';
 import type { HomeAssistant } from '../../ha/types';
 import type { LovelaceCardEditor } from '../../ha/panels/lovelace/types';
 import { fireEvent } from '../../ha/common/dom/fire_event';
@@ -15,6 +16,7 @@ import { CURVE_CARD_EDITOR_NAME } from './const';
 export class EquithermCurveCardEditor extends LitElement implements LovelaceCardEditor {
   @property({ attribute: false }) hass!: HomeAssistant;
   @state() private _config!: CurveCardConfig;
+  @state() private _error?: Record<string, string>;
 
   setConfig(config: CurveCardConfig) {
     this._config = { ...config };
@@ -23,8 +25,12 @@ export class EquithermCurveCardEditor extends LitElement implements LovelaceCard
   protected _valueChanged(ev: CustomEvent): void {
     if (!this._config) return;
     const newConfig = { ...ev.detail.value } as CurveCardConfig;
-    if (JSON.stringify(newConfig) !== JSON.stringify(this._config)) {
+    try {
+      validateCurveCardConfig(newConfig);
+      this._error = undefined;
       fireEvent(this, 'config-changed', { config: newConfig });
+    } catch (err) {
+      this._error = { base: (err as Error).message };
     }
   }
 
@@ -81,6 +87,7 @@ export class EquithermCurveCardEditor extends LitElement implements LovelaceCard
         .data=${this._config}
         .schema=${this._getSchema()}
         .computeLabel=${this._computeLabel}
+        .error=${this._error}
         @value-changed=${this._valueChanged}
       ></ha-form>
     `;
