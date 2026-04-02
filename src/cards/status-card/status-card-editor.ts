@@ -1,6 +1,7 @@
 // src/cards/status-card/status-card-editor.ts
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
+import memoizeOne from 'memoize-one';
 import { fireEvent } from '../../ha/common/dom/fire_event';
 import type { StatusCardConfig } from './status-card-config';
 import { validateStatusCardConfig } from './status-card-config';
@@ -16,7 +17,7 @@ export class StatusCardEditor extends LitElement implements LovelaceCardEditor {
   @state() private _config?: StatusCardConfig;
   @state() private _error?: Record<string, string>;
 
-  private _getSchema(): readonly HaFormSchema[] {
+  private _getSchema = memoizeOne((): readonly HaFormSchema[] => {
     const localize = setupCustomLocalize(this.hass);
     return [
       // Title
@@ -86,7 +87,7 @@ export class StatusCardEditor extends LitElement implements LovelaceCardEditor {
         ],
       },
     ] as const satisfies readonly HaFormSchema[];
-  }
+  });
 
   setConfig(config: StatusCardConfig): void {
     this._config = config;
