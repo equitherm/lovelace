@@ -766,7 +766,19 @@ function(){function t(t){t.remember("_draggable",this),this.el=t}t.prototype.ini
           justify-content: space-between;
           align-items: center;
           margin-bottom: 8px;
+          gap: 12px;
           flex-shrink: 0;
+        }
+        eq-shape-icon {
+          cursor: pointer;
+          flex-shrink: 0;
+        }
+        .header-info {
+          flex: 1;
+          min-width: 0;
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
         }
         .title {
           font-size: var(--font-size-md);
@@ -786,10 +798,18 @@ function(){function t(t){t.remember("_draggable",this),this.el=t}t.prototype.ini
         }
         .footer strong { color: var(--primary-text-color); }
         .footer .flow-temp { color: var(--gradient-hot); }
-      `]}render(){if(!this._config||!this.hass)return U;const t=di(this.hass),e=Yi(this._climate?.attributes.hvac_action??"off"),i=this._adjustingDirection,a=this._config.title??this._entityAttr(this._config.climate_entity,"friendly_name")??t("curve_card.default_title");return G`
+      `]}render(){if(!this._config||!this.hass)return U;const t=di(this.hass),e=Yi(this._climate?.attributes.hvac_action??"off"),i=this._adjustingDirection,a=this._config.title??this._entityAttr(this._config.climate_entity,"friendly_name")??t("curve_card.default_title"),s=Fi(e),r=kt({"--icon-color":`rgb(${s})`,"--shape-color":`rgba(${s}, 0.2)`});return G`
       <ha-card>
         <div class="header">
-          <span class="title">${a}</span>
+          <eq-shape-icon
+            .icon=${"mdi:thermostat"}
+            .size=${42}
+            style=${r}
+            @click=${()=>this._openMoreInfo(this._config.climate_entity)}
+          ></eq-shape-icon>
+          <div class="header-info">
+            <span class="title">${a}</span>
+          </div>
           <eq-badge-action
             .action=${e}
             .adjusting=${this._rateLimitingActive}

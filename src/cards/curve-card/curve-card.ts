@@ -1,5 +1,6 @@
 import { html, css, nothing } from 'lit';
 import { customElement, query } from 'lit/decorators.js';
+import { styleMap } from 'lit/directives/style-map.js';
 import ApexCharts from 'apexcharts';
 import type { CurveCardConfig } from './curve-card-config';
 import type { LovelaceGridOptions } from '../../ha/data/lovelace';
@@ -11,7 +12,7 @@ import { cardStyle } from '../../utils/card-styles';
 import { registerCustomCard } from '../../utils/register-card';
 import { CURVE_CARD_NAME, CURVE_CARD_EDITOR_NAME, CLIMATE_ENTITY_DOMAINS, SENSOR_ENTITY_DOMAINS } from './const';
 import { validateCurveCardConfig } from './curve-card-config';
-import { resolveRgbColor, normalizeHvacAction } from '../../utils/hvac-colors';
+import { resolveRgbColor, normalizeHvacAction, getHvacActionColor } from '../../utils/hvac-colors';
 
 registerCustomCard({
   type: CURVE_CARD_NAME,
@@ -21,6 +22,7 @@ registerCustomCard({
 import { buildCurveSeries, flowAtOutdoor } from '../../utils/curve';
 import setupCustomLocalize from '../../localize';
 import '../../shared/badge-action';
+import '../../shared/shape-icon';
 
 /** Curve parameters that affect the curve shape (require full rebuild) */
 type CurveStructuralParams = Pick<CurveCardConfig,
@@ -383,7 +385,19 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
           justify-content: space-between;
           align-items: center;
           margin-bottom: 8px;
+          gap: 12px;
           flex-shrink: 0;
+        }
+        eq-shape-icon {
+          cursor: pointer;
+          flex-shrink: 0;
+        }
+        .header-info {
+          flex: 1;
+          min-width: 0;
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
         }
         .title {
           font-size: var(--font-size-md);
@@ -415,10 +429,25 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
     const adjustingDir = this._adjustingDirection;
     const title = this._config.title ?? this._entityAttr<string>(this._config.climate_entity, 'friendly_name') ?? localize('curve_card.default_title');
 
+    // Build icon styles from action color (Mushroom pattern)
+    const color = getHvacActionColor(hvacAction);
+    const iconStyles = styleMap({
+      '--icon-color': `rgb(${color})`,
+      '--shape-color': `rgba(${color}, 0.2)`,
+    });
+
     return html`
       <ha-card>
         <div class="header">
-          <span class="title">${title}</span>
+          <eq-shape-icon
+            .icon=${'mdi:thermostat'}
+            .size=${42}
+            style=${iconStyles}
+            @click=${() => this._openMoreInfo(this._config.climate_entity)}
+          ></eq-shape-icon>
+          <div class="header-info">
+            <span class="title">${title}</span>
+          </div>
           <eq-badge-action
             .action=${hvacAction}
             .adjusting=${this._rateLimitingActive}
