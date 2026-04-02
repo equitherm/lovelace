@@ -253,7 +253,8 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
     const subtitle = (() => {
       if (!this._config.control_mode_entity) return nothing;
       const mode = this._controlMode;
-      if (this._rateLimitingActive && curveOutput && this._config.curve_output_entity) {
+      if (!mode) return nothing;
+      if (this._rateLimitingActive && curveOutput) {
         return html`<span class="state">${mode} · → ${curveOutput}</span>`;
       }
       return html`<span class="state">${mode}</span>`;
@@ -279,7 +280,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
           <eq-badge-action
             .action=${hvacAction}
             .adjusting=${this._rateLimitingActive}
-            .direction=${this._adjustingDirection}
+            .direction=${adjustingDir}
           ></eq-badge-action>
         </div>
 
