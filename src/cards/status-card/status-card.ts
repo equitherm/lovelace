@@ -13,9 +13,8 @@ import { registerCustomCard } from '../../utils/register-card';
 import setupCustomLocalize from '../../localize';
 import { validateStatusCardConfig } from './status-card-config';
 import { STATUS_CARD_NAME, STATUS_CARD_EDITOR_NAME, CLIMATE_ENTITY_DOMAINS, SENSOR_ENTITY_DOMAINS } from './const';
-import { getHvacActionColor, getHvacActionIcon, normalizeHvacAction } from '../../utils/hvac-colors';
+import { getHvacActionColor, normalizeHvacAction } from '../../utils/hvac-colors';
 import '../../shared/shape-icon';
-import '../../shared/badge-icon';
 import '../../shared/badge-action';
 
 registerCustomCard({
@@ -242,21 +241,17 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
     const title = this._config.title ?? this._entityAttr<string>(this._config.climate_entity, 'friendly_name') ?? localize('status_card.default_title');
 
     // Build icon styles from action color (Mushroom pattern)
-    const badgeIcon = getHvacActionIcon(hvacAction);
     const color = getHvacActionColor(hvacAction);
     const iconStyles = styleMap({
       '--icon-color': `rgb(${color})`,
       '--shape-color': `rgba(${color}, 0.2)`,
     });
 
-    // Build subtitle based on control mode entity and adjusting state
+    // Build subtitle based on control mode entity
     const subtitle = (() => {
       if (!this._config.control_mode_entity) return nothing;
       const mode = this._controlMode;
       if (!mode) return nothing;
-      if (this._rateLimitingActive && curveOutput) {
-        return html`<span class="state">${mode} · → ${curveOutput}</span>`;
-      }
       return html`<span class="state">${mode}</span>`;
     })();
 
@@ -268,11 +263,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
               .size=${42}
               style=${iconStyles}
               @click=${() => this._openMoreInfo(this._config.climate_entity)}
-            >
-              ${badgeIcon ? html`
-                <eq-badge-icon slot="badge" .icon=${badgeIcon}></eq-badge-icon>
-              ` : nothing}
-            </eq-shape-icon>
+            ></eq-shape-icon>
           <div class="header-info">
             <span class="title">${title}</span>
             ${subtitle}
