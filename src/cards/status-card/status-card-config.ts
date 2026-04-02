@@ -1,5 +1,5 @@
 // src/cards/status-card/status-card-config.ts
-import { assert, object, string, optional } from 'superstruct';
+import { assert, type, string, optional } from 'superstruct';
 import { layoutStruct, type Layout } from '../../utils/layout';
 
 export interface StatusCardConfig {
@@ -16,7 +16,7 @@ export interface StatusCardConfig {
 }
 
 /** Runtime validation schema for StatusCardConfig */
-export const StatusCardConfigStruct = object({
+export const StatusCardConfigStruct = type({
   type: string(),
   climate_entity: string(),
   outdoor_entity: string(),

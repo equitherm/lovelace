@@ -1,5 +1,5 @@
 // src/cards/curve-card/curve-card-config.ts
-import { assert, object, string, number, optional } from 'superstruct';
+import { assert, type, string, number, optional } from 'superstruct';
 
 export interface CurveCardConfig {
   type: string;
@@ -21,7 +21,7 @@ export interface CurveCardConfig {
 }
 
 /** Runtime validation schema for CurveCardConfig */
-export const CurveCardConfigStruct = object({
+export const CurveCardConfigStruct = type({
   type: string(),
   climate_entity: string(),
   outdoor_entity: string(),
