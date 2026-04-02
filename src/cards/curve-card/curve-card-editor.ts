@@ -52,6 +52,7 @@ export class EquithermCurveCardEditor extends LitElement implements LovelaceCard
       schemaHelpers.entity('curve_output_entity', { domain: ['sensor'], device_class: 'temperature' }),
       schemaHelpers.entity('flow_entity', { domain: ['sensor', 'number', 'input_number'], device_class: 'temperature' }),
       schemaHelpers.entity('rate_limiting_entity', { domain: ['binary_sensor'], required: false }),
+      schemaHelpers.entity('pid_active_entity', { domain: ['binary_sensor'], required: false }),
     ]),
     schemaHelpers.expandable(localize('editor.curve_parameters'), 'mdi:chart-bell-curve', [
       schemaHelpers.grid([

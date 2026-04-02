@@ -8,6 +8,7 @@ export interface CurveCardConfig {
   curve_output_entity: string;
   flow_entity: string;
   rate_limiting_entity?: string;
+  pid_active_entity?: string;
   title?: string;
   // Curve parameters (required after validation, optional in raw config)
   hc: number;
@@ -28,6 +29,7 @@ export const CurveCardConfigStruct = type({
   curve_output_entity: string(),
   flow_entity: string(),
   rate_limiting_entity: optional(string()),
+  pid_active_entity: optional(string()),
   title: optional(string()),
   hc: optional(number()),
   n: optional(number()),

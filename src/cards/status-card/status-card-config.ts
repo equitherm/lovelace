@@ -9,7 +9,7 @@ export interface StatusCardConfig {
   flow_entity: string;
   curve_output_entity?: string;
   rate_limiting_entity?: string;
-  control_mode_entity?: string;
+  pid_active_entity?: string;
   layout?: Layout;
   title?: string;
   [key: string]: unknown;
@@ -23,7 +23,7 @@ export const StatusCardConfigStruct = type({
   flow_entity: string(),
   curve_output_entity: optional(string()),
   rate_limiting_entity: optional(string()),
-  control_mode_entity: optional(string()),
+  pid_active_entity: optional(string()),
   layout: optional(layoutStruct),
   title: optional(string()),
 });

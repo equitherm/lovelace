@@ -39,7 +39,7 @@
     "flow_entity": "Consigne Départ",
     "curve_output_entity": "Sortie Courbe",
     "rate_limiting_entity": "Limitation",
-    "control_mode_entity": "Mode Contrôle",
+    "pid_active_entity": "PID Actif",
     "title": "Titre (optionnel)",
     "entities": "Entités",
     "curve_parameters": "Paramètres Courbe",

@@ -39,7 +39,7 @@
     "flow_entity": "Flow Setpoint",
     "curve_output_entity": "Curve Output",
     "rate_limiting_entity": "Rate Limiting",
-    "control_mode_entity": "Control Mode",
+    "pid_active_entity": "PID Active",
     "title": "Title (optional)",
     "entities": "Entities",
     "curve_parameters": "Curve Parameters",

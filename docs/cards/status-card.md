@@ -7,7 +7,7 @@ Display heating system status with temperature readings.
 - Three-column temperature display: Outdoor -> Flow | Room
 - HVAC action badge (heating/idle/off)
 - Rate-limiting indicator with direction (rising/falling)
-- Control mode display
+- PID status badge (active/inactive with warning icon)
 - Click entities for more-info dialogs
 - Layout options (default/vertical/horizontal)
 - Automatic temperature unit conversion
@@ -31,7 +31,7 @@ outdoor_entity: sensor.outdoor_temperature
 flow_entity: sensor.flow_setpoint
 curve_output_entity: sensor.heating_curve_output  # optional
 rate_limiting_entity: binary_sensor.rate_limiting  # optional
-control_mode_entity: sensor.control_mode  # optional
+pid_active_entity: binary_sensor.pid_active  # optional
 layout: default  # default, vertical, or horizontal
 ```
 
@@ -44,8 +44,9 @@ layout: default  # default, vertical, or horizontal
 | `flow_entity` | string | Yes | Flow setpoint sensor |
 | `curve_output_entity` | string | No | Shows "Adjusting" indicator with target temperature |
 | `rate_limiting_entity` | string | No | Binary sensor for rate limiting status |
-| `control_mode_entity` | string | No | Control mode display |
+| `pid_active_entity` | string | No | Binary sensor for PID correction status |
 | `layout` | string | No | `default`, `vertical`, or `horizontal` |
+| `title` | string | No | Entity friendly name | Card title |
 
 ## Layout Examples
 
@@ -156,6 +157,7 @@ Must have:
 
 - Binary sensor (`on`/`off`) indicating rate limiting is active
 
-### control_mode_entity (optional)
+### pid_active_entity (optional)
 
-- Any sensor; state is displayed as text
+- Binary sensor (`on`/`off`) indicating whether PID correction is active
+- Shows green badge when active, dimmed badge with warning icon when inactive

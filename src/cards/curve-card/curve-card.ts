@@ -12,7 +12,7 @@ import { cardStyle } from '../../utils/card-styles';
 import { registerCustomCard } from '../../utils/register-card';
 import { CURVE_CARD_NAME, CURVE_CARD_EDITOR_NAME, CLIMATE_ENTITY_DOMAINS, SENSOR_ENTITY_DOMAINS } from './const';
 import { validateCurveCardConfig } from './curve-card-config';
-import { resolveRgbColor, normalizeHvacAction, getHvacActionColor } from '../../utils/hvac-colors';
+import { resolveRgbColor, normalizeHvacAction, getHvacActionColor, getHvacBadgeProps } from '../../utils/hvac-colors';
 
 registerCustomCard({
   type: CURVE_CARD_NAME,
@@ -21,7 +21,7 @@ registerCustomCard({
 });
 import { buildCurveSeries, flowAtOutdoor } from '../../utils/curve';
 import setupCustomLocalize from '../../localize';
-import '../../shared/badge-action';
+import '../../shared/badge-info';
 import '../../shared/shape-icon';
 
 /** Curve parameters that affect the curve shape (require full rebuild) */
@@ -168,6 +168,11 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
   private get _rateLimitingActive(): boolean {
     if (!this._config.rate_limiting_entity) return false;
     return this._entityState(this._config.rate_limiting_entity)?.state === 'on';
+  }
+
+  private get _pidActive(): boolean {
+    if (!this._config.pid_active_entity) return false;
+    return this._entityState(this._config.pid_active_entity)?.state === 'on';
   }
 
   private get _adjustingDirection(): 'rising' | 'falling' | null {
@@ -399,6 +404,12 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
           flex-direction: column;
           gap: 2px;
         }
+        .badges {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          flex-shrink: 0;
+        }
         .title {
           font-size: var(--font-size-md);
           font-weight: 600;
@@ -436,6 +447,17 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
       '--shape-color': `rgba(${color}, 0.2)`,
     });
 
+    const hvacBadge = getHvacBadgeProps(localize, hvacAction, this._rateLimitingActive, adjustingDir);
+
+    // PID status chip
+    const pidChip = this._config.pid_active_entity
+      ? html`<eq-badge-info
+          .label=${'PID'}
+          .color=${this._pidActive ? 'var(--rgb-success)' : 'var(--rgb-disabled)'}
+          .icon=${this._pidActive ? undefined : 'mdi:alert-circle-outline'}
+        ></eq-badge-info>`
+      : nothing;
+
     return html`
       <ha-card>
         <div class="header">
@@ -448,11 +470,15 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
           <div class="header-info">
             <span class="title">${title}</span>
           </div>
-          <eq-badge-action
-            .action=${hvacAction}
-            .adjusting=${this._rateLimitingActive}
-            .direction=${adjustingDir}
-          ></eq-badge-action>
+          <div class="badges">
+            ${pidChip}
+            <eq-badge-info
+              .label=${hvacBadge.label}
+              .color=${hvacBadge.color}
+              .icon=${hvacBadge.icon}
+              .active=${hvacBadge.active}
+            ></eq-badge-info>
+          </div>
         </div>
         <div class="chart-wrapper">
           <div id="chart"></div>

@@ -58,8 +58,8 @@ export class StatusCardEditor extends LitElement implements LovelaceCardEditor {
             selector: { entity: { domain: 'binary_sensor' } },
           },
           {
-            name: 'control_mode_entity',
-            selector: { entity: {} },
+            name: 'pid_active_entity',
+            selector: { entity: { domain: 'binary_sensor' } },
           },
         ],
       },

@@ -8,6 +8,7 @@ Interactive heating curve visualization with ApexCharts.
 - Current operating point marker
 - Rate-limiting dual markers (target and current)
 - HVAC action badge
+- PID status badge (active/inactive with warning icon)
 - Automatic dark mode support
 - Responsive chart sizing
 
@@ -26,6 +27,7 @@ outdoor_entity: sensor.outdoor_temperature
 curve_output_entity: sensor.heating_curve_output
 flow_entity: sensor.flow_setpoint
 rate_limiting_entity: binary_sensor.rate_limiting  # optional
+pid_active_entity: binary_sensor.pid_active  # optional
 title: Heating Curve  # optional
 
 # Curve parameters (optional, defaults shown)
@@ -47,6 +49,7 @@ t_out_max: 20
 | `curve_output_entity` | string | Yes | - | Curve output temperature sensor |
 | `flow_entity` | string | Yes | - | Current flow setpoint sensor |
 | `rate_limiting_entity` | string | No | - | Binary sensor for rate limiting |
+| `pid_active_entity` | string | No | - | Binary sensor for PID correction status |
 | `title` | string | No | Entity friendly name | Card title |
 | `hc` | number | No | 0.9 | Heat curve coefficient |
 | `n` | number | No | 1.25 | Curve exponent |
@@ -146,6 +149,11 @@ Must have:
 ### rate_limiting_entity (optional)
 
 - Binary sensor (`on`/`off`) indicating rate limiting is active
+
+### pid_active_entity (optional)
+
+- Binary sensor (`on`/`off`) indicating whether PID correction is active
+- Shows green badge when active, dimmed badge with warning icon when inactive
 
 ## Examples
 

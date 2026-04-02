@@ -101,15 +101,11 @@ input_boolean:
     name: "Indoor Sensor Fault"
     initial: false
 
-input_select:
-  mock_control_mode:
-    name: "Control Mode"
-    options:
-      - "Normal"
-      - "Outdoor Fallback"
-      - "Indoor Fallback"
-      - "Full Fallback"
-    initial: "Normal"
+input_boolean:
+  mock_pid_active:
+    name: "PID Active"
+    initial: true
+    icon: mdi:check-circle
 
 # ─── Climate entity (mirrors climate.equitherm) ───────────────────────────────
 
@@ -187,9 +183,9 @@ template:
         state_class: measurement
         state: "0"
 
-      - name: "Mock Control Mode"
-        unique_id: mock_control_mode
-        state: "{{ states('input_select.mock_control_mode') }}"
+      - name: "Mock PID Active"
+        unique_id: mock_pid_active
+        state: "{{ is_state('input_boolean.mock_pid_active', 'on') and not is_state('input_boolean.mock_indoor_fault', 'on') }}"
 
   - binary_sensor:
       - name: "Mock Outdoor Sensor Fault"

@@ -13,9 +13,9 @@ import { registerCustomCard } from '../../utils/register-card';
 import setupCustomLocalize from '../../localize';
 import { validateStatusCardConfig } from './status-card-config';
 import { STATUS_CARD_NAME, STATUS_CARD_EDITOR_NAME, CLIMATE_ENTITY_DOMAINS, SENSOR_ENTITY_DOMAINS } from './const';
-import { getHvacActionColor, normalizeHvacAction } from '../../utils/hvac-colors';
+import { getHvacActionColor, normalizeHvacAction, getHvacBadgeProps } from '../../utils/hvac-colors';
 import '../../shared/shape-icon';
-import '../../shared/badge-action';
+import '../../shared/badge-info';
 
 registerCustomCard({
   type: STATUS_CARD_NAME,
@@ -104,12 +104,13 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
     return this._formatTemp(temp, this.hass?.config?.unit_system?.temperature);
   }
 
-  private get _controlMode(): string {
-    return this._entityState(this._config.control_mode_entity)?.state ?? '';
-  }
-
   private get _rateLimitingActive(): boolean {
     return this._entityState(this._config.rate_limiting_entity)?.state === 'on';
+  }
+
+  private get _pidActive(): boolean {
+    if (!this._config.pid_active_entity) return false;
+    return this._entityState(this._config.pid_active_entity)?.state === 'on';
   }
 
   private get _adjustingDirection(): 'rising' | 'falling' | null {
@@ -174,6 +175,12 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
+        }
+        .badges {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          flex-shrink: 0;
         }
         .temps {
           display: grid;
@@ -247,13 +254,16 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
       '--shape-color': `rgba(${color}, 0.2)`,
     });
 
-    // Build subtitle based on control mode entity
-    const subtitle = (() => {
-      if (!this._config.control_mode_entity) return nothing;
-      const mode = this._controlMode;
-      if (!mode) return nothing;
-      return html`<span class="state">${mode}</span>`;
-    })();
+    const hvacBadge = getHvacBadgeProps(localize, hvacAction, this._rateLimitingActive, adjustingDir);
+
+    // PID status chip
+    const pidChip = this._config.pid_active_entity
+      ? html`<eq-badge-info
+          .label=${'PID'}
+          .color=${this._pidActive ? 'var(--rgb-success)' : 'var(--rgb-disabled)'}
+          .icon=${this._pidActive ? undefined : 'mdi:alert-circle-outline'}
+        ></eq-badge-info>`
+      : nothing;
 
     return html`
       <ha-card>
@@ -266,13 +276,16 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
             ></eq-shape-icon>
           <div class="header-info">
             <span class="title">${title}</span>
-            ${subtitle}
           </div>
-          <eq-badge-action
-            .action=${hvacAction}
-            .adjusting=${this._rateLimitingActive}
-            .direction=${adjustingDir}
-          ></eq-badge-action>
+          <div class="badges">
+            ${pidChip}
+            <eq-badge-info
+              .label=${hvacBadge.label}
+              .color=${hvacBadge.color}
+              .icon=${hvacBadge.icon}
+              .active=${hvacBadge.active}
+            ></eq-badge-info>
+          </div>
         </div>
 
         <div class=${classMap({ temps: true, vertical: layout === 'vertical', horizontal: layout === 'horizontal' })}>

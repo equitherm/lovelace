@@ -141,7 +141,7 @@ Compact tile showing heating status with temperature displays.
 **Optional config:**
 - `curve_output_entity` - When set, shows "ADJUSTING" indicator with target
 - `rate_limiting_entity` - Binary sensor, enables ramping display
-- `control_mode_entity` - Shows control mode text
+- `pid_active_entity` - Binary sensor, shows whether PID correction is active
 - `layout` - `'default'` | `'vertical'` | `'horizontal'`
 
 **Features:**

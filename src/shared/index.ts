@@ -1,5 +1,5 @@
 // Shared components - Mushroom pattern
-export * from "./badge-action";
+export * from "./badge-info";
 export * from "./badge-icon";
 export * from "./card";
 export * from "./shape-avatar";

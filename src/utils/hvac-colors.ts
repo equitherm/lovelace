@@ -5,6 +5,7 @@
  */
 
 import type { HvacAction, HvacMode } from '../ha/data/climate';
+import type { TemplateResult } from 'lit';
 
 // ============================================================================
 // HVAC Mode Colors (what the thermostat is set to)
@@ -95,6 +96,58 @@ export function normalizeHvacAction(action: string | undefined): HvacAction {
     default:
       return 'idle';
   }
+}
+
+// ============================================================================
+// HVAC Badge Builder (shared by status-card & curve-card)
+// ============================================================================
+
+const ACTIVE_ACTIONS = new Set<HvacAction>(['heating', 'cooling', 'drying']);
+
+export interface HvacBadgeProps {
+  label: string;
+  color: string;
+  icon?: string;
+  active: boolean;
+}
+
+/**
+ * Build eq-badge-action props for an HVAC action state.
+ * Handles adjusting mode (shows trend icon + "Adjusting" label).
+ */
+export function getHvacBadgeProps(
+  localize: (key: string) => string,
+  action: HvacAction,
+  adjusting = false,
+  direction: 'rising' | 'falling' | null = null,
+): HvacBadgeProps {
+  if (adjusting) {
+    const trendIcon =
+      direction === 'rising' ? 'mdi:trending-up'
+      : direction === 'falling' ? 'mdi:trending-down'
+      : 'mdi:trending-neutral';
+    return {
+      label: localize('common.adjusting'),
+      color: getHvacActionColor('heating'),
+      icon: trendIcon,
+      active: true,
+    };
+  }
+
+  const actionLabels: Record<HvacAction, string> = {
+    heating: 'common.heating',
+    cooling: 'common.cooling',
+    drying: 'common.drying',
+    idle: 'common.idle',
+    off: 'common.off',
+  };
+
+  return {
+    label: localize(actionLabels[action]),
+    color: getHvacActionColor(action),
+    icon: getHvacActionIcon(action) ?? undefined,
+    active: ACTIVE_ACTIONS.has(action),
+  };
 }
 
 // ============================================================================
