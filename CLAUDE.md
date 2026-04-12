@@ -123,7 +123,7 @@ src/ha/
 | Language | TypeScript 5.9 (strict mode) |
 | UI Framework | Lit 3 |
 | Bundler | Rollup 4 |
-| Charts | ApexCharts |
+| Charts | ApexCharts 5.x |
 | HA Connection | home-assistant-js-websocket |
 | Release | semantic-release |
 
@@ -140,6 +140,7 @@ Compact tile showing heating status with temperature displays.
 
 **Optional config:**
 - `curve_output_entity` - When set, shows "ADJUSTING" indicator with target
+- `pid_output_entity` - PID output sensor, used for rate-limit direction
 - `rate_limiting_entity` - Binary sensor, enables ramping display
 - `pid_active_entity` - Binary sensor, shows whether PID correction is active
 - `layout` - `'default'` | `'vertical'` | `'horizontal'`
@@ -158,12 +159,19 @@ Heating curve visualization with ApexCharts.
 - `climate_entity` - Climate entity with curve parameters
 - `outdoor_entity` - Outdoor temperature sensor
 - `flow_entity` - Flow setpoint sensor
+- `curve_output_entity` - Curve output temperature sensor
+
+**Optional config:**
+- `pid_output_entity` - PID output sensor for rate-limit direction
+- `rate_limiting_entity` - Binary sensor for rate limiting
+- `pid_active_entity` - Binary sensor, shows PID correction status
 
 **Features:**
-- Interactive ApexCharts visualization
-- Current operating point marker
+- Line chart with horizontal gradient (customizable via `--curve-gradient-start` / `--curve-gradient-end` CSS vars)
+- Discrete data points along the curve
+- Interactive 3-column footer (outdoor · flow · room) with click-to-more-info
+- Current operating point marker with rate-limiting indicators
 - Dark mode support
-- Rate-limiting indicator
 
 ## Utilities (`src/utils/`)
 
@@ -189,6 +197,7 @@ Heating curve visualization with ApexCharts.
 |-----------|---------|
 | `shape-icon.ts` | Icon with colored background shape |
 | `badge-icon.ts` | Small badge overlay (e.g., HVAC action indicator) |
+| `badge-info.ts` | Info badge with label, color, icon, and active state |
 | `card.ts` | Card wrapper component |
 | `state-info.ts` | State value display |
 | `state-item.ts` | State item container |

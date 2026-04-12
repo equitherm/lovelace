@@ -2,13 +2,14 @@
 
 Home Assistant Lovelace cards for the [ESPHome equitherm climate component](https://github.com/equitherm/core).
 
-![Status Card Preview](docs/status-card.png)
+![Status Card Preview](docs/status-card.png) ![Curve Card Preview](docs/curve-card.png)
 
 ## Features
 
 - 🛠 Visual editor for all cards
 - 🌡 Monitor heating status at a glance
-- 📊 Heating curve visualization
+- 📊 Heating curve visualization with customizable gradient
+- 🔴 Discrete data points along the curve
 - 🌓 Light and dark theme support
 - 🌍 Temperature unit conversion (°C/°F)
 
@@ -65,6 +66,7 @@ layout: default  # default, vertical, or horizontal
 | `outdoor_entity` | string | ✓ | Outdoor temperature sensor |
 | `flow_entity` | string | ✓ | Flow setpoint sensor |
 | `curve_output_entity` | string | | Shows "ADJUSTING" indicator with target |
+| `pid_output_entity` | string | | PID output sensor for rate-limit direction |
 | `rate_limiting_entity` | string | | Binary sensor for ramping display |
 | `pid_active_entity` | string | | Shows whether PID correction is active |
 | `layout` | string | | `default`, `vertical`, or `horizontal` |
@@ -72,7 +74,7 @@ layout: default  # default, vertical, or horizontal
 
 ### 📈 Curve Card
 
-Heating curve visualization with live operating point, rate-limiting markers, and configurable curve parameters.
+Heating curve line chart with horizontal gradient, discrete data points, live operating point, and interactive footer.
 
 ```yaml
 type: custom:equitherm-curve-card
@@ -81,6 +83,7 @@ outdoor_entity: sensor.outdoor_temperature
 curve_output_entity: sensor.heating_curve_output
 flow_entity: sensor.flow_setpoint
 # Optional:
+pid_output_entity: sensor.pid_output
 rate_limiting_entity: binary_sensor.rate_limiting_active
 pid_active_entity: binary_sensor.pid_active
 title: Heating Curve
@@ -100,6 +103,7 @@ t_out_max: 20
 | `outdoor_entity` | string | ✓ | Outdoor temperature sensor |
 | `curve_output_entity` | string | ✓ | Curve output temperature sensor |
 | `flow_entity` | string | ✓ | Current flow setpoint sensor |
+| `pid_output_entity` | string | | PID output sensor for rate-limit direction |
 | `rate_limiting_entity` | string | | Binary sensor for rate limiting |
 | `pid_active_entity` | string | | Shows whether PID correction is active |
 | `title` | string | | Card title (defaults to entity friendly name) |
