@@ -260,7 +260,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
     const pidChip = this._config.pid_active_entity
       ? html`<eq-badge-info
           .label=${'PID'}
-          .color=${this._pidActive ? 'var(--rgb-success)' : 'var(--rgb-disabled)'}
+          style=${`--badge-info-color: ${this._pidActive ? 'var(--rgb-success)' : 'var(--rgb-disabled)'}`}
           .icon=${this._pidActive ? undefined : 'mdi:alert-circle-outline'}
         ></eq-badge-info>`
       : nothing;
@@ -281,7 +281,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
             ${pidChip}
             <eq-badge-info
               .label=${hvacBadge.label}
-              .color=${hvacBadge.color}
+              style=${`--badge-info-color: ${hvacBadge.color}`}
               .icon=${hvacBadge.icon}
               .active=${hvacBadge.active}
             ></eq-badge-info>
