@@ -39554,17 +39554,17 @@ let StatusCardEditor = class StatusCardEditor extends i$2 {
         this._getSchema = memoizeOne(() => {
             const localize = setupCustomlocalize(this.hass);
             return [
-                // Name
-                {
-                    name: 'name',
-                    selector: { entity_name: {} },
-                    context: { entity: 'climate_entity' },
-                },
                 // Required entities
                 {
                     name: 'climate_entity',
                     required: true,
                     selector: { entity: { domain: 'climate' } },
+                },
+                // Name (depends on climate_entity for context)
+                {
+                    name: 'name',
+                    selector: { entity_name: {} },
+                    context: { entity: 'climate_entity' },
                 },
                 {
                     name: 'outdoor_entity',
@@ -39755,9 +39755,10 @@ let EquithermCurveCardEditor = class EquithermCurveCardEditor extends i$2 {
         this._getSchema = memoizeOne(() => {
             const localize = setupCustomlocalize(this.hass);
             return [
-                schemaHelpers.entityName('name', { entity: 'climate_entity' }),
                 // Required entities — top level
                 schemaHelpers.entity('climate_entity', { domain: 'climate' }),
+                // Name (depends on climate_entity for context)
+                schemaHelpers.entityName('name', { entity: 'climate_entity' }),
                 schemaHelpers.entity('outdoor_entity', { domain: ['sensor', 'input_number'], device_class: 'temperature' }),
                 schemaHelpers.entity('curve_output_entity', { domain: ['sensor'], device_class: 'temperature' }),
                 schemaHelpers.entity('flow_entity', { domain: ['sensor', 'number', 'input_number'], device_class: 'temperature' }),

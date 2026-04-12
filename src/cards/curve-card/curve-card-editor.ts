@@ -45,9 +45,10 @@ export class EquithermCurveCardEditor extends LitElement implements LovelaceCard
   private _getSchema = memoizeOne((): readonly HaFormSchema[] => {
     const localize = setupCustomLocalize(this.hass);
     return [
-      schemaHelpers.entityName('name', { entity: 'climate_entity' }),
       // Required entities — top level
       schemaHelpers.entity('climate_entity', { domain: 'climate' }),
+      // Name (depends on climate_entity for context)
+      schemaHelpers.entityName('name', { entity: 'climate_entity' }),
       schemaHelpers.entity('outdoor_entity', { domain: ['sensor', 'input_number'], device_class: 'temperature' }),
       schemaHelpers.entity('curve_output_entity', { domain: ['sensor'], device_class: 'temperature' }),
       schemaHelpers.entity('flow_entity', { domain: ['sensor', 'number', 'input_number'], device_class: 'temperature' }),
