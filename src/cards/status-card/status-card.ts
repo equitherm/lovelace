@@ -4,10 +4,11 @@ import { classMap } from 'lit/directives/class-map.js';
 import { styleMap } from 'lit/directives/style-map.js';
 import type { StatusCardConfig } from './status-card-config';
 import type { HomeAssistant } from '../../ha/types';
-import type { LovelaceGridOptions } from '../../ha/data/lovelace';
+import type { LovelaceGridOptions, LovelaceCard } from '../../ha/panels/lovelace/types';
 import type { ClimateEntity } from '../../ha/data/climate';
 import { computeDomain } from '../../ha/common/entity/compute_domain';
 import { EquithermBaseCard } from '../../utils/base-card';
+import { computeEntityNameDisplay } from '../../ha/common/entity/compute_entity_name_display';
 import { cardStyle } from '../../utils/card-styles';
 import { registerCustomCard } from '../../utils/register-card';
 import setupCustomLocalize from '../../localize';
@@ -24,7 +25,7 @@ registerCustomCard({
 });
 
 @customElement(STATUS_CARD_NAME)
-export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
+export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> implements LovelaceCard {
   // Layout property reflected to attribute for CSS styling
   @property({ reflect: true, type: String }) layout: 'default' | 'vertical' | 'horizontal' = 'default';
 
@@ -260,7 +261,10 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
     const hvacAction = normalizeHvacAction(rawAction);
     const adjustingDir = this._adjustingDirection;
     const curveOutput = this._curveOutputTemp;
-    const title = this._config.title ?? this._entityAttr<string>(this._config.climate_entity, 'friendly_name') ?? localize('status_card.default_title');
+    const climateState = this.hass.states[this._config.climate_entity];
+    const title = climateState
+      ? computeEntityNameDisplay(climateState, this._config.name ?? this._config.title, this.hass) || localize('status_card.default_title')
+      : (this._config.title ?? localize('status_card.default_title'));
 
     // Build icon styles from action color (Mushroom pattern)
     const color = getHvacActionColor(hvacAction);

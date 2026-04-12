@@ -20,10 +20,11 @@ export class StatusCardEditor extends LitElement implements LovelaceCardEditor {
   private _getSchema = memoizeOne((): readonly HaFormSchema[] => {
     const localize = setupCustomLocalize(this.hass);
     return [
-      // Title
+      // Name
       {
-        name: 'title',
-        selector: { text: {} },
+        name: 'name',
+        selector: { entity_name: {} },
+        context: { entity: 'climate_entity' },
       },
       // Required entities
       {

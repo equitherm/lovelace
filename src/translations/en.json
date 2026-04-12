@@ -9,6 +9,9 @@
     "drying": "Drying",
     "idle": "Idle",
     "off": "Off",
+    "fan": "Fan",
+    "defrosting": "Defrosting",
+    "preheating": "Preheating",
     "not_found": "{entity} not found"
   },
   "status_card": {
@@ -42,15 +45,16 @@
     "rate_limiting_entity": "Rate Limiting",
     "pid_active_entity": "PID Active",
     "title": "Title (optional)",
+    "name": "Name",
     "entities": "Entities",
     "curve_parameters": "Curve Parameters",
     "display_range": "Display Range",
     "hc": "Heat Curve (hc)",
     "n": "Exponent (n)",
-    "shift": "Shift (°C)",
-    "min_flow": "Min Flow (°C)",
-    "max_flow": "Max Flow (°C)",
-    "t_out_min": "Min Outdoor (°C)",
-    "t_out_max": "Max Outdoor (°C)"
+    "shift": "Shift",
+    "min_flow": "Min Flow",
+    "max_flow": "Max Flow",
+    "t_out_min": "Min Outdoor",
+    "t_out_max": "Max Outdoor"
   }
 }

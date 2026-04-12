@@ -92,8 +92,16 @@ export interface DeviceRegistryEntry {
 
 export interface AreaRegistryEntry {
   area_id: string;
+  floor_id: string | null;
   name: string;
   picture: string | null;
+}
+
+export interface FloorRegistryEntry {
+  floor_id: string;
+  name: string;
+  level: number | null;
+  icon: string | null;
 }
 
 export interface ThemeSettings {
@@ -180,6 +188,7 @@ export interface HomeAssistant {
   entities: { [id: string]: EntityRegistryDisplayEntry };
   devices: { [id: string]: DeviceRegistryEntry };
   areas: { [id: string]: AreaRegistryEntry };
+  floors: { [id: string]: FloorRegistryEntry };
   services: HassServices;
   config: HassConfig;
   themes: Themes;
