@@ -139,6 +139,14 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> imple
 
   getCardSize() { return 3; }
 
+  /** Read a number from an entity state, falling back to a config default */
+  private _resolveEntityNumber(entityId: string | undefined, fallback: number): number {
+    const s = this._entityState(entityId);
+    if (!s) return fallback;
+    const val = parseFloat(s.state);
+    return isNaN(val) ? fallback : val;
+  }
+
   private get _climate(): ClimateEntity | undefined {
     return this._entityState(this._config.climate_entity) as ClimateEntity | undefined;
   }
@@ -214,7 +222,7 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> imple
   }
 
   private get _isDark(): boolean {
-    return (this.hass?.themes as any)?.darkMode ?? false;
+    return this.hass?.themes?.darkMode ?? false;
   }
 
   private _buildChartOptions() {
@@ -222,9 +230,9 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> imple
     const cfg = this._config;
     const curveParams = {
       tTarget: this._tTarget,
-      hc: cfg.hc,
-      n: cfg.n,
-      shift: cfg.shift,
+      hc: cfg.curve_from_entities ? this._resolveEntityNumber(cfg.hc_entity, cfg.hc) : cfg.hc,
+      n: cfg.curve_from_entities ? this._resolveEntityNumber(cfg.n_entity, cfg.n) : cfg.n,
+      shift: cfg.curve_from_entities ? this._resolveEntityNumber(cfg.shift_entity, cfg.shift) : cfg.shift,
       minFlow: cfg.min_flow,
       maxFlow: cfg.max_flow,
     };

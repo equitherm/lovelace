@@ -42,7 +42,7 @@ export class EquithermCurveCardEditor extends LitElement implements LovelaceCard
     }
   `;
 
-  private _getSchema = memoizeOne((): readonly HaFormSchema[] => {
+  private _getSchema = memoizeOne((curveFromEntities: boolean): readonly HaFormSchema[] => {
     const localize = setupCustomLocalize(this.hass);
     return [
       // Required entities — top level
@@ -60,11 +60,20 @@ export class EquithermCurveCardEditor extends LitElement implements LovelaceCard
       ]),
       // Curve parameters
       schemaHelpers.expandable(localize('editor.curve_parameters'), 'mdi:chart-bell-curve', [
-        schemaHelpers.grid([
-          schemaHelpers.number('hc', 0.5, 3.0, 0.1),
-          schemaHelpers.number('n', 1.0, 2.0, 0.05),
-        ]),
-        schemaHelpers.number('shift', -15, 15, 1, { unit_of_measurement: '°C' }),
+        { name: 'curve_from_entities', selector: { boolean: {} } },
+        ...(curveFromEntities
+          ? [
+              schemaHelpers.entity('hc_entity', { domain: 'number' }),
+              schemaHelpers.entity('n_entity', { domain: 'number' }),
+              schemaHelpers.entity('shift_entity', { domain: 'number' }),
+            ]
+          : [
+              schemaHelpers.grid([
+                schemaHelpers.number('hc', 0.5, 3.0, 0.1),
+                schemaHelpers.number('n', 1.0, 2.0, 0.05),
+              ]),
+              schemaHelpers.number('shift', -15, 15, 1, { unit_of_measurement: '°C' }),
+            ]),
         schemaHelpers.grid([
           schemaHelpers.number('min_flow', 15, 35, 1, { unit_of_measurement: '°C' }),
           schemaHelpers.number('max_flow', 50, 90, 1, { unit_of_measurement: '°C' }),
@@ -77,7 +86,8 @@ export class EquithermCurveCardEditor extends LitElement implements LovelaceCard
           schemaHelpers.number('t_out_max', 0, 30, 1, { unit_of_measurement: '°C' }),
         ]),
       ]),
-  ] as const satisfies readonly HaFormSchema[]});
+    ] as const satisfies readonly HaFormSchema[];
+  });
 
   private _computeLabel = (schema: { name: string }): string => {
     const localize = setupCustomLocalize(this.hass);
@@ -92,7 +102,7 @@ export class EquithermCurveCardEditor extends LitElement implements LovelaceCard
       <ha-form
         .hass=${this.hass}
         .data=${this._config}
-        .schema=${this._getSchema()}
+        .schema=${this._getSchema(!!this._config.curve_from_entities)}
         .computeLabel=${this._computeLabel}
         .error=${this._error}
         @value-changed=${this._valueChanged}
