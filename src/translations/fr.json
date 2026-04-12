@@ -38,6 +38,7 @@
     "outdoor_entity": "Température Extérieure",
     "flow_entity": "Consigne Départ",
     "curve_output_entity": "Sortie Courbe",
+    "pid_output_entity": "Sortie PID",
     "rate_limiting_entity": "Limitation",
     "pid_active_entity": "PID Actif",
     "title": "Titre (optionnel)",

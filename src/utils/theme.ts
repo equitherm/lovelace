@@ -31,6 +31,10 @@ export const themeVariables = css`
   --gradient-hot: var(--eq-gradient-hot, #f97316);
   --dot-glow: var(--eq-dot-glow, rgba(var(--rgb-heating), 0.4));
 
+  /* Curve gradient */
+  --curve-gradient-start: var(--eq-curve-gradient-start, 211, 47, 47);
+  --curve-gradient-end: var(--eq-curve-gradient-end, var(--rgb-state-climate-cool));
+
   /* Badge colors */
   --badge-heating-bg: var(--eq-badge-heating-bg, #f97316);
   --badge-heating-color: var(--eq-badge-heating-color, #ffffff);

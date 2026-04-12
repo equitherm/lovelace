@@ -2,6 +2,7 @@ import { html, css, nothing } from 'lit';
 import { customElement, query } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
 import ApexCharts from 'apexcharts';
+import type { PointAnnotations } from 'apexcharts';
 import type { CurveCardConfig } from './curve-card-config';
 import type { LovelaceGridOptions } from '../../ha/data/lovelace';
 import type { HomeAssistant } from '../../ha';
@@ -36,7 +37,7 @@ interface ChartDataPoint {
 }
 
 /** Marker sizes for chart annotations */
-const MARKER_SINGLE = 10;
+const MARKER_SINGLE = 7;
 const MARKER_CURVE_OUTPUT = 8;
 const MARKER_RATE_LIMITED = 6;
 
@@ -165,6 +166,21 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
     return this._entityAttr<string>(this._config.flow_entity, 'unit_of_measurement');
   }
 
+  private get _roomTemp(): string {
+    const temp = this._climate?.attributes.current_temperature;
+    return this._formatTemp(temp, this.hass?.config?.unit_system?.temperature);
+  }
+
+  private get _curveOutputTemp(): string {
+    const entity = this._rateTargetEntity;
+    if (!entity) return '';
+    const state = this._entityState(entity);
+    if (!state) return '';
+    const value = parseFloat(state.state);
+    if (isNaN(value)) return '';
+    return this._formatTemp(value, this._entityAttr<string>(entity, 'unit_of_measurement'));
+  }
+
   private get _rateLimitingActive(): boolean {
     if (!this._config.rate_limiting_entity) return false;
     return this._entityState(this._config.rate_limiting_entity)?.state === 'on';
@@ -175,19 +191,24 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
     return this._entityState(this._config.pid_active_entity)?.state === 'on';
   }
 
+  /** Entity to compare against flow for rate-limit direction: PID output when available, else curve output */
+  private get _rateTargetEntity(): string | undefined {
+    return this._config.pid_output_entity ?? this._config.curve_output_entity ?? undefined;
+  }
+
   private get _adjustingDirection(): 'rising' | 'falling' | null {
-    if (!this._rateLimitingActive || !this._config.curve_output_entity) return null;
+    if (!this._rateLimitingActive || !this._rateTargetEntity) return null;
 
     const flowState = this._entityState(this._config.flow_entity);
-    const curveState = this._entityState(this._config.curve_output_entity);
-    if (!flowState || !curveState) return null;
+    const targetState = this._entityState(this._rateTargetEntity);
+    if (!flowState || !targetState) return null;
 
     const flow = parseFloat(flowState.state);
-    const curve = parseFloat(curveState.state);
-    if (isNaN(flow) || isNaN(curve)) return null;
+    const target = parseFloat(targetState.state);
+    if (isNaN(flow) || isNaN(target)) return null;
 
-    if (flow < curve) return 'rising';
-    if (flow > curve) return 'falling';
+    if (flow < target) return 'rising';
+    if (flow > target) return 'falling';
     return null;
   }
 
@@ -208,31 +229,49 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
     };
 
     // Resolve colors at runtime from CSS variables
-    const heatingColor = resolveRgbColor(this, 'heating');
-    const coolingColor = resolveRgbColor(this, 'cooling');
+    const style = getComputedStyle(this);
+    const gradientStart = style.getPropertyValue('--curve-gradient-start').trim();
+    const gradientEnd = style.getPropertyValue('--curve-gradient-end').trim();
+    const heatingColor = gradientStart ? `rgb(${gradientStart})` : resolveRgbColor(this, 'heating');
+    const coolingColor = gradientEnd ? `rgb(${gradientEnd})` : resolveRgbColor(this, 'cooling');
 
     const curveSeries = buildCurveSeries(curveParams, cfg.t_out_min, cfg.t_out_max);
     const tOutdoor = this._tOutdoor;
 
     // Using annotations instead of scatter series to avoid hover conflicts
-    const annotationPoints: ApexAnnotations['points'] = [];
+    const annotationPoints: PointAnnotations[] = [];
     if (tOutdoor !== null) {
       const currentFlow = flowAtOutdoor(curveParams, tOutdoor);
       if (this._rateLimitingActive) {
-        const curveOutput = this._entityState(this._config.curve_output_entity);
-        const curveOutputValue = curveOutput ? parseFloat(curveOutput.state) : currentFlow;
-        annotationPoints.push(
-          {
+        // Target the rate limiter is ramping toward (PID-adjusted if available, else pure curve)
+        const rateTarget = this._rateTargetEntity
+          ? (this._entityState(this._rateTargetEntity) ? parseFloat(this._entityState(this._rateTargetEntity)!.state) : currentFlow)
+          : currentFlow;
+
+        // Pure curve output — shown as hollow ring when PID output is separately configured
+        if (this._config.pid_output_entity && this._config.curve_output_entity) {
+          const curveOutput = this._entityState(this._config.curve_output_entity);
+          const curveValue = curveOutput ? parseFloat(curveOutput.state) : currentFlow;
+          annotationPoints.push({
             x: -tOutdoor,
-            y: curveOutputValue,
-            marker: { size: MARKER_CURVE_OUTPUT, fillColor: heatingColor, strokeColor: '#ffffff', strokeWidth: 2 },
-          },
-          {
-            x: -tOutdoor,
-            y: this._flowTemp,
-            marker: { size: MARKER_RATE_LIMITED, fillColor: 'transparent', strokeColor: heatingColor, strokeWidth: 2 },
-          }
-        );
+            y: curveValue,
+            marker: { size: MARKER_RATE_LIMITED, fillColor: 'transparent', strokeColor: heatingColor, strokeWidth: 1.5 },
+          });
+        }
+
+        // Rate-limit target (PID-adjusted or curve)
+        annotationPoints.push({
+          x: -tOutdoor,
+          y: rateTarget,
+          marker: { size: MARKER_CURVE_OUTPUT, fillColor: heatingColor, strokeColor: '#ffffff', strokeWidth: 2 },
+        });
+
+        // Current flow setpoint (where we actually are, ramping up)
+        annotationPoints.push({
+          x: -tOutdoor,
+          y: this._flowTemp,
+          marker: { size: MARKER_RATE_LIMITED, fillColor: 'transparent', strokeColor: heatingColor, strokeWidth: 2 },
+        });
       } else {
         annotationPoints.push({
           x: -tOutdoor,
@@ -244,7 +283,7 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
 
     return {
       chart: {
-        type: 'area',
+        type: 'line' as const,
         width: '100%',
         height: '100%',
         toolbar: { show: false },
@@ -252,7 +291,7 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
         animations: { enabled: true, speed: 400 },
         background: 'transparent',
       },
-      theme: { mode: this._isDark ? 'dark' : 'light' },
+      theme: { mode: this._isDark ? 'dark' as const : 'light' as const },
       series: [
         {
           name: localize('curve_card.flow_temp'),
@@ -261,25 +300,30 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
         },
       ],
       annotations: { points: annotationPoints },
-      stroke: { curve: 'straight', width: 2 },
+      stroke: { curve: 'straight' as const, width: 2 },
+      colors: [heatingColor],
       fill: {
         type: 'gradient',
         gradient: {
-          type: 'vertical',
+          type: 'horizontal',
           gradientToColors: [coolingColor],
-          stops: [0, 100],
-          colorStops: [
-            { offset: 0, color: heatingColor, opacity: 0.8 },
-            { offset: 100, color: coolingColor, opacity: 0.3 },
-          ],
+          shadeIntensity: 1,
+          opacityFrom: 1,
+          opacityTo: 1,
+          stops: [0, 100, 100, 100],
         },
       },
       markers: {
         size: 0,
+        discrete: curveSeries
+          .reduce<Array<{ seriesIndex: number; dataPointIndex: number; size: number; fillColor: string; strokeColor: string; strokeWidth: number }>>(
+            (acc, _p, i) => (i % 50 === 0 ? [...acc, { seriesIndex: 0, dataPointIndex: i, size: 3, fillColor: heatingColor, strokeColor: '#fff', strokeWidth: 1 }] : acc),
+            [],
+          ),
         hover: { size: 6 },
       },
       xaxis: {
-        type: 'numeric',
+        type: 'numeric' as const,
         // Negated min/max for reversed display: warm (left) → cold (right)
         min: -cfg.t_out_max,
         max: -cfg.t_out_min,
@@ -389,7 +433,7 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          margin-bottom: 8px;
+          margin-bottom: 12px;
           gap: 12px;
           flex-shrink: 0;
         }
@@ -415,19 +459,68 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
           font-weight: 600;
           color: var(--primary-text-color);
         }
+        .state {
+          font-size: var(--ha-font-size-s, 12px);
+          font-weight: var(--ha-font-weight-normal, 400);
+          line-height: var(--ha-line-height-condensed, 1.2);
+          letter-spacing: 0.4px;
+          color: var(--primary-text-color);
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
         .chart-wrapper { flex: 1; min-height: 0; }
         #chart { width: 100%; height: 100%; }
         .footer {
           display: flex;
+          align-items: center;
           justify-content: center;
-          gap: 8px;
-          font-size: var(--font-size-sm);
-          color: var(--secondary-text-color);
-          margin-top: 4px;
+          gap: 0;
+          margin-top: 6px;
+          padding-top: 6px;
+          border-top: 1px solid var(--divider-color, rgba(0,0,0,0.08));
           flex-shrink: 0;
         }
-        .footer strong { color: var(--primary-text-color); }
-        .footer .flow-temp { color: var(--gradient-hot); }
+        .footer-metric {
+          display: flex;
+          align-items: baseline;
+          gap: 4px;
+          padding: 0 12px;
+          cursor: pointer;
+          border-radius: 6px;
+          transition: background 0.15s;
+        }
+        .footer-metric:hover {
+          background: var(--secondary-background-color, rgba(0,0,0,0.04));
+        }
+        .footer-value {
+          font-size: var(--font-size-md);
+          font-weight: 600;
+          font-variant-numeric: tabular-nums;
+          color: var(--primary-text-color);
+          white-space: nowrap;
+          line-height: 1;
+        }
+        .footer-value.flow { color: var(--gradient-hot); }
+        .footer-label {
+          font-size: 0.68rem;
+          font-weight: 500;
+          letter-spacing: 0.04em;
+          text-transform: uppercase;
+          color: var(--secondary-text-color);
+          white-space: nowrap;
+          margin-top: 0;
+        }
+        .footer-sep {
+          font-size: var(--font-size-sm);
+          color: var(--divider-color, rgba(0,0,0,0.2));
+          user-select: none;
+        }
+        .flow-target {
+          font-size: 0.68rem;
+          color: var(--secondary-text-color);
+          margin-left: 2px;
+        }
       `,
     ];
   }
@@ -469,6 +562,9 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
           ></eq-shape-icon>
           <div class="header-info">
             <span class="title">${title}</span>
+            ${this._climate?.attributes.temperature != null ? html`
+              <span class="state">· ${this._formatTemp(this._climate.attributes.temperature, this.hass?.config?.unit_system?.temperature)}</span>
+            ` : nothing}
           </div>
           <div class="badges">
             ${pidChip}
@@ -484,9 +580,21 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
           <div id="chart"></div>
         </div>
         <div class="footer">
-          <span><strong>${this._formatTemp(this._tOutdoor, this._tOutdoorUnit)}</strong> ${localize('common.outdoor').toLowerCase()}</span>
-          <span>→</span>
-          <span><strong class="flow-temp">${this._formatTemp(this._flowTemp, this._flowTempUnit)}</strong> ${localize('common.flow').toLowerCase()}</span>
+          <div class="footer-metric" @click=${() => this._openMoreInfo(this._config.outdoor_entity)}>
+            <span class="footer-value">${this._formatTemp(this._tOutdoor, this._tOutdoorUnit)}</span>
+            <span class="footer-label">${localize('common.outdoor')}</span>
+          </div>
+          <span class="footer-sep" aria-hidden="true">·</span>
+          <div class="footer-metric" @click=${() => this._openMoreInfo(this._config.flow_entity)}>
+            <span class="footer-value flow">${this._formatTemp(this._flowTemp, this._flowTempUnit)}</span>
+            ${adjustingDir && this._curveOutputTemp ? html`<span class="flow-target">→ ${this._curveOutputTemp}</span>` : nothing}
+            <span class="footer-label">${localize('common.flow')}</span>
+          </div>
+          <span class="footer-sep" aria-hidden="true">·</span>
+          <div class="footer-metric" @click=${() => this._openMoreInfo(this._config.climate_entity)}>
+            <span class="footer-value">${this._roomTemp}</span>
+            <span class="footer-label">${localize('common.room')}</span>
+          </div>
         </div>
       </ha-card>
     `;

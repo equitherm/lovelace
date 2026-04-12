@@ -38,6 +38,7 @@
     "outdoor_entity": "Outdoor Temperature",
     "flow_entity": "Flow Setpoint",
     "curve_output_entity": "Curve Output",
+    "pid_output_entity": "PID Output",
     "rate_limiting_entity": "Rate Limiting",
     "pid_active_entity": "PID Active",
     "title": "Title (optional)",
