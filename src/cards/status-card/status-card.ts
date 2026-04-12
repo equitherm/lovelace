@@ -113,28 +113,35 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
     return this._entityState(this._config.pid_active_entity)?.state === 'on';
   }
 
+  /** Entity to compare against flow for rate-limit direction: PID output when available, else curve output */
+  private get _rateTargetEntity(): string | undefined {
+    return this._config.pid_output_entity ?? this._config.curve_output_entity;
+  }
+
   private get _adjustingDirection(): 'rising' | 'falling' | null {
-    if (!this._rateLimitingActive || !this._config.curve_output_entity) return null;
+    if (!this._rateLimitingActive || !this._rateTargetEntity) return null;
 
     const flowState = this._entityState(this._config.flow_entity);
-    const curveState = this._entityState(this._config.curve_output_entity);
-    if (!flowState || !curveState) return null;
+    const targetState = this._entityState(this._rateTargetEntity);
+    if (!flowState || !targetState) return null;
 
     const flow = parseFloat(flowState.state);
-    const curve = parseFloat(curveState.state);
-    if (isNaN(flow) || isNaN(curve)) return null;
+    const target = parseFloat(targetState.state);
+    if (isNaN(flow) || isNaN(target)) return null;
 
-    if (flow < curve) return 'rising';
-    if (flow > curve) return 'falling';
+    if (flow < target) return 'rising';
+    if (flow > target) return 'falling';
     return null;
   }
 
   private get _curveOutputTemp(): string {
-    const state = this._entityState(this._config.curve_output_entity);
+    const entity = this._rateTargetEntity;
+    if (!entity) return '';
+    const state = this._entityState(entity);
     if (!state) return '';
     const value = parseFloat(state.state);
     if (isNaN(value)) return '';
-    return this._formatTemp(value, this._entityAttr<string>(this._config.curve_output_entity, 'unit_of_measurement'));
+    return this._formatTemp(value, this._entityAttr<string>(entity, 'unit_of_measurement'));
   }
 
   static get styles() {
@@ -170,8 +177,11 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
           white-space: nowrap;
         }
         .state {
-          font-size: var(--font-size-sm);
-          color: var(--secondary-text-color);
+          font-size: var(--ha-font-size-s, 12px);
+          font-weight: var(--ha-font-weight-normal, 400);
+          line-height: var(--ha-line-height-condensed, 1.2);
+          letter-spacing: 0.4px;
+          color: var(--primary-text-color);
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
@@ -204,22 +214,27 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
         .temp-value {
           font-size: var(--font-size-lg);
           font-weight: 600;
+          font-variant-numeric: tabular-nums;
           line-height: 1;
           color: var(--primary-text-color);
           white-space: nowrap;
         }
+        .temp-value.flow { color: var(--gradient-hot); }
         .temp-label {
-          font-size: var(--font-size-sm);
+          font-size: 0.68rem;
+          font-weight: 500;
+          letter-spacing: 0.04em;
+          text-transform: uppercase;
           color: var(--secondary-text-color);
           margin-top: 4px;
           white-space: nowrap;
         }
         .arrow {
-          color: var(--secondary-text-color);
-          font-size: 1.2rem;
-          padding-bottom: calc(var(--font-size-sm) + 4px);
+          color: var(--divider-color, rgba(0,0,0,0.2));
+          font-size: 0.9rem;
+          padding-bottom: calc(0.68rem + 4px);
         }
-        .divider { width: 1px; background: var(--divider-color, #e0e0e0); height: 40px; flex-shrink: 0; }
+        .divider { width: 1px; background: var(--divider-color, rgba(0,0,0,0.1)); height: 32px; flex-shrink: 0; }
         .flow-dual { display: flex; flex-direction: column; align-items: center; gap: 2px; }
         .flow-dual .target { font-size: 0.7rem; color: var(--secondary-text-color); }
 
@@ -260,7 +275,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
     const pidChip = this._config.pid_active_entity
       ? html`<eq-badge-info
           .label=${'PID'}
-          .color=${this._pidActive ? 'var(--rgb-success)' : 'var(--rgb-disabled)'}
+          style=${`--badge-info-color: ${this._pidActive ? 'var(--rgb-success)' : 'var(--rgb-disabled)'}`}
           .icon=${this._pidActive ? undefined : 'mdi:alert-circle-outline'}
         ></eq-badge-info>`
       : nothing;
@@ -276,12 +291,15 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
             ></eq-shape-icon>
           <div class="header-info">
             <span class="title">${title}</span>
+            ${this._climate?.attributes.temperature != null ? html`
+              <span class="state">· ${this._formatTemp(this._climate.attributes.temperature, this.hass?.config?.unit_system?.temperature)}</span>
+            ` : nothing}
           </div>
           <div class="badges">
             ${pidChip}
             <eq-badge-info
               .label=${hvacBadge.label}
-              .color=${hvacBadge.color}
+              style=${`--badge-info-color: ${hvacBadge.color}`}
               .icon=${hvacBadge.icon}
               .active=${hvacBadge.active}
             ></eq-badge-info>
@@ -297,11 +315,11 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
           <div class="temp-block" @click=${() => this._openMoreInfo(this._config.flow_entity)}>
             ${adjustingDir && curveOutput ? html`
               <div class="flow-dual">
-                <div class="temp-value">${this._flowTemp}</div>
+                <div class="temp-value flow">${this._flowTemp}</div>
                 <div class="target">→ ${curveOutput}</div>
               </div>
             ` : html`
-              <div class="temp-value">${this._flowTemp}</div>
+              <div class="temp-value flow">${this._flowTemp}</div>
             `}
             <div class="temp-label">${localize('common.flow')}</div>
           </div>

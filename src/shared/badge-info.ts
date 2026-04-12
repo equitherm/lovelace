@@ -1,24 +1,26 @@
 import { LitElement, html, css, nothing, CSSResultGroup } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
-import { styleMap } from 'lit/directives/style-map.js';
 
 /**
  * Generic status badge (pill-shaped chip).
  * Renders a colored label with an optional leading icon.
+ * Colors are inherited from parent via CSS variables.
  *
  * Usage:
  * ```html
- * <eq-badge-info .label=${'Heating'} .color=${'249,115,22'} .active=${true}></eq-badge-info>
- * <eq-badge-info .label=${'PID'} .color=${'59,130,246'}></eq-badge-info>
+ * <eq-badge-info
+ *   style="--badge-info-color: var(--rgb-state-climate-heat)"
+ *   .label=${'Heating'}
+ *   .active=${true}
+ * ></eq-badge-info>
+ * <eq-badge-info .label=${'PID'} style="--badge-info-color: var(--rgb-success)"></eq-badge-info>
  * ```
  */
 @customElement('eq-badge-info')
 export class BadgeInfo extends LitElement {
   /** Display text */
   @property() label = '';
-  /** RGB color string, e.g. '249,115,22' */
-  @property() color = '158,158,158';
   /** Optional mdi: icon name shown before label */
   @property() icon?: string;
   /** Enables pulse animation on the icon */
@@ -27,6 +29,7 @@ export class BadgeInfo extends LitElement {
   static get styles(): CSSResultGroup {
     return css`
       :host {
+        --badge-info-color: 158, 158, 158;
         display: inline-flex;
         align-items: center;
       }
@@ -36,6 +39,8 @@ export class BadgeInfo extends LitElement {
         gap: 6px;
         padding: 3px 10px;
         border-radius: 999px;
+        color: rgb(var(--badge-info-color));
+        background-color: rgba(var(--badge-info-color), 0.15);
         font-size: 0.75rem;
         font-weight: 600;
         letter-spacing: 0.05em;
@@ -59,17 +64,12 @@ export class BadgeInfo extends LitElement {
   }
 
   render() {
-    const badgeStyle = styleMap({
-      'color': `rgb(${this.color})`,
-      'background-color': `rgba(${this.color}, 0.15)`,
-    });
-
     const icon = this.icon
       ? html`<ha-icon class="icon" icon=${this.icon}></ha-icon>`
       : nothing;
 
     return html`
-      <span class=${classMap({ badge: true, active: this.active })} style=${badgeStyle}>
+      <span class=${classMap({ badge: true, active: this.active })}>
         ${icon}${this.label}
       </span>
     `;

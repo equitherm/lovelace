@@ -6,6 +6,7 @@ export interface CurveCardConfig {
   climate_entity: string;
   outdoor_entity: string;
   curve_output_entity: string;
+  pid_output_entity?: string;
   flow_entity: string;
   rate_limiting_entity?: string;
   pid_active_entity?: string;
@@ -27,6 +28,7 @@ export const CurveCardConfigStruct = type({
   climate_entity: string(),
   outdoor_entity: string(),
   curve_output_entity: string(),
+  pid_output_entity: optional(string()),
   flow_entity: string(),
   rate_limiting_entity: optional(string()),
   pid_active_entity: optional(string()),

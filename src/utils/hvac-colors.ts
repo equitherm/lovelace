@@ -106,6 +106,7 @@ const ACTIVE_ACTIONS = new Set<HvacAction>(['heating', 'cooling', 'drying']);
 
 export interface HvacBadgeProps {
   label: string;
+  /** CSS var value for --badge-info-color, e.g. 'var(--rgb-state-climate-heat)' */
   color: string;
   icon?: string;
   active: boolean;

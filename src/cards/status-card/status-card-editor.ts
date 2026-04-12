@@ -54,6 +54,10 @@ export class StatusCardEditor extends LitElement implements LovelaceCardEditor {
             selector: { entity: { device_class: 'temperature' } },
           },
           {
+            name: 'pid_output_entity',
+            selector: { entity: { device_class: 'temperature' } },
+          },
+          {
             name: 'rate_limiting_entity',
             selector: { entity: { domain: 'binary_sensor' } },
           },
