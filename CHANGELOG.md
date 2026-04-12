@@ -1,3 +1,9 @@
+## [1.1.1](https://github.com/equitherm/lovelace/compare/v1.1.0...v1.1.1) (2026-04-12)
+
+### Bug Fixes
+
+* upgrade apexcharts v5 and refine card design ([#9](https://github.com/equitherm/lovelace/issues/9)) ([301619c](https://github.com/equitherm/lovelace/commit/301619c8860d5a7087f95d20dae60d94164370cf))
+
 ## [1.1.0](https://github.com/equitherm/lovelace/compare/v1.0.1...v1.1.0) (2026-04-12)
 
 ### Features
