@@ -11,7 +11,17 @@ views:
             flow_entity: sensor.mock_flow_setpoint
             curve_output_entity: sensor.mock_heating_curve_output
             rate_limiting_entity: binary_sensor.mock_rate_limiting_active
-            control_mode_entity: sensor.mock_control_mode
+            pid_active_entity: binary_sensor.mock_pid_active
+
+      - type: grid
+        cards:
+          - type: custom:equitherm-curve-card
+            climate_entity: climate.mock_equitherm
+            outdoor_entity: input_number.mock_outdoor_temp
+            curve_output_entity: sensor.mock_heating_curve_output
+            flow_entity: sensor.mock_flow_setpoint
+            rate_limiting_entity: binary_sensor.mock_rate_limiting_active
+            pid_active_entity: binary_sensor.mock_pid_active
 
       - type: grid
         title: Inputs
@@ -35,7 +45,7 @@ views:
               - input_boolean.mock_heating_active
               - input_boolean.mock_outdoor_fault
               - input_boolean.mock_indoor_fault
-              - input_select.mock_control_mode
+              - input_boolean.mock_pid_active
 
       - type: grid
         title: Sensors
@@ -53,7 +63,7 @@ views:
               - sensor.mock_pid_integral
               - sensor.mock_pid_derivative
               - sensor.mock_fallback_duration
-              - sensor.mock_control_mode
+              - binary_sensor.mock_pid_active
           - type: entities
             entities:
               - binary_sensor.mock_rate_limiting_active

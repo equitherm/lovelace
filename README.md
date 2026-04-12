@@ -8,7 +8,7 @@ Home Assistant Lovelace cards for the [ESPHome equitherm climate component](http
 
 - 🛠 Visual editor for all cards
 - 🌡 Monitor heating status at a glance
-- 📊 Heating curve visualization (coming soon)
+- 📊 Heating curve visualization
 - 🌓 Light and dark theme support
 - 🌍 Temperature unit conversion (°C/°F)
 
@@ -54,7 +54,9 @@ flow_entity: sensor.flow_setpoint
 # Optional:
 curve_output_entity: sensor.heating_curve_output
 rate_limiting_entity: binary_sensor.rate_limiting_active
-control_mode_entity: sensor.control_mode
+pid_active_entity: binary_sensor.pid_active
+title: My Heating
+layout: default  # default, vertical, or horizontal
 ```
 
 | Option | Type | Required | Description |
@@ -64,13 +66,55 @@ control_mode_entity: sensor.control_mode
 | `flow_entity` | string | ✓ | Flow setpoint sensor |
 | `curve_output_entity` | string | | Shows "ADJUSTING" indicator with target |
 | `rate_limiting_entity` | string | | Binary sensor for ramping display |
-| `control_mode_entity` | string | | Shows control mode text |
+| `pid_active_entity` | string | | Shows whether PID correction is active |
+| `layout` | string | | `default`, `vertical`, or `horizontal` |
+| `title` | string | | Card title (defaults to entity friendly name) |
+
+### 📈 Curve Card
+
+Heating curve visualization with live operating point, rate-limiting markers, and configurable curve parameters.
+
+```yaml
+type: custom:equitherm-curve-card
+climate_entity: climate.your_equitherm
+outdoor_entity: sensor.outdoor_temperature
+curve_output_entity: sensor.heating_curve_output
+flow_entity: sensor.flow_setpoint
+# Optional:
+rate_limiting_entity: binary_sensor.rate_limiting_active
+pid_active_entity: binary_sensor.pid_active
+title: Heating Curve
+# Curve parameters (defaults shown):
+hc: 0.9
+n: 1.25
+shift: 0
+min_flow: 20
+max_flow: 70
+t_out_min: -20
+t_out_max: 20
+```
+
+| Option | Type | Required | Description |
+|--------|------|----------|-------------|
+| `climate_entity` | string | ✓ | Climate entity with temperature setpoint |
+| `outdoor_entity` | string | ✓ | Outdoor temperature sensor |
+| `curve_output_entity` | string | ✓ | Curve output temperature sensor |
+| `flow_entity` | string | ✓ | Current flow setpoint sensor |
+| `rate_limiting_entity` | string | | Binary sensor for rate limiting |
+| `pid_active_entity` | string | | Shows whether PID correction is active |
+| `title` | string | | Card title (defaults to entity friendly name) |
+| `hc` | number | | Heat curve coefficient (default: 0.9) |
+| `n` | number | | Curve exponent (default: 1.25) |
+| `shift` | number | | Temperature offset in °C (default: 0) |
+| `min_flow` | number | | Minimum flow temperature (default: 20) |
+| `max_flow` | number | | Maximum flow temperature (default: 70) |
+| `t_out_min` | number | | Outdoor temp range minimum (default: -20) |
+| `t_out_max` | number | | Outdoor temp range maximum (default: 20) |
 
 ### Planned Cards
 
 | Card | Description |
 |------|-------------|
-| 📈 **Curve Card** | Heating curve visualization with live operating point |
 | 🌤 **Forecast Card** | Predicted flow temperatures from weather forecast |
 | 🔧 **Tuning Card** | Compare heating curves and tune parameters live |
 

@@ -1,0 +1,136 @@
+import type { HassServiceTarget } from "home-assistant-js-websocket";
+
+// ============================================================================
+// Lovelace Configuration Types
+// Sourced from home-assistant/frontend/src/data/lovelace.ts
+// ============================================================================
+
+export interface LovelaceConfig {
+  title?: string;
+  strategy?: {
+    type: string;
+    options?: Record<string, unknown>;
+  };
+  views: LovelaceViewConfig[];
+  background?: string;
+}
+
+export interface LovelaceViewConfig {
+  index?: number;
+  title?: string;
+  type?: string;
+  strategy?: {
+    type: string;
+    options?: Record<string, unknown>;
+  };
+  cards?: LovelaceCardConfig[];
+  path?: string;
+  icon?: string;
+  theme?: string;
+  panel?: boolean;
+  background?: string;
+  visible?: boolean | ShowViewConfig[];
+}
+
+export interface ShowViewConfig {
+  user?: string;
+}
+
+export interface LovelaceCardConfig {
+  index?: number;
+  view_index?: number;
+  view_layout?: any;
+  type: string;
+  [key: string]: any;
+}
+
+export interface LovelaceLayoutOptions {
+  grid_columns?: number;
+  grid_rows?: number;
+}
+
+export interface LovelaceGridOptions {
+  columns?: number;
+  rows?: number;
+  min_columns?: number;
+  max_columns?: number;
+  min_rows?: number;
+  max_rows?: number;
+}
+
+export interface LovelaceBadgeConfig {
+  type?: string;
+  [key: string]: any;
+}
+
+// ============================================================================
+// Action Config Types
+// Sourced from home-assistant/frontend/src/data/lovelace.ts
+// ============================================================================
+
+export interface BaseActionConfig {
+  action: string;
+  confirmation?: ConfirmationRestrictionConfig;
+}
+
+export interface ConfirmationRestrictionConfig {
+  text?: string;
+  exemptions?: RestrictionConfig[];
+}
+
+export interface RestrictionConfig {
+  user: string;
+}
+
+export interface ToggleActionConfig extends BaseActionConfig {
+  action: "toggle";
+}
+
+export interface CallServiceActionConfig extends BaseActionConfig {
+  action: "call-service" | "perform-action";
+  /** @deprecated "service" is kept for backwards compatibility. Replaced by "perform_action". */
+  service?: string;
+  perform_action: string;
+  target?: HassServiceTarget;
+  /** @deprecated "service_data" is kept for backwards compatibility. Replaced by "data". */
+  service_data?: Record<string, unknown>;
+  data?: Record<string, unknown>;
+}
+
+export interface NavigateActionConfig extends BaseActionConfig {
+  action: "navigate";
+  navigation_path: string;
+}
+
+export interface UrlActionConfig extends BaseActionConfig {
+  action: "url";
+  url_path: string;
+}
+
+export interface MoreInfoActionConfig extends BaseActionConfig {
+  action: "more-info";
+}
+
+export interface NoActionConfig extends BaseActionConfig {
+  action: "none";
+}
+
+export interface CustomActionConfig extends BaseActionConfig {
+  action: "fire-dom-event";
+}
+
+export interface AssistActionConfig extends BaseActionConfig {
+  action: "assist";
+  pipeline_id?: string;
+  start_listening?: boolean;
+}
+
+export type ActionConfig =
+  | ToggleActionConfig
+  | CallServiceActionConfig
+  | NavigateActionConfig
+  | UrlActionConfig
+  | MoreInfoActionConfig
+  | AssistActionConfig
+  | NoActionConfig
+  | CustomActionConfig;
