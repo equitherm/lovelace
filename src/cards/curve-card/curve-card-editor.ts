@@ -24,7 +24,7 @@ export class EquithermCurveCardEditor extends LitElement implements LovelaceCard
 
   protected _valueChanged(ev: CustomEvent): void {
     if (!this._config) return;
-    const newConfig = { ...ev.detail.value } as CurveCardConfig;
+    const newConfig = { ...this._config, ...ev.detail.value } as CurveCardConfig;
     try {
       validateCurveCardConfig(newConfig);
       this._error = undefined;
@@ -42,37 +42,52 @@ export class EquithermCurveCardEditor extends LitElement implements LovelaceCard
     }
   `;
 
-  private _getSchema = memoizeOne((): readonly HaFormSchema[] => {
+  private _getSchema = memoizeOne((curveFromEntities: boolean): readonly HaFormSchema[] => {
     const localize = setupCustomLocalize(this.hass);
     return [
-    schemaHelpers.text('title', false),
-    schemaHelpers.expandable(localize('editor.entities'), 'mdi:connection', [
+      // Required entities — top level
       schemaHelpers.entity('climate_entity', { domain: 'climate' }),
+      // Name (depends on climate_entity for context)
+      schemaHelpers.entityName('name', { entity: 'climate_entity' }),
       schemaHelpers.entity('outdoor_entity', { domain: ['sensor', 'input_number'], device_class: 'temperature' }),
       schemaHelpers.entity('curve_output_entity', { domain: ['sensor'], device_class: 'temperature' }),
-      schemaHelpers.entity('pid_output_entity', { domain: ['sensor'], device_class: 'temperature', required: false }),
       schemaHelpers.entity('flow_entity', { domain: ['sensor', 'number', 'input_number'], device_class: 'temperature' }),
-      schemaHelpers.entity('rate_limiting_entity', { domain: ['binary_sensor'], required: false }),
-      schemaHelpers.entity('pid_active_entity', { domain: ['binary_sensor'], required: false }),
-    ]),
-    schemaHelpers.expandable(localize('editor.curve_parameters'), 'mdi:chart-bell-curve', [
-      schemaHelpers.grid([
-        schemaHelpers.number('hc', 0.5, 3.0, 0.1),
-        schemaHelpers.number('n', 1.0, 2.0, 0.05),
+      // Optional entities
+      schemaHelpers.expandable(localize('editor.optional'), 'mdi:connection', [
+        schemaHelpers.entity('pid_output_entity', { domain: ['sensor'], device_class: 'temperature', required: false }),
+        schemaHelpers.entity('rate_limiting_entity', { domain: ['binary_sensor'], required: false }),
+        schemaHelpers.entity('pid_active_entity', { domain: ['binary_sensor'], required: false }),
       ]),
-      schemaHelpers.number('shift', -15, 15, 1),
-      schemaHelpers.grid([
-        schemaHelpers.number('min_flow', 15, 35, 1),
-        schemaHelpers.number('max_flow', 50, 90, 1),
+      // Curve parameters
+      schemaHelpers.expandable(localize('editor.curve_parameters'), 'mdi:chart-bell-curve', [
+        { name: 'curve_from_entities', selector: { boolean: {} } },
+        ...(curveFromEntities
+          ? [
+              schemaHelpers.entity('hc_entity', { domain: 'number' }),
+              schemaHelpers.entity('n_entity', { domain: 'number' }),
+              schemaHelpers.entity('shift_entity', { domain: 'number' }),
+            ]
+          : [
+              schemaHelpers.grid([
+                schemaHelpers.number('hc', 0.5, 3.0, 0.1),
+                schemaHelpers.number('n', 1.0, 2.0, 0.05),
+              ]),
+              schemaHelpers.number('shift', -15, 15, 1, { unit_of_measurement: '°C' }),
+            ]),
+        schemaHelpers.grid([
+          schemaHelpers.number('min_flow', 15, 35, 1, { unit_of_measurement: '°C' }),
+          schemaHelpers.number('max_flow', 50, 90, 1, { unit_of_measurement: '°C' }),
+        ]),
       ]),
-    ]),
-    schemaHelpers.expandable(localize('editor.display_range'), 'mdi:arrow-expand-horizontal', [
-      schemaHelpers.grid([
-        schemaHelpers.number('t_out_min', -30, 5, 1),
-        schemaHelpers.number('t_out_max', 0, 30, 1),
+      // Display range
+      schemaHelpers.expandable(localize('editor.display_range'), 'mdi:arrow-expand-horizontal', [
+        schemaHelpers.grid([
+          schemaHelpers.number('t_out_min', -30, 5, 1, { unit_of_measurement: '°C' }),
+          schemaHelpers.number('t_out_max', 0, 30, 1, { unit_of_measurement: '°C' }),
+        ]),
       ]),
-    ]),
-  ] as const satisfies readonly HaFormSchema[]});
+    ] as const satisfies readonly HaFormSchema[];
+  });
 
   private _computeLabel = (schema: { name: string }): string => {
     const localize = setupCustomLocalize(this.hass);
@@ -87,7 +102,7 @@ export class EquithermCurveCardEditor extends LitElement implements LovelaceCard
       <ha-form
         .hass=${this.hass}
         .data=${this._config}
-        .schema=${this._getSchema()}
+        .schema=${this._getSchema(!!this._config.curve_from_entities)}
         .computeLabel=${this._computeLabel}
         .error=${this._error}
         @value-changed=${this._valueChanged}

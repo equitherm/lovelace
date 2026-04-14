@@ -56,7 +56,8 @@ flow_entity: sensor.flow_setpoint
 curve_output_entity: sensor.heating_curve_output
 rate_limiting_entity: binary_sensor.rate_limiting_active
 pid_active_entity: binary_sensor.pid_active
-title: My Heating
+name:  # entity name picker
+  type: entity
 layout: default  # default, vertical, or horizontal
 ```
 
@@ -69,8 +70,9 @@ layout: default  # default, vertical, or horizontal
 | `pid_output_entity` | string | | PID output sensor for rate-limit direction |
 | `rate_limiting_entity` | string | | Binary sensor for ramping display |
 | `pid_active_entity` | string | | Shows whether PID correction is active |
+| `name` | entity | | Entity name picker (defaults to entity friendly name) |
 | `layout` | string | | `default`, `vertical`, or `horizontal` |
-| `title` | string | | Card title (defaults to entity friendly name) |
+| `title` | string | | *Deprecated* — use `name` instead |
 
 ### 📈 Curve Card
 
@@ -86,7 +88,8 @@ flow_entity: sensor.flow_setpoint
 pid_output_entity: sensor.pid_output
 rate_limiting_entity: binary_sensor.rate_limiting_active
 pid_active_entity: binary_sensor.pid_active
-title: Heating Curve
+name:  # entity name picker
+  type: entity
 # Curve parameters (defaults shown):
 hc: 0.9
 n: 1.25
@@ -95,6 +98,11 @@ min_flow: 20
 max_flow: 70
 t_out_min: -20
 t_out_max: 20
+# Live parameters from device entities (alternative to static values above):
+# curve_from_entities: true
+# hc_entity: number.equitherm_hc
+# n_entity: number.equitherm_n
+# shift_entity: number.equitherm_shift
 ```
 
 | Option | Type | Required | Description |
@@ -106,7 +114,12 @@ t_out_max: 20
 | `pid_output_entity` | string | | PID output sensor for rate-limit direction |
 | `rate_limiting_entity` | string | | Binary sensor for rate limiting |
 | `pid_active_entity` | string | | Shows whether PID correction is active |
-| `title` | string | | Card title (defaults to entity friendly name) |
+| `name` | entity | | Entity name picker (defaults to entity friendly name) |
+| `title` | string | | *Deprecated* — use `name` instead |
+| `curve_from_entities` | boolean | | Read curve params from entities instead of static values |
+| `hc_entity` | string | | Entity for live heat curve coefficient |
+| `n_entity` | string | | Entity for live exponent |
+| `shift_entity` | string | | Entity for live shift offset |
 | `hc` | number | | Heat curve coefficient (default: 0.9) |
 | `n` | number | | Curve exponent (default: 1.25) |
 | `shift` | number | | Temperature offset in °C (default: 0) |

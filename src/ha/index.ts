@@ -9,6 +9,7 @@ export * from "./common/dom/fire_event";
 
 // Common entity utilities
 export * from "./common/entity/compute_domain";
+export * from "./common/entity/compute_entity_name_display";
 
 // Common translations
 export * from "./common/translations/localize";

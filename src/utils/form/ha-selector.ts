@@ -53,6 +53,13 @@ export interface ColorSelector {
   color_rgb?: Record<string, never>;
 }
 
+export interface EntityNameSelector {
+  entity_name?: {
+    entity_id?: string;
+    default_name?: string | string[];
+  };
+}
+
 export type Selector =
   | EntitySelector
   | NumberSelector
@@ -60,4 +67,5 @@ export type Selector =
   | BooleanSelector
   | SelectSelector
   | IconSelector
-  | ColorSelector;
+  | ColorSelector
+  | EntityNameSelector;

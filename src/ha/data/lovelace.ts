@@ -44,20 +44,6 @@ export interface LovelaceCardConfig {
   [key: string]: any;
 }
 
-export interface LovelaceLayoutOptions {
-  grid_columns?: number;
-  grid_rows?: number;
-}
-
-export interface LovelaceGridOptions {
-  columns?: number;
-  rows?: number;
-  min_columns?: number;
-  max_columns?: number;
-  min_rows?: number;
-  max_rows?: number;
-}
-
 export interface LovelaceBadgeConfig {
   type?: string;
   [key: string]: any;

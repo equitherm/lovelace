@@ -4,11 +4,12 @@ import { styleMap } from 'lit/directives/style-map.js';
 import ApexCharts from 'apexcharts';
 import type { PointAnnotations } from 'apexcharts';
 import type { CurveCardConfig } from './curve-card-config';
-import type { LovelaceGridOptions } from '../../ha/data/lovelace';
+import type { LovelaceGridOptions, LovelaceCard } from '../../ha/panels/lovelace/types';
 import type { HomeAssistant } from '../../ha';
 import type { ClimateEntity } from '../../ha/data/climate';
 import { computeDomain } from '../../ha/common/entity/compute_domain';
 import { EquithermBaseCard } from '../../utils/base-card';
+import { computeEntityNameDisplay } from '../../ha/common/entity/compute_entity_name_display';
 import { cardStyle } from '../../utils/card-styles';
 import { registerCustomCard } from '../../utils/register-card';
 import { CURVE_CARD_NAME, CURVE_CARD_EDITOR_NAME, CLIMATE_ENTITY_DOMAINS, SENSOR_ENTITY_DOMAINS } from './const';
@@ -42,7 +43,7 @@ const MARKER_CURVE_OUTPUT = 8;
 const MARKER_RATE_LIMITED = 6;
 
 @customElement(CURVE_CARD_NAME)
-export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
+export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> implements LovelaceCard {
   private _prevDarkMode?: boolean;
   @query('#chart') private _chartEl!: HTMLElement;
   @query('.chart-wrapper') private _chartWrapper!: HTMLElement;
@@ -138,6 +139,14 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
 
   getCardSize() { return 3; }
 
+  /** Read a number from an entity state, falling back to a config default */
+  private _resolveEntityNumber(entityId: string | undefined, fallback: number): number {
+    const s = this._entityState(entityId);
+    if (!s) return fallback;
+    const val = parseFloat(s.state);
+    return isNaN(val) ? fallback : val;
+  }
+
   private get _climate(): ClimateEntity | undefined {
     return this._entityState(this._config.climate_entity) as ClimateEntity | undefined;
   }
@@ -213,7 +222,7 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
   }
 
   private get _isDark(): boolean {
-    return (this.hass?.themes as any)?.darkMode ?? false;
+    return this.hass?.themes?.darkMode ?? false;
   }
 
   private _buildChartOptions() {
@@ -221,9 +230,9 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
     const cfg = this._config;
     const curveParams = {
       tTarget: this._tTarget,
-      hc: cfg.hc,
-      n: cfg.n,
-      shift: cfg.shift,
+      hc: cfg.curve_from_entities ? this._resolveEntityNumber(cfg.hc_entity, cfg.hc) : cfg.hc,
+      n: cfg.curve_from_entities ? this._resolveEntityNumber(cfg.n_entity, cfg.n) : cfg.n,
+      shift: cfg.curve_from_entities ? this._resolveEntityNumber(cfg.shift_entity, cfg.shift) : cfg.shift,
       minFlow: cfg.min_flow,
       maxFlow: cfg.max_flow,
     };
@@ -531,7 +540,10 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> {
     const rawAction = this._climate?.attributes.hvac_action ?? 'off';
     const hvacAction = normalizeHvacAction(rawAction);
     const adjustingDir = this._adjustingDirection;
-    const title = this._config.title ?? this._entityAttr<string>(this._config.climate_entity, 'friendly_name') ?? localize('curve_card.default_title');
+    const climateState = this.hass.states[this._config.climate_entity];
+    const title = climateState
+      ? computeEntityNameDisplay(climateState, this._config.name ?? this._config.title, this.hass) || localize('curve_card.default_title')
+      : (this._config.title ?? localize('curve_card.default_title'));
 
     // Build icon styles from action color (Mushroom pattern)
     const color = getHvacActionColor(hvacAction);

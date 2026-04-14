@@ -11,7 +11,7 @@ import { themeColorCss, themeVariables } from "./theme";
 
 export function computeDarkMode(hass?: HomeAssistant): boolean {
   if (!hass) return false;
-  return (hass.themes as any).darkMode as boolean;
+  return hass.themes.darkMode;
 }
 
 export class EquithermBaseElement extends LitElement {

@@ -1,5 +1,6 @@
 // src/cards/curve-card/curve-card-config.ts
-import { assert, type, string, number, optional } from 'superstruct';
+import { assert, type, string, number, optional, any } from 'superstruct';
+import type { EntityNameItem } from '../../ha';
 
 export interface CurveCardConfig {
   type: string;
@@ -10,7 +11,14 @@ export interface CurveCardConfig {
   flow_entity: string;
   rate_limiting_entity?: string;
   pid_active_entity?: string;
+  name?: string | EntityNameItem | EntityNameItem[];
+  /** @deprecated Use `name` instead */
   title?: string;
+  // Live curve parameters from device entities
+  curve_from_entities?: boolean;
+  hc_entity?: string;
+  n_entity?: string;
+  shift_entity?: string;
   // Curve parameters (required after validation, optional in raw config)
   hc: number;
   n: number;
@@ -32,7 +40,12 @@ export const CurveCardConfigStruct = type({
   flow_entity: string(),
   rate_limiting_entity: optional(string()),
   pid_active_entity: optional(string()),
-  title: optional(string()),
+  title: optional(any()),
+  name: optional(any()),
+  curve_from_entities: optional(any()),
+  hc_entity: optional(string()),
+  n_entity: optional(string()),
+  shift_entity: optional(string()),
   hc: optional(number()),
   n: optional(number()),
   shift: optional(number()),

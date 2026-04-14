@@ -9,6 +9,9 @@
     "drying": "Déshumidification",
     "idle": "Inactif",
     "off": "Éteint",
+    "fan": "Ventilation",
+    "defrosting": "Dégivrage",
+    "preheating": "Préchauffage",
     "not_found": "{entity} introuvable"
   },
   "status_card": {
@@ -42,15 +45,20 @@
     "rate_limiting_entity": "Limitation",
     "pid_active_entity": "PID Actif",
     "title": "Titre (optionnel)",
+    "name": "Nom",
     "entities": "Entités",
     "curve_parameters": "Paramètres Courbe",
     "display_range": "Plage d'Affichage",
+    "curve_from_entities": "Paramètres live depuis l'appareil",
+    "hc_entity": "Entité Coeff. Courbe",
+    "n_entity": "Entité Exposant",
+    "shift_entity": "Entité Décalage",
     "hc": "Coeff. Courbe (hc)",
     "n": "Exposant (n)",
-    "shift": "Décalage (°C)",
-    "min_flow": "Départ Min (°C)",
-    "max_flow": "Départ Max (°C)",
-    "t_out_min": "Extérieur Min (°C)",
-    "t_out_max": "Extérieur Max (°C)"
+    "shift": "Décalage",
+    "min_flow": "Départ Min",
+    "max_flow": "Départ Max",
+    "t_out_min": "Extérieur Min",
+    "t_out_max": "Extérieur Max"
   }
 }

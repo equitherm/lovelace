@@ -22,12 +22,12 @@ export function number(
   min: number,
   max: number,
   step = 1,
-  mode: 'slider' | 'box' = 'slider'
+  opts: { mode?: 'slider' | 'box'; unit_of_measurement?: string; required?: boolean } = {},
 ): HaFormSelectorSchema {
   return {
     name,
-    required: true,
-    selector: { number: { min, max, step, mode } },
+    required: opts.required ?? false,
+    selector: { number: { min, max, step, mode: opts.mode ?? 'slider', unit_of_measurement: opts.unit_of_measurement } },
   };
 }
 
@@ -37,6 +37,15 @@ export function text(name: string, required = false): HaFormSelectorSchema {
     name,
     required,
     selector: { text: {} },
+  };
+}
+
+/** Create an entity name picker field */
+export function entityName(name: string, context?: Record<string, string>): HaFormSelectorSchema {
+  return {
+    name,
+    selector: { entity_name: {} },
+    context,
   };
 }
 
@@ -57,6 +66,7 @@ export function expandable(
 ): HaFormExpandableSchema {
   return {
     type: 'expandable',
+    flatten: true,
     title,
     icon,
     name: '',
@@ -69,6 +79,7 @@ export const schemaHelpers = {
   entity,
   number,
   text,
+  entityName,
   grid,
   expandable,
 };

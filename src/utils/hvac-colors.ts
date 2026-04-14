@@ -35,6 +35,9 @@ export const HVAC_ACTION_COLORS: Record<HvacAction, string> = {
   drying: 'var(--rgb-state-climate-dry)',
   idle: 'var(--rgb-state-climate-idle)',
   off: 'var(--rgb-state-climate-off)',
+  fan: 'var(--rgb-state-climate-fan-only)',
+  defrosting: 'var(--rgb-state-climate-heat)',
+  preheating: 'var(--rgb-state-climate-heat)',
 };
 
 export function getHvacActionColor(action: HvacAction | undefined): string {
@@ -69,6 +72,9 @@ export const HVAC_ACTION_ICONS: Record<HvacAction, string | null> = {
   drying: 'mdi:water-percent',
   idle: 'mdi:clock-outline',
   off: null,
+  fan: 'mdi:fan',
+  defrosting: 'mdi:snowflake-melt',
+  preheating: 'mdi:fire',
 };
 
 export function getHvacActionIcon(action: HvacAction | undefined): string | null {
@@ -90,6 +96,13 @@ export function normalizeHvacAction(action: string | undefined): HvacAction {
     case 'drying':
     case 'dry':
       return 'drying';
+    case 'fan':
+    case 'fan_only':
+      return 'fan';
+    case 'defrosting':
+      return 'defrosting';
+    case 'preheating':
+      return 'preheating';
     case 'off':
       return 'off';
     case 'idle':
@@ -102,7 +115,7 @@ export function normalizeHvacAction(action: string | undefined): HvacAction {
 // HVAC Badge Builder (shared by status-card & curve-card)
 // ============================================================================
 
-const ACTIVE_ACTIONS = new Set<HvacAction>(['heating', 'cooling', 'drying']);
+const ACTIVE_ACTIONS = new Set<HvacAction>(['heating', 'cooling', 'drying', 'defrosting', 'preheating']);
 
 export interface HvacBadgeProps {
   label: string;
@@ -141,6 +154,9 @@ export function getHvacBadgeProps(
     drying: 'common.drying',
     idle: 'common.idle',
     off: 'common.off',
+    fan: 'common.fan',
+    defrosting: 'common.defrosting',
+    preheating: 'common.preheating',
   };
 
   return {

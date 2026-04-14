@@ -10,6 +10,7 @@ export interface HaFormBaseSchema {
   default?: HaFormData;
   required?: boolean;
   disabled?: boolean;
+  context?: Record<string, string>;
   description?: {
     suffix?: string;
     suggested_value?: HaFormData;

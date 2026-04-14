@@ -26,11 +26,13 @@ climate_entity: climate.equitherm
 outdoor_entity: sensor.outdoor_temperature
 curve_output_entity: sensor.heating_curve_output
 flow_entity: sensor.flow_setpoint
-rate_limiting_entity: binary_sensor.rate_limiting  # optional
-pid_active_entity: binary_sensor.pid_active  # optional
-title: Heating Curve  # optional
+# Optional:
+rate_limiting_entity: binary_sensor.rate_limiting
+pid_active_entity: binary_sensor.pid_active
+name:  # entity name picker (recommended)
+  type: entity
 
-# Curve parameters (optional, defaults shown)
+# Curve parameters — static (optional, defaults shown)
 hc: 0.9
 n: 1.25
 shift: 0
@@ -50,7 +52,12 @@ t_out_max: 20
 | `flow_entity` | string | Yes | - | Current flow setpoint sensor |
 | `rate_limiting_entity` | string | No | - | Binary sensor for rate limiting |
 | `pid_active_entity` | string | No | - | Binary sensor for PID correction status |
-| `title` | string | No | Entity friendly name | Card title |
+| `name` | entity | No | - | Entity name picker config (defaults to entity friendly name). Examples: `name: { type: entity }` or `name: [{ type: text, text: "Prefix" }, { type: device }]` |
+| `title` | string | No | - | *Deprecated* — use `name` instead |
+| `curve_from_entities` | boolean | No | false | Read curve parameters from entities instead of static values |
+| `hc_entity` | string | No | - | Entity for live heat curve coefficient (requires `curve_from_entities`) |
+| `n_entity` | string | No | - | Entity for live exponent (requires `curve_from_entities`) |
+| `shift_entity` | string | No | - | Entity for live shift offset (requires `curve_from_entities`) |
 | `hc` | number | No | 0.9 | Heat curve coefficient |
 | `n` | number | No | 1.25 | Curve exponent |
 | `shift` | number | No | 0 | Temperature offset |
@@ -69,6 +76,8 @@ t_flow = t_target + shift + hc x (t_target - t_outdoor)^(1/n)
 
 Clamped to `[min_flow, max_flow]`.
 
+Parameters can be provided as **static values** (via `hc`, `n`, `shift`) or read **live from entities** (set `curve_from_entities: true` and provide `hc_entity`, `n_entity`, `shift_entity`).
+
 | Parameter | Range | Description |
 |-----------|-------|-------------|
 | `hc` | 0.5 - 3.0 | Heat curve coefficient (steepness) |
@@ -78,6 +87,24 @@ Clamped to `[min_flow, max_flow]`.
 | `max_flow` | 50 - 90 | Maximum flow temperature |
 | `t_out_min` | -30 to 5 | Outdoor temp range minimum |
 | `t_out_max` | 0 - 30 | Outdoor temp range maximum |
+
+### Live Parameters from Entities
+
+When `curve_from_entities: true`, the curve reads `hc`, `n`, and `shift` from number/input_number entities in real time. This is useful when the ESPHome device exposes runtime-tunable parameters as entities.
+
+```yaml
+type: custom:equitherm-curve-card
+climate_entity: climate.equitherm
+outdoor_entity: sensor.outdoor_temperature
+curve_output_entity: sensor.heating_curve_output
+flow_entity: sensor.flow_setpoint
+curve_from_entities: true
+hc_entity: number.equitherm_hc
+n_entity: number.equitherm_n
+shift_entity: number.equitherm_shift
+```
+
+The static values (`hc`, `n`, `shift`) serve as fallbacks when entity state is unavailable.
 
 ## Visual Elements
 
@@ -175,7 +202,10 @@ climate_entity: climate.equitherm
 outdoor_entity: sensor.outdoor_temperature
 curve_output_entity: sensor.heating_curve_output
 flow_entity: sensor.flow_setpoint
-title: Floor Heating
+name:
+  - type: text
+    text: Floor Heating
+  - type: device
 hc: 1.2
 n: 1.3
 min_flow: 25

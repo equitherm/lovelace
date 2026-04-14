@@ -1,7 +1,8 @@
 import { html, nothing } from 'lit';
 import { state } from 'lit/decorators.js';
 import type { HassEntity } from 'home-assistant-js-websocket';
-import type { LovelaceGridOptions, ActionConfig } from '../ha/data/lovelace';
+import type { ActionConfig } from '../ha/data/lovelace';
+import type { LovelaceGridOptions } from '../ha/panels/lovelace/types';
 import { EquithermBaseElement } from './base-element';
 import { executeAction, hasAction } from './actions';
 import setupCustomlocalize from '../localize';
