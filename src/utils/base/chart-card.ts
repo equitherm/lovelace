@@ -1,6 +1,8 @@
 import { query } from 'lit/decorators.js';
 import ApexCharts from 'apexcharts';
-import { EquithermBaseCard } from './base-card';
+import { EquithermBaseCard, type EquithermCardConfig } from './base-card';
+import { computeDarkMode } from './base-element';
+import type { LovelaceGridOptions } from '../../ha/panels/lovelace/types';
 
 /**
  * Base class for equitherm cards with ApexCharts.
@@ -11,7 +13,7 @@ import { EquithermBaseCard } from './base-card';
  * Optionally override _onChartReconnected() / _onChartDisconnecting()
  * for data source lifecycle (e.g., WebSocket subscriptions).
  */
-export class EquithermChartCard<TConfig> extends EquithermBaseCard<TConfig> {
+export abstract class EquithermChartCard<TConfig extends EquithermCardConfig> extends EquithermBaseCard<TConfig> {
   @query('#chart') protected _chartEl!: HTMLElement;
   @query('.chart-wrapper') protected _chartWrapper!: HTMLElement;
 
@@ -19,6 +21,21 @@ export class EquithermChartCard<TConfig> extends EquithermBaseCard<TConfig> {
   protected _chartInitialized = false;
   protected _resizeObserver: ResizeObserver | null = null;
   protected _prevDarkMode = false;
+
+  // --- Card sizing (shared by all chart cards) ---
+
+  public override getGridOptions(): LovelaceGridOptions {
+    return { columns: 12, rows: 5, min_rows: 5 };
+  }
+
+  public override getCardSize(): number {
+    return 3;
+  }
+
+  /** Whether HA is in dark mode */
+  protected get _isDark(): boolean {
+    return computeDarkMode(this.hass);
+  }
 
   // --- Lifecycle ---
 

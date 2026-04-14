@@ -3,9 +3,7 @@ import { customElement, state } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
 import type ApexCharts from 'apexcharts';
 import type { ForecastCardConfig } from './forecast-card-config';
-import type { LovelaceGridOptions, LovelaceCard } from '../../ha/panels/lovelace/types';
 import type { HomeAssistant } from '../../ha';
-import type { ClimateEntity } from '../../ha/data/climate';
 import type { ForecastPoint, ForecastCurveConfig } from '../../utils/forecast';
 import { computeDomain } from '../../ha/common/entity/compute_domain';
 import { EquithermChartCard } from '../../utils/base';
@@ -38,7 +36,7 @@ interface OutdoorDataPoint {
 }
 
 @customElement(FORECAST_CARD_NAME)
-export class EquithermForecastCard extends EquithermChartCard<ForecastCardConfig> implements LovelaceCard {
+export class EquithermForecastCard extends EquithermChartCard<ForecastCardConfig> {
   @state() private _forecastPoints: ForecastPoint[] = [];
   private _unsub?: () => void;
 
@@ -54,7 +52,7 @@ export class EquithermForecastCard extends EquithermChartCard<ForecastCardConfig
 
     // Handle hass changes (entity states + dark mode)
     if (changedProps.has('hass') && this.hass) {
-      const isDark = (this.hass.themes as any).darkMode as boolean;
+      const isDark = this._isDark;
       const darkChanged = this._prevDarkMode !== undefined && this._prevDarkMode !== isDark;
       this._prevDarkMode = isDark;
 
@@ -63,10 +61,6 @@ export class EquithermForecastCard extends EquithermChartCard<ForecastCardConfig
       }
       // Forecast data arrives via subscription callback, no manual re-fetch needed
     }
-  }
-
-  public getGridOptions(): LovelaceGridOptions {
-    return { columns: 12, rows: 5, min_rows: 5 };
   }
 
   static async getStubConfig(hass: HomeAssistant): Promise<ForecastCardConfig> {
@@ -118,20 +112,6 @@ export class EquithermForecastCard extends EquithermChartCard<ForecastCardConfig
     this._config = validateForecastCardConfig(config);
   }
 
-  getCardSize() { return 3; }
-
-  /** Read a number from an entity state, falling back to a config default */
-  private _resolveEntityNumber(entityId: string | undefined, fallback: number): number {
-    const s = this._entityState(entityId);
-    if (!s) return fallback;
-    const val = parseFloat(s.state);
-    return isNaN(val) ? fallback : val;
-  }
-
-  private get _climate(): ClimateEntity | undefined {
-    return this._entityState(this._config.climate_entity) as ClimateEntity | undefined;
-  }
-
   private get _tTarget(): number {
     return this._climate?.attributes.temperature ?? 21;
   }
@@ -143,15 +123,6 @@ export class EquithermForecastCard extends EquithermChartCard<ForecastCardConfig
 
   private get _flowTempUnit(): string | undefined {
     return this._entityAttr<string>(this._config.flow_entity, 'unit_of_measurement');
-  }
-
-  private get _roomTemp(): string {
-    const temp = this._climate?.attributes.current_temperature;
-    return this._formatTemp(temp, this.hass?.config?.unit_system?.temperature);
-  }
-
-  private get _isDark(): boolean {
-    return this.hass?.themes?.darkMode ?? false;
   }
 
   /** Build the curve params from config, optionally reading from live entities */

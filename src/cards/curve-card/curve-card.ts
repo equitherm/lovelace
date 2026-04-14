@@ -3,9 +3,7 @@ import { customElement } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
 import type { PointAnnotations } from 'apexcharts';
 import type { CurveCardConfig } from './curve-card-config';
-import type { LovelaceGridOptions, LovelaceCard } from '../../ha/panels/lovelace/types';
 import type { HomeAssistant } from '../../ha';
-import type { ClimateEntity } from '../../ha/data/climate';
 import { computeDomain } from '../../ha/common/entity/compute_domain';
 import { computeEntityNameDisplay } from '../../ha/common/entity/compute_entity_name_display';
 import { cardStyle } from '../../utils/card-styles';
@@ -13,6 +11,7 @@ import { registerCustomCard } from '../../utils/register-card';
 import { CURVE_CARD_NAME, CURVE_CARD_EDITOR_NAME, CLIMATE_ENTITY_DOMAINS, SENSOR_ENTITY_DOMAINS } from './const';
 import { validateCurveCardConfig } from './curve-card-config';
 import { resolveRgbColor, normalizeHvacAction, getHvacActionColor, getHvacBadgeProps } from '../../utils/hvac-colors';
+import { isRateLimitingActive, isPidActive, getAdjustingDirection, getRateTargetEntity } from '../../utils/rate-limiting';
 
 registerCustomCard({
   type: CURVE_CARD_NAME,
@@ -42,21 +41,20 @@ const MARKER_CURVE_OUTPUT = 8;
 const MARKER_RATE_LIMITED = 6;
 
 @customElement(CURVE_CARD_NAME)
-export class EquithermCurveCard extends EquithermChartCard<CurveCardConfig> implements LovelaceCard {
+export class EquithermCurveCard extends EquithermChartCard<CurveCardConfig> {
   protected updated(changedProps: Map<string, unknown>): void {
     super.updated(changedProps);
     if (!this._chart) return;
 
     // Handle hass changes (entity states + dark mode)
     if (changedProps.has('hass') && this.hass) {
-      const isDark = (this.hass.themes as any).darkMode as boolean;
+      const isDark = this._isDark;
       const darkChanged = this._prevDarkMode !== undefined && this._prevDarkMode !== isDark;
       this._prevDarkMode = isDark;
 
       if (darkChanged) {
         this._updateChartOptions();
       } else {
-        // Entity states changed, update series (marker position)
         this._updateChartSeries();
       }
     }
@@ -69,10 +67,6 @@ export class EquithermCurveCard extends EquithermChartCard<CurveCardConfig> impl
         this._updateChartSeries();
       }
     }
-  }
-
-  public getGridOptions(): LovelaceGridOptions {
-    return { columns: 12, rows: 5, min_rows: 5 };
   }
 
   static async getStubConfig(hass: HomeAssistant): Promise<CurveCardConfig> {
@@ -129,20 +123,6 @@ export class EquithermCurveCard extends EquithermChartCard<CurveCardConfig> impl
     this._config = validateCurveCardConfig(config);
   }
 
-  getCardSize() { return 3; }
-
-  /** Read a number from an entity state, falling back to a config default */
-  private _resolveEntityNumber(entityId: string | undefined, fallback: number): number {
-    const s = this._entityState(entityId);
-    if (!s) return fallback;
-    const val = parseFloat(s.state);
-    return isNaN(val) ? fallback : val;
-  }
-
-  private get _climate(): ClimateEntity | undefined {
-    return this._entityState(this._config.climate_entity) as ClimateEntity | undefined;
-  }
-
   private get _tTarget(): number {
     return this._climate?.attributes.temperature ?? 21;
   }
@@ -167,54 +147,14 @@ export class EquithermCurveCard extends EquithermChartCard<CurveCardConfig> impl
     return this._entityAttr<string>(this._config.flow_entity, 'unit_of_measurement');
   }
 
-  private get _roomTemp(): string {
-    const temp = this._climate?.attributes.current_temperature;
-    return this._formatTemp(temp, this.hass?.config?.unit_system?.temperature);
-  }
-
   private get _curveOutputTemp(): string {
-    const entity = this._rateTargetEntity;
+    const entity = getRateTargetEntity(this._config);
     if (!entity) return '';
     const state = this._entityState(entity);
     if (!state) return '';
     const value = parseFloat(state.state);
     if (isNaN(value)) return '';
     return this._formatTemp(value, this._entityAttr<string>(entity, 'unit_of_measurement'));
-  }
-
-  private get _rateLimitingActive(): boolean {
-    if (!this._config.rate_limiting_entity) return false;
-    return this._entityState(this._config.rate_limiting_entity)?.state === 'on';
-  }
-
-  private get _pidActive(): boolean {
-    if (!this._config.pid_active_entity) return false;
-    return this._entityState(this._config.pid_active_entity)?.state === 'on';
-  }
-
-  /** Entity to compare against flow for rate-limit direction: PID output when available, else curve output */
-  private get _rateTargetEntity(): string | undefined {
-    return this._config.pid_output_entity ?? this._config.curve_output_entity ?? undefined;
-  }
-
-  private get _adjustingDirection(): 'rising' | 'falling' | null {
-    if (!this._rateLimitingActive || !this._rateTargetEntity) return null;
-
-    const flowState = this._entityState(this._config.flow_entity);
-    const targetState = this._entityState(this._rateTargetEntity);
-    if (!flowState || !targetState) return null;
-
-    const flow = parseFloat(flowState.state);
-    const target = parseFloat(targetState.state);
-    if (isNaN(flow) || isNaN(target)) return null;
-
-    if (flow < target) return 'rising';
-    if (flow > target) return 'falling';
-    return null;
-  }
-
-  private get _isDark(): boolean {
-    return this.hass?.themes?.darkMode ?? false;
   }
 
   protected _buildChartOptions() {
@@ -241,12 +181,15 @@ export class EquithermCurveCard extends EquithermChartCard<CurveCardConfig> impl
 
     // Using annotations instead of scatter series to avoid hover conflicts
     const annotationPoints: PointAnnotations[] = [];
+    const lookup = (id: string) => this._entityState(id);
+    const rateLimiting = isRateLimitingActive(this._config, lookup);
+    const rateTarget = getRateTargetEntity(this._config);
     if (tOutdoor !== null) {
       const currentFlow = flowAtOutdoor(curveParams, tOutdoor);
-      if (this._rateLimitingActive) {
+      if (rateLimiting) {
         // Target the rate limiter is ramping toward (PID-adjusted if available, else pure curve)
-        const rateTarget = this._rateTargetEntity
-          ? (this._entityState(this._rateTargetEntity) ? parseFloat(this._entityState(this._rateTargetEntity)!.state) : currentFlow)
+        const rateTargetValue = rateTarget
+          ? (this._entityState(rateTarget) ? parseFloat(this._entityState(rateTarget)!.state) : currentFlow)
           : currentFlow;
 
         // Pure curve output — shown as hollow ring when PID output is separately configured
@@ -263,7 +206,7 @@ export class EquithermCurveCard extends EquithermChartCard<CurveCardConfig> impl
         // Rate-limit target (PID-adjusted or curve)
         annotationPoints.push({
           x: -tOutdoor,
-          y: rateTarget,
+          y: rateTargetValue,
           marker: { size: MARKER_CURVE_OUTPUT, fillColor: heatingColor, strokeColor: '#ffffff', strokeWidth: 2 },
         });
 
@@ -478,7 +421,10 @@ export class EquithermCurveCard extends EquithermChartCard<CurveCardConfig> impl
     const localize = setupCustomLocalize(this.hass);
     const rawAction = this._climate?.attributes.hvac_action ?? 'off';
     const hvacAction = normalizeHvacAction(rawAction);
-    const adjustingDir = this._adjustingDirection;
+    const lookup = (id: string) => this._entityState(id)!;
+    const adjustingDir = getAdjustingDirection(this._config, lookup);
+    const rateLimiting = isRateLimitingActive(this._config, lookup);
+    const pidActive = isPidActive(this._config, lookup);
     const climateState = this.hass.states[this._config.climate_entity];
     const title = climateState
       ? computeEntityNameDisplay(climateState, this._config.name ?? this._config.title, this.hass) || localize('curve_card.default_title')
@@ -491,14 +437,14 @@ export class EquithermCurveCard extends EquithermChartCard<CurveCardConfig> impl
       '--shape-color': `rgba(${color}, 0.2)`,
     });
 
-    const hvacBadge = getHvacBadgeProps(localize, hvacAction, this._rateLimitingActive, adjustingDir);
+    const hvacBadge = getHvacBadgeProps(localize, hvacAction, rateLimiting, adjustingDir);
 
     // PID status chip
     const pidChip = this._config.pid_active_entity
       ? html`<eq-badge-info
           .label=${'PID'}
-          style=${`--badge-info-color: ${this._pidActive ? 'var(--rgb-success)' : 'var(--rgb-disabled)'}`}
-          .icon=${this._pidActive ? undefined : 'mdi:alert-circle-outline'}
+          style=${`--badge-info-color: ${pidActive ? 'var(--rgb-success)' : 'var(--rgb-disabled)'}`}
+          .icon=${pidActive ? undefined : 'mdi:alert-circle-outline'}
         ></eq-badge-info>`
       : nothing;
 
