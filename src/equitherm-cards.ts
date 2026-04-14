@@ -1,6 +1,7 @@
 // Cards
 import './cards/status-card/status-card';
 import './cards/curve-card/curve-card';
+import './cards/forecast-card/forecast-card';
 
 // Shared components (Mushroom pattern)
 import './shared/badge-icon';

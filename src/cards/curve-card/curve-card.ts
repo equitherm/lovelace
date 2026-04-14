@@ -1,7 +1,6 @@
 import { html, css, nothing } from 'lit';
-import { customElement, query } from 'lit/decorators.js';
+import { customElement } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
-import ApexCharts from 'apexcharts';
 import type { PointAnnotations } from 'apexcharts';
 import type { CurveCardConfig } from './curve-card-config';
 import type { LovelaceGridOptions, LovelaceCard } from '../../ha/panels/lovelace/types';
@@ -22,6 +21,7 @@ registerCustomCard({
   description: 'Heating curve visualization with current operating point',
 });
 import { buildCurveSeries, flowAtOutdoor } from '../../utils/curve';
+import { chartMixin } from '../../utils/chart-mixin';
 import setupCustomLocalize from '../../localize';
 import '../../shared/badge-info';
 import '../../shared/shape-icon';
@@ -43,14 +43,7 @@ const MARKER_CURVE_OUTPUT = 8;
 const MARKER_RATE_LIMITED = 6;
 
 @customElement(CURVE_CARD_NAME)
-export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> implements LovelaceCard {
-  private _prevDarkMode?: boolean;
-  @query('#chart') private _chartEl!: HTMLElement;
-  @query('.chart-wrapper') private _chartWrapper!: HTMLElement;
-  private _chart?: ApexCharts;
-  private _resizeObserver?: ResizeObserver;
-  private _chartInitialized = false;
-
+export class EquithermCurveCard extends chartMixin(EquithermBaseCard<CurveCardConfig>) implements LovelaceCard {
   protected updated(changedProps: Map<string, unknown>): void {
     super.updated(changedProps);
     if (!this._chart) return;
@@ -225,7 +218,7 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> imple
     return this.hass?.themes?.darkMode ?? false;
   }
 
-  private _buildChartOptions() {
+  protected _buildChartOptions() {
     const localize = setupCustomLocalize(this.hass);
     const cfg = this._config;
     const curveParams = {
@@ -362,32 +355,6 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> imple
     };
   }
 
-  protected async firstUpdated() {
-    await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
-    await this.updateComplete;
-    this._initChart();
-    this._setupResizeObserver();
-  }
-
-  private _initChart() {
-    if (this._chartInitialized) return;
-    this._chart = new ApexCharts(this._chartEl, this._buildChartOptions());
-    this._chart.render();
-    this._chartInitialized = true;
-  }
-
-  private _setupResizeObserver() {
-    let resizeTimeout: ReturnType<typeof setTimeout>;
-    this._resizeObserver = new ResizeObserver(() => {
-      if (!this._chartInitialized || !this._chart) return;
-      clearTimeout(resizeTimeout);
-      resizeTimeout = setTimeout(() => {
-        window.dispatchEvent(new Event('resize'));
-      }, 100);
-    });
-    this._resizeObserver.observe(this._chartWrapper);
-  }
-
   private _updateChartSeries(): void {
     if (!this._chart) return;
     const opts = this._buildChartOptions();
@@ -396,37 +363,10 @@ export class EquithermCurveCard extends EquithermBaseCard<CurveCardConfig> imple
     this._chart.updateOptions({ annotations: opts.annotations }, false, false);
   }
 
-  private _updateChartOptions(): void {
-    if (!this._chart) return;
-    const opts = this._buildChartOptions();
-    // false, false = no redraw, no animation (prevents perceived lag)
-    this._chart.updateOptions(opts, false, false);
-  }
-
   private _structuralParamsChanged(prev: CurveCardConfig | undefined, next: CurveCardConfig): boolean {
     if (!prev) return true;
     const keys: (keyof CurveStructuralParams)[] = ['hc', 'n', 'shift', 'min_flow', 'max_flow', 't_out_min', 't_out_max'];
     return keys.some(key => prev[key] !== next[key]);
-  }
-
-  disconnectedCallback() {
-    super.disconnectedCallback();
-    this._resizeObserver?.disconnect();
-    this._chart?.destroy();
-    this._chart = undefined;
-    this._chartInitialized = false;
-  }
-
-  connectedCallback() {
-    super.connectedCallback();
-    // Reinitialize chart if destroyed (e.g., after exiting HA edit mode)
-    if (this._config && this.hass && !this._chartInitialized) {
-      requestAnimationFrame(async () => {
-        await this.updateComplete;
-        this._initChart();
-        this._setupResizeObserver();
-      });
-    }
   }
 
   static get styles() {

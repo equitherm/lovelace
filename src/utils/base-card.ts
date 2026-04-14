@@ -11,7 +11,7 @@ import setupCustomlocalize from '../localize';
  * Base class for equitherm cards.
  * Extends EquithermBaseElement with card-specific helpers.
  */
-export abstract class EquithermBaseCard<TConfig> extends EquithermBaseElement {
+export class EquithermBaseCard<TConfig> extends EquithermBaseElement {
   @state() protected _config!: TConfig;
 
   /** Get entity state by ID */

@@ -29,6 +29,14 @@
     "outdoor_tooltip": "{temp}°C outdoor",
     "flow_tooltip": "{temp}°C flow"
   },
+  "forecast_card": {
+    "name": "Equitherm Forecast Card",
+    "description": "Heating forecast based on weather predictions",
+    "default_title": "Heating Forecast",
+    "flow_temp": "Flow Temp",
+    "outdoor_temp": "Outdoor",
+    "peak": "Peak"
+  },
   "editor": {
     "required": "Required",
     "optional": "Optional",
@@ -59,6 +67,9 @@
     "min_flow": "Min Flow",
     "max_flow": "Max Flow",
     "t_out_min": "Min Outdoor",
-    "t_out_max": "Max Outdoor"
+    "t_out_max": "Max Outdoor",
+    "weather_entity": "Weather Entity",
+    "hours": "Forecast Hours",
+    "forecast_settings": "Forecast"
   }
 }

@@ -29,6 +29,14 @@
     "outdoor_tooltip": "{temp}°C extérieur",
     "flow_tooltip": "{temp}°C départ"
   },
+  "forecast_card": {
+    "name": "Carte Prévision Equitherm",
+    "description": "Prévision de chauffage basée sur les prévisions météo",
+    "default_title": "Prévision Chauffage",
+    "flow_temp": "Temp. Départ",
+    "outdoor_temp": "Extérieur",
+    "peak": "Pic"
+  },
   "editor": {
     "required": "Requis",
     "optional": "Optionnel",
@@ -59,6 +67,9 @@
     "min_flow": "Départ Min",
     "max_flow": "Départ Max",
     "t_out_min": "Extérieur Min",
-    "t_out_max": "Extérieur Max"
+    "t_out_max": "Extérieur Max",
+    "weather_entity": "Entité Météo",
+    "hours": "Heures de Prévision",
+    "forecast_settings": "Prévision"
   }
 }
