@@ -7,7 +7,6 @@ import type { LovelaceGridOptions, LovelaceCard } from '../../ha/panels/lovelace
 import type { HomeAssistant } from '../../ha';
 import type { ClimateEntity } from '../../ha/data/climate';
 import { computeDomain } from '../../ha/common/entity/compute_domain';
-import { EquithermBaseCard } from '../../utils/base-card';
 import { computeEntityNameDisplay } from '../../ha/common/entity/compute_entity_name_display';
 import { cardStyle } from '../../utils/card-styles';
 import { registerCustomCard } from '../../utils/register-card';
@@ -21,7 +20,7 @@ registerCustomCard({
   description: 'Heating curve visualization with current operating point',
 });
 import { buildCurveSeries, flowAtOutdoor } from '../../utils/curve';
-import { chartMixin } from '../../utils/chart-mixin';
+import { EquithermChartCard } from '../../utils/base';
 import setupCustomLocalize from '../../localize';
 import '../../shared/badge-info';
 import '../../shared/shape-icon';
@@ -43,7 +42,7 @@ const MARKER_CURVE_OUTPUT = 8;
 const MARKER_RATE_LIMITED = 6;
 
 @customElement(CURVE_CARD_NAME)
-export class EquithermCurveCard extends chartMixin(EquithermBaseCard<CurveCardConfig>) implements LovelaceCard {
+export class EquithermCurveCard extends EquithermChartCard<CurveCardConfig> implements LovelaceCard {
   protected updated(changedProps: Map<string, unknown>): void {
     super.updated(changedProps);
     if (!this._chart) return;

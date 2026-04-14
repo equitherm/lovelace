@@ -7,7 +7,7 @@ import type { HomeAssistant } from '../../ha/types';
 import type { LovelaceGridOptions, LovelaceCard } from '../../ha/panels/lovelace/types';
 import type { ClimateEntity } from '../../ha/data/climate';
 import { computeDomain } from '../../ha/common/entity/compute_domain';
-import { EquithermBaseCard } from '../../utils/base-card';
+import { EquithermBaseCard } from '../../utils/base';
 import { computeEntityNameDisplay } from '../../ha/common/entity/compute_entity_name_display';
 import { cardStyle } from '../../utils/card-styles';
 import { registerCustomCard } from '../../utils/register-card';

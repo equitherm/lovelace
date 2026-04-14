@@ -8,8 +8,7 @@ import type { HomeAssistant } from '../../ha';
 import type { ClimateEntity } from '../../ha/data/climate';
 import type { ForecastPoint, ForecastCurveConfig } from '../../utils/forecast';
 import { computeDomain } from '../../ha/common/entity/compute_domain';
-import { EquithermBaseCard } from '../../utils/base-card';
-import { chartMixin } from '../../utils/chart-mixin';
+import { EquithermChartCard } from '../../utils/base';
 import { computeEntityNameDisplay } from '../../ha/common/entity/compute_entity_name_display';
 import { cardStyle } from '../../utils/card-styles';
 import { registerCustomCard } from '../../utils/register-card';
@@ -39,7 +38,7 @@ interface OutdoorDataPoint {
 }
 
 @customElement(FORECAST_CARD_NAME)
-export class EquithermForecastCard extends chartMixin(EquithermBaseCard<ForecastCardConfig>) implements LovelaceCard {
+export class EquithermForecastCard extends EquithermChartCard<ForecastCardConfig> implements LovelaceCard {
   @state() private _forecastPoints: ForecastPoint[] = [];
   private _unsub?: () => void;
 
