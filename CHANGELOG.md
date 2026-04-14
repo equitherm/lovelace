@@ -1,3 +1,9 @@
+## [1.2.0](https://github.com/equitherm/lovelace/compare/v1.1.1...v1.2.0) (2026-04-14)
+
+### Features
+
+* entity name picker and live curve params ([#10](https://github.com/equitherm/lovelace/issues/10)) ([0672923](https://github.com/equitherm/lovelace/commit/0672923ab7ebf0f9d2dc08d626c7808f98715da9))
+
 ## [1.1.1](https://github.com/equitherm/lovelace/compare/v1.1.0...v1.1.1) (2026-04-12)
 
 ### Bug Fixes
