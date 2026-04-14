@@ -97,21 +97,32 @@ Backported from lovelace-mushroom to avoid `custom-card-helpers` dependency:
 ```
 src/ha/
 ├── index.ts                    # Barrel export
-├── types.ts                    # HomeAssistant type
+├── types.ts                    # HomeAssistant, registry types
 ├── common/
 │   ├── const.ts                # Domain constants
 │   ├── dom/fire_event.ts       # Event firing
-│   ├── entity/compute_domain.ts
+│   ├── array/ensure-array.ts   # Array wrapping utility
+│   ├── entity/
+│   │   ├── compute_domain.ts
+│   │   ├── compute_entity_name.ts         # Entity name from registry
+│   │   ├── compute_entity_name_display.ts # HA-native name display with picker support
+│   │   ├── compute_object_id.ts
+│   │   ├── compute_state_name.ts
+│   │   ├── compute_area_name.ts
+│   │   ├── compute_device_name.ts
+│   │   ├── compute_floor_name.ts
+│   │   ├── strip_prefix_from_entity_name.ts
+│   │   └── context/get_entity_context.ts  # Entity→device→area→floor lookup
 │   ├── translations/localize.ts
 │   └── util/                   # debounce, deep-equal, compute_rtl
 ├── data/
-│   ├── climate.ts              # ClimateEntity types
+│   ├── climate.ts              # ClimateEntity, HvacAction types
 │   ├── entity.ts               # HassEntity helpers
-│   ├── lovelace.ts             # Lovelace types
+│   ├── lovelace.ts             # Lovelace badge config types
 │   ├── translation.ts
 │   └── ws-themes.ts
 └── panels/lovelace/
-    ├── types.ts
+    ├── types.ts                # LovelaceCard, LovelaceCardConfig, grid options
     └── common/                 # handle-actions, has-action
 ```
 
@@ -139,6 +150,8 @@ Compact tile showing heating status with temperature displays.
 - `flow_entity` - Flow setpoint sensor
 
 **Optional config:**
+- `name` - Entity name picker object/array (e.g. `{ type: entity }` or `[{ type: text, text: "..." }, { type: device }]`)
+- `title` - *Deprecated* — use `name` instead
 - `curve_output_entity` - When set, shows "ADJUSTING" indicator with target
 - `pid_output_entity` - PID output sensor, used for rate-limit direction
 - `rate_limiting_entity` - Binary sensor, enables ramping display
@@ -162,9 +175,15 @@ Heating curve visualization with ApexCharts.
 - `curve_output_entity` - Curve output temperature sensor
 
 **Optional config:**
+- `name` - Entity name picker object/array (same format as status card)
+- `title` - *Deprecated* — use `name` instead
 - `pid_output_entity` - PID output sensor for rate-limit direction
 - `rate_limiting_entity` - Binary sensor for rate limiting
 - `pid_active_entity` - Binary sensor, shows PID correction status
+- `curve_from_entities` - Read curve params from entities instead of static values
+- `hc_entity` - Entity for live heat curve coefficient
+- `n_entity` - Entity for live exponent
+- `shift_entity` - Entity for live shift offset
 
 **Features:**
 - Line chart with horizontal gradient (customizable via `--curve-gradient-start` / `--curve-gradient-end` CSS vars)

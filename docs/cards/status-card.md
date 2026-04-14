@@ -29,9 +29,12 @@ type: custom:equitherm-status-card
 climate_entity: climate.equitherm
 outdoor_entity: sensor.outdoor_temperature
 flow_entity: sensor.flow_setpoint
-curve_output_entity: sensor.heating_curve_output  # optional
-rate_limiting_entity: binary_sensor.rate_limiting  # optional
-pid_active_entity: binary_sensor.pid_active  # optional
+# Optional:
+curve_output_entity: sensor.heating_curve_output
+rate_limiting_entity: binary_sensor.rate_limiting
+pid_active_entity: binary_sensor.pid_active
+name:  # entity name picker (recommended)
+  type: entity
 layout: default  # default, vertical, or horizontal
 ```
 
@@ -46,7 +49,8 @@ layout: default  # default, vertical, or horizontal
 | `rate_limiting_entity` | string | No | Binary sensor for rate limiting status |
 | `pid_active_entity` | string | No | Binary sensor for PID correction status |
 | `layout` | string | No | `default`, `vertical`, or `horizontal` |
-| `title` | string | No | Entity friendly name | Card title |
+| `name` | entity | No | Entity name picker config (defaults to entity friendly name). Examples: `name: { type: entity }` or `name: [{ type: text, text: "Prefix" }, { type: device }]` |
+| `title` | string | No | *Deprecated* — use `name` instead |
 
 ## Layout Examples
 
