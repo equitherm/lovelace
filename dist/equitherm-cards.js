@@ -4159,6 +4159,10 @@ var editor$1 = {
 	entities: "Entities",
 	curve_parameters: "Curve Parameters",
 	display_range: "Display Range",
+	curve_from_entities: "Live parameters from device",
+	hc_entity: "Heat Curve Entity",
+	n_entity: "Exponent Entity",
+	shift_entity: "Shift Entity",
 	hc: "Heat Curve (hc)",
 	n: "Exponent (n)",
 	shift: "Shift",
@@ -4233,6 +4237,10 @@ var editor = {
 	entities: "Entités",
 	curve_parameters: "Paramètres Courbe",
 	display_range: "Plage d'Affichage",
+	curve_from_entities: "Paramètres live depuis l'appareil",
+	hc_entity: "Entité Coeff. Courbe",
+	n_entity: "Entité Exposant",
+	shift_entity: "Entité Décalage",
 	hc: "Coeff. Courbe (hc)",
 	n: "Exposant (n)",
 	shift: "Décalage",
@@ -38840,6 +38848,10 @@ const CurveCardConfigStruct = type({
     pid_active_entity: optional(string()),
     title: optional(any()),
     name: optional(any()),
+    curve_from_entities: optional(any()),
+    hc_entity: optional(string()),
+    n_entity: optional(string()),
+    shift_entity: optional(string()),
     hc: optional(number$1()),
     n: optional(number$1()),
     shift: optional(number$1()),
@@ -39001,6 +39013,14 @@ let EquithermCurveCard = class EquithermCurveCard extends EquithermBaseCard {
         this._config = validateCurveCardConfig(config);
     }
     getCardSize() { return 3; }
+    /** Read a number from an entity state, falling back to a config default */
+    _resolveEntityNumber(entityId, fallback) {
+        const s = this._entityState(entityId);
+        if (!s)
+            return fallback;
+        const val = parseFloat(s.state);
+        return isNaN(val) ? fallback : val;
+    }
     get _climate() {
         return this._entityState(this._config.climate_entity);
     }
@@ -39079,9 +39099,9 @@ let EquithermCurveCard = class EquithermCurveCard extends EquithermBaseCard {
         const cfg = this._config;
         const curveParams = {
             tTarget: this._tTarget,
-            hc: cfg.hc,
-            n: cfg.n,
-            shift: cfg.shift,
+            hc: cfg.curve_from_entities ? this._resolveEntityNumber(cfg.hc_entity, cfg.hc) : cfg.hc,
+            n: cfg.curve_from_entities ? this._resolveEntityNumber(cfg.n_entity, cfg.n) : cfg.n,
+            shift: cfg.curve_from_entities ? this._resolveEntityNumber(cfg.shift_entity, cfg.shift) : cfg.shift,
             minFlow: cfg.min_flow,
             maxFlow: cfg.max_flow,
         };
@@ -39496,7 +39516,7 @@ BadgeIcon = __decorate([
 ], BadgeIcon);
 
 // Cards
-console.info('%c EQUITHERM-CARDS %c 1.1.0 ', 'color: white; background: #f97316; font-weight: bold;', 'color: #f97316; background: white; font-weight: bold;');
+console.info('%c EQUITHERM-CARDS %c 1.1.1 ', 'color: white; background: #f97316; font-weight: bold;', 'color: #f97316; background: white; font-weight: bold;');
 
 var safeIsNaN = Number.isNaN ||
     function ponyfill(value) {
@@ -39752,7 +39772,7 @@ const schemaHelpers = {
 let EquithermCurveCardEditor = class EquithermCurveCardEditor extends i$2 {
     constructor() {
         super(...arguments);
-        this._getSchema = memoizeOne(() => {
+        this._getSchema = memoizeOne((curveFromEntities) => {
             const localize = setupCustomlocalize(this.hass);
             return [
                 // Required entities — top level
@@ -39770,11 +39790,20 @@ let EquithermCurveCardEditor = class EquithermCurveCardEditor extends i$2 {
                 ]),
                 // Curve parameters
                 schemaHelpers.expandable(localize('editor.curve_parameters'), 'mdi:chart-bell-curve', [
-                    schemaHelpers.grid([
-                        schemaHelpers.number('hc', 0.5, 3.0, 0.1),
-                        schemaHelpers.number('n', 1.0, 2.0, 0.05),
-                    ]),
-                    schemaHelpers.number('shift', -15, 15, 1, { unit_of_measurement: '°C' }),
+                    { name: 'curve_from_entities', selector: { boolean: {} } },
+                    ...(curveFromEntities
+                        ? [
+                            schemaHelpers.entity('hc_entity', { domain: 'number' }),
+                            schemaHelpers.entity('n_entity', { domain: 'number' }),
+                            schemaHelpers.entity('shift_entity', { domain: 'number' }),
+                        ]
+                        : [
+                            schemaHelpers.grid([
+                                schemaHelpers.number('hc', 0.5, 3.0, 0.1),
+                                schemaHelpers.number('n', 1.0, 2.0, 0.05),
+                            ]),
+                            schemaHelpers.number('shift', -15, 15, 1, { unit_of_measurement: '°C' }),
+                        ]),
                     schemaHelpers.grid([
                         schemaHelpers.number('min_flow', 15, 35, 1, { unit_of_measurement: '°C' }),
                         schemaHelpers.number('max_flow', 50, 90, 1, { unit_of_measurement: '°C' }),
@@ -39819,7 +39848,7 @@ let EquithermCurveCardEditor = class EquithermCurveCardEditor extends i$2 {
       <ha-form
         .hass=${this.hass}
         .data=${this._config}
-        .schema=${this._getSchema()}
+        .schema=${this._getSchema(!!this._config.curve_from_entities)}
         .computeLabel=${this._computeLabel}
         .error=${this._error}
         @value-changed=${this._valueChanged}

@@ -31,6 +31,14 @@ tasks:
     cmds:
       - rm -rf node_modules dist/*.js
 
+  dev:full:
+    desc: Start Rollup watch + Home Assistant (stable) concurrently
+    cmds:
+      - |
+        pnpm start &
+        pnpm start:hass-stable &
+        wait
+
   ci:
     desc: Run CI checks (install, build, typecheck)
     cmds:
