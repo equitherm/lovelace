@@ -42,9 +42,11 @@
     "optional": "Optionnel",
     "appearance": "Apparence",
     "layout": "Disposition",
-    "layout_default": "Défaut",
-    "layout_vertical": "Verticale",
-    "layout_horizontal": "Horizontale",
+    "content_layout": "Disposition",
+    "layout_options": {
+      "horizontal": "Horizontal",
+      "vertical": "Verticale"
+    },
     "climate_entity": "Entité Climat",
     "outdoor_entity": "Température Extérieure",
     "flow_entity": "Consigne Départ",

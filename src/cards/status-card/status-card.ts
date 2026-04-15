@@ -27,17 +27,12 @@ registerCustomCard({
 @customElement(STATUS_CARD_NAME)
 export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
   // Layout property reflected to attribute for CSS styling
-  @property({ reflect: true, type: String }) layout: 'default' | 'vertical' | 'horizontal' = 'default';
+  @property({ reflect: true, type: Boolean }) vertical = false;
 
   public getGridOptions(): LovelaceGridOptions {
-    const layout = this._config?.layout ?? 'default';
-
-    switch (layout) {
-      case 'vertical':
-        return { columns: 6, rows: 4, min_rows: 4 };
-      default:
-        return { columns: 12, rows: 3, min_rows: 1 };
-    }
+    return this.vertical
+      ? { columns: 6, rows: 4, min_rows: 4 }
+      : { columns: 12, rows: 3, min_rows: 1 };
   }
 
   static async getStubConfig(hass: HomeAssistant): Promise<StatusCardConfig> {
@@ -81,7 +76,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
 
   setConfig(config: unknown) {
     this._config = validateStatusCardConfig(config);
-    this.layout = this._config.layout ?? 'default';
+    this.vertical = this._config.vertical ?? false;
   }
 
   private get _outdoorTemp(): string {
@@ -217,7 +212,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
   render() {
     if (!this._config || !this.hass) return nothing;
     const localize = setupCustomLocalize(this.hass);
-    const layout = this._config.layout ?? 'default';
+    const vertical = this._config.vertical ?? false;
     const rawAction = this._climate?.attributes.hvac_action ?? 'off';
     const hvacAction = normalizeHvacAction(rawAction);
     const lookup = (id: string) => this._entityState(id)!;
@@ -274,7 +269,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
           </div>
         </div>
 
-        <div class=${classMap({ temps: true, vertical: layout === 'vertical', horizontal: layout === 'horizontal' })}>
+        <div class=${classMap({ temps: true, vertical })}>
           <div class="temp-block" @click=${() => this._openMoreInfo(this._config.outdoor_entity)}>
             <div class="temp-value">${this._outdoorTemp}</div>
             <div class="temp-label">${localize('common.outdoor')}</div>

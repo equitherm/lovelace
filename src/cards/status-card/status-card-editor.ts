@@ -23,12 +23,20 @@ export class StatusCardEditor extends LitElement implements LovelaceCardEditor {
   }
 
   protected _valueChanged(ev: CustomEvent): void {
+    ev.stopPropagation();
     if (!this._config) return;
-    const newConfig = { ...this._config, ...ev.detail.value } as StatusCardConfig;
+    let newConfig = { ...this._config, ...ev.detail.value } as Record<string, unknown>;
+    // Convert content_layout selector → vertical boolean
+    if ('content_layout' in newConfig) {
+      newConfig.vertical = newConfig.content_layout === 'vertical';
+      delete newConfig.content_layout;
+    }
+    // Clean up legacy layout field
+    delete (newConfig as Record<string, unknown>).layout;
     try {
       validateStatusCardConfig(newConfig);
       this._error = undefined;
-      fireEvent(this, 'config-changed', { config: newConfig });
+      fireEvent(this, 'config-changed', { config: newConfig as StatusCardConfig });
     } catch (err) {
       this._error = { base: (err as Error).message };
     }
@@ -60,15 +68,14 @@ export class StatusCardEditor extends LitElement implements LovelaceCardEditor {
       // Appearance
       schemaHelpers.expandable(localize('editor.appearance'), 'mdi:palette-outline', [
         {
-          name: 'layout',
+          name: 'content_layout',
           selector: {
             select: {
-              options: [
-                { value: 'default', label: localize('editor.layout_default') },
-                { value: 'vertical', label: localize('editor.layout_vertical') },
-                { value: 'horizontal', label: localize('editor.layout_horizontal') },
-              ],
-              mode: 'dropdown',
+              mode: 'box',
+              options: ['horizontal', 'vertical'].map((value) => ({
+                value,
+                label: localize(`editor.layout_options.${value}`),
+              })),
             },
           },
         },
@@ -96,7 +103,7 @@ export class StatusCardEditor extends LitElement implements LovelaceCardEditor {
     return html`
       <ha-form
         .hass=${this.hass}
-        .data=${this._config}
+        .data=${{ ...this._config, content_layout: this._config.vertical ? 'vertical' : 'horizontal' }}
         .schema=${this._getSchema()}
         .computeLabel=${this._computeLabel}
         .computeHelper=${this._computeHelper}

@@ -42,9 +42,11 @@
     "optional": "Optional",
     "appearance": "Appearance",
     "layout": "Layout",
-    "layout_default": "Default",
-    "layout_vertical": "Vertical",
-    "layout_horizontal": "Horizontal",
+    "content_layout": "Layout",
+    "layout_options": {
+      "horizontal": "Horizontal",
+      "vertical": "Vertical"
+    },
     "climate_entity": "Climate Entity",
     "outdoor_entity": "Outdoor Temperature",
     "flow_entity": "Flow Setpoint",

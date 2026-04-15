@@ -1,6 +1,5 @@
 // src/cards/status-card/status-card-config.ts
-import { assert, type, string, optional, any } from 'superstruct';
-import { layoutStruct, type Layout } from '../../utils/layout';
+import { assert, type, string, optional, any, boolean } from 'superstruct';
 import type { EntityNameItem } from '../../ha';
 
 export interface StatusCardConfig {
@@ -12,7 +11,7 @@ export interface StatusCardConfig {
   pid_output_entity?: string;
   rate_limiting_entity?: string;
   pid_active_entity?: string;
-  layout?: Layout;
+  vertical?: boolean;
   name?: string | EntityNameItem | EntityNameItem[];
   /** @deprecated Use `name` instead */
   title?: string;
@@ -29,18 +28,13 @@ export const StatusCardConfigStruct = type({
   pid_output_entity: optional(string()),
   rate_limiting_entity: optional(string()),
   pid_active_entity: optional(string()),
-  layout: optional(layoutStruct),
+  vertical: optional(boolean()),
   name: optional(any()),
   title: optional(any()),
 });
 
-/** Default values for optional fields */
-export const STATUS_CARD_DEFAULTS: Partial<StatusCardConfig> = {
-  layout: 'default',
-};
-
 /** Validate and apply defaults */
 export function validateStatusCardConfig(config: unknown): StatusCardConfig {
   assert(config, StatusCardConfigStruct);
-  return { ...STATUS_CARD_DEFAULTS, ...config };
+  return config as StatusCardConfig;
 }
