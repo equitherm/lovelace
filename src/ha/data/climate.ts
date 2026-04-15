@@ -77,3 +77,29 @@ export const enum ClimateEntityFeature {
   TURN_ON = 256,
   SWING_HORIZONTAL_MODE = 512,
 }
+
+// Climate icon/color mappings - backported from HA frontend src/data/climate.ts
+
+export const CLIMATE_HVAC_ACTION_TO_MODE: Record<HvacAction, HvacMode> = {
+  cooling: "cool",
+  defrosting: "heat",
+  drying: "dry",
+  fan: "fan_only",
+  heating: "heat",
+  idle: "off",
+  off: "off",
+  preheating: "heat",
+};
+
+export const CLIMATE_HVAC_MODE_ICONS: Record<HvacMode, string> = {
+  auto: "mdi:thermostat-auto",
+  cool: "mdi:snowflake",
+  dry: "mdi:water-percent",
+  fan_only: "mdi:fan",
+  heat: "mdi:fire",
+  heat_cool: "mdi:sun-snowflake-variant",
+  off: "mdi:power",
+};
+
+export const climateHvacModeIcon = (mode: string): string =>
+  CLIMATE_HVAC_MODE_ICONS[mode as HvacMode] ?? "mdi:thermostat";

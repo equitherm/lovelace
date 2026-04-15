@@ -15,7 +15,6 @@ import { validateStatusCardConfig } from './status-card-config';
 import { STATUS_CARD_NAME, STATUS_CARD_EDITOR_NAME, CLIMATE_ENTITY_DOMAINS, SENSOR_ENTITY_DOMAINS } from './const';
 import { getHvacActionColor, normalizeHvacAction, getHvacBadgeProps } from '../../utils/hvac-colors';
 import { isRateLimitingActive, isPidActive, getAdjustingDirection, getRateTargetEntity } from '../../utils/climate-helpers';
-import '../../shared/shape-icon';
 import '../../shared/badge-info';
 
 registerCustomCard({
@@ -106,6 +105,9 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
       super.styles,
       cardStyle,
       css`
+        ha-card {
+          height: 100%;
+        }
         .header {
           display: flex;
           align-items: center;
@@ -113,7 +115,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
           gap: 12px;
           flex-shrink: 0;
         }
-        eq-shape-icon {
+        ha-tile-icon {
           cursor: pointer;
           flex-shrink: 0;
         }
@@ -125,7 +127,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
           gap: 2px;
         }
         .title {
-          font-size: var(--font-size-md);
+          font-size: var(--ha-font-size-m, 1rem);
           font-weight: 600;
           color: var(--primary-text-color);
           line-height: 1.2;
@@ -169,7 +171,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
           background: var(--secondary-background-color, rgba(0,0,0,0.05));
         }
         .temp-value {
-          font-size: var(--font-size-lg);
+          font-size: var(--ha-font-size-xl, 1.4rem);
           font-weight: 600;
           font-variant-numeric: tabular-nums;
           line-height: 1;
@@ -199,7 +201,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
         .temps.vertical {
           grid-template-columns: 1fr;
           grid-template-rows: auto auto auto;
-          gap: var(--spacing-md);
+          gap: 12px;
         }
         .temps.vertical .arrow,
         .temps.vertical .divider {
@@ -228,8 +230,8 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
     // Build icon styles from action color (Mushroom pattern)
     const color = getHvacActionColor(hvacAction);
     const iconStyles = styleMap({
-      '--icon-color': `rgb(${color})`,
-      '--shape-color': `rgba(${color}, 0.2)`,
+      '--tile-icon-color': `rgb(${color})`,
+      '--tile-icon-size': '42px',
     });
 
     const hvacBadge = getHvacBadgeProps(localize, hvacAction, rateLimiting, adjustingDir);
@@ -246,12 +248,13 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
     return html`
       <ha-card>
         <div class="header">
-          <eq-shape-icon
-              .icon=${'mdi:thermostat'}
-              .size=${42}
+          <ha-tile-icon
+              .interactive=${true}
               style=${iconStyles}
               @click=${() => this._openMoreInfo(this._config.climate_entity)}
-            ></eq-shape-icon>
+            >
+              <ha-icon slot="icon" .icon=${'mdi:thermostat'}></ha-icon>
+            </ha-tile-icon>
           <div class="header-info">
             <span class="title">${title}</span>
             ${this._climate?.attributes.temperature != null ? html`

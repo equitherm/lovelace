@@ -22,7 +22,6 @@ import { buildCurveSeries, flowAtOutdoor } from '../../utils/curve';
 import { EquithermChartCard } from '../../utils/base';
 import setupCustomLocalize from '../../localize';
 import '../../shared/badge-info';
-import '../../shared/shape-icon';
 
 /** Curve parameters that affect the curve shape (require full rebuild) */
 type CurveStructuralParams = Pick<CurveCardConfig,
@@ -328,7 +327,7 @@ export class EquithermCurveCard extends EquithermChartCard<CurveCardConfig> {
           gap: 12px;
           flex-shrink: 0;
         }
-        eq-shape-icon {
+        ha-tile-icon {
           cursor: pointer;
           flex-shrink: 0;
         }
@@ -346,7 +345,7 @@ export class EquithermCurveCard extends EquithermChartCard<CurveCardConfig> {
           flex-shrink: 0;
         }
         .title {
-          font-size: var(--font-size-md);
+          font-size: var(--ha-font-size-m, 1rem);
           font-weight: 600;
           color: var(--primary-text-color);
         }
@@ -385,7 +384,7 @@ export class EquithermCurveCard extends EquithermChartCard<CurveCardConfig> {
           background: var(--secondary-background-color, rgba(0,0,0,0.04));
         }
         .footer-value {
-          font-size: var(--font-size-md);
+          font-size: var(--ha-font-size-m, 1rem);
           font-weight: 600;
           font-variant-numeric: tabular-nums;
           color: var(--primary-text-color);
@@ -403,7 +402,7 @@ export class EquithermCurveCard extends EquithermChartCard<CurveCardConfig> {
           margin-top: 0;
         }
         .footer-sep {
-          font-size: var(--font-size-sm);
+          font-size: var(--ha-font-size-s, 0.8rem);
           color: var(--divider-color, rgba(0,0,0,0.2));
           user-select: none;
         }
@@ -433,8 +432,8 @@ export class EquithermCurveCard extends EquithermChartCard<CurveCardConfig> {
     // Build icon styles from action color (Mushroom pattern)
     const color = getHvacActionColor(hvacAction);
     const iconStyles = styleMap({
-      '--icon-color': `rgb(${color})`,
-      '--shape-color': `rgba(${color}, 0.2)`,
+      '--tile-icon-color': `rgb(${color})`,
+      '--tile-icon-size': '42px',
     });
 
     const hvacBadge = getHvacBadgeProps(localize, hvacAction, rateLimiting, adjustingDir);
@@ -451,12 +450,13 @@ export class EquithermCurveCard extends EquithermChartCard<CurveCardConfig> {
     return html`
       <ha-card>
         <div class="header">
-          <eq-shape-icon
-            .icon=${'mdi:thermostat'}
-            .size=${42}
+          <ha-tile-icon
+            .interactive=${true}
             style=${iconStyles}
             @click=${() => this._openMoreInfo(this._config.climate_entity)}
-          ></eq-shape-icon>
+          >
+            <ha-icon slot="icon" .icon=${'mdi:thermostat'}></ha-icon>
+          </ha-tile-icon>
           <div class="header-info">
             <span class="title">${title}</span>
             ${this._climate?.attributes.temperature != null ? html`

@@ -9,7 +9,6 @@ import {
 import { customElement, property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { Appearance } from "./config/appearance-config";
-import "./shape-icon";
 
 @customElement("eq-state-item")
 export class StateItem extends LitElement {
@@ -56,8 +55,8 @@ export class StateItem extends LitElement {
         align-items: center;
         justify-content: center;
         box-sizing: border-box;
-        padding: var(--spacing);
-        gap: var(--spacing);
+        padding: 10px;
+        gap: 10px;
       }
       .icon {
         position: relative;

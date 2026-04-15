@@ -1,10 +1,6 @@
 import { css, CSSResultGroup, LitElement, PropertyValues } from "lit";
 import { property } from "lit/decorators.js";
 import { HomeAssistant } from "../../ha";
-import "../../shared/card";
-import "../../shared/shape-avatar";
-import "../../shared/state-info";
-import "../../shared/state-item";
 import { animations } from "../entity-styles";
 import { defaultColorCss, defaultDarkColorCss } from "../colors";
 import { themeColorCss, themeVariables } from "../theme";

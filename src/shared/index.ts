@@ -1,10 +1,6 @@
-// Shared components - Mushroom pattern
+// Shared components
 export * from "./badge-info";
-export * from "./badge-icon";
 export * from "./card";
-export * from "./shape-avatar";
-export * from "./shape-icon";
-export * from "./state-info";
 export * from "./state-item";
 
 // Config types

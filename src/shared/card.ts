@@ -55,8 +55,8 @@ export class Card extends LitElement {
         padding-top: 0 !important;
         padding-bottom: 0 !important;
         padding-left: 0 !important;
-        --control-spacing: var(--spacing);
-        --control-height: var(--icon-size);
+        --control-spacing: 10px;
+        --control-height: 36px;
       }
       .container > ::slotted(eq-state-item) {
         flex: 1;
@@ -68,8 +68,8 @@ export class Card extends LitElement {
         display: none;
       }
       .container.no-content > ::slotted(.actions) {
-        --control-spacing: var(--spacing);
-        --control-height: var(--icon-size);
+        --control-spacing: 10px;
+        --control-height: 36px;
         padding: var(--control-spacing) !important;
       }
     `;

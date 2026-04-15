@@ -5,9 +5,9 @@ export const cardStyle = css`
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    justify-content: var(--layout-align);
+    justify-content: center;
     height: auto;
-    padding: var(--spacing);
+    padding: 10px;
   }
   ha-card.fill-container {
     height: 100%;
@@ -24,10 +24,10 @@ export const cardStyle = css`
     overflow-y: hidden;
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none; /* IE 10+ */
-    padding: var(--control-spacing);
+    padding: 12px;
     padding-top: 0;
     box-sizing: border-box;
-    gap: var(--control-spacing);
+    gap: 12px;
   }
   .actions::-webkit-scrollbar {
     background: transparent; /* Chrome/Safari/Webkit */
