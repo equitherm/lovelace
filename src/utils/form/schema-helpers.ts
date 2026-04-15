@@ -16,18 +16,19 @@ export function entity(
   };
 }
 
-/** Create a number slider field */
+/** Create a number field */
 export function number(
   name: string,
   min: number,
   max: number,
   step = 1,
-  opts: { mode?: 'slider' | 'box'; unit_of_measurement?: string; required?: boolean } = {},
+  opts: { mode?: 'slider' | 'box'; unit_of_measurement?: string; required?: boolean; default?: number } = {},
 ): HaFormSelectorSchema {
   return {
     name,
     required: opts.required ?? false,
-    selector: { number: { min, max, step, mode: opts.mode ?? 'slider', unit_of_measurement: opts.unit_of_measurement } },
+    ...(opts.default !== undefined && { default: opts.default }),
+    selector: { number: { min, max, step, mode: opts.mode ?? 'box', unit_of_measurement: opts.unit_of_measurement } },
   };
 }
 

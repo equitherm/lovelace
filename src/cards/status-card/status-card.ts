@@ -14,7 +14,7 @@ import setupCustomLocalize from '../../localize';
 import { validateStatusCardConfig } from './status-card-config';
 import { STATUS_CARD_NAME, STATUS_CARD_EDITOR_NAME, CLIMATE_ENTITY_DOMAINS, SENSOR_ENTITY_DOMAINS } from './const';
 import { getHvacActionColor, normalizeHvacAction, getHvacBadgeProps } from '../../utils/hvac-colors';
-import { isRateLimitingActive, isPidActive, getAdjustingDirection, getRateTargetEntity } from '../../utils/rate-limiting';
+import { isRateLimitingActive, isPidActive, getAdjustingDirection, getRateTargetEntity } from '../../utils/climate-helpers';
 import '../../shared/shape-icon';
 import '../../shared/badge-info';
 

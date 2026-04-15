@@ -1,7 +1,7 @@
 import type { HassEntity } from 'home-assistant-js-websocket';
 
 /** Config fields needed for rate-limiting calculations */
-export interface RateLimitConfig {
+export interface ClimateHelperConfig {
   rate_limiting_entity?: string;
   pid_active_entity?: string;
   pid_output_entity?: string;
@@ -11,21 +11,21 @@ export interface RateLimitConfig {
 
 type EntityLookup = (id: string) => HassEntity | undefined;
 
-export function isRateLimitingActive(config: RateLimitConfig, lookup: EntityLookup): boolean {
+export function isRateLimitingActive(config: ClimateHelperConfig, lookup: EntityLookup): boolean {
   if (!config.rate_limiting_entity) return false;
   return lookup(config.rate_limiting_entity)?.state === 'on';
 }
 
-export function isPidActive(config: RateLimitConfig, lookup: EntityLookup): boolean {
+export function isPidActive(config: ClimateHelperConfig, lookup: EntityLookup): boolean {
   if (!config.pid_active_entity) return false;
   return lookup(config.pid_active_entity)?.state === 'on';
 }
 
-export function getRateTargetEntity(config: RateLimitConfig): string | undefined {
+export function getRateTargetEntity(config: ClimateHelperConfig): string | undefined {
   return config.pid_output_entity ?? config.curve_output_entity;
 }
 
-export function getAdjustingDirection(config: RateLimitConfig, lookup: EntityLookup): 'rising' | 'falling' | null {
+export function getAdjustingDirection(config: ClimateHelperConfig, lookup: EntityLookup): 'rising' | 'falling' | null {
   if (!isRateLimitingActive(config, lookup)) return null;
   const target = getRateTargetEntity(config);
   if (!target) return null;

@@ -69,31 +69,39 @@ export class EquithermCurveCardEditor extends LitElement implements LovelaceCard
             ]
           : [
               schemaHelpers.grid([
-                schemaHelpers.number('hc', 0.5, 3.0, 0.1),
-                schemaHelpers.number('n', 1.0, 2.0, 0.05),
+                schemaHelpers.number('hc', 0.5, 3.0, 0.1, { default: 0.9 }),
+                schemaHelpers.number('n', 1.0, 2.0, 0.05, { default: 1.25 }),
               ]),
-              schemaHelpers.number('shift', -15, 15, 1, { unit_of_measurement: '°C' }),
+              schemaHelpers.number('shift', -15, 15, 1, { unit_of_measurement: '°C', default: 0 }),
             ]),
         schemaHelpers.grid([
-          schemaHelpers.number('min_flow', 15, 35, 1, { unit_of_measurement: '°C' }),
-          schemaHelpers.number('max_flow', 50, 90, 1, { unit_of_measurement: '°C' }),
+          schemaHelpers.number('min_flow', 15, 35, 1, { unit_of_measurement: '°C', default: 20 }),
+          schemaHelpers.number('max_flow', 50, 90, 1, { unit_of_measurement: '°C', default: 70 }),
         ]),
       ]),
       // Display range
       schemaHelpers.expandable(localize('editor.display_range'), 'mdi:arrow-expand-horizontal', [
         schemaHelpers.grid([
-          schemaHelpers.number('t_out_min', -30, 5, 1, { unit_of_measurement: '°C' }),
-          schemaHelpers.number('t_out_max', 0, 30, 1, { unit_of_measurement: '°C' }),
+          schemaHelpers.number('t_out_min', -30, 5, 1, { unit_of_measurement: '°C', default: -20 }),
+          schemaHelpers.number('t_out_max', 0, 30, 1, { unit_of_measurement: '°C', default: 20 }),
         ]),
       ]),
     ] as const satisfies readonly HaFormSchema[];
   });
 
-  private _computeLabel = (schema: { name: string }): string => {
+  private _computeLabel = (schema: { name: string; required?: boolean }): string => {
     const localize = setupCustomLocalize(this.hass);
     const key = `editor.${schema.name}`;
     const localized = localize(key);
-    return localized !== key ? localized : schema.name;
+    const label = localized !== key ? localized : schema.name;
+    return schema.required === false ? `${label} (${localize('editor.optional')})` : label;
+  };
+
+  private _computeHelper = (schema: { name: string }): string => {
+    const localize = setupCustomLocalize(this.hass);
+    const key = `editor.helper.${schema.name}`;
+    const localized = localize(key);
+    return localized !== key ? localized : '';
   };
 
   render() {
@@ -104,6 +112,7 @@ export class EquithermCurveCardEditor extends LitElement implements LovelaceCard
         .data=${this._config}
         .schema=${this._getSchema(!!this._config.curve_from_entities)}
         .computeLabel=${this._computeLabel}
+        .computeHelper=${this._computeHelper}
         .error=${this._error}
         @value-changed=${this._valueChanged}
       ></ha-form>

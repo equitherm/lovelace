@@ -70,6 +70,24 @@
     "t_out_max": "Max Outdoor",
     "weather_entity": "Weather Entity",
     "hours": "Forecast Hours",
-    "forecast_settings": "Forecast"
+    "forecast_settings": "Forecast",
+    "helper": {
+      "curve_from_entities": "Read from ESPHome runtime-tunable numbers instead of static values",
+      "hc": "How aggressively heating responds to cold — increase if room is too cold in winter",
+      "n": "Radiator type — 1.0 underfloor, 1.25 panel (default), 1.3 cast iron",
+      "shift": "Move the whole curve up or down — increase if too cold in mild weather",
+      "min_flow": "Minimum boiler output, prevents condensation and protects heat exchanger",
+      "max_flow": "Maximum boiler output, protects system and limits energy use",
+      "t_out_min": "Left edge of chart (coldest outdoor temperature displayed)",
+      "t_out_max": "Right edge of chart (warmest outdoor temperature displayed)",
+      "hours": "Hours of weather forecast data to display",
+      "hc_entity": "Runtime-adjustable heat curve coefficient number",
+      "n_entity": "Runtime-adjustable radiator exponent number",
+      "shift_entity": "Runtime-adjustable curve shift number",
+      "curve_output_entity": "Pure heating curve output before PID and rate limiting",
+      "pid_output_entity": "Curve output after PID correction (before rate limiting)",
+      "rate_limiting_entity": "ON when output is ramping to prevent thermal shock",
+      "pid_active_entity": "ON when at least one PID gain (kp, ki, kd) is non-zero"
+    }
   }
 }

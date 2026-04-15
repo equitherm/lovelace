@@ -13,6 +13,7 @@ import { registerCustomCard } from '../../utils/register-card';
 import { FORECAST_CARD_NAME, FORECAST_CARD_EDITOR_NAME, CLIMATE_ENTITY_DOMAINS, SENSOR_ENTITY_DOMAINS } from './const';
 import { validateForecastCardConfig } from './forecast-card-config';
 import { resolveRgbColor, normalizeHvacAction, getHvacActionColor, getHvacBadgeProps } from '../../utils/hvac-colors';
+import { isPidActive } from '../../utils/climate-helpers';
 import { buildForecastSeries, peakDemand } from '../../utils/forecast';
 import setupCustomLocalize from '../../localize';
 import '../../shared/badge-info';
@@ -451,6 +452,16 @@ export class EquithermForecastCard extends EquithermChartCard<ForecastCardConfig
     });
 
     const hvacBadge = getHvacBadgeProps(localize, hvacAction);
+    const pidActive = isPidActive(this._config, (id) => this._entityState(id)!);
+
+    // PID status chip
+    const pidChip = this._config.pid_active_entity
+      ? html`<eq-badge-info
+          .label=${'PID'}
+          style=${`--badge-info-color: ${pidActive ? 'var(--rgb-success)' : 'var(--rgb-disabled)'}`}
+          .icon=${pidActive ? undefined : 'mdi:alert-circle-outline'}
+        ></eq-badge-info>`
+      : nothing;
 
     return html`
       <ha-card>
@@ -468,6 +479,7 @@ export class EquithermForecastCard extends EquithermChartCard<ForecastCardConfig
             ` : nothing}
           </div>
           <div class="badges">
+            ${pidChip}
             <eq-badge-info
               .label=${hvacBadge.label}
               style=${`--badge-info-color: ${hvacBadge.color}`}

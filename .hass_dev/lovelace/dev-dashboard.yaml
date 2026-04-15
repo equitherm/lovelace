@@ -10,6 +10,7 @@ views:
             outdoor_entity: input_number.mock_outdoor_temp
             flow_entity: sensor.mock_flow_setpoint
             curve_output_entity: sensor.mock_heating_curve_output
+            pid_output_entity: sensor.mock_pid_adjusted_output
             rate_limiting_entity: binary_sensor.mock_rate_limiting_active
             pid_active_entity: binary_sensor.mock_pid_active
 
@@ -19,53 +20,85 @@ views:
             climate_entity: climate.mock_equitherm
             outdoor_entity: input_number.mock_outdoor_temp
             curve_output_entity: sensor.mock_heating_curve_output
+            pid_output_entity: sensor.mock_pid_adjusted_output
             flow_entity: sensor.mock_flow_setpoint
             rate_limiting_entity: binary_sensor.mock_rate_limiting_active
             pid_active_entity: binary_sensor.mock_pid_active
+            curve_from_entities: true
+            hc_entity: input_number.heat_curve_coefficient
+            n_entity: input_number.heat_curve_exponent
+            shift_entity: input_number.heat_curve_shift
 
       - type: grid
-        title: Inputs
+        cards:
+          - type: custom:equitherm-forecast-card
+            weather_entity: weather.montlucon
+            climate_entity: climate.mock_equitherm
+            flow_entity: sensor.mock_flow_setpoint
+            pid_active_entity: binary_sensor.mock_pid_active
+            curve_from_entities: true
+            hc_entity: input_number.heat_curve_coefficient
+            n_entity: input_number.heat_curve_exponent
+            shift_entity: input_number.heat_curve_shift
+
+      - type: grid
+        title: Temperatures
         cards:
           - type: entities
             entities:
               - input_number.mock_outdoor_temp
               - input_number.mock_room_temp
               - input_number.mock_target_temp
-              - input_number.mock_heating_curve_output
+          - type: entities
+            entities:
               - input_number.mock_flow_setpoint_input
-          - type: entities
-            entities:
-              - input_number.heat_curve_coefficient
-              - input_number.heat_curve_exponent
-              - input_number.heat_curve_shift
-              - input_number.rate_limit_rising
-              - input_number.rate_limit_falling
-          - type: entities
-            entities:
-              - input_boolean.mock_heating_active
-              - input_boolean.mock_outdoor_fault
-              - input_boolean.mock_indoor_fault
-              - input_boolean.mock_pid_active
-
-      - type: grid
-        title: Sensors
-        cards:
+              - input_number.mock_pid_output
           - type: entities
             entities:
               - sensor.mock_flow_setpoint
               - sensor.mock_heating_curve_output
               - sensor.mock_pid_adjusted_output
               - sensor.mock_active_setpoint
+
+      - type: grid
+        title: Curve Parameters
+        cards:
           - type: entities
             entities:
-              - sensor.mock_pid_correction
-              - sensor.mock_pid_proportional
-              - sensor.mock_pid_integral
-              - sensor.mock_pid_derivative
-              - sensor.mock_fallback_duration
+              - input_number.heat_curve_coefficient
+              - input_number.heat_curve_exponent
+              - input_number.heat_curve_shift
+          - type: entities
+            entities:
+              - input_number.rate_limit_rising
+              - input_number.rate_limit_falling
+
+      - type: grid
+        title: PID
+        cards:
+          - type: entities
+            entities:
+              - input_boolean.mock_pid_active
               - binary_sensor.mock_pid_active
+              - input_number.mock_pid_correction
+              - sensor.mock_pid_correction
           - type: entities
             entities:
+              - input_number.mock_pid_proportional
+              - input_number.mock_pid_integral
+              - input_number.mock_pid_derivative
+              - input_number.mock_fallback_duration
+
+      - type: grid
+        title: System
+        cards:
+          - type: entities
+            entities:
+              - input_boolean.mock_heating_active
               - binary_sensor.mock_rate_limiting_active
+          - type: entities
+            entities:
+              - input_boolean.mock_outdoor_fault
               - binary_sensor.mock_outdoor_sensor_fault
+              - input_boolean.mock_indoor_fault
               - binary_sensor.mock_indoor_sensor_fault

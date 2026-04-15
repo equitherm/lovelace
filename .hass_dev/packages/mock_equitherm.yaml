@@ -24,7 +24,7 @@ input_number:
     min: 10
     max: 30
     step: 0.1
-    initial: 20.8
+    initial: 18.5
     unit_of_measurement: "°C"
     icon: mdi:thermometer
 
@@ -69,15 +69,6 @@ input_number:
     initial: 1.0
     unit_of_measurement: "°C/min"
 
-  # Separate mock for heating curve output (pre-rate-limit) — adjust independently to simulate ramping
-  mock_heating_curve_output:
-    name: "Mock Heating Curve Output (pre-rate-limit)"
-    min: 25
-    max: 70
-    step: 0.1
-    initial: 62.0
-    unit_of_measurement: "°C"
-
   # Mock flow setpoint (rate-limited) — manually adjust to simulate lag behind curve output
   mock_flow_setpoint_input:
     name: "Mock Flow Setpoint (rate-limited)"
@@ -86,6 +77,56 @@ input_number:
     step: 0.1
     initial: 55.0
     unit_of_measurement: "°C"
+
+  # Mock PID-adjusted output — simulates PID correction on top of curve output
+  mock_pid_output:
+    name: "Mock PID Output"
+    min: 25
+    max: 70
+    step: 0.1
+    initial: 60.0
+    unit_of_measurement: "°C"
+
+  # PID tuning values
+  mock_pid_correction:
+    name: "Mock PID Correction"
+    min: -10
+    max: 10
+    step: 0.1
+    initial: 0.0
+    unit_of_measurement: "°C"
+
+  mock_pid_proportional:
+    name: "Mock PID Proportional"
+    min: -10
+    max: 10
+    step: 0.1
+    initial: 0.0
+    unit_of_measurement: "°C"
+
+  mock_pid_integral:
+    name: "Mock PID Integral"
+    min: -10
+    max: 10
+    step: 0.1
+    initial: 0.0
+    unit_of_measurement: "°C"
+
+  mock_pid_derivative:
+    name: "Mock PID Derivative"
+    min: -10
+    max: 10
+    step: 0.1
+    initial: 0.0
+    unit_of_measurement: "°C"
+
+  mock_fallback_duration:
+    name: "Mock Fallback Duration"
+    min: 0
+    max: 3600
+    step: 1
+    initial: 0
+    unit_of_measurement: "s"
 
 input_boolean:
   mock_heating_active:
@@ -101,7 +142,6 @@ input_boolean:
     name: "Indoor Sensor Fault"
     initial: false
 
-input_boolean:
   mock_pid_active:
     name: "PID Active"
     initial: true
@@ -135,17 +175,30 @@ template:
         icon: mdi:thermometer-water
         state: "{{ states('input_number.mock_flow_setpoint_input') }}"
 
+      # HEATING CURVE OUTPUT — computed from equitherm formula
+      # t_flow = t_target + shift + hc × (t_target - t_outdoor)^(1/n)
       - name: "Mock Heating Curve Output"
         unique_id: mock_heating_curve_output
         unit_of_measurement: "°C"
         state_class: measurement
-        state: "{{ states('input_number.mock_heating_curve_output') }}"
+        state: >
+          {% set t = state_attr('climate.mock_equitherm', 'temperature') | float(21) %}
+          {% set o = states('input_number.mock_outdoor_temp') | float(-5) %}
+          {% set hc = states('input_number.heat_curve_coefficient') | float(0.9) %}
+          {% set n = states('input_number.heat_curve_exponent') | float(1.25) %}
+          {% set s = states('input_number.heat_curve_shift') | float(0) %}
+          {% set delta = t - o %}
+          {% if delta <= 0 or n <= 0 %}20
+          {% else %}
+            {% set raw = t + s + hc * (delta ** (1 / n)) %}
+            {{ [20, [raw, 70]|min]|max | round(1) }}
+          {% endif %}
 
       - name: "Mock PID Adjusted Output"
         unique_id: mock_pid_adjusted_output
         unit_of_measurement: "°C"
         state_class: measurement
-        state: "{{ states('sensor.mock_flow_setpoint') }}"
+        state: "{{ states('input_number.mock_pid_output') }}"
 
       - name: "Mock Active Setpoint"
         unique_id: mock_active_setpoint
@@ -157,37 +210,37 @@ template:
         unique_id: mock_pid_correction
         unit_of_measurement: "°C"
         state_class: measurement
-        state: "0.0"
+        state: "{{ states('input_number.mock_pid_correction') }}"
 
       - name: "Mock PID Proportional"
         unique_id: mock_pid_proportional
         unit_of_measurement: "°C"
         state_class: measurement
-        state: "0.0"
+        state: "{{ states('input_number.mock_pid_proportional') }}"
 
       - name: "Mock PID Integral"
         unique_id: mock_pid_integral
         unit_of_measurement: "°C"
         state_class: measurement
-        state: "0.0"
+        state: "{{ states('input_number.mock_pid_integral') }}"
 
       - name: "Mock PID Derivative"
         unique_id: mock_pid_derivative
         unit_of_measurement: "°C"
         state_class: measurement
-        state: "0.0"
+        state: "{{ states('input_number.mock_pid_derivative') }}"
 
       - name: "Mock Fallback Duration"
         unique_id: mock_fallback_duration
         unit_of_measurement: "s"
         state_class: measurement
-        state: "0"
+        state: "{{ states('input_number.mock_fallback_duration') }}"
 
+  - binary_sensor:
       - name: "Mock PID Active"
         unique_id: mock_pid_active
         state: "{{ is_state('input_boolean.mock_pid_active', 'on') and not is_state('input_boolean.mock_indoor_fault', 'on') }}"
 
-  - binary_sensor:
       - name: "Mock Outdoor Sensor Fault"
         unique_id: mock_outdoor_sensor_fault
         state: "{{ is_state('input_boolean.mock_outdoor_fault', 'on') }}"

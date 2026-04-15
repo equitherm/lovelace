@@ -13,6 +13,7 @@ export interface ForecastCardConfig {
   hc_entity?: string;
   n_entity?: string;
   shift_entity?: string;
+  pid_active_entity?: string;
   hc: number;
   n: number;
   shift: number;
@@ -33,6 +34,7 @@ export const ForecastCardConfigStruct = type({
   hc_entity: optional(string()),
   n_entity: optional(string()),
   shift_entity: optional(string()),
+  pid_active_entity: optional(string()),
   hc: optional(number()),
   n: optional(number()),
   shift: optional(number()),
