@@ -4,8 +4,6 @@ import './cards/curve-card/curve-card';
 import './cards/forecast-card/forecast-card';
 
 // Shared components
-import './shared/card';
-import './shared/state-item';
 
 console.info(
   '%c EQUITHERM-CARDS %c __VERSION__ ',
