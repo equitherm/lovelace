@@ -31,6 +31,22 @@ views:
 
       - type: grid
         cards:
+          - type: custom:equitherm-tuning-card
+            climate_entity: climate.mock_equitherm
+            outdoor_entity: input_number.mock_outdoor_temp
+            hc_entity: input_number.heat_curve_coefficient
+            shift_entity: input_number.heat_curve_shift
+            curve_from_entities: true
+            n_entity: input_number.heat_curve_exponent
+            recalculate_service: climate.equitherm_force_recalculate
+            n: 1.25
+            min_flow: 25
+            max_flow: 70
+            t_out_min: -20
+            t_out_max: 20
+
+      - type: grid
+        cards:
           - type: custom:equitherm-forecast-card
             weather_entity: weather.montlucon
             climate_entity: climate.mock_equitherm

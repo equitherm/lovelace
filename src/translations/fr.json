@@ -37,6 +37,16 @@
     "outdoor_temp": "Extérieur",
     "peak": "Pic"
   },
+  "tuning_card": {
+    "name": "Carte Réglage Equitherm",
+    "description": "Réglage interactif de la courbe avec curseurs hc/shift",
+    "default_title": "Réglage Courbe",
+    "current": "Actuelle",
+    "proposed": "Proposée",
+    "apply": "Appliquer",
+    "outdoor_axis": "°C extérieur",
+    "flow_axis": "°C départ"
+  },
   "editor": {
     "required": "Requis",
     "optional": "Optionnel",
@@ -73,6 +83,8 @@
     "weather_entity": "Entité Météo",
     "hours": "Heures de Prévision",
     "forecast_settings": "Prévision",
+    "recalculate_service": "Service de Recalcul",
+    "advanced": "Avancé",
     "helper": {
       "curve_from_entities": "Lire depuis les nombres ESPHome ajustables au lieu de valeurs statiques",
       "hc": "Agressivité du chauffage par temps froid — augmenter si la pièce est trop froide en hiver",
@@ -89,7 +101,8 @@
       "curve_output_entity": "Sortie pure de la courbe de chauffage avant PID et limitation",
       "pid_output_entity": "Sortie de courbe après correction PID (avant limitation)",
       "rate_limiting_entity": "ON quand la sortie est en rampe pour éviter le choc thermique",
-      "pid_active_entity": "ON quand au moins un gain PID (kp, ki, kd) est non nul"
+      "pid_active_entity": "ON quand au moins un gain PID (kp, ki, kd) est non nul",
+      "recalculate_service": "Service à appeler après l'application d'une valeur, ex. climate.equitherm_force_recalculate. Appelé uniquement si le service existe."
     }
   }
 }
