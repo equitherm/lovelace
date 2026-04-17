@@ -1,32 +1,32 @@
-// src/cards/curve-card/curve-card-editor.ts
+// src/cards/forecast-card/forecast-card-editor.ts
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import memoizeOne from 'memoize-one';
-import type { CurveCardConfig } from './curve-card-config';
-import { validateCurveCardConfig } from './curve-card-config';
+import type { ForecastCardConfig } from './forecast-card-config';
+import { validateForecastCardConfig } from './forecast-card-config';
 import type { HomeAssistant } from '../../ha/types';
 import type { LovelaceCardEditor } from '../../ha/panels/lovelace/types';
 import { fireEvent } from '../../ha/common/dom/fire_event';
 import { schemaHelpers } from '../../utils/form';
 import type { HaFormSchema } from '../../utils/form';
 import setupCustomLocalize from '../../localize';
-import { CURVE_CARD_EDITOR_NAME } from './const';
+import { FORECAST_CARD_EDITOR_NAME } from './const';
 
-@customElement(CURVE_CARD_EDITOR_NAME)
-export class EquithermCurveCardEditor extends LitElement implements LovelaceCardEditor {
+@customElement(FORECAST_CARD_EDITOR_NAME)
+export class EquithermForecastCardEditor extends LitElement implements LovelaceCardEditor {
   @property({ attribute: false }) hass!: HomeAssistant;
-  @state() private _config!: CurveCardConfig;
+  @state() private _config!: ForecastCardConfig;
   @state() private _error?: Record<string, string>;
 
-  setConfig(config: CurveCardConfig) {
+  setConfig(config: ForecastCardConfig) {
     this._config = { ...config };
   }
 
   protected _valueChanged(ev: CustomEvent): void {
     if (!this._config) return;
-    const newConfig = { ...this._config, ...ev.detail.value } as CurveCardConfig;
+    const newConfig = { ...this._config, ...ev.detail.value } as ForecastCardConfig;
     try {
-      validateCurveCardConfig(newConfig);
+      validateForecastCardConfig(newConfig);
       this._error = undefined;
       fireEvent(this, 'config-changed', { config: newConfig });
     } catch (err) {
@@ -46,17 +46,17 @@ export class EquithermCurveCardEditor extends LitElement implements LovelaceCard
     const localize = setupCustomLocalize(this.hass);
     return [
       // Required entities — top level
+      schemaHelpers.entity('weather_entity', { domain: 'weather' }),
       schemaHelpers.entity('climate_entity', { domain: 'climate' }),
-      // Name (depends on climate_entity for context)
       schemaHelpers.entityName('name', { entity: 'climate_entity' }),
-      schemaHelpers.entity('outdoor_entity', { domain: ['sensor', 'input_number'], device_class: 'temperature' }),
-      schemaHelpers.entity('curve_output_entity', { domain: ['sensor'], device_class: 'temperature' }),
       schemaHelpers.entity('flow_entity', { domain: ['sensor', 'number', 'input_number'], device_class: 'temperature' }),
       // Optional entities
       schemaHelpers.expandable(localize('editor.optional'), 'mdi:connection', [
-        schemaHelpers.entity('pid_output_entity', { domain: ['sensor'], device_class: 'temperature', required: false }),
-        schemaHelpers.entity('rate_limiting_entity', { domain: ['binary_sensor'], required: false }),
         schemaHelpers.entity('pid_active_entity', { domain: ['binary_sensor'], required: false }),
+      ]),
+      // Forecast settings
+      schemaHelpers.expandable(localize('editor.forecast_settings'), 'mdi:clock-outline', [
+        schemaHelpers.number('hours', 1, 48, 1, { unit_of_measurement: 'h', default: 24 }),
       ]),
       // Curve parameters
       schemaHelpers.expandable(localize('editor.curve_parameters'), 'mdi:chart-bell-curve', [
@@ -77,13 +77,6 @@ export class EquithermCurveCardEditor extends LitElement implements LovelaceCard
         schemaHelpers.grid([
           schemaHelpers.number('min_flow', 15, 35, 1, { unit_of_measurement: '°C', default: 20 }),
           schemaHelpers.number('max_flow', 50, 90, 1, { unit_of_measurement: '°C', default: 70 }),
-        ]),
-      ]),
-      // Display range
-      schemaHelpers.expandable(localize('editor.display_range'), 'mdi:arrow-expand-horizontal', [
-        schemaHelpers.grid([
-          schemaHelpers.number('t_out_min', -30, 5, 1, { unit_of_measurement: '°C', default: -20 }),
-          schemaHelpers.number('t_out_max', 0, 30, 1, { unit_of_measurement: '°C', default: 20 }),
         ]),
       ]),
     ] as const satisfies readonly HaFormSchema[];

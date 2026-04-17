@@ -1,14 +1,9 @@
 // Cards
 import './cards/status-card/status-card';
 import './cards/curve-card/curve-card';
+import './cards/forecast-card/forecast-card';
 
-// Shared components (Mushroom pattern)
-import './shared/badge-icon';
-import './shared/card';
-import './shared/shape-avatar';
-import './shared/shape-icon';
-import './shared/state-info';
-import './shared/state-item';
+// Shared components
 
 console.info(
   '%c EQUITHERM-CARDS %c __VERSION__ ',

@@ -1,69 +1,14 @@
 // src/utils/hvac-colors.ts
 /**
- * HVAC-specific color and icon utilities.
- * Follows Mushroom pattern: simple CSS var lookups, consumers build styles.
+ * HVAC-specific utilities for equitherm cards.
+ * Colors are resolved via HA's --rgb-state-climate-* CSS variables.
+ * Icon/color mappings are backported from HA frontend.
  */
-
-import type { HvacAction, HvacMode } from '../ha/data/climate';
-import type { TemplateResult } from 'lit';
-
-// ============================================================================
-// HVAC Mode Colors (what the thermostat is set to)
-// ============================================================================
-
-export const HVAC_MODE_COLORS: Record<HvacMode, string> = {
-  auto: 'var(--rgb-state-climate-auto)',
-  cool: 'var(--rgb-state-climate-cool)',
-  dry: 'var(--rgb-state-climate-dry)',
-  fan_only: 'var(--rgb-state-climate-fan-only)',
-  heat: 'var(--rgb-state-climate-heat)',
-  heat_cool: 'var(--rgb-state-climate-heat-cool)',
-  off: 'var(--rgb-state-climate-off)',
-};
-
-export function getHvacModeColor(mode: HvacMode | undefined): string {
-  return HVAC_MODE_COLORS[mode ?? 'off'] ?? HVAC_MODE_COLORS.off;
-}
+import type { HvacAction } from '../ha/data/climate';
+import { CLIMATE_HVAC_ACTION_TO_MODE } from '../ha/data/climate';
 
 // ============================================================================
-// HVAC Action Colors (what's actually happening)
-// ============================================================================
-
-export const HVAC_ACTION_COLORS: Record<HvacAction, string> = {
-  heating: 'var(--rgb-state-climate-heat)',
-  cooling: 'var(--rgb-state-climate-cool)',
-  drying: 'var(--rgb-state-climate-dry)',
-  idle: 'var(--rgb-state-climate-idle)',
-  off: 'var(--rgb-state-climate-off)',
-  fan: 'var(--rgb-state-climate-fan-only)',
-  defrosting: 'var(--rgb-state-climate-heat)',
-  preheating: 'var(--rgb-state-climate-heat)',
-};
-
-export function getHvacActionColor(action: HvacAction | undefined): string {
-  return HVAC_ACTION_COLORS[action ?? 'off'] ?? HVAC_ACTION_COLORS.off;
-}
-
-// ============================================================================
-// HVAC Mode Icons
-// ============================================================================
-
-export const HVAC_MODE_ICONS: Record<HvacMode, string> = {
-  auto: 'mdi:thermostat-auto',
-  cool: 'mdi:snowflake',
-  dry: 'mdi:water-percent',
-  fan_only: 'mdi:fan',
-  heat: 'mdi:fire',
-  heat_cool: 'mdi:sun-snowflake-variant',
-  off: 'mdi:power',
-};
-
-export function getHvacModeIcon(mode: HvacMode | undefined): string {
-  return HVAC_MODE_ICONS[mode ?? 'off'] ?? 'mdi:thermostat';
-}
-
-// ============================================================================
-// HVAC Action Icons
+// HVAC Action Icons (no HA equivalent — HA uses async attribute-icon lookup)
 // ============================================================================
 
 export const HVAC_ACTION_ICONS: Record<HvacAction, string | null> = {
@@ -82,7 +27,7 @@ export function getHvacActionIcon(action: HvacAction | undefined): string | null
 }
 
 // ============================================================================
-// Action Normalization
+// Action Normalization (equitherm-specific)
 // ============================================================================
 
 export function normalizeHvacAction(action: string | undefined): HvacAction {
@@ -112,7 +57,21 @@ export function normalizeHvacAction(action: string | undefined): HvacAction {
 }
 
 // ============================================================================
-// HVAC Badge Builder (shared by status-card & curve-card)
+// Color Helpers (bridge between stateColorCss and RGB triple consumers)
+// ============================================================================
+
+/**
+ * Get RGB triple CSS var for an HVAC action.
+ * Maps action → mode → --rgb-state-climate-{mode} CSS variable.
+ * Used by eq-badge-info and ApexCharts which need RGB triples.
+ */
+export function getHvacActionColor(action: HvacAction): string {
+  const mode = CLIMATE_HVAC_ACTION_TO_MODE[action] ?? 'off';
+  return `var(--rgb-state-climate-${mode === 'heat_cool' ? 'heat-cool' : mode})`;
+}
+
+// ============================================================================
+// HVAC Badge Builder (shared by all 3 cards)
 // ============================================================================
 
 const ACTIVE_ACTIONS = new Set<HvacAction>(['heating', 'cooling', 'drying', 'defrosting', 'preheating']);
@@ -126,7 +85,7 @@ export interface HvacBadgeProps {
 }
 
 /**
- * Build eq-badge-action props for an HVAC action state.
+ * Build eq-badge-info props for an HVAC action state.
  * Handles adjusting mode (shows trend icon + "Adjusting" label).
  */
 export function getHvacBadgeProps(
@@ -176,11 +135,9 @@ export function getHvacBadgeProps(
  * Used for ApexCharts which can't parse CSS variables.
  */
 export function resolveRgbColor(element: Element, action: HvacAction): string {
-  const cssVar = HVAC_ACTION_COLORS[action] ?? HVAC_ACTION_COLORS.idle;
-  // Extract variable name from "var(--rgb-xxx)"
+  const cssVar = getHvacActionColor(action);
   const varMatch = cssVar.match(/var\((--[^)]+)\)/);
   if (!varMatch) return cssVar;
-
   const value = getComputedStyle(element).getPropertyValue(varMatch[1]).trim();
   return value ? `rgb(${value})` : cssVar;
 }

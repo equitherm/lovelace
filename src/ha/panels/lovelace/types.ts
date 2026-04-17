@@ -6,7 +6,7 @@ import type {
   LovelaceCardConfig,
   LovelaceConfig,
 } from "../../data/lovelace";
-import type { FrontendLocaleData } from "../../data/translation";
+import type { FrontendLocaleData } from "../../types";
 import type { HomeAssistant, Constructor } from "../../types";
 
 declare global {

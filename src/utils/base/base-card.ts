@@ -1,18 +1,47 @@
 import { html, nothing } from 'lit';
 import { state } from 'lit/decorators.js';
 import type { HassEntity } from 'home-assistant-js-websocket';
-import type { ActionConfig } from '../ha/data/lovelace';
-import type { LovelaceGridOptions } from '../ha/panels/lovelace/types';
+import type { ActionConfig } from '../../ha/data/lovelace';
+import type { LovelaceGridOptions, LovelaceCard } from '../../ha/panels/lovelace/types';
+import type { ClimateEntity } from '../../ha/data/climate';
 import { EquithermBaseElement } from './base-element';
-import { executeAction, hasAction } from './actions';
-import setupCustomlocalize from '../localize';
+import { executeAction, hasAction } from '../actions';
+import setupCustomlocalize from '../../localize';
+
+/** Minimum config fields shared by all equitherm cards */
+export interface EquithermCardConfig {
+  climate_entity: string;
+  flow_entity: string;
+  [key: string]: unknown;
+}
 
 /**
  * Base class for equitherm cards.
  * Extends EquithermBaseElement with card-specific helpers.
  */
-export abstract class EquithermBaseCard<TConfig> extends EquithermBaseElement {
+export abstract class EquithermBaseCard<TConfig extends EquithermCardConfig> extends EquithermBaseElement implements LovelaceCard {
   @state() protected _config!: TConfig;
+
+  abstract setConfig(config: unknown): void;
+
+  /** Get the climate entity state */
+  protected get _climate(): ClimateEntity | undefined {
+    return this._entityState(this._config.climate_entity) as ClimateEntity | undefined;
+  }
+
+  /** Read a number from an entity state, falling back to a config default */
+  protected _resolveEntityNumber(entityId: string | undefined, fallback: number): number {
+    const s = this._entityState(entityId);
+    if (!s) return fallback;
+    const val = parseFloat(s.state);
+    return isNaN(val) ? fallback : val;
+  }
+
+  /** Formatted room temperature from climate entity */
+  protected get _roomTemp(): string {
+    const temp = this._climate?.attributes.current_temperature;
+    return this._formatTemp(temp, this.hass?.config?.unit_system?.temperature);
+  }
 
   /** Get entity state by ID */
   protected _entityState(entityId: string | undefined): HassEntity | undefined {

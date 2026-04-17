@@ -29,14 +29,24 @@
     "outdoor_tooltip": "{temp}°C extérieur",
     "flow_tooltip": "{temp}°C départ"
   },
+  "forecast_card": {
+    "name": "Carte Prévision Equitherm",
+    "description": "Prévision de chauffage basée sur les prévisions météo",
+    "default_title": "Prévision Chauffage",
+    "flow_temp": "Temp. Départ",
+    "outdoor_temp": "Extérieur",
+    "peak": "Pic"
+  },
   "editor": {
     "required": "Requis",
     "optional": "Optionnel",
     "appearance": "Apparence",
     "layout": "Disposition",
-    "layout_default": "Défaut",
-    "layout_vertical": "Verticale",
-    "layout_horizontal": "Horizontale",
+    "content_layout": "Disposition",
+    "layout_options": {
+      "horizontal": "Horizontal",
+      "vertical": "Verticale"
+    },
     "climate_entity": "Entité Climat",
     "outdoor_entity": "Température Extérieure",
     "flow_entity": "Consigne Départ",
@@ -59,6 +69,27 @@
     "min_flow": "Départ Min",
     "max_flow": "Départ Max",
     "t_out_min": "Extérieur Min",
-    "t_out_max": "Extérieur Max"
+    "t_out_max": "Extérieur Max",
+    "weather_entity": "Entité Météo",
+    "hours": "Heures de Prévision",
+    "forecast_settings": "Prévision",
+    "helper": {
+      "curve_from_entities": "Lire depuis les nombres ESPHome ajustables au lieu de valeurs statiques",
+      "hc": "Agressivité du chauffage par temps froid — augmenter si la pièce est trop froide en hiver",
+      "n": "Type de radiateur — 1.0 plancher chauffant, 1.25 panneau (défaut), 1.3 fonte",
+      "shift": "Décaler toute la courbe vers le haut ou le bas — augmenter si trop froid par temps doux",
+      "min_flow": "Sortie minimale de la chaudière, évite la condensation et protège l'échangeur",
+      "max_flow": "Sortie maximale de la chaudière, protège le système et limite la consommation",
+      "t_out_min": "Bord gauche du graphique (température extérieure la plus froide affichée)",
+      "t_out_max": "Bord droit du graphique (température extérieure la plus chaude affichée)",
+      "hours": "Heures de données météo prévisionnelles à afficher",
+      "hc_entity": "Nombre ajustable du coefficient de courbe de chauffage",
+      "n_entity": "Nombre ajustable de l'exposant de radiateur",
+      "shift_entity": "Nombre ajustable du décalage de courbe",
+      "curve_output_entity": "Sortie pure de la courbe de chauffage avant PID et limitation",
+      "pid_output_entity": "Sortie de courbe après correction PID (avant limitation)",
+      "rate_limiting_entity": "ON quand la sortie est en rampe pour éviter le choc thermique",
+      "pid_active_entity": "ON quand au moins un gain PID (kp, ki, kd) est non nul"
+    }
   }
 }

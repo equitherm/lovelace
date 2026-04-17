@@ -9,11 +9,53 @@ import type {
   MessageBase,
 } from "home-assistant-js-websocket";
 import type { LocalizeFunc } from "./common/translations/localize";
-import type {
-  FrontendLocaleData,
-  TranslationCategory,
-} from "./data/translation";
-import type { Themes } from "./data/ws-themes";
+
+export interface ThemeVars {
+  "primary-color": string;
+  "text-primary-color": string;
+  "accent-color": string;
+  [key: string]: string;
+}
+
+export type Theme = ThemeVars & {
+  modes?: {
+    light?: ThemeVars;
+    dark?: ThemeVars;
+  };
+};
+
+export interface Themes {
+  default_theme: string;
+  default_dark_theme: string | null;
+  themes: Record<string, Theme>;
+  darkMode: boolean;
+  theme: string;
+}
+
+export interface FrontendLocaleData {
+  language: string;
+  number_format: string;
+  time_format: string;
+  date_format: string;
+  first_weekday: string;
+  time_zone: string;
+}
+
+export type TranslationCategory =
+  | "title"
+  | "state"
+  | "entity"
+  | "entity_component"
+  | "config"
+  | "config_panel"
+  | "options"
+  | "device_automation"
+  | "mfa_setup"
+  | "system_health"
+  | "device_class"
+  | "application_credentials"
+  | "issues"
+  | "selector";
 
 declare global {
   /* eslint-disable no-var, no-redeclare */

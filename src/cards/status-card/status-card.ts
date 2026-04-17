@@ -4,10 +4,9 @@ import { classMap } from 'lit/directives/class-map.js';
 import { styleMap } from 'lit/directives/style-map.js';
 import type { StatusCardConfig } from './status-card-config';
 import type { HomeAssistant } from '../../ha/types';
-import type { LovelaceGridOptions, LovelaceCard } from '../../ha/panels/lovelace/types';
-import type { ClimateEntity } from '../../ha/data/climate';
+import type { LovelaceGridOptions } from '../../ha/panels/lovelace/types';
 import { computeDomain } from '../../ha/common/entity/compute_domain';
-import { EquithermBaseCard } from '../../utils/base-card';
+import { EquithermBaseCard } from '../../utils/base';
 import { computeEntityNameDisplay } from '../../ha/common/entity/compute_entity_name_display';
 import { cardStyle } from '../../utils/card-styles';
 import { registerCustomCard } from '../../utils/register-card';
@@ -15,7 +14,7 @@ import setupCustomLocalize from '../../localize';
 import { validateStatusCardConfig } from './status-card-config';
 import { STATUS_CARD_NAME, STATUS_CARD_EDITOR_NAME, CLIMATE_ENTITY_DOMAINS, SENSOR_ENTITY_DOMAINS } from './const';
 import { getHvacActionColor, normalizeHvacAction, getHvacBadgeProps } from '../../utils/hvac-colors';
-import '../../shared/shape-icon';
+import { isRateLimitingActive, isPidActive, getAdjustingDirection, getRateTargetEntity } from '../../utils/climate-helpers';
 import '../../shared/badge-info';
 
 registerCustomCard({
@@ -25,19 +24,14 @@ registerCustomCard({
 });
 
 @customElement(STATUS_CARD_NAME)
-export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> implements LovelaceCard {
+export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
   // Layout property reflected to attribute for CSS styling
-  @property({ reflect: true, type: String }) layout: 'default' | 'vertical' | 'horizontal' = 'default';
+  @property({ reflect: true, type: Boolean }) vertical = false;
 
   public getGridOptions(): LovelaceGridOptions {
-    const layout = this._config?.layout ?? 'default';
-
-    switch (layout) {
-      case 'vertical':
-        return { columns: 6, rows: 4, min_rows: 4 };
-      default:
-        return { columns: 12, rows: 3, min_rows: 1 };
-    }
+    return this.vertical
+      ? { columns: 6, rows: 4, min_rows: 4 }
+      : { columns: 12, rows: 3, min_rows: 1 };
   }
 
   static async getStubConfig(hass: HomeAssistant): Promise<StatusCardConfig> {
@@ -81,11 +75,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> imp
 
   setConfig(config: unknown) {
     this._config = validateStatusCardConfig(config);
-    this.layout = this._config.layout ?? 'default';
-  }
-
-  private get _climate(): ClimateEntity | undefined {
-    return this._entityState(this._config.climate_entity) as ClimateEntity | undefined;
+    this.vertical = this._config.vertical ?? false;
   }
 
   private get _outdoorTemp(): string {
@@ -100,43 +90,8 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> imp
     return this._formatTemp(parseFloat(state.state), this._entityAttr<string>(this._config.flow_entity, 'unit_of_measurement'));
   }
 
-  private get _roomTemp(): string {
-    const temp = this._climate?.attributes.current_temperature;
-    return this._formatTemp(temp, this.hass?.config?.unit_system?.temperature);
-  }
-
-  private get _rateLimitingActive(): boolean {
-    return this._entityState(this._config.rate_limiting_entity)?.state === 'on';
-  }
-
-  private get _pidActive(): boolean {
-    if (!this._config.pid_active_entity) return false;
-    return this._entityState(this._config.pid_active_entity)?.state === 'on';
-  }
-
-  /** Entity to compare against flow for rate-limit direction: PID output when available, else curve output */
-  private get _rateTargetEntity(): string | undefined {
-    return this._config.pid_output_entity ?? this._config.curve_output_entity;
-  }
-
-  private get _adjustingDirection(): 'rising' | 'falling' | null {
-    if (!this._rateLimitingActive || !this._rateTargetEntity) return null;
-
-    const flowState = this._entityState(this._config.flow_entity);
-    const targetState = this._entityState(this._rateTargetEntity);
-    if (!flowState || !targetState) return null;
-
-    const flow = parseFloat(flowState.state);
-    const target = parseFloat(targetState.state);
-    if (isNaN(flow) || isNaN(target)) return null;
-
-    if (flow < target) return 'rising';
-    if (flow > target) return 'falling';
-    return null;
-  }
-
   private get _curveOutputTemp(): string {
-    const entity = this._rateTargetEntity;
+    const entity = getRateTargetEntity(this._config);
     if (!entity) return '';
     const state = this._entityState(entity);
     if (!state) return '';
@@ -150,6 +105,9 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> imp
       super.styles,
       cardStyle,
       css`
+        ha-card {
+          height: 100%;
+        }
         .header {
           display: flex;
           align-items: center;
@@ -157,7 +115,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> imp
           gap: 12px;
           flex-shrink: 0;
         }
-        eq-shape-icon {
+        ha-tile-icon {
           cursor: pointer;
           flex-shrink: 0;
         }
@@ -169,7 +127,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> imp
           gap: 2px;
         }
         .title {
-          font-size: var(--font-size-md);
+          font-size: var(--ha-font-size-m, 1rem);
           font-weight: 600;
           color: var(--primary-text-color);
           line-height: 1.2;
@@ -213,7 +171,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> imp
           background: var(--secondary-background-color, rgba(0,0,0,0.05));
         }
         .temp-value {
-          font-size: var(--font-size-lg);
+          font-size: var(--ha-font-size-xl, 1.4rem);
           font-weight: 600;
           font-variant-numeric: tabular-nums;
           line-height: 1;
@@ -243,7 +201,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> imp
         .temps.vertical {
           grid-template-columns: 1fr;
           grid-template-rows: auto auto auto;
-          gap: var(--spacing-md);
+          gap: 12px;
         }
         .temps.vertical .arrow,
         .temps.vertical .divider {
@@ -256,10 +214,13 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> imp
   render() {
     if (!this._config || !this.hass) return nothing;
     const localize = setupCustomLocalize(this.hass);
-    const layout = this._config.layout ?? 'default';
+    const vertical = this._config.vertical ?? false;
     const rawAction = this._climate?.attributes.hvac_action ?? 'off';
     const hvacAction = normalizeHvacAction(rawAction);
-    const adjustingDir = this._adjustingDirection;
+    const lookup = (id: string) => this._entityState(id)!;
+    const adjustingDir = getAdjustingDirection(this._config, lookup);
+    const rateLimiting = isRateLimitingActive(this._config, lookup);
+    const pidActive = isPidActive(this._config, lookup);
     const curveOutput = this._curveOutputTemp;
     const climateState = this.hass.states[this._config.climate_entity];
     const title = climateState
@@ -269,30 +230,31 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> imp
     // Build icon styles from action color (Mushroom pattern)
     const color = getHvacActionColor(hvacAction);
     const iconStyles = styleMap({
-      '--icon-color': `rgb(${color})`,
-      '--shape-color': `rgba(${color}, 0.2)`,
+      '--tile-icon-color': `rgb(${color})`,
+      '--tile-icon-size': '42px',
     });
 
-    const hvacBadge = getHvacBadgeProps(localize, hvacAction, this._rateLimitingActive, adjustingDir);
+    const hvacBadge = getHvacBadgeProps(localize, hvacAction, rateLimiting, adjustingDir);
 
     // PID status chip
     const pidChip = this._config.pid_active_entity
       ? html`<eq-badge-info
           .label=${'PID'}
-          style=${`--badge-info-color: ${this._pidActive ? 'var(--rgb-success)' : 'var(--rgb-disabled)'}`}
-          .icon=${this._pidActive ? undefined : 'mdi:alert-circle-outline'}
+          style=${`--badge-info-color: ${pidActive ? 'var(--rgb-success)' : 'var(--rgb-disabled)'}`}
+          .icon=${pidActive ? undefined : 'mdi:alert-circle-outline'}
         ></eq-badge-info>`
       : nothing;
 
     return html`
       <ha-card>
         <div class="header">
-          <eq-shape-icon
-              .icon=${'mdi:thermostat'}
-              .size=${42}
+          <ha-tile-icon
+              .interactive=${true}
               style=${iconStyles}
               @click=${() => this._openMoreInfo(this._config.climate_entity)}
-            ></eq-shape-icon>
+            >
+              <ha-icon slot="icon" .icon=${'mdi:thermostat'}></ha-icon>
+            </ha-tile-icon>
           <div class="header-info">
             <span class="title">${title}</span>
             ${this._climate?.attributes.temperature != null ? html`
@@ -310,7 +272,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> imp
           </div>
         </div>
 
-        <div class=${classMap({ temps: true, vertical: layout === 'vertical', horizontal: layout === 'horizontal' })}>
+        <div class=${classMap({ temps: true, vertical })}>
           <div class="temp-block" @click=${() => this._openMoreInfo(this._config.outdoor_entity)}>
             <div class="temp-value">${this._outdoorTemp}</div>
             <div class="temp-label">${localize('common.outdoor')}</div>

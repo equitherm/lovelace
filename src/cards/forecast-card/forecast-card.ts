@@ -1,48 +1,53 @@
 import { html, css, nothing } from 'lit';
-import { customElement } from 'lit/decorators.js';
+import { customElement, state } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
-import type { PointAnnotations } from 'apexcharts';
-import type { CurveCardConfig } from './curve-card-config';
+import type ApexCharts from 'apexcharts';
+import type { ForecastCardConfig } from './forecast-card-config';
 import type { HomeAssistant } from '../../ha';
+import type { ForecastPoint, ForecastCurveConfig } from '../../utils/forecast';
 import { computeDomain } from '../../ha/common/entity/compute_domain';
+import { EquithermChartCard } from '../../utils/base';
 import { computeEntityNameDisplay } from '../../ha/common/entity/compute_entity_name_display';
 import { cardStyle } from '../../utils/card-styles';
 import { registerCustomCard } from '../../utils/register-card';
-import { CURVE_CARD_NAME, CURVE_CARD_EDITOR_NAME, CLIMATE_ENTITY_DOMAINS, SENSOR_ENTITY_DOMAINS } from './const';
-import { validateCurveCardConfig } from './curve-card-config';
+import { FORECAST_CARD_NAME, FORECAST_CARD_EDITOR_NAME, CLIMATE_ENTITY_DOMAINS, SENSOR_ENTITY_DOMAINS } from './const';
+import { validateForecastCardConfig } from './forecast-card-config';
 import { resolveRgbColor, normalizeHvacAction, getHvacActionColor, getHvacBadgeProps } from '../../utils/hvac-colors';
-import { isRateLimitingActive, isPidActive, getAdjustingDirection, getRateTargetEntity } from '../../utils/climate-helpers';
-
-registerCustomCard({
-  type: CURVE_CARD_NAME,
-  name: 'Equitherm Curve',
-  description: 'Heating curve visualization with current operating point',
-});
-import { buildCurveSeries, flowAtOutdoor } from '../../utils/curve';
-import { EquithermChartCard } from '../../utils/base';
+import { isPidActive } from '../../utils/climate-helpers';
+import { buildForecastSeries, peakDemand } from '../../utils/forecast';
 import setupCustomLocalize from '../../localize';
 import '../../shared/badge-info';
 
-/** Curve parameters that affect the curve shape (require full rebuild) */
-type CurveStructuralParams = Pick<CurveCardConfig,
-  | 'hc' | 'n' | 'shift' | 'min_flow' | 'max_flow' | 't_out_min' | 't_out_max'
->;
+registerCustomCard({
+  type: FORECAST_CARD_NAME,
+  name: 'Equitherm Forecast',
+  description: 'Heating forecast based on weather predictions',
+});
 
-/** Series data point for ApexCharts */
-interface ChartDataPoint {
-  x: number;
+/** Series data point for ApexCharts (datetime category axis) */
+interface FlowDataPoint {
+  x: string;
   y: number;
 }
 
-/** Marker sizes for chart annotations */
-const MARKER_SINGLE = 7;
-const MARKER_CURVE_OUTPUT = 8;
-const MARKER_RATE_LIMITED = 6;
+interface OutdoorDataPoint {
+  x: string;
+  y: number;
+}
 
-@customElement(CURVE_CARD_NAME)
-export class EquithermCurveCard extends EquithermChartCard<CurveCardConfig> {
+@customElement(FORECAST_CARD_NAME)
+export class EquithermForecastCard extends EquithermChartCard<ForecastCardConfig> {
+  @state() private _forecastPoints: ForecastPoint[] = [];
+  private _unsub?: () => void;
+
   protected updated(changedProps: Map<string, unknown>): void {
     super.updated(changedProps);
+
+    // Subscribe to forecast on config change or first hass
+    if (changedProps.has('_config') || (!this._unsub && changedProps.has('hass'))) {
+      this._subscribeForecast();
+    }
+
     if (!this._chart) return;
 
     // Handle hass changes (entity states + dark mode)
@@ -53,88 +58,62 @@ export class EquithermCurveCard extends EquithermChartCard<CurveCardConfig> {
 
       if (darkChanged) {
         this._updateChartOptions();
-      } else {
-        this._updateChartSeries();
       }
-    }
-    // Handle config changes
-    if (changedProps.has('_config')) {
-      const prevConfig = changedProps.get('_config') as CurveCardConfig | undefined;
-      if (this._structuralParamsChanged(prevConfig, this._config)) {
-        this._updateChartOptions();
-      } else {
-        this._updateChartSeries();
-      }
+      // Forecast data arrives via subscription callback, no manual re-fetch needed
     }
   }
 
-  static async getStubConfig(hass: HomeAssistant): Promise<CurveCardConfig> {
+  static async getStubConfig(hass: HomeAssistant): Promise<ForecastCardConfig> {
     const states = hass.states;
     const entityIds = Object.keys(states);
 
-    // Find climate entity by domain
+    // Find climate entity
     const climateEntity = entityIds.find(e =>
       CLIMATE_ENTITY_DOMAINS.includes(computeDomain(e))
     );
 
-    // Find temperature sensors by domain + device_class
+    // Find weather entity
+    const weatherEntity = entityIds.find(e =>
+      computeDomain(e) === 'weather'
+    );
+
+    // Find temperature sensors
     const tempSensors = entityIds.filter(e => {
       const state = states[e];
       return SENSOR_ENTITY_DOMAINS.includes(computeDomain(e))
         && state?.attributes?.device_class === 'temperature';
     });
 
-    // Prefer outdoor/outside in name for outdoor temp
-    const outdoorEntity = tempSensors.find(e =>
-      e.includes('outdoor') || e.includes('outside') || e.includes('exterior')
-    ) ?? tempSensors[0];
-
     // Prefer flow/supply in name for flow temp
     const flowEntity = tempSensors.find(e =>
       e.includes('flow') || e.includes('supply') || e.includes('forward')
     ) ?? tempSensors[0];
 
-    // Curve output sensor (optional)
-    const curveOutputEntity = tempSensors.find(e => e.includes('curve_output')) ?? '';
-
     return {
-      type: 'custom:equitherm-curve-card',
-      climate_entity: climateEntity,
-      outdoor_entity: outdoorEntity,
-      curve_output_entity: curveOutputEntity,
-      flow_entity: flowEntity,
+      type: 'custom:equitherm-forecast-card',
+      weather_entity: weatherEntity ?? '',
+      climate_entity: climateEntity ?? '',
+      flow_entity: flowEntity ?? '',
+      hours: 24,
       hc: 1.2,
       n: 1.25,
       shift: 0,
       min_flow: 25,
       max_flow: 70,
-      t_out_min: -20,
-      t_out_max: 20,
-    } as CurveCardConfig;
+    } as ForecastCardConfig;
   }
 
   static async getConfigElement() {
-    await import('./curve-card-editor');
-    return document.createElement(CURVE_CARD_EDITOR_NAME);
+    await import('./forecast-card-editor');
+    return document.createElement(FORECAST_CARD_EDITOR_NAME);
   }
 
   setConfig(config: unknown) {
-    this._config = validateCurveCardConfig(config);
+    this._config = validateForecastCardConfig(config);
   }
 
   private get _tTarget(): number {
     return this._climate?.attributes.temperature ?? 21;
-  }
-
-  private get _tOutdoor(): number | null {
-    const s = this._entityState(this._config.outdoor_entity);
-    if (!s) return null;
-    const val = parseFloat(s.state);
-    return isNaN(val) ? null : val;
-  }
-
-  private get _tOutdoorUnit(): string | undefined {
-    return this._entityAttr<string>(this._config.outdoor_entity, 'unit_of_measurement');
   }
 
   private get _flowTemp(): number {
@@ -146,20 +125,10 @@ export class EquithermCurveCard extends EquithermChartCard<CurveCardConfig> {
     return this._entityAttr<string>(this._config.flow_entity, 'unit_of_measurement');
   }
 
-  private get _curveOutputTemp(): string {
-    const entity = getRateTargetEntity(this._config);
-    if (!entity) return '';
-    const state = this._entityState(entity);
-    if (!state) return '';
-    const value = parseFloat(state.state);
-    if (isNaN(value)) return '';
-    return this._formatTemp(value, this._entityAttr<string>(entity, 'unit_of_measurement'));
-  }
-
-  protected _buildChartOptions() {
-    const localize = setupCustomLocalize(this.hass);
+  /** Build the curve params from config, optionally reading from live entities */
+  private get _curveParams(): ForecastCurveConfig {
     const cfg = this._config;
-    const curveParams = {
+    return {
       tTarget: this._tTarget,
       hc: cfg.curve_from_entities ? this._resolveEntityNumber(cfg.hc_entity, cfg.hc) : cfg.hc,
       n: cfg.curve_from_entities ? this._resolveEntityNumber(cfg.n_entity, cfg.n) : cfg.n,
@@ -167,6 +136,59 @@ export class EquithermCurveCard extends EquithermChartCard<CurveCardConfig> {
       minFlow: cfg.min_flow,
       maxFlow: cfg.max_flow,
     };
+  }
+
+  /** Process forecast data and update chart */
+  private _processForecast(forecast: { datetime: string; temperature: number }[]): void {
+    const points = buildForecastSeries(forecast, this._curveParams, this._config.hours);
+    this._forecastPoints = points;
+
+    if (this._chartInitialized && this._chart) {
+      this._updateChartWithData(points);
+    }
+  }
+
+  /** Unsubscribe from forecast updates */
+  private _unsubscribeForecast(): void {
+    if (this._unsub) {
+      this._unsub();
+      this._unsub = undefined;
+    }
+  }
+
+  /** Subscribe to weather forecast via HA WebSocket (real-time updates) */
+  private async _subscribeForecast(): Promise<void> {
+    this._unsubscribeForecast();
+
+    if (!this.isConnected || !this.hass || !this._config?.weather_entity) return;
+
+    try {
+      const unsub = await (this.hass as any).connection.subscribeMessage(
+        (event: { type: string; forecast: { datetime: string; temperature: number }[] | null }) => {
+          if (event.forecast) {
+            this._processForecast(event.forecast);
+          }
+        },
+        {
+          type: 'weather/subscribe_forecast',
+          forecast_type: 'hourly',
+          entity_id: this._config.weather_entity,
+        },
+      );
+      // Only store if still the active subscription (not replaced by a newer call)
+      if (!this._unsub) {
+        this._unsub = unsub;
+      } else {
+        unsub(); // Another subscription was already set, discard this one
+      }
+    } catch (err) {
+      console.warn('Failed to subscribe to weather forecast:', err);
+    }
+  }
+
+  protected _buildChartOptions(points: ForecastPoint[] = []): ApexCharts.ApexOptions {
+    const localize = setupCustomLocalize(this.hass);
+    const cfg = this._config;
 
     // Resolve colors at runtime from CSS variables
     const style = getComputedStyle(this);
@@ -175,58 +197,34 @@ export class EquithermCurveCard extends EquithermChartCard<CurveCardConfig> {
     const heatingColor = gradientStart ? `rgb(${gradientStart})` : resolveRgbColor(this, 'heating');
     const coolingColor = gradientEnd ? `rgb(${gradientEnd})` : resolveRgbColor(this, 'cooling');
 
-    const curveSeries = buildCurveSeries(curveParams, cfg.t_out_min, cfg.t_out_max);
-    const tOutdoor = this._tOutdoor;
+    // Build dual series data
+    const flowData: FlowDataPoint[] = points.map((p) => ({ x: p.datetime, y: p.tFlow }));
+    const outdoorData: OutdoorDataPoint[] = points.map((p) => ({ x: p.datetime, y: p.tOutdoor }));
 
-    // Using annotations instead of scatter series to avoid hover conflicts
-    const annotationPoints: PointAnnotations[] = [];
-    const lookup = (id: string) => this._entityState(id);
-    const rateLimiting = isRateLimitingActive(this._config, lookup);
-    const rateTarget = getRateTargetEntity(this._config);
-    if (tOutdoor !== null) {
-      const currentFlow = flowAtOutdoor(curveParams, tOutdoor);
-      if (rateLimiting) {
-        // Target the rate limiter is ramping toward (PID-adjusted if available, else pure curve)
-        const rateTargetValue = rateTarget
-          ? (this._entityState(rateTarget) ? parseFloat(this._entityState(rateTarget)!.state) : currentFlow)
-          : currentFlow;
-
-        // Pure curve output — shown as hollow ring when PID output is separately configured
-        if (this._config.pid_output_entity && this._config.curve_output_entity) {
-          const curveOutput = this._entityState(this._config.curve_output_entity);
-          const curveValue = curveOutput ? parseFloat(curveOutput.state) : currentFlow;
-          annotationPoints.push({
-            x: -tOutdoor,
-            y: curveValue,
-            marker: { size: MARKER_RATE_LIMITED, fillColor: 'transparent', strokeColor: heatingColor, strokeWidth: 1.5 },
-          });
-        }
-
-        // Rate-limit target (PID-adjusted or curve)
-        annotationPoints.push({
-          x: -tOutdoor,
-          y: rateTargetValue,
-          marker: { size: MARKER_CURVE_OUTPUT, fillColor: heatingColor, strokeColor: '#ffffff', strokeWidth: 2 },
-        });
-
-        // Current flow setpoint (where we actually are, ramping up)
-        annotationPoints.push({
-          x: -tOutdoor,
-          y: this._flowTemp,
-          marker: { size: MARKER_RATE_LIMITED, fillColor: 'transparent', strokeColor: heatingColor, strokeWidth: 2 },
-        });
-      } else {
-        annotationPoints.push({
-          x: -tOutdoor,
-          y: currentFlow,
-          marker: { size: MARKER_SINGLE, fillColor: heatingColor, strokeColor: '#ffffff', strokeWidth: 2 },
-        });
-      }
+    // Peak demand annotation
+    const peak = peakDemand(points);
+    const annotations: Record<string, unknown> = {};
+    if (peak) {
+      (annotations as any).points = [{
+        x: peak.datetime,
+        y: peak.tFlow,
+        marker: { size: 6, fillColor: heatingColor, strokeColor: '#ffffff', strokeWidth: 2 },
+        label: {
+          text: `${localize('forecast_card.peak')}: ${peak.tFlow.toFixed(1)}°`,
+          style: {
+            color: '#ffffff',
+            background: heatingColor,
+            fontSize: '11px',
+            fontWeight: 600,
+            padding: { left: 6, right: 6, top: 2, bottom: 2 },
+          },
+        },
+      }];
     }
 
     return {
       chart: {
-        type: 'line' as const,
+        type: 'area' as const,
         width: '100%',
         height: '100%',
         toolbar: { show: false },
@@ -237,77 +235,102 @@ export class EquithermCurveCard extends EquithermChartCard<CurveCardConfig> {
       theme: { mode: this._isDark ? 'dark' as const : 'light' as const },
       series: [
         {
-          name: localize('curve_card.flow_temp'),
-          // Negate x values to reverse axis: warm (left) → cold (right)
-          data: curveSeries.map((p): ChartDataPoint => ({ x: -p.x, y: p.y })),
+          name: localize('forecast_card.flow_temp'),
+          data: flowData,
+        },
+        {
+          name: localize('forecast_card.outdoor_temp'),
+          data: outdoorData,
         },
       ],
-      annotations: { points: annotationPoints },
-      stroke: { curve: 'straight' as const, width: 2 },
-      colors: [heatingColor],
+      annotations,
+      stroke: {
+        curve: 'straight' as const,
+        width: [2, 1.5],
+        dashArray: [0, 4],
+      },
+      colors: [heatingColor, coolingColor],
       fill: {
         type: 'gradient',
         gradient: {
-          type: 'horizontal',
-          gradientToColors: [coolingColor],
-          shadeIntensity: 1,
-          opacityFrom: 1,
-          opacityTo: 1,
-          stops: [0, 100, 100, 100],
+          type: 'vertical',
+          shadeIntensity: 0.3,
+          opacityFrom: 0.4,
+          opacityTo: 0.05,
+          stops: [0, 100],
         },
       },
       markers: {
         size: 0,
-        discrete: curveSeries
-          .reduce<Array<{ seriesIndex: number; dataPointIndex: number; size: number; fillColor: string; strokeColor: string; strokeWidth: number }>>(
-            (acc, _p, i) => (i % 50 === 0 ? [...acc, { seriesIndex: 0, dataPointIndex: i, size: 3, fillColor: heatingColor, strokeColor: '#fff', strokeWidth: 1 }] : acc),
-            [],
-          ),
-        hover: { size: 6 },
+        hover: { size: 4 },
       },
       xaxis: {
-        type: 'numeric' as const,
-        // Negated min/max for reversed display: warm (left) → cold (right)
-        min: -cfg.t_out_max,
-        max: -cfg.t_out_min,
-        forceNiceScale: false,
-        title: { text: localize('curve_card.outdoor_axis'), style: { color: 'var(--secondary-text-color)', fontWeight: 400 } },
+        type: 'datetime' as const,
+        title: {
+          text: '',
+          style: { color: 'var(--secondary-text-color)', fontWeight: 400 },
+        },
         labels: {
           style: { colors: 'var(--secondary-text-color)', fontWeight: 400 },
-          formatter: (val: number) => `${(-val).toFixed(1)}`,
+          datetimeUTC: false,
+          format: 'HH:mm',
         },
         axisBorder: { show: false },
         axisTicks: { show: false },
       },
-      yaxis: {
-        title: { text: localize('curve_card.flow_axis'), style: { color: 'var(--secondary-text-color)', fontWeight: 400 } },
-        labels: { style: { colors: 'var(--secondary-text-color)', fontWeight: 400 } },
-        min: cfg.min_flow - 5,
-        max: cfg.max_flow + 5,
-      },
+      yaxis: [
+        {
+          title: {
+            text: localize('forecast_card.flow_temp'),
+            style: { color: 'var(--secondary-text-color)', fontWeight: 400 },
+          },
+          labels: { style: { colors: 'var(--secondary-text-color)', fontWeight: 400 } },
+          min: cfg.min_flow - 5,
+          max: cfg.max_flow + 5,
+        },
+        {
+          opposite: true,
+          title: {
+            text: localize('forecast_card.outdoor_temp'),
+            style: { color: 'var(--secondary-text-color)', fontWeight: 400 },
+          },
+          labels: { style: { colors: 'var(--secondary-text-color)', fontWeight: 400 } },
+        },
+      ],
       grid: { show: false },
       legend: { show: false },
       dataLabels: { enabled: false },
       tooltip: {
         theme: this._isDark ? 'dark' : 'light',
-        x: { formatter: (v: number) => localize('curve_card.outdoor_tooltip', { temp: (-v).toFixed(1) }) },
-        y: { formatter: (v: number) => localize('curve_card.flow_tooltip', { temp: v.toFixed(1) }) },
+        x: { format: 'HH:mm' },
+        y: {
+          formatter: (v: number) => {
+            return this._formatTemp(v, this.hass?.config?.unit_system?.temperature);
+          },
+        },
       },
     };
   }
 
-  private _updateChartSeries(): void {
+
+  private _updateChartWithData(points: ForecastPoint[]): void {
     if (!this._chart) return;
-    const opts = this._buildChartOptions();
-    this._chart.updateSeries(opts.series, false);
-    // Annotations are part of options, not series - must update separately
-    this._chart.updateOptions({ annotations: opts.annotations }, false, false);
+    const opts = this._buildChartOptions(points);
+    this._chart.updateOptions(opts, false, false);
   }
 
-  private _structuralParamsChanged(prev: CurveCardConfig | undefined, next: CurveCardConfig): boolean {
-    if (!prev) return true;
-    const keys: (keyof CurveStructuralParams)[] = ['hc', 'n', 'shift', 'min_flow', 'max_flow', 't_out_min', 't_out_max'];
-    return keys.some(key => prev[key] !== next[key]);
+  protected _updateChartOptions(): void {
+    if (!this._chart) return;
+    const opts = this._buildChartOptions(this._forecastPoints);
+    this._chart.updateOptions(opts, false, false);
+  }
+
+  protected override _onChartDisconnecting(): void {
+    this._unsubscribeForecast();
+  }
+
+  protected override _onChartReconnected(): void {
+    this._subscribeForecast();
   }
 
   static get styles() {
@@ -406,11 +429,6 @@ export class EquithermCurveCard extends EquithermChartCard<CurveCardConfig> {
           color: var(--divider-color, rgba(0,0,0,0.2));
           user-select: none;
         }
-        .flow-target {
-          font-size: 0.68rem;
-          color: var(--secondary-text-color);
-          margin-left: 2px;
-        }
       `,
     ];
   }
@@ -420,14 +438,10 @@ export class EquithermCurveCard extends EquithermChartCard<CurveCardConfig> {
     const localize = setupCustomLocalize(this.hass);
     const rawAction = this._climate?.attributes.hvac_action ?? 'off';
     const hvacAction = normalizeHvacAction(rawAction);
-    const lookup = (id: string) => this._entityState(id)!;
-    const adjustingDir = getAdjustingDirection(this._config, lookup);
-    const rateLimiting = isRateLimitingActive(this._config, lookup);
-    const pidActive = isPidActive(this._config, lookup);
     const climateState = this.hass.states[this._config.climate_entity];
     const title = climateState
-      ? computeEntityNameDisplay(climateState, this._config.name ?? this._config.title, this.hass) || localize('curve_card.default_title')
-      : (this._config.title ?? localize('curve_card.default_title'));
+      ? computeEntityNameDisplay(climateState, this._config.name, this.hass) || localize('forecast_card.default_title')
+      : localize('forecast_card.default_title');
 
     // Build icon styles from action color (Mushroom pattern)
     const color = getHvacActionColor(hvacAction);
@@ -436,7 +450,8 @@ export class EquithermCurveCard extends EquithermChartCard<CurveCardConfig> {
       '--tile-icon-size': '42px',
     });
 
-    const hvacBadge = getHvacBadgeProps(localize, hvacAction, rateLimiting, adjustingDir);
+    const hvacBadge = getHvacBadgeProps(localize, hvacAction);
+    const pidActive = isPidActive(this._config, (id) => this._entityState(id)!);
 
     // PID status chip
     const pidChip = this._config.pid_active_entity
@@ -453,9 +468,9 @@ export class EquithermCurveCard extends EquithermChartCard<CurveCardConfig> {
           <ha-tile-icon
             .interactive=${true}
             style=${iconStyles}
-            @click=${() => this._openMoreInfo(this._config.climate_entity)}
+            @click=${() => this._openMoreInfo(this._config.weather_entity)}
           >
-            <ha-icon slot="icon" .icon=${'mdi:thermostat'}></ha-icon>
+            <ha-icon slot="icon" .icon=${'mdi:weather-partly-cloudy'}></ha-icon>
           </ha-tile-icon>
           <div class="header-info">
             <span class="title">${title}</span>
@@ -477,14 +492,13 @@ export class EquithermCurveCard extends EquithermChartCard<CurveCardConfig> {
           <div id="chart"></div>
         </div>
         <div class="footer">
-          <div class="footer-metric" @click=${() => this._openMoreInfo(this._config.outdoor_entity)}>
-            <span class="footer-value">${this._formatTemp(this._tOutdoor, this._tOutdoorUnit)}</span>
-            <span class="footer-label">${localize('common.outdoor')}</span>
+          <div class="footer-metric" @click=${() => this._openMoreInfo(this._config.weather_entity)}>
+            <span class="footer-value">${this._formatTemp(this._forecastPoints[0]?.tOutdoor)}</span>
+            <span class="footer-label">${localize('forecast_card.outdoor_temp')}</span>
           </div>
           <span class="footer-sep" aria-hidden="true">·</span>
           <div class="footer-metric" @click=${() => this._openMoreInfo(this._config.flow_entity)}>
             <span class="footer-value flow">${this._formatTemp(this._flowTemp, this._flowTempUnit)}</span>
-            ${adjustingDir && this._curveOutputTemp ? html`<span class="flow-target">→ ${this._curveOutputTemp}</span>` : nothing}
             <span class="footer-label">${localize('common.flow')}</span>
           </div>
           <span class="footer-sep" aria-hidden="true">·</span>

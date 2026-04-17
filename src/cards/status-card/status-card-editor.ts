@@ -2,141 +2,116 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import memoizeOne from 'memoize-one';
-import { fireEvent } from '../../ha/common/dom/fire_event';
 import type { StatusCardConfig } from './status-card-config';
 import { validateStatusCardConfig } from './status-card-config';
 import type { HomeAssistant } from '../../ha/types';
 import type { LovelaceCardEditor } from '../../ha/panels/lovelace/types';
+import { fireEvent } from '../../ha/common/dom/fire_event';
+import { schemaHelpers } from '../../utils/form';
 import type { HaFormSchema } from '../../utils/form';
 import setupCustomLocalize from '../../localize';
 import { STATUS_CARD_EDITOR_NAME } from './const';
 
 @customElement(STATUS_CARD_EDITOR_NAME)
 export class StatusCardEditor extends LitElement implements LovelaceCardEditor {
-  @property({ attribute: false }) public hass?: HomeAssistant;
-  @state() private _config?: StatusCardConfig;
+  @property({ attribute: false }) hass!: HomeAssistant;
+  @state() private _config!: StatusCardConfig;
   @state() private _error?: Record<string, string>;
 
-  private _getSchema = memoizeOne((): readonly HaFormSchema[] => {
-    const localize = setupCustomLocalize(this.hass);
-    return [
-      // Required entities
-      {
-        name: 'climate_entity',
-        required: true,
-        selector: { entity: { domain: 'climate' } },
-      },
-      // Name (depends on climate_entity for context)
-      {
-        name: 'name',
-        selector: { entity_name: {} },
-        context: { entity: 'climate_entity' },
-      },
-      {
-        name: 'outdoor_entity',
-        required: true,
-        selector: { entity: { device_class: 'temperature' } },
-      },
-      {
-        name: 'flow_entity',
-        required: true,
-        selector: { entity: { device_class: 'temperature' } },
-      },
-      // Optional entities (expandable)
-      {
-        type: 'expandable',
-        flatten: true,
-        name: 'optional_entities',
-        title: localize('editor.optional'),
-        icon: 'mdi:chevron-down',
-        schema: [
-          {
-            name: 'curve_output_entity',
-            selector: { entity: { device_class: 'temperature' } },
-          },
-          {
-            name: 'pid_output_entity',
-            selector: { entity: { device_class: 'temperature' } },
-          },
-          {
-            name: 'rate_limiting_entity',
-            selector: { entity: { domain: 'binary_sensor' } },
-          },
-          {
-            name: 'pid_active_entity',
-            selector: { entity: { domain: 'binary_sensor' } },
-          },
-        ],
-      },
-      // Appearance (expandable)
-      {
-        type: 'expandable',
-        flatten: true,
-        name: 'appearance',
-        title: localize('editor.appearance'),
-        icon: 'mdi:palette',
-        schema: [
-          {
-            name: 'layout',
-            selector: {
-              select: {
-                options: [
-                  { value: 'default', label: localize('editor.layout_default') },
-                  { value: 'vertical', label: localize('editor.layout_vertical') },
-                  { value: 'horizontal', label: localize('editor.layout_horizontal') },
-                ],
-                mode: 'dropdown',
-              },
-            },
-          },
-        ],
-      },
-    ] as const satisfies readonly HaFormSchema[];
-  });
-
-  setConfig(config: StatusCardConfig): void {
-    this._config = config;
+  setConfig(config: StatusCardConfig) {
+    this._config = { ...config };
   }
 
-  private _valueChanged(ev: CustomEvent): void {
+  protected _valueChanged(ev: CustomEvent): void {
+    ev.stopPropagation();
     if (!this._config) return;
-    const newConfig = { ...this._config, ...ev.detail.value };
+    let newConfig = { ...this._config, ...ev.detail.value } as Record<string, unknown>;
+    // Convert content_layout selector → vertical boolean
+    if ('content_layout' in newConfig) {
+      newConfig.vertical = newConfig.content_layout === 'vertical';
+      delete newConfig.content_layout;
+    }
+    // Clean up legacy layout field
+    delete (newConfig as Record<string, unknown>).layout;
     try {
       validateStatusCardConfig(newConfig);
       this._error = undefined;
-      fireEvent(this, 'config-changed', { config: newConfig });
+      fireEvent(this, 'config-changed', { config: newConfig as StatusCardConfig });
     } catch (err) {
       this._error = { base: (err as Error).message };
     }
   }
 
-  protected render() {
-    if (!this.hass || !this._config) return nothing;
+  static styles = css`
+    ha-form { display: block; }
+    ha-expandable {
+      margin: 8px 0;
+      --ha-card-border-radius: 8px;
+    }
+  `;
 
+  private _getSchema = memoizeOne((): readonly HaFormSchema[] => {
+    const localize = setupCustomLocalize(this.hass);
+    return [
+      // Required entities
+      schemaHelpers.entity('climate_entity', { domain: 'climate' }),
+      schemaHelpers.entityName('name', { entity: 'climate_entity' }),
+      schemaHelpers.entity('outdoor_entity', { domain: ['sensor', 'input_number'], device_class: 'temperature' }),
+      schemaHelpers.entity('flow_entity', { domain: ['sensor', 'number', 'input_number'], device_class: 'temperature' }),
+      // Optional entities
+      schemaHelpers.expandable(localize('editor.optional'), 'mdi:connection', [
+        schemaHelpers.entity('curve_output_entity', { domain: ['sensor'], device_class: 'temperature', required: false }),
+        schemaHelpers.entity('pid_output_entity', { domain: ['sensor'], device_class: 'temperature', required: false }),
+        schemaHelpers.entity('rate_limiting_entity', { domain: ['binary_sensor'], required: false }),
+        schemaHelpers.entity('pid_active_entity', { domain: ['binary_sensor'], required: false }),
+      ]),
+      // Appearance
+      schemaHelpers.expandable(localize('editor.appearance'), 'mdi:palette-outline', [
+        {
+          name: 'content_layout',
+          selector: {
+            select: {
+              mode: 'box',
+              options: ['horizontal', 'vertical'].map((value) => ({
+                value,
+                label: localize(`editor.layout_options.${value}`),
+              })),
+            },
+          },
+        },
+      ]),
+    ] as const satisfies readonly HaFormSchema[];
+  });
+
+  private _computeLabel = (schema: { name: string; required?: boolean }): string => {
+    const localize = setupCustomLocalize(this.hass);
+    const key = `editor.${schema.name}`;
+    const localized = localize(key);
+    const label = localized !== key ? localized : schema.name;
+    return schema.required === false ? `${label} (${localize('editor.optional')})` : label;
+  };
+
+  private _computeHelper = (schema: { name: string }): string => {
+    const localize = setupCustomLocalize(this.hass);
+    const key = `editor.helper.${schema.name}`;
+    const localized = localize(key);
+    return localized !== key ? localized : '';
+  };
+
+  render() {
+    if (!this.hass || !this._config) return nothing;
     return html`
       <ha-form
         .hass=${this.hass}
-        .data=${this._config}
+        .data=${{ ...this._config, content_layout: this._config.vertical ? 'vertical' : 'horizontal' }}
         .schema=${this._getSchema()}
         .computeLabel=${this._computeLabel}
+        .computeHelper=${this._computeHelper}
         .error=${this._error}
         @value-changed=${this._valueChanged}
       ></ha-form>
     `;
   }
-
-  private _computeLabel = (schema: { name: string }): string => {
-    const localize = setupCustomLocalize(this.hass);
-    const key = `editor.${schema.name}`;
-    const localized = localize(key);
-    return localized !== key ? localized : schema.name;
-  };
-
-  static styles = css`
-    ha-form {
-      display: block;
-    }
-  `;
 }
 
 declare global {

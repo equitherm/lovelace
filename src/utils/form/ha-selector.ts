@@ -36,8 +36,8 @@ export interface BooleanSelector {
 
 export interface SelectSelector {
   select?: {
-    options: Array<string | { value: string; label: string }>;
-    mode?: 'dropdown' | 'list' | 'buttons';
+    options: Array<string | { value: string; label: string; image?: { src: string; src_dark?: string } }>;
+    mode?: 'dropdown' | 'list' | 'buttons' | 'box';
     multiple?: boolean;
     custom_value?: boolean;
   };
