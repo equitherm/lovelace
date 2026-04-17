@@ -43,7 +43,9 @@
     "default_title": "Curve Tuning",
     "current": "Current",
     "proposed": "Proposed",
-    "apply": "Apply",
+    "apply": "Apply Changes",
+    "applying": "Applying...",
+    "reset": "Reset",
     "outdoor_axis": "°C outdoor",
     "flow_axis": "°C flow"
   },

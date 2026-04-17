@@ -11,7 +11,7 @@ import { registerCustomCard } from '../../utils/register-card';
 import { TUNING_CARD_NAME, TUNING_CARD_EDITOR_NAME, CLIMATE_ENTITY_DOMAINS, SENSOR_ENTITY_DOMAINS, NUMBER_ENTITY_DOMAINS } from './const';
 import { validateTuningCardConfig } from './tuning-card-config';
 import { resolveRgbColor, normalizeHvacAction, getHvacActionColor, getHvacBadgeProps } from '../../utils/hvac-colors';
-import { buildCurveSeries } from '../../utils/curve';
+import { buildCurveSeries, flowAtOutdoor } from '../../utils/curve';
 import { EquithermChartCard } from '../../utils/base';
 import setupCustomLocalize from '../../localize';
 import '../../shared/badge-info';
@@ -30,10 +30,18 @@ interface ChartDataPoint {
 
 @customElement(TUNING_CARD_NAME)
 export class EquithermTuningCard extends EquithermChartCard<TuningCardConfig> {
-  @state() private _proposedHc: number = 0;
-  @state() private _proposedShift: number = 0;
+  @state() private _proposedHc: number = NaN;
+  @state() private _proposedShift: number = NaN;
+  @state() private _applying = false;
+  @state() private _applySuccess = false;
   private _lastHcState: number | null = null;
   private _lastShiftState: number | null = null;
+  private _successTimer?: ReturnType<typeof setTimeout>;
+
+  public override disconnectedCallback(): void {
+    clearTimeout(this._successTimer);
+    super.disconnectedCallback();
+  }
 
   protected updated(changedProps: Map<string, unknown>): void {
     super.updated(changedProps);
@@ -129,6 +137,13 @@ export class EquithermTuningCard extends EquithermChartCard<TuningCardConfig> {
     return this._resolveEntityNumber(this._config.shift_entity, 0);
   }
 
+  private get _tOutdoor(): number | null {
+    const s = this._entityState(this._config.outdoor_entity);
+    if (!s) return null;
+    const v = parseFloat(s.state);
+    return isNaN(v) ? null : v;
+  }
+
   // --- Entity attribute getters for slider bounds ---
 
   private get _hcMin(): number {
@@ -201,11 +216,22 @@ export class EquithermTuningCard extends EquithermChartCard<TuningCardConfig> {
     // Resolve colors
     const style = getComputedStyle(this);
     const heatingColor = resolveRgbColor(this, 'heating');
-    const primaryRgb = style.getPropertyValue('--rgb-primary').trim() || '249, 115, 22';
-    const accentColor = `rgb(${primaryRgb})`;
+    const proposedColor = 'rgb(var(--rgb-state-climate-cool, 38, 142, 213))';
 
     const currentSeries = buildCurveSeries(currentParams, cfg.t_out_min, cfg.t_out_max);
     const proposedSeries = buildCurveSeries(proposedParams, cfg.t_out_min, cfg.t_out_max);
+
+    // Operating point annotation on current curve
+    const tOutdoor = this._tOutdoor;
+    const annotationPoints: ApexCharts.PointAnnotations[] = [];
+    if (tOutdoor !== null) {
+      const currentFlow = flowAtOutdoor(currentParams, tOutdoor);
+      annotationPoints.push({
+        x: -tOutdoor,
+        y: currentFlow,
+        marker: { size: 7, fillColor: heatingColor, strokeColor: '#ffffff', strokeWidth: 2 },
+      });
+    }
 
     return {
       chart: {
@@ -233,7 +259,7 @@ export class EquithermTuningCard extends EquithermChartCard<TuningCardConfig> {
         width: [2, 2],
         dashArray: [0, 5],
       },
-      colors: [heatingColor, accentColor],
+      colors: [heatingColor, proposedColor],
       fill: { type: 'solid' },
       markers: {
         size: 0,
@@ -257,6 +283,7 @@ export class EquithermTuningCard extends EquithermChartCard<TuningCardConfig> {
         labels: { style: { colors: 'var(--secondary-text-color)', fontWeight: 400 } },
         min: cfg.min_flow - 5,
         max: cfg.max_flow + 5,
+        forceNiceScale: false,
       },
       grid: { show: false },
       legend: {
@@ -269,6 +296,7 @@ export class EquithermTuningCard extends EquithermChartCard<TuningCardConfig> {
         labels: { colors: 'var(--secondary-text-color)' },
       },
       dataLabels: { enabled: false },
+      annotations: { points: annotationPoints },
       tooltip: {
         theme: this._isDark ? 'dark' : 'light',
         x: { formatter: (v: number) => `${(-v).toFixed(1)} ${localize('tuning_card.outdoor_axis')}` },
@@ -281,6 +309,7 @@ export class EquithermTuningCard extends EquithermChartCard<TuningCardConfig> {
     if (!this._chart) return;
     const opts = this._buildChartOptions();
     this._chart.updateSeries(opts.series, false);
+    this._chart.updateOptions({ annotations: opts.annotations }, false, false);
   }
 
   // --- Service calls ---
@@ -293,35 +322,48 @@ export class EquithermTuningCard extends EquithermChartCard<TuningCardConfig> {
     if (!domain || !service) return;
     // Skip if the service doesn't exist (user hasn't configured it in ESPHome)
     if (!this.hass.services[domain]?.[service]) return;
-    await this.hass.callService(domain, service, {
-      entity_id: this._config.climate_entity,
-    });
+    await this.hass.callService(domain, service, {});
   }
 
-  private async _applyHc(): Promise<void> {
+  private async _applyAll(): Promise<void> {
     if (!this.hass) return;
+    this._applying = true;
     try {
-      await this.hass.callService('number', 'set_value', {
-        entity_id: this._config.hc_entity,
-        value: this._proposedHc,
-      });
-      await this._recalculate();
+      const hcChanged = Math.abs(this._proposedHc - this._currentHc) > this._hcStep / 2;
+      const shiftChanged = Math.abs(this._proposedShift - this._currentShift) > this._shiftStep / 2;
+      if (hcChanged) {
+        await this.hass.callService('number', 'set_value', {
+          entity_id: this._config.hc_entity,
+          value: this._proposedHc,
+        });
+      }
+      if (shiftChanged) {
+        await this.hass.callService('number', 'set_value', {
+          entity_id: this._config.shift_entity,
+          value: this._proposedShift,
+        });
+      }
+      if (hcChanged || shiftChanged) {
+        await this._recalculate();
+      }
+      this._applySuccess = true;
+      clearTimeout(this._successTimer);
+      this._successTimer = setTimeout(() => { this._applySuccess = false; }, 1500);
     } catch (err) {
-      console.warn('Failed to apply hc:', err);
+      console.warn('Failed to apply tuning:', err);
+    } finally {
+      this._applying = false;
     }
   }
 
-  private async _applyShift(): Promise<void> {
-    if (!this.hass) return;
-    try {
-      await this.hass.callService('number', 'set_value', {
-        entity_id: this._config.shift_entity,
-        value: this._proposedShift,
-      });
-      await this._recalculate();
-    } catch (err) {
-      console.warn('Failed to apply shift:', err);
-    }
+  private _resetHc(): void {
+    this._proposedHc = this._currentHc;
+    this._updateChartSeries();
+  }
+
+  private _resetShift(): void {
+    this._proposedShift = this._currentShift;
+    this._updateChartSeries();
   }
 
   // --- Slider handlers ---
@@ -381,15 +423,18 @@ export class EquithermTuningCard extends EquithermChartCard<TuningCardConfig> {
           font-weight: 600;
           color: var(--primary-text-color);
         }
-        .chart-wrapper { flex: 1; min-height: 0; }
+        .chart-wrapper { flex: 1; min-height: 120px; }
         #chart { width: 100%; height: 100%; }
         .controls {
           display: flex;
           flex-direction: column;
           gap: 10px;
-          padding-top: 10px;
-          border-top: 1px solid var(--divider-color, rgba(0,0,0,0.08));
           flex-shrink: 0;
+          background: rgba(var(--rgb-primary, 249, 115, 22), 0.05);
+          border-top: 1px solid var(--divider-color, rgba(0,0,0,0.08));
+          border-radius: 0 0 var(--ha-card-border-radius, 12px) var(--ha-card-border-radius, 12px);
+          margin: 16px -16px -16px -16px;
+          padding: 14px 16px 24px;
         }
         .slider-row {
           display: flex;
@@ -400,7 +445,7 @@ export class EquithermTuningCard extends EquithermChartCard<TuningCardConfig> {
           font-size: var(--ha-font-size-s, 12px);
           font-weight: var(--ha-font-weight-medium, 500);
           color: var(--secondary-text-color);
-          min-width: 40px;
+          min-width: 80px;
           white-space: nowrap;
         }
         .slider-value {
@@ -412,39 +457,114 @@ export class EquithermTuningCard extends EquithermChartCard<TuningCardConfig> {
           text-align: right;
           white-space: nowrap;
         }
+        .delta {
+          font-size: 11px;
+          font-weight: 600;
+          font-variant-numeric: tabular-nums;
+          min-width: 36px;
+        }
+        .delta.positive { color: var(--success-color, #4caf50); }
+        .delta.negative { color: var(--error-color, #e53935); }
+        .slider-actions {
+          display: flex;
+          align-items: center;
+          gap: 2px;
+          min-width: 72px;
+          height: 32px;
+          justify-content: flex-end;
+          flex-shrink: 0;
+        }
+        .reset-btn {
+          --mdc-icon-button-size: 32px;
+          --mdc-icon-size: 18px;
+          color: var(--secondary-text-color);
+          flex-shrink: 0;
+          opacity: 0.7;
+          transition: opacity 150ms ease;
+        }
+        .reset-btn:hover { opacity: 1; }
         input[type="range"] {
+          --slider-fill: 50%;
           flex: 1;
           min-width: 0;
           height: 4px;
           -webkit-appearance: none;
           appearance: none;
-          background: var(--divider-color, rgba(0,0,0,0.12));
+          background: linear-gradient(to right,
+            rgb(var(--rgb-primary, 249, 115, 22)) 0%,
+            rgb(var(--rgb-primary, 249, 115, 22)) var(--slider-fill),
+            var(--divider-color, rgba(0,0,0,0.12)) var(--slider-fill),
+            var(--divider-color, rgba(0,0,0,0.12)) 100%
+          );
           border-radius: 2px;
           outline: none;
           cursor: pointer;
         }
+        input[type="range"]:focus-visible {
+          outline: 3px solid rgba(var(--rgb-primary, 249, 115, 22), 0.5);
+          outline-offset: 4px;
+          border-radius: 2px;
+        }
         input[type="range"]::-webkit-slider-thumb {
           -webkit-appearance: none;
-          width: 16px;
-          height: 16px;
+          width: 20px;
+          height: 20px;
           border-radius: 50%;
           background: rgb(var(--rgb-primary, 249, 115, 22));
           border: 2px solid var(--card-background-color, #fff);
-          box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+          box-shadow: 0 0 0 10px transparent, 0 1px 3px rgba(0,0,0,0.2);
           cursor: pointer;
         }
         input[type="range"]::-moz-range-thumb {
-          width: 16px;
-          height: 16px;
+          width: 20px;
+          height: 20px;
           border-radius: 50%;
           background: rgb(var(--rgb-primary, 249, 115, 22));
           border: 2px solid var(--card-background-color, #fff);
-          box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+          box-shadow: 0 0 0 10px transparent, 0 1px 3px rgba(0,0,0,0.2);
           cursor: pointer;
         }
+        .controls-footer {
+          display: flex;
+          justify-content: flex-end;
+          padding-top: 6px;
+        }
         .apply-btn {
-          --mdc-theme-primary: rgb(var(--rgb-primary, 249, 115, 22));
-          flex-shrink: 0;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 6px;
+          height: 36px;
+          padding: 0 16px;
+          border: none;
+          border-radius: 18px;
+          background: rgb(var(--rgb-primary, 249, 115, 22));
+          color: var(--text-primary-color, #fff);
+          font-size: var(--ha-font-size-s, 14px);
+          font-weight: var(--ha-font-weight-medium, 500);
+          font-family: inherit;
+          cursor: pointer;
+          transition: background 200ms ease, opacity 200ms ease;
+        }
+        .apply-btn:hover:not(:disabled) {
+          filter: brightness(1.1);
+        }
+        .apply-btn:active:not(:disabled) {
+          filter: brightness(0.95);
+        }
+        .apply-btn:focus-visible {
+          outline: 2px solid rgb(var(--rgb-primary, 249, 115, 22));
+          outline-offset: 2px;
+        }
+        .apply-btn:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+        .apply-btn.success {
+          background: var(--success-color, #4caf50);
+        }
+        .apply-btn ha-icon {
+          --mdc-icon-size: 18px;
         }
       `,
     ];
@@ -472,12 +592,26 @@ export class EquithermTuningCard extends EquithermChartCard<TuningCardConfig> {
     const hvacBadge = getHvacBadgeProps(localize, hvacAction);
 
     // Proposed differs from current?
-    const hcChanged = this._proposedHc !== this._currentHc;
-    const shiftChanged = this._proposedShift !== this._currentShift;
+    const hcChanged = Math.abs(this._proposedHc - this._currentHc) > this._hcStep / 2;
+    const shiftChanged = Math.abs(this._proposedShift - this._currentShift) > this._shiftStep / 2;
+    const hasChanges = hcChanged || shiftChanged;
 
     // Slider step decimals
     const hcDecimals = this._hcStep < 1 ? Math.ceil(-Math.log10(this._hcStep)) : 0;
     const shiftDecimals = this._shiftStep < 1 ? Math.ceil(-Math.log10(this._shiftStep)) : 0;
+
+    // Slider fill percentages (guard against equal min/max)
+    const hcFill = this._hcMax !== this._hcMin ? ((this._proposedHc - this._hcMin) / (this._hcMax - this._hcMin)) * 100 : 50;
+    const shiftFill = this._shiftMax !== this._shiftMin ? ((this._proposedShift - this._shiftMin) / (this._shiftMax - this._shiftMin)) * 100 : 50;
+
+    // Delta values
+    const hcDelta = this._proposedHc - this._currentHc;
+    const shiftDelta = this._proposedShift - this._currentShift;
+
+    const deltaLabel = (d: number, decimals: number) => {
+      const sign = d > 0 ? '+' : '';
+      return `${sign}${d.toFixed(decimals)}`;
+    };
 
     return html`
       <ha-card>
@@ -506,9 +640,10 @@ export class EquithermTuningCard extends EquithermChartCard<TuningCardConfig> {
         </div>
         <div class="controls">
           <div class="slider-row">
-            <span class="slider-label">hc</span>
+            <span class="slider-label">${localize('editor.hc')}</span>
             <input
               type="range"
+              style=${`--slider-fill: ${hcFill}%`}
               .min=${this._hcMin}
               .max=${this._hcMax}
               .step=${this._hcStep}
@@ -516,18 +651,22 @@ export class EquithermTuningCard extends EquithermChartCard<TuningCardConfig> {
               @input=${this._onHcSlider}
             />
             <span class="slider-value">${this._proposedHc.toFixed(hcDecimals)}</span>
-            <mwc-button
-              class="apply-btn"
-              .disabled=${!hcChanged}
-              dense
-              unelevated
-              @click=${this._applyHc}
-            >${localize('tuning_card.apply')}</mwc-button>
+            <span class="slider-actions">
+              ${hcChanged ? html`
+                <span class="delta ${hcDelta > 0 ? 'positive' : 'negative'}">${deltaLabel(hcDelta, hcDecimals)}</span>
+                <ha-icon-button
+                  class="reset-btn"
+                  .label=${localize('tuning_card.reset')}
+                  @click=${this._resetHc}
+                ><ha-icon icon="mdi:undo"></ha-icon></ha-icon-button>
+              ` : nothing}
+            </span>
           </div>
           <div class="slider-row">
-            <span class="slider-label">shift</span>
+            <span class="slider-label">${localize('editor.shift')}</span>
             <input
               type="range"
+              style=${`--slider-fill: ${shiftFill}%`}
               .min=${this._shiftMin}
               .max=${this._shiftMax}
               .step=${this._shiftStep}
@@ -535,13 +674,28 @@ export class EquithermTuningCard extends EquithermChartCard<TuningCardConfig> {
               @input=${this._onShiftSlider}
             />
             <span class="slider-value">${this._proposedShift.toFixed(shiftDecimals)}</span>
-            <mwc-button
-              class="apply-btn"
-              .disabled=${!shiftChanged}
-              dense
-              unelevated
-              @click=${this._applyShift}
-            >${localize('tuning_card.apply')}</mwc-button>
+            <span class="slider-actions">
+              ${shiftChanged ? html`
+                <span class="delta ${shiftDelta > 0 ? 'positive' : 'negative'}">${deltaLabel(shiftDelta, shiftDecimals)}</span>
+                <ha-icon-button
+                  class="reset-btn"
+                  .label=${localize('tuning_card.reset')}
+                  @click=${this._resetShift}
+                ><ha-icon icon="mdi:undo"></ha-icon></ha-icon-button>
+              ` : nothing}
+            </span>
+          </div>
+          <div class="controls-footer">
+            <button
+              class="apply-btn${this._applySuccess ? ' success' : ''}"
+              ?disabled=${!hasChanges || this._applying}
+              @click=${this._applyAll}
+            >${this._applySuccess
+              ? html`<ha-icon icon="mdi:check"></ha-icon>`
+              : this._applying
+                ? localize('tuning_card.applying')
+                : localize('tuning_card.apply')
+            }</button>
           </div>
         </div>
       </ha-card>

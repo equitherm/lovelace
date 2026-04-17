@@ -44,6 +44,8 @@
     "current": "Actuelle",
     "proposed": "Proposée",
     "apply": "Appliquer",
+    "applying": "Application...",
+    "reset": "Réinitialiser",
     "outdoor_axis": "°C extérieur",
     "flow_axis": "°C départ"
   },
