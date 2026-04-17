@@ -1,3 +1,9 @@
+## [1.3.0](https://github.com/equitherm/lovelace/compare/v1.2.0...v1.3.0) (2026-04-17)
+
+### Features
+
+* add forecast card and refactor card architecture ([#11](https://github.com/equitherm/lovelace/issues/11)) ([259a67f](https://github.com/equitherm/lovelace/commit/259a67f4c7cd62d52c9ccd7f20d45b8ec345aaef))
+
 ## [1.2.0](https://github.com/equitherm/lovelace/compare/v1.1.1...v1.2.0) (2026-04-14)
 
 ### Features
