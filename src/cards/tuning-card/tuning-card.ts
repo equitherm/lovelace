@@ -265,7 +265,7 @@ export class EquithermTuningCard extends EquithermChartCard<TuningCardConfig> {
           borderColor: 'rgba(var(--rgb-warning, 255, 167, 38), 0.4)',
           strokeDashArray: 4,
           label: {
-            text: 'WWSD',
+            text: localize('common.wwsd'),
             borderWidth: 0,
             style: {
               color: 'var(--secondary-text-color)',
@@ -663,7 +663,7 @@ export class EquithermTuningCard extends EquithermChartCard<TuningCardConfig> {
           ${this._isWWSD ? html`
             <div class="wwsd-banner">
               <ha-icon icon="mdi:weather-sunny-alert"></ha-icon>
-              <span>${localize('common.wwsd_label')}</span>
+              <span>${this._wwsdDescription()}</span>
             </div>
           ` : nothing}
           <div class="feature-row">

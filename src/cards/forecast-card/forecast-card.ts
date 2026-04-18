@@ -121,6 +121,27 @@ export class EquithermForecastCard extends EquithermChartCard<ForecastCardConfig
     return s ? parseFloat(s.state) : this._config.min_flow;
   }
 
+  /** Whether current outdoor (from weather entity) meets or exceeds room setpoint */
+  protected override get _isWWSD(): boolean {
+    const tTarget = this._climate?.attributes.temperature;
+    if (tTarget == null) return false;
+    const weather = this._entityState(this._config.weather_entity);
+    if (!weather) return false;
+    const tOutdoor = parseFloat(weather.attributes.temperature);
+    return !isNaN(tOutdoor) && tOutdoor >= tTarget;
+  }
+
+  protected override _wwsdDescription(): string {
+    const localize = setupCustomLocalize(this.hass);
+    const tTarget = this._climate?.attributes.temperature;
+    const weather = this._entityState(this._config.weather_entity);
+    const tOutdoor = weather ? parseFloat(weather.attributes.temperature) : NaN;
+    if (!isNaN(tOutdoor) && tTarget != null) {
+      return `${localize('common.outdoor')} ${this._formatTemp(tOutdoor)} ≥ ${this._formatTemp(tTarget)}`;
+    }
+    return localize('common.wwsd_label');
+  }
+
   private get _flowTempUnit(): string | undefined {
     return this._entityAttr<string>(this._config.flow_entity, 'unit_of_measurement');
   }
@@ -488,6 +509,16 @@ export class EquithermForecastCard extends EquithermChartCard<ForecastCardConfig
           </div>
           <div class="badges">
             ${pidChip}
+            ${this._isWWSD ? html`
+              <eq-badge-info
+                id="wwsd-badge"
+                .label=${localize('common.wwsd')}
+                style=${`--badge-info-color: var(--rgb-warning, 255, 167, 38)`}
+                .icon=${'mdi:weather-sunny-alert'}
+                .active=${true}
+              ></eq-badge-info>
+              <ha-tooltip for="wwsd-badge" placement="top"><span style="white-space: nowrap">${this._wwsdDescription()}</span></ha-tooltip>
+            ` : nothing}
             <eq-badge-info
               .label=${hvacBadge.label}
               style=${`--badge-info-color: ${hvacBadge.color}`}

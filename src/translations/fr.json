@@ -13,8 +13,8 @@
     "defrosting": "Dégivrage",
     "preheating": "Préchauffage",
     "not_found": "{entity} introuvable",
-    "wwsd": "WWSD",
-    "wwsd_label": "Mode été"
+    "wwsd": "Veille",
+    "wwsd_label": "Température extérieure ≥ consigne"
   },
   "status_card": {
     "name": "Carte Status Equitherm",

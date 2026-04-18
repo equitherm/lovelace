@@ -103,6 +103,19 @@ export abstract class EquithermBaseCard<TConfig extends EquithermCardConfig> ext
     return !isNaN(tOutdoor) && tOutdoor >= tTarget;
   }
 
+  /** Formatted WWSD explanation with actual temperatures, e.g. "Outdoor 22.0°C ≥ 21.0°C" */
+  protected _wwsdDescription(): string {
+    const localize = setupCustomlocalize(this.hass);
+    const tTarget = this._climate?.attributes.temperature;
+    const outdoorEntity = (this._config as Record<string, unknown>).outdoor_entity as string | undefined;
+    const s = outdoorEntity ? this._entityState(outdoorEntity) : undefined;
+    const tOutdoor = s ? parseFloat(s.state) : NaN;
+    if (!isNaN(tOutdoor) && tTarget != null) {
+      return `${localize('common.outdoor')} ${this._formatTemp(tOutdoor)} ≥ ${this._formatTemp(tTarget)}`;
+    }
+    return localize('common.wwsd_label');
+  }
+
   // === Render Helpers ===
 
   /** Render a relative timestamp for an entity's last update */

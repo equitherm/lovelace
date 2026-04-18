@@ -242,7 +242,7 @@ export class EquithermCurveCard extends EquithermChartCard<CurveCardConfig> {
           borderColor: 'rgba(var(--rgb-warning, 255, 167, 38), 0.4)',
           strokeDashArray: 4,
           label: {
-            text: 'WWSD',
+            text: localize('common.wwsd'),
             borderWidth: 0,
             style: {
               color: 'var(--secondary-text-color)',
@@ -503,6 +503,16 @@ export class EquithermCurveCard extends EquithermChartCard<CurveCardConfig> {
           </div>
           <div class="badges">
             ${pidChip}
+            ${this._isWWSD ? html`
+              <eq-badge-info
+                id="wwsd-badge"
+                .label=${localize('common.wwsd')}
+                style=${`--badge-info-color: var(--rgb-warning, 255, 167, 38)`}
+                .icon=${'mdi:weather-sunny-alert'}
+                .active=${true}
+              ></eq-badge-info>
+              <ha-tooltip for="wwsd-badge" placement="top"><span style="white-space: nowrap">${this._wwsdDescription()}</span></ha-tooltip>
+            ` : nothing}
             <eq-badge-info
               .label=${hvacBadge.label}
               style=${`--badge-info-color: ${hvacBadge.color}`}
