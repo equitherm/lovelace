@@ -11,6 +11,7 @@ import { registerCustomCard } from '../../utils/register-card';
 import { TUNING_CARD_NAME, TUNING_CARD_EDITOR_NAME, CLIMATE_ENTITY_DOMAINS, SENSOR_ENTITY_DOMAINS, NUMBER_ENTITY_DOMAINS } from './const';
 import { validateTuningCardConfig } from './tuning-card-config';
 import { resolveRgbColor, normalizeHvacAction, getHvacActionColor, getHvacBadgeProps } from '../../utils/hvac-colors';
+import type { ApexAnnotations, PointAnnotations } from 'apexcharts';
 import { buildCurveSeries, flowAtOutdoor } from '../../utils/curve';
 import { EquithermChartCard } from '../../utils/base';
 import setupCustomLocalize from '../../localize';
@@ -236,7 +237,7 @@ export class EquithermTuningCard extends EquithermChartCard<TuningCardConfig> {
 
     // Operating point annotation on current curve
     const tOutdoor = this._tOutdoor;
-    const annotationPoints: ApexCharts.PointAnnotations[] = [];
+    const annotationPoints: PointAnnotations[] = [];
     if (tOutdoor !== null) {
       const currentFlow = flowAtOutdoor(currentParams, tOutdoor);
       annotationPoints.push({
@@ -244,6 +245,36 @@ export class EquithermTuningCard extends EquithermChartCard<TuningCardConfig> {
         y: currentFlow,
         marker: { size: 7, fillColor: heatingColor, strokeColor: '#ffffff', strokeWidth: 2 },
       });
+    }
+
+    // Build annotations
+    const annotations: ApexAnnotations = { points: annotationPoints };
+
+    // WWSD zone shading
+    if (this._isWWSD) {
+      const tTarget = this._tTarget;
+      annotations.xaxis = [
+        {
+          x: -cfg.t_out_max,
+          x2: -tTarget,
+          borderColor: 'transparent',
+          fillColor: 'rgba(var(--rgb-warning, 255, 167, 38), 0.08)',
+        },
+        {
+          x: -tTarget,
+          borderColor: 'rgba(var(--rgb-warning, 255, 167, 38), 0.4)',
+          strokeDashArray: 4,
+          label: {
+            text: 'WWSD',
+            borderWidth: 0,
+            style: {
+              color: 'var(--secondary-text-color)',
+              fontSize: '10px',
+              background: 'var(--card-background-color, #fff)',
+            },
+          },
+        },
+      ];
     }
 
     return {
@@ -309,7 +340,7 @@ export class EquithermTuningCard extends EquithermChartCard<TuningCardConfig> {
         labels: { colors: 'var(--secondary-text-color)' },
       },
       dataLabels: { enabled: false },
-      annotations: { points: annotationPoints },
+      annotations,
       tooltip: {
         theme: this._isDark ? 'dark' : 'light',
         x: { formatter: (v: number) => `${(-v).toFixed(1)} ${localize('tuning_card.outdoor_axis')}` },
@@ -453,6 +484,20 @@ export class EquithermTuningCard extends EquithermChartCard<TuningCardConfig> {
           border-top: 1px solid var(--divider-color, rgba(0, 0, 0, 0.08));
           padding: 12px 16px 16px;
           flex-shrink: 0;
+        }
+        .wwsd-banner {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          padding: 6px 8px;
+          border-radius: var(--feature-border-radius);
+          background: rgba(var(--rgb-warning, 255, 167, 38), 0.1);
+          font-size: var(--ha-font-size-s, 12px);
+          color: var(--secondary-text-color);
+        }
+        .wwsd-banner ha-icon {
+          --mdc-icon-size: 16px;
+          color: rgb(var(--rgb-warning, 255, 167, 38));
         }
         .feature-row {
           display: flex;
@@ -615,6 +660,12 @@ export class EquithermTuningCard extends EquithermChartCard<TuningCardConfig> {
           <div id="chart"></div>
         </div>
         <div class="features">
+          ${this._isWWSD ? html`
+            <div class="wwsd-banner">
+              <ha-icon icon="mdi:weather-sunny-alert"></ha-icon>
+              <span>${localize('common.wwsd_label')}</span>
+            </div>
+          ` : nothing}
           <div class="feature-row">
             <span class="feature-label">${localize('editor.hc')}</span>
             <ha-control-slider
