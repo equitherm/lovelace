@@ -12,7 +12,9 @@
     "fan": "Fan",
     "defrosting": "Defrosting",
     "preheating": "Preheating",
-    "not_found": "{entity} not found"
+    "not_found": "{entity} not found",
+    "wwsd": "WWSD",
+    "wwsd_label": "Warm weather shutdown"
   },
   "status_card": {
     "name": "Equitherm Status Card",

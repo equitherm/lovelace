@@ -12,7 +12,9 @@
     "fan": "Ventilation",
     "defrosting": "Dégivrage",
     "preheating": "Préchauffage",
-    "not_found": "{entity} introuvable"
+    "not_found": "{entity} introuvable",
+    "wwsd": "WWSD",
+    "wwsd_label": "Arrêt temps chaud"
   },
   "status_card": {
     "name": "Carte Status Equitherm",
