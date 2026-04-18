@@ -271,6 +271,14 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
           </div>
           <div class="badges">
             ${pidChip}
+            ${this._isWWSD ? html`
+              <eq-badge-info
+                .label=${localize('common.wwsd')}
+                style=${`--badge-info-color: var(--rgb-warning, 255, 167, 38)`}
+                .icon=${'mdi:weather-sunny-alert'}
+                .active=${true}
+              ></eq-badge-info>
+            ` : nothing}
             <eq-badge-info
               .label=${hvacBadge.label}
               style=${`--badge-info-color: ${hvacBadge.color}`}
