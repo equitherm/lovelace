@@ -73,6 +73,7 @@ export abstract class EquithermChartCard<TConfig extends EquithermCardConfig> ex
 
   protected _setupResizeObserver(): void {
     this._resizeObserver?.disconnect();
+    if (!this._chartWrapper) return;
     // Inlined debounced resize observer (was src/utils/resize.ts)
     let timeout: ReturnType<typeof setTimeout>;
     this._resizeObserver = new ResizeObserver(() => {
@@ -93,7 +94,7 @@ export abstract class EquithermChartCard<TConfig extends EquithermCardConfig> ex
   }
 
   protected _initChart(): void {
-    if (this._chartInitialized) return;
+    if (this._chartInitialized || !this._chartEl) return;
     this._chart = new ApexCharts(this._chartEl, this._buildChartOptions());
     this._chart.render();
     this._chartInitialized = true;

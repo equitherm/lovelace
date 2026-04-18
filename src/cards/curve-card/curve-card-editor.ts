@@ -67,8 +67,8 @@ export class EquithermCurveCardEditor extends LitElement implements LovelaceCard
               schemaHelpers.entity('hc_entity', { domain: 'number' }),
               schemaHelpers.entity('n_entity', { domain: 'number' }),
               schemaHelpers.entity('shift_entity', { domain: 'number' }),
-              schemaHelpers.entity('min_flow_entity', { domain: 'sensor', required: false }),
-              schemaHelpers.entity('max_flow_entity', { domain: 'sensor', required: false }),
+              schemaHelpers.entity('min_flow_entity', { domain: ['sensor', 'number'], required: false }),
+              schemaHelpers.entity('max_flow_entity', { domain: ['sensor', 'number'], required: false }),
             ]
           : [
               schemaHelpers.grid([

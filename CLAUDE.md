@@ -43,7 +43,9 @@ lovelace/
 │   ├── equitherm-cards.ts    # Entry point, card registration
 │   ├── cards/                 # Card implementations (co-located)
 │   │   ├── status-card/       # Status card + editor + config + const
-│   │   └── curve-card/        # Curve card + editor + config + const
+│   │   ├── curve-card/        # Curve card + editor + config + const
+│   │   ├── forecast-card/     # Forecast card + editor + config + const
+│   │   └── tuning-card/       # Tuning card + editor + config + const
 │   ├── shared/                # Shared Lit components
 │   ├── utils/                 # Helper functions and base classes
 │   ├── ha/                    # Vendored HA types (from Mushroom)
@@ -85,10 +87,16 @@ LitElement
 **EquithermBaseCard<TConfig>** provides:
 - `@state() _config` - Card configuration
 - Entity access: `_entityState()`, `_entityAttr()`, `_entityExists()`
-- Formatting: `_formatTemp()` with unit conversion
+- Formatting: `_formatTemp()` with locale-aware formatting and unit conversion
 - Actions: `_openMoreInfo()`, `_handleAction()`, `_hasAction`
-- Rendering: `_renderNotFound()`
+- Rendering: `_renderNotFound()`, `_renderLastUpdated()` (optional ha-relative-time footer)
+- Entity number resolution: `_resolveEntityNumber(entityId, fallback)`
 - Grid options: `getGridOptions()`, `getCardSize()`
+
+**EquithermChartCard<TConfig>** (`src/utils/base/chart-card.ts`) extends EquithermBaseCard:
+- ApexCharts lifecycle management (init, update, destroy)
+- Dark mode chart option updates
+- Connection/disconnect handling for chart subscriptions
 
 ### Vendored HA Types (`src/ha/`)
 
@@ -157,6 +165,7 @@ Compact tile showing heating status with temperature displays.
 - `rate_limiting_entity` - Binary sensor, enables ramping display
 - `pid_active_entity` - Binary sensor, shows whether PID correction is active
 - `layout` - `'default'` | `'vertical'` | `'horizontal'`
+- `show_last_updated` - Boolean, show "last updated" timestamp in footer
 
 **Features:**
 - HVAC action badge (heating/idle/off) - click opens climate more-info
@@ -184,6 +193,9 @@ Heating curve visualization with ApexCharts.
 - `hc_entity` - Entity for live heat curve coefficient
 - `n_entity` - Entity for live exponent
 - `shift_entity` - Entity for live shift offset
+- `min_flow_entity` - Sensor/number entity for live min flow temperature
+- `max_flow_entity` - Sensor/number entity for live max flow temperature
+- `show_last_updated` - Boolean, show "last updated" timestamp in footer
 
 **Features:**
 - Line chart with horizontal gradient (customizable via `--curve-gradient-start` / `--curve-gradient-end` CSS vars)
@@ -191,6 +203,58 @@ Heating curve visualization with ApexCharts.
 - Interactive 3-column footer (outdoor · flow · room) with click-to-more-info
 - Current operating point marker with rate-limiting indicators
 - Dark mode support
+
+### Equitherm Forecast Card (`src/cards/forecast-card/`)
+
+Weather-based heating flow temperature forecast with ApexCharts.
+
+**Required config:**
+- `weather_entity` - Weather entity for forecast data
+- `climate_entity` - Climate entity with temperature setpoint
+- `flow_entity` - Flow setpoint sensor
+
+**Optional config:**
+- `name` - Entity name picker
+- `pid_active_entity` - Binary sensor, shows PID correction status
+- `show_last_updated` - Boolean, show "last updated" timestamp in footer
+- `hours` - Number of forecast hours (1-48, default 24)
+- `curve_from_entities` - Read curve params from entities
+- `hc_entity`, `n_entity`, `shift_entity` - Live curve parameter entities
+- `min_flow_entity`, `max_flow_entity` - Sensor/number entities for live flow limits
+- Static curve params: `hc`, `n`, `shift`, `min_flow`, `max_flow`
+
+**Features:**
+- Dual series chart: predicted flow temp + outdoor temperature
+- Peak demand annotation
+- Weather forecast via HA WebSocket subscription
+- HVAC/PID badges in header
+
+### Equitherm Tuning Card (`src/cards/tuning-card/`)
+
+Interactive curve tuning with sliders for hc and shift parameters.
+
+**Required config:**
+- `climate_entity` - Climate entity with temperature setpoint
+- `outdoor_entity` - Outdoor temperature sensor
+- `hc_entity` - Writable number entity for heat curve coefficient
+- `shift_entity` - Writable number entity for shift offset
+
+**Optional config:**
+- `name` - Entity name picker
+- `show_last_updated` - Boolean, show "last updated" timestamp in footer
+- `curve_from_entities` - Read additional params from entities
+- `n_entity` - Entity for live exponent
+- `min_flow_entity`, `max_flow_entity` - Sensor/number entities for live flow limits
+- Static params: `n`, `min_flow`, `max_flow`, `t_out_min`, `t_out_max`
+- `recalculate_service` - Service to call after applying values
+
+**Features:**
+- Interactive hc/shift sliders with real-time chart preview
+- Current (orange) vs proposed (blue) curve comparison
+- Operating point marker on current curve
+- Delta indicators and per-slider reset buttons
+- Apply All button with success feedback
+- Calls `recalculate_service` after apply (if configured)
 
 ## Utilities (`src/utils/`)
 
