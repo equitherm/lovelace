@@ -1,6 +1,7 @@
 // src/cards/tuning-card/tuning-card-config.ts
 import { assert, type, string, number, optional, any } from 'superstruct';
 import type { EntityNameItem } from '../../ha';
+import { CURVE_CONFIG_DEFAULTS, curveConfigStructFields, curveEntityStructFields } from '../../utils/curve-config';
 
 export interface TuningCardConfig {
   type: string;
@@ -11,6 +12,8 @@ export interface TuningCardConfig {
   name?: string | EntityNameItem | EntityNameItem[];
   curve_from_entities?: boolean;
   n_entity?: string;
+  min_flow_entity?: string;
+  max_flow_entity?: string;
   /** Service to call after applying a value, e.g. "climate.equitherm_force_recalculate". Skipped if not configured or service not found. */
   recalculate_service?: string;
   n: number;
@@ -31,23 +34,19 @@ export const TuningCardConfigStruct = type({
   name: optional(any()),
   curve_from_entities: optional(any()),
   n_entity: optional(string()),
+  ...curveEntityStructFields,
   recalculate_service: optional(string()),
-  n: optional(number()),
-  min_flow: optional(number()),
-  max_flow: optional(number()),
+  ...curveConfigStructFields,
   t_out_min: optional(number()),
   t_out_max: optional(number()),
 });
 
-/** Default tuning card parameter values (matching @equitherm/core defaults) */
 export const TUNING_CARD_DEFAULTS: Required<
-  Pick<TuningCardConfig, 'n' | 'min_flow' | 'max_flow' | 't_out_min' | 't_out_max'>
-> = {
-  n: 1.25,
-  min_flow: 20,
-  max_flow: 70,
+  Pick<TuningCardConfig, 't_out_min' | 't_out_max'>
+> & typeof CURVE_CONFIG_DEFAULTS = {
   t_out_min: -20,
   t_out_max: 20,
+  ...CURVE_CONFIG_DEFAULTS,
 };
 
 /** Validate and apply defaults */

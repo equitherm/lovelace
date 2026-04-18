@@ -80,6 +80,8 @@
     "shift": "Shift",
     "min_flow": "Min Flow",
     "max_flow": "Max Flow",
+    "min_flow_entity": "Min Flow Entity",
+    "max_flow_entity": "Max Flow Entity",
     "t_out_min": "Min Outdoor",
     "t_out_max": "Max Outdoor",
     "weather_entity": "Weather Entity",
@@ -104,6 +106,8 @@
       "pid_output_entity": "Curve output after PID correction (before rate limiting)",
       "rate_limiting_entity": "ON when output is ramping to prevent thermal shock",
       "pid_active_entity": "ON when at least one PID gain (kp, ki, kd) is non-zero",
+      "min_flow_entity": "Runtime-adjustable minimum flow temperature number",
+      "max_flow_entity": "Runtime-adjustable maximum flow temperature number",
       "recalculate_service": "Service to call after applying a value, e.g. climate.equitherm_force_recalculate. Only called if the service exists."
     }
   }

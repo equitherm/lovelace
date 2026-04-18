@@ -193,14 +193,17 @@ export class EquithermTuningCard extends EquithermChartCard<TuningCardConfig> {
     const localize = setupCustomLocalize(this.hass);
     const cfg = this._config;
 
+    const minFlow = cfg.curve_from_entities ? this._resolveEntityNumber(cfg.min_flow_entity, cfg.min_flow) : cfg.min_flow;
+    const maxFlow = cfg.curve_from_entities ? this._resolveEntityNumber(cfg.max_flow_entity, cfg.max_flow) : cfg.max_flow;
+
     // Current curve
     const currentParams = {
       tTarget: this._tTarget,
       hc: this._currentHc,
       n: this._currentN,
       shift: this._currentShift,
-      minFlow: cfg.min_flow,
-      maxFlow: cfg.max_flow,
+      minFlow,
+      maxFlow,
     };
 
     // Proposed curve
@@ -209,8 +212,8 @@ export class EquithermTuningCard extends EquithermChartCard<TuningCardConfig> {
       hc: this._proposedHc,
       n: this._currentN,
       shift: this._proposedShift,
-      minFlow: cfg.min_flow,
-      maxFlow: cfg.max_flow,
+      minFlow,
+      maxFlow,
     };
 
     // Resolve colors
@@ -281,8 +284,8 @@ export class EquithermTuningCard extends EquithermChartCard<TuningCardConfig> {
       yaxis: {
         title: { text: localize('tuning_card.flow_axis'), style: { color: 'var(--secondary-text-color)', fontWeight: 400 } },
         labels: { style: { colors: 'var(--secondary-text-color)', fontWeight: 400 } },
-        min: cfg.min_flow - 5,
-        max: cfg.max_flow + 5,
+        min: minFlow - 5,
+        max: maxFlow + 5,
         forceNiceScale: false,
       },
       grid: { show: false },

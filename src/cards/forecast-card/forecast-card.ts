@@ -133,8 +133,8 @@ export class EquithermForecastCard extends EquithermChartCard<ForecastCardConfig
       hc: cfg.curve_from_entities ? this._resolveEntityNumber(cfg.hc_entity, cfg.hc) : cfg.hc,
       n: cfg.curve_from_entities ? this._resolveEntityNumber(cfg.n_entity, cfg.n) : cfg.n,
       shift: cfg.curve_from_entities ? this._resolveEntityNumber(cfg.shift_entity, cfg.shift) : cfg.shift,
-      minFlow: cfg.min_flow,
-      maxFlow: cfg.max_flow,
+      minFlow: cfg.curve_from_entities ? this._resolveEntityNumber(cfg.min_flow_entity, cfg.min_flow) : cfg.min_flow,
+      maxFlow: cfg.curve_from_entities ? this._resolveEntityNumber(cfg.max_flow_entity, cfg.max_flow) : cfg.max_flow,
     };
   }
 
@@ -285,8 +285,8 @@ export class EquithermForecastCard extends EquithermChartCard<ForecastCardConfig
             style: { color: 'var(--secondary-text-color)', fontWeight: 400 },
           },
           labels: { style: { colors: 'var(--secondary-text-color)', fontWeight: 400 } },
-          min: cfg.min_flow - 5,
-          max: cfg.max_flow + 5,
+          min: (this._curveParams.minFlow ?? 20) - 5,
+          max: (this._curveParams.maxFlow ?? 70) + 5,
         },
         {
           opposite: true,

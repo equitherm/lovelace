@@ -1,6 +1,7 @@
 // src/cards/forecast-card/forecast-card-config.ts
 import { assert, type, string, number, optional, any } from 'superstruct';
 import type { EntityNameItem } from '../../ha';
+import { CURVE_CONFIG_DEFAULTS, curveConfigStructFields, curveEntityStructFields } from '../../utils/curve-config';
 
 export interface ForecastCardConfig {
   type: string;
@@ -13,6 +14,8 @@ export interface ForecastCardConfig {
   hc_entity?: string;
   n_entity?: string;
   shift_entity?: string;
+  min_flow_entity?: string;
+  max_flow_entity?: string;
   pid_active_entity?: string;
   hc: number;
   n: number;
@@ -34,24 +37,20 @@ export const ForecastCardConfigStruct = type({
   hc_entity: optional(string()),
   n_entity: optional(string()),
   shift_entity: optional(string()),
+  ...curveEntityStructFields,
   pid_active_entity: optional(string()),
   hc: optional(number()),
-  n: optional(number()),
+  ...curveConfigStructFields,
   shift: optional(number()),
-  min_flow: optional(number()),
-  max_flow: optional(number()),
 });
 
-/** Default forecast card parameter values (matching @equitherm/core defaults) */
 export const FORECAST_CARD_DEFAULTS: Required<
-  Pick<ForecastCardConfig, 'hours' | 'hc' | 'n' | 'shift' | 'min_flow' | 'max_flow'>
-> = {
+  Pick<ForecastCardConfig, 'hours' | 'hc' | 'shift'>
+> & typeof CURVE_CONFIG_DEFAULTS = {
   hours: 24,
   hc: 0.9,
-  n: 1.25,
   shift: 0,
-  min_flow: 20,
-  max_flow: 70,
+  ...CURVE_CONFIG_DEFAULTS,
 };
 
 /** Validate and apply defaults */

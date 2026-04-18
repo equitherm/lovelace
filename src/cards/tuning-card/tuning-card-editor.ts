@@ -57,14 +57,16 @@ export class EquithermTuningCardEditor extends LitElement implements LovelaceCar
         ...(curveFromEntities
           ? [
               schemaHelpers.entity('n_entity', { domain: ['number', 'input_number'] }),
+              schemaHelpers.entity('min_flow_entity', { domain: 'sensor', required: false }),
+              schemaHelpers.entity('max_flow_entity', { domain: 'sensor', required: false }),
             ]
           : [
               schemaHelpers.number('n', 1.0, 2.0, 0.05, { default: 1.25 }),
+              schemaHelpers.grid([
+                schemaHelpers.number('min_flow', 15, 35, 1, { unit_of_measurement: '°C', default: 20 }),
+                schemaHelpers.number('max_flow', 50, 90, 1, { unit_of_measurement: '°C', default: 70 }),
+              ]),
             ]),
-        schemaHelpers.grid([
-          schemaHelpers.number('min_flow', 15, 35, 1, { unit_of_measurement: '°C', default: 20 }),
-          schemaHelpers.number('max_flow', 50, 90, 1, { unit_of_measurement: '°C', default: 70 }),
-        ]),
       ]),
       // Display range
       schemaHelpers.expandable(localize('editor.display_range'), 'mdi:arrow-expand-horizontal', [
