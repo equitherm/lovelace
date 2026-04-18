@@ -1,7 +1,7 @@
 import { html, css, nothing } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
-import type { PointAnnotations } from 'apexcharts';
+import type { ApexAnnotations, PointAnnotations } from 'apexcharts';
 import type { CurveCardConfig } from './curve-card-config';
 import type { HomeAssistant } from '../../ha';
 import { computeDomain } from '../../ha/common/entity/compute_domain';
@@ -224,6 +224,36 @@ export class EquithermCurveCard extends EquithermChartCard<CurveCardConfig> {
       }
     }
 
+    // Build annotations
+    const annotations: ApexAnnotations = { points: annotationPoints };
+
+    // WWSD zone shading
+    if (this._isWWSD) {
+      const tTarget = this._tTarget;
+      annotations.xaxis = [
+        {
+          x: -cfg.t_out_max,
+          x2: -tTarget,
+          borderColor: 'transparent',
+          fillColor: 'rgba(var(--rgb-warning, 255, 167, 38), 0.08)',
+        },
+        {
+          x: -tTarget,
+          borderColor: 'rgba(var(--rgb-warning, 255, 167, 38), 0.4)',
+          strokeDashArray: 4,
+          label: {
+            text: 'WWSD',
+            borderWidth: 0,
+            style: {
+              color: 'var(--secondary-text-color)',
+              fontSize: '10px',
+              background: 'var(--card-background-color, #fff)',
+            },
+          },
+        },
+      ];
+    }
+
     return {
       chart: {
         type: 'line' as const,
@@ -242,7 +272,7 @@ export class EquithermCurveCard extends EquithermChartCard<CurveCardConfig> {
           data: curveSeries.map((p): ChartDataPoint => ({ x: -p.x, y: p.y })),
         },
       ],
-      annotations: { points: annotationPoints },
+      annotations,
       stroke: { curve: 'straight' as const, width: 2 },
       colors: [heatingColor],
       fill: {
