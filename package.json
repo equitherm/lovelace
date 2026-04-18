@@ -22,7 +22,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@equitherm/core": "^0.1.5",
+    "@equitherm/core": "^0.1.7",
     "apexcharts": "^5.10.6",
     "home-assistant-js-websocket": "^9.6.0",
     "intl-messageformat": "^11.1.3",
