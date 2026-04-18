@@ -90,6 +90,19 @@ export abstract class EquithermBaseCard<TConfig extends EquithermCardConfig> ext
     return !!this._entityState(entityId);
   }
 
+  /** Whether outdoor temperature meets or exceeds room setpoint (Warm Weather Shutdown) */
+  protected get _isWWSD(): boolean {
+    if (!this._config?.climate_entity) return false;
+    const tTarget = this._climate?.attributes.temperature;
+    if (tTarget == null) return false;
+    const outdoorEntity = (this._config as Record<string, unknown>).outdoor_entity as string | undefined;
+    if (!outdoorEntity) return false;
+    const s = this._entityState(outdoorEntity);
+    if (!s) return false;
+    const tOutdoor = parseFloat(s.state);
+    return !isNaN(tOutdoor) && tOutdoor >= tTarget;
+  }
+
   // === Render Helpers ===
 
   /** Render a relative timestamp for an entity's last update */
