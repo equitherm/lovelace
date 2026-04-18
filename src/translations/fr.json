@@ -14,7 +14,7 @@
     "preheating": "Préchauffage",
     "not_found": "{entity} introuvable",
     "wwsd": "WWSD",
-    "wwsd_label": "Arrêt temps chaud"
+    "wwsd_label": "Mode été"
   },
   "status_card": {
     "name": "Carte Status Equitherm",
