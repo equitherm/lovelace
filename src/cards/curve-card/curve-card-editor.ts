@@ -89,12 +89,6 @@ export class EquithermCurveCardEditor extends LitElement implements LovelaceCard
           schemaHelpers.number('t_out_max', 0, 30, 1, { unit_of_measurement: '°C', default: 20 }),
         ]),
       ]),
-      // Actions
-      schemaHelpers.expandable(localize('editor.actions'), 'mdi:gesture-tap', [
-        { name: 'tap_action', selector: { ui_action: {} } },
-        { name: 'hold_action', selector: { ui_action: {} } },
-        { name: 'double_tap_action', selector: { ui_action: {} } },
-      ]),
     ] as const satisfies readonly HaFormSchema[];
   });
 

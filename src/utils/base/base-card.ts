@@ -1,12 +1,10 @@
 import { html, nothing } from 'lit';
 import { state } from 'lit/decorators.js';
 import type { HassEntity } from 'home-assistant-js-websocket';
-import type { ActionConfig, ActionHandlerDetail, ActionHandlerOptions } from '../../ha/data/lovelace';
 import type { LovelaceGridOptions, LovelaceCard } from '../../ha/panels/lovelace/types';
 import type { ClimateEntity } from '../../ha/data/climate';
-import { actionHandler } from '../../ha';
 import { EquithermBaseElement } from './base-element';
-import { executeAction, hasAction } from '../actions';
+import { executeAction } from '../actions';
 import setupCustomlocalize from '../../localize';
 
 /** Minimum config fields shared by all equitherm cards */
@@ -78,45 +76,12 @@ export abstract class EquithermBaseCard<TConfig extends EquithermCardConfig> ext
     return `${formatted}${haUnit}`;
   }
 
-  // === Action Handling ===
-
-  /** Check if an action is configured */
-  protected _hasAction = hasAction;
-
-  /** Execute an action on an entity */
-  protected _handleAction(action: ActionConfig | undefined, entityId?: string): void {
-    if (!this.hass) return;
-    executeAction(this, this.hass, action, entityId);
-  }
-
   /** Open more-info panel for an entity */
   protected _openMoreInfo(entityId: string | undefined): void {
     if (entityId && this.hass) {
       executeAction(this, this.hass, { action: 'more-info' }, entityId);
     }
   }
-
-  /** Get actionHandler directive options for the current card config */
-  protected _actionHandlerOptions(entityId: string): ActionHandlerOptions {
-    const config = this._config as any;
-    return {
-      hasHold: this._hasAction(config?.hold_action),
-      hasDoubleClick: this._hasAction(config?.double_tap_action),
-    };
-  }
-
-  /** Handle action events from actionHandler directive */
-  protected _onAction = (entityId: string) => (ev: CustomEvent<ActionHandlerDetail>) => {
-    const actionType = ev.detail.action;
-    const config = this._config as any;
-    const actionConfig = config?.[`${actionType}_action`];
-    if (actionConfig) {
-      executeAction(this, this.hass!, actionConfig, entityId);
-    } else {
-      // Default: more-info for tap
-      this._openMoreInfo(entityId);
-    }
-  };
 
   // === Entity Helpers ===
 

@@ -5,7 +5,6 @@ import type { PointAnnotations } from 'apexcharts';
 import type { CurveCardConfig } from './curve-card-config';
 import type { HomeAssistant } from '../../ha';
 import { computeDomain } from '../../ha/common/entity/compute_domain';
-import { actionHandler } from '../../ha';
 import { computeEntityNameDisplay } from '../../ha/common/entity/compute_entity_name_display';
 import { cardStyle } from '../../utils/card-styles';
 import { registerCustomCard } from '../../utils/register-card';
@@ -462,8 +461,7 @@ export class EquithermCurveCard extends EquithermChartCard<CurveCardConfig> {
           <ha-tile-icon
             .interactive=${true}
             style=${iconStyles}
-            .actionHandler=${actionHandler(this._actionHandlerOptions(this._config.climate_entity))}
-            @action=${this._onAction(this._config.climate_entity)}
+            @click=${() => this._openMoreInfo(this._config.climate_entity)}
           >
             <ha-icon slot="icon" .icon=${'mdi:thermostat'}></ha-icon>
           </ha-tile-icon>
@@ -488,16 +486,14 @@ export class EquithermCurveCard extends EquithermChartCard<CurveCardConfig> {
         </div>
         <div class="footer">
           <div class="footer-metric"
-            .actionHandler=${actionHandler(this._actionHandlerOptions(this._config.outdoor_entity))}
-            @action=${this._onAction(this._config.outdoor_entity)}
+            @click=${() => this._openMoreInfo(this._config.outdoor_entity)}
           >
             <span class="footer-value">${this._formatTemp(this._tOutdoor, this._tOutdoorUnit)}</span>
             <span class="footer-label">${localize('common.outdoor')}</span>
           </div>
           <span class="footer-sep" aria-hidden="true">·</span>
           <div class="footer-metric"
-            .actionHandler=${actionHandler(this._actionHandlerOptions(this._config.flow_entity))}
-            @action=${this._onAction(this._config.flow_entity)}
+            @click=${() => this._openMoreInfo(this._config.flow_entity)}
           >
             <span class="footer-value flow">${this._formatTemp(this._flowTemp, this._flowTempUnit)}</span>
             ${adjustingDir && this._curveOutputTemp ? html`<span class="flow-target">→ ${this._curveOutputTemp}</span>` : nothing}
@@ -505,8 +501,7 @@ export class EquithermCurveCard extends EquithermChartCard<CurveCardConfig> {
           </div>
           <span class="footer-sep" aria-hidden="true">·</span>
           <div class="footer-metric"
-            .actionHandler=${actionHandler(this._actionHandlerOptions(this._config.climate_entity))}
-            @action=${this._onAction(this._config.climate_entity)}
+            @click=${() => this._openMoreInfo(this._config.climate_entity)}
           >
             <span class="footer-value">${this._roomTemp}</span>
             <span class="footer-label">${localize('common.room')}</span>

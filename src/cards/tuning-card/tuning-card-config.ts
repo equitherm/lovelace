@@ -1,7 +1,6 @@
 // src/cards/tuning-card/tuning-card-config.ts
 import { assert, type, string, number, optional, any, boolean } from 'superstruct';
 import type { EntityNameItem } from '../../ha';
-import type { ActionConfig } from '../../ha/data/lovelace';
 import { CURVE_CONFIG_DEFAULTS, curveConfigStructFields, curveEntityStructFields } from '../../utils/curve-config';
 
 export interface TuningCardConfig {
@@ -23,9 +22,6 @@ export interface TuningCardConfig {
   max_flow: number;
   t_out_min: number;
   t_out_max: number;
-  tap_action?: ActionConfig;
-  hold_action?: ActionConfig;
-  double_tap_action?: ActionConfig;
   [key: string]: unknown;
 }
 

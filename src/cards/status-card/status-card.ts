@@ -6,7 +6,6 @@ import type { StatusCardConfig } from './status-card-config';
 import type { HomeAssistant } from '../../ha/types';
 import type { LovelaceGridOptions } from '../../ha/panels/lovelace/types';
 import { computeDomain } from '../../ha/common/entity/compute_domain';
-import { actionHandler } from '../../ha';
 import { EquithermBaseCard } from '../../utils/base';
 import { computeEntityNameDisplay } from '../../ha/common/entity/compute_entity_name_display';
 import { cardStyle } from '../../utils/card-styles';
@@ -260,8 +259,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
           <ha-tile-icon
               .interactive=${true}
               style=${iconStyles}
-              .actionHandler=${actionHandler(this._actionHandlerOptions(this._config.climate_entity))}
-              @action=${this._onAction(this._config.climate_entity)}
+              @click=${() => this._openMoreInfo(this._config.climate_entity)}
             >
               <ha-icon slot="icon" .icon=${'mdi:thermostat'}></ha-icon>
             </ha-tile-icon>
@@ -284,16 +282,14 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
 
         <div class=${classMap({ temps: true, vertical })}>
           <div class="temp-block"
-            .actionHandler=${actionHandler(this._actionHandlerOptions(this._config.outdoor_entity))}
-            @action=${this._onAction(this._config.outdoor_entity)}
+            @click=${() => this._openMoreInfo(this._config.outdoor_entity)}
           >
             <div class="temp-value">${this._outdoorTemp}</div>
             <div class="temp-label">${localize('common.outdoor')}</div>
           </div>
           <div class="arrow" aria-hidden="true">→</div>
           <div class="temp-block"
-            .actionHandler=${actionHandler(this._actionHandlerOptions(this._config.flow_entity))}
-            @action=${this._onAction(this._config.flow_entity)}
+            @click=${() => this._openMoreInfo(this._config.flow_entity)}
           >
             ${adjustingDir && curveOutput ? html`
               <div class="flow-dual">
@@ -307,8 +303,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
           </div>
           <div class="divider"></div>
           <div class="temp-block"
-            .actionHandler=${actionHandler(this._actionHandlerOptions(this._config.climate_entity))}
-            @action=${this._onAction(this._config.climate_entity)}
+            @click=${() => this._openMoreInfo(this._config.climate_entity)}
           >
             <div class="temp-value">${this._roomTemp}</div>
             <div class="temp-label">${localize('common.room')}</div>

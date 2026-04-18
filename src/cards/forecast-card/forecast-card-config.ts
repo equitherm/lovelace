@@ -1,7 +1,6 @@
 // src/cards/forecast-card/forecast-card-config.ts
 import { assert, type, string, number, optional, any, boolean } from 'superstruct';
 import type { EntityNameItem } from '../../ha';
-import type { ActionConfig } from '../../ha/data/lovelace';
 import { CURVE_CONFIG_DEFAULTS, curveConfigStructFields, curveEntityStructFields } from '../../utils/curve-config';
 
 export interface ForecastCardConfig {
@@ -24,9 +23,6 @@ export interface ForecastCardConfig {
   shift: number;
   min_flow: number;
   max_flow: number;
-  tap_action?: ActionConfig;
-  hold_action?: ActionConfig;
-  double_tap_action?: ActionConfig;
   [key: string]: unknown;
 }
 

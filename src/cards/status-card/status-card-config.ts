@@ -1,7 +1,6 @@
 // src/cards/status-card/status-card-config.ts
 import { assert, type, string, optional, any, boolean } from 'superstruct';
 import type { EntityNameItem } from '../../ha';
-import type { ActionConfig } from '../../ha/data/lovelace';
 
 export interface StatusCardConfig {
   type: string;
@@ -17,9 +16,6 @@ export interface StatusCardConfig {
   name?: string | EntityNameItem | EntityNameItem[];
   /** @deprecated Use `name` instead */
   title?: string;
-  tap_action?: ActionConfig;
-  hold_action?: ActionConfig;
-  double_tap_action?: ActionConfig;
   [key: string]: unknown;
 }
 

@@ -82,12 +82,6 @@ export class EquithermForecastCardEditor extends LitElement implements LovelaceC
               ]),
             ]),
       ]),
-      // Actions
-      schemaHelpers.expandable(localize('editor.actions'), 'mdi:gesture-tap', [
-        { name: 'tap_action', selector: { ui_action: {} } },
-        { name: 'hold_action', selector: { ui_action: {} } },
-        { name: 'double_tap_action', selector: { ui_action: {} } },
-      ]),
     ] as const satisfies readonly HaFormSchema[];
   });
 

@@ -89,7 +89,6 @@
     "forecast_settings": "Prévision",
     "recalculate_service": "Service de Recalcul",
     "advanced": "Avancé",
-    "actions": "Actions",
     "show_last_updated": "Afficher dernière mise à jour",
     "helper": {
       "curve_from_entities": "Lire depuis les nombres ESPHome ajustables au lieu de valeurs statiques",

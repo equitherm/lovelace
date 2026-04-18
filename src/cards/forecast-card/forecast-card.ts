@@ -6,7 +6,6 @@ import type { ForecastCardConfig } from './forecast-card-config';
 import type { HomeAssistant } from '../../ha';
 import type { ForecastPoint, ForecastCurveConfig } from '../../utils/forecast';
 import { computeDomain } from '../../ha/common/entity/compute_domain';
-import { actionHandler } from '../../ha';
 import { EquithermChartCard } from '../../utils/base';
 import { computeEntityNameDisplay } from '../../ha/common/entity/compute_entity_name_display';
 import { cardStyle } from '../../utils/card-styles';
@@ -477,8 +476,7 @@ export class EquithermForecastCard extends EquithermChartCard<ForecastCardConfig
           <ha-tile-icon
             .interactive=${true}
             style=${iconStyles}
-            .actionHandler=${actionHandler(this._actionHandlerOptions(this._config.weather_entity))}
-            @action=${this._onAction(this._config.weather_entity)}
+            @click=${() => this._openMoreInfo(this._config.weather_entity)}
           >
             <ha-icon slot="icon" .icon=${'mdi:weather-partly-cloudy'}></ha-icon>
           </ha-tile-icon>
@@ -503,24 +501,21 @@ export class EquithermForecastCard extends EquithermChartCard<ForecastCardConfig
         </div>
         <div class="footer">
           <div class="footer-metric"
-            .actionHandler=${actionHandler(this._actionHandlerOptions(this._config.weather_entity))}
-            @action=${this._onAction(this._config.weather_entity)}
+            @click=${() => this._openMoreInfo(this._config.weather_entity)}
           >
             <span class="footer-value">${this._formatTemp(this._forecastPoints[0]?.tOutdoor)}</span>
             <span class="footer-label">${localize('forecast_card.outdoor_temp')}</span>
           </div>
           <span class="footer-sep" aria-hidden="true">·</span>
           <div class="footer-metric"
-            .actionHandler=${actionHandler(this._actionHandlerOptions(this._config.flow_entity))}
-            @action=${this._onAction(this._config.flow_entity)}
+            @click=${() => this._openMoreInfo(this._config.flow_entity)}
           >
             <span class="footer-value flow">${this._formatTemp(this._flowTemp, this._flowTempUnit)}</span>
             <span class="footer-label">${localize('common.flow')}</span>
           </div>
           <span class="footer-sep" aria-hidden="true">·</span>
           <div class="footer-metric"
-            .actionHandler=${actionHandler(this._actionHandlerOptions(this._config.climate_entity))}
-            @action=${this._onAction(this._config.climate_entity)}
+            @click=${() => this._openMoreInfo(this._config.climate_entity)}
           >
             <span class="footer-value">${this._roomTemp}</span>
             <span class="footer-label">${localize('common.room')}</span>

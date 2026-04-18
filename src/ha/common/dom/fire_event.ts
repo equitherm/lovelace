@@ -30,9 +30,7 @@
 
 declare global {
   // eslint-disable-next-line
-  interface HASSDomEvents {
-    action: { action: string };
-  }
+  interface HASSDomEvents {}
 }
 
 export type ValidHassDomEvent = keyof HASSDomEvents;
