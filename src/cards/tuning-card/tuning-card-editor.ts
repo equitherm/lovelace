@@ -51,6 +51,7 @@ export class EquithermTuningCardEditor extends LitElement implements LovelaceCar
       schemaHelpers.entity('outdoor_entity', { domain: ['sensor', 'input_number'], device_class: 'temperature' }),
       schemaHelpers.entity('hc_entity', { domain: ['number', 'input_number'] }),
       schemaHelpers.entity('shift_entity', { domain: ['number', 'input_number'] }),
+      { name: 'show_last_updated', selector: { boolean: {} } },
       // Curve parameters
       schemaHelpers.expandable(localize('editor.curve_parameters'), 'mdi:chart-bell-curve', [
         { name: 'curve_from_entities', selector: { boolean: {} } },
@@ -78,6 +79,12 @@ export class EquithermTuningCardEditor extends LitElement implements LovelaceCar
       // Advanced
       schemaHelpers.expandable(localize('editor.advanced'), 'mdi:cog', [
         { name: 'recalculate_service', selector: { text: {} } },
+      ]),
+      // Actions
+      schemaHelpers.expandable(localize('editor.actions'), 'mdi:gesture-tap', [
+        { name: 'tap_action', selector: { ui_action: {} } },
+        { name: 'hold_action', selector: { ui_action: {} } },
+        { name: 'double_tap_action', selector: { ui_action: {} } },
       ]),
     ] as const satisfies readonly HaFormSchema[];
   });

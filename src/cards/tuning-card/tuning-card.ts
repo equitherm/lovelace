@@ -5,6 +5,7 @@ import { styleMap } from 'lit/directives/style-map.js';
 import type { TuningCardConfig } from './tuning-card-config';
 import type { HomeAssistant } from '../../ha';
 import { computeDomain } from '../../ha/common/entity/compute_domain';
+import { actionHandler } from '../../ha';
 import { computeEntityNameDisplay } from '../../ha/common/entity/compute_entity_name_display';
 import { cardStyle } from '../../utils/card-styles';
 import { registerCustomCard } from '../../utils/register-card';
@@ -569,6 +570,14 @@ export class EquithermTuningCard extends EquithermChartCard<TuningCardConfig> {
         .apply-btn ha-icon {
           --mdc-icon-size: 18px;
         }
+        .footer-meta {
+          display: flex;
+          justify-content: center;
+          padding: 4px 0 0;
+          font-size: var(--ha-font-size-xs, 0.68rem);
+          color: var(--secondary-text-color);
+          opacity: 0.7;
+        }
       `,
     ];
   }
@@ -622,7 +631,8 @@ export class EquithermTuningCard extends EquithermChartCard<TuningCardConfig> {
           <ha-tile-icon
             .interactive=${true}
             style=${iconStyles}
-            @click=${() => this._openMoreInfo(this._config.climate_entity)}
+            .actionHandler=${actionHandler(this._actionHandlerOptions(this._config.climate_entity))}
+            @action=${this._onAction(this._config.climate_entity)}
           >
             <ha-icon slot="icon" .icon=${'mdi:tune-vertical'}></ha-icon>
           </ha-tile-icon>
@@ -701,6 +711,11 @@ export class EquithermTuningCard extends EquithermChartCard<TuningCardConfig> {
             }</button>
           </div>
         </div>
+        ${this._config.show_last_updated ? html`
+          <div class="footer-meta">
+            ${this._renderLastUpdated(this._config.outdoor_entity)}
+          </div>
+        ` : nothing}
       </ha-card>
     `;
   }

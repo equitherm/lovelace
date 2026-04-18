@@ -89,6 +89,8 @@
     "forecast_settings": "Prévision",
     "recalculate_service": "Service de Recalcul",
     "advanced": "Avancé",
+    "actions": "Actions",
+    "show_last_updated": "Afficher dernière mise à jour",
     "helper": {
       "curve_from_entities": "Lire depuis les nombres ESPHome ajustables au lieu de valeurs statiques",
       "hc": "Agressivité du chauffage par temps froid — augmenter si la pièce est trop froide en hiver",
@@ -108,7 +110,8 @@
       "pid_active_entity": "ON quand au moins un gain PID (kp, ki, kd) est non nul",
       "min_flow_entity": "Nombre ajustable de la température de départ minimale",
       "max_flow_entity": "Nombre ajustable de la température de départ maximale",
-      "recalculate_service": "Service à appeler après l'application d'une valeur, ex. climate.equitherm_force_recalculate. Appelé uniquement si le service existe."
+      "recalculate_service": "Service à appeler après l'application d'une valeur, ex. climate.equitherm_force_recalculate. Appelé uniquement si le service existe.",
+      "show_last_updated": "Afficher l'heure de la dernière réception des données du capteur"
     }
   }
 }

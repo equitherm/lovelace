@@ -1,6 +1,7 @@
 // src/cards/tuning-card/tuning-card-config.ts
-import { assert, type, string, number, optional, any } from 'superstruct';
+import { assert, type, string, number, optional, any, boolean } from 'superstruct';
 import type { EntityNameItem } from '../../ha';
+import type { ActionConfig } from '../../ha/data/lovelace';
 import { CURVE_CONFIG_DEFAULTS, curveConfigStructFields, curveEntityStructFields } from '../../utils/curve-config';
 
 export interface TuningCardConfig {
@@ -16,11 +17,15 @@ export interface TuningCardConfig {
   max_flow_entity?: string;
   /** Service to call after applying a value, e.g. "climate.equitherm_force_recalculate". Skipped if not configured or service not found. */
   recalculate_service?: string;
+  show_last_updated?: boolean;
   n: number;
   min_flow: number;
   max_flow: number;
   t_out_min: number;
   t_out_max: number;
+  tap_action?: ActionConfig;
+  hold_action?: ActionConfig;
+  double_tap_action?: ActionConfig;
   [key: string]: unknown;
 }
 
@@ -36,6 +41,7 @@ export const TuningCardConfigStruct = type({
   n_entity: optional(string()),
   ...curveEntityStructFields,
   recalculate_service: optional(string()),
+  show_last_updated: optional(boolean()),
   ...curveConfigStructFields,
   t_out_min: optional(number()),
   t_out_max: optional(number()),

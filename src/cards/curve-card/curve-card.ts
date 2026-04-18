@@ -5,6 +5,7 @@ import type { PointAnnotations } from 'apexcharts';
 import type { CurveCardConfig } from './curve-card-config';
 import type { HomeAssistant } from '../../ha';
 import { computeDomain } from '../../ha/common/entity/compute_domain';
+import { actionHandler } from '../../ha';
 import { computeEntityNameDisplay } from '../../ha/common/entity/compute_entity_name_display';
 import { cardStyle } from '../../utils/card-styles';
 import { registerCustomCard } from '../../utils/register-card';
@@ -411,6 +412,14 @@ export class EquithermCurveCard extends EquithermChartCard<CurveCardConfig> {
           color: var(--secondary-text-color);
           margin-left: 2px;
         }
+        .footer-meta {
+          display: flex;
+          justify-content: center;
+          padding: 4px 0 0;
+          font-size: var(--ha-font-size-xs, 0.68rem);
+          color: var(--secondary-text-color);
+          opacity: 0.7;
+        }
       `,
     ];
   }
@@ -453,7 +462,8 @@ export class EquithermCurveCard extends EquithermChartCard<CurveCardConfig> {
           <ha-tile-icon
             .interactive=${true}
             style=${iconStyles}
-            @click=${() => this._openMoreInfo(this._config.climate_entity)}
+            .actionHandler=${actionHandler(this._actionHandlerOptions(this._config.climate_entity))}
+            @action=${this._onAction(this._config.climate_entity)}
           >
             <ha-icon slot="icon" .icon=${'mdi:thermostat'}></ha-icon>
           </ha-tile-icon>
@@ -477,22 +487,36 @@ export class EquithermCurveCard extends EquithermChartCard<CurveCardConfig> {
           <div id="chart"></div>
         </div>
         <div class="footer">
-          <div class="footer-metric" @click=${() => this._openMoreInfo(this._config.outdoor_entity)}>
+          <div class="footer-metric"
+            .actionHandler=${actionHandler(this._actionHandlerOptions(this._config.outdoor_entity))}
+            @action=${this._onAction(this._config.outdoor_entity)}
+          >
             <span class="footer-value">${this._formatTemp(this._tOutdoor, this._tOutdoorUnit)}</span>
             <span class="footer-label">${localize('common.outdoor')}</span>
           </div>
           <span class="footer-sep" aria-hidden="true">·</span>
-          <div class="footer-metric" @click=${() => this._openMoreInfo(this._config.flow_entity)}>
+          <div class="footer-metric"
+            .actionHandler=${actionHandler(this._actionHandlerOptions(this._config.flow_entity))}
+            @action=${this._onAction(this._config.flow_entity)}
+          >
             <span class="footer-value flow">${this._formatTemp(this._flowTemp, this._flowTempUnit)}</span>
             ${adjustingDir && this._curveOutputTemp ? html`<span class="flow-target">→ ${this._curveOutputTemp}</span>` : nothing}
             <span class="footer-label">${localize('common.flow')}</span>
           </div>
           <span class="footer-sep" aria-hidden="true">·</span>
-          <div class="footer-metric" @click=${() => this._openMoreInfo(this._config.climate_entity)}>
+          <div class="footer-metric"
+            .actionHandler=${actionHandler(this._actionHandlerOptions(this._config.climate_entity))}
+            @action=${this._onAction(this._config.climate_entity)}
+          >
             <span class="footer-value">${this._roomTemp}</span>
             <span class="footer-label">${localize('common.room')}</span>
           </div>
         </div>
+        ${this._config.show_last_updated ? html`
+          <div class="footer-meta">
+            ${this._renderLastUpdated(this._config.flow_entity)}
+          </div>
+        ` : nothing}
       </ha-card>
     `;
   }

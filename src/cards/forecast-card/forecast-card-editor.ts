@@ -50,6 +50,7 @@ export class EquithermForecastCardEditor extends LitElement implements LovelaceC
       schemaHelpers.entity('climate_entity', { domain: 'climate' }),
       schemaHelpers.entityName('name', { entity: 'climate_entity' }),
       schemaHelpers.entity('flow_entity', { domain: ['sensor', 'number', 'input_number'], device_class: 'temperature' }),
+      { name: 'show_last_updated', selector: { boolean: {} } },
       // Optional entities
       schemaHelpers.expandable(localize('editor.optional'), 'mdi:connection', [
         schemaHelpers.entity('pid_active_entity', { domain: ['binary_sensor'], required: false }),
@@ -80,6 +81,12 @@ export class EquithermForecastCardEditor extends LitElement implements LovelaceC
                 schemaHelpers.number('max_flow', 50, 90, 1, { unit_of_measurement: '°C', default: 70 }),
               ]),
             ]),
+      ]),
+      // Actions
+      schemaHelpers.expandable(localize('editor.actions'), 'mdi:gesture-tap', [
+        { name: 'tap_action', selector: { ui_action: {} } },
+        { name: 'hold_action', selector: { ui_action: {} } },
+        { name: 'double_tap_action', selector: { ui_action: {} } },
       ]),
     ] as const satisfies readonly HaFormSchema[];
   });

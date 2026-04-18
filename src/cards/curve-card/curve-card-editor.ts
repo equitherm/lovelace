@@ -52,6 +52,7 @@ export class EquithermCurveCardEditor extends LitElement implements LovelaceCard
       schemaHelpers.entity('outdoor_entity', { domain: ['sensor', 'input_number'], device_class: 'temperature' }),
       schemaHelpers.entity('curve_output_entity', { domain: ['sensor'], device_class: 'temperature' }),
       schemaHelpers.entity('flow_entity', { domain: ['sensor', 'number', 'input_number'], device_class: 'temperature' }),
+      { name: 'show_last_updated', selector: { boolean: {} } },
       // Optional entities
       schemaHelpers.expandable(localize('editor.optional'), 'mdi:connection', [
         schemaHelpers.entity('pid_output_entity', { domain: ['sensor'], device_class: 'temperature', required: false }),
@@ -87,6 +88,12 @@ export class EquithermCurveCardEditor extends LitElement implements LovelaceCard
           schemaHelpers.number('t_out_min', -30, 5, 1, { unit_of_measurement: '°C', default: -20 }),
           schemaHelpers.number('t_out_max', 0, 30, 1, { unit_of_measurement: '°C', default: 20 }),
         ]),
+      ]),
+      // Actions
+      schemaHelpers.expandable(localize('editor.actions'), 'mdi:gesture-tap', [
+        { name: 'tap_action', selector: { ui_action: {} } },
+        { name: 'hold_action', selector: { ui_action: {} } },
+        { name: 'double_tap_action', selector: { ui_action: {} } },
       ]),
     ] as const satisfies readonly HaFormSchema[];
   });

@@ -89,6 +89,8 @@
     "forecast_settings": "Forecast",
     "recalculate_service": "Recalculate Service",
     "advanced": "Advanced",
+    "actions": "Actions",
+    "show_last_updated": "Show last updated",
     "helper": {
       "curve_from_entities": "Read from ESPHome runtime-tunable numbers instead of static values",
       "hc": "How aggressively heating responds to cold — increase if room is too cold in winter",
@@ -108,7 +110,8 @@
       "pid_active_entity": "ON when at least one PID gain (kp, ki, kd) is non-zero",
       "min_flow_entity": "Runtime-adjustable minimum flow temperature number",
       "max_flow_entity": "Runtime-adjustable maximum flow temperature number",
-      "recalculate_service": "Service to call after applying a value, e.g. climate.equitherm_force_recalculate. Only called if the service exists."
+      "recalculate_service": "Service to call after applying a value, e.g. climate.equitherm_force_recalculate. Only called if the service exists.",
+      "show_last_updated": "Display when sensor data was last received"
     }
   }
 }

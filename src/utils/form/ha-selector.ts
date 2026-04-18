@@ -60,6 +60,10 @@ export interface EntityNameSelector {
   };
 }
 
+export interface UiActionSelector {
+  ui_action?: Record<string, never>;
+}
+
 export type Selector =
   | EntitySelector
   | NumberSelector
@@ -68,4 +72,5 @@ export type Selector =
   | SelectSelector
   | IconSelector
   | ColorSelector
-  | EntityNameSelector;
+  | EntityNameSelector
+  | UiActionSelector;

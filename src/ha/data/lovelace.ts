@@ -105,6 +105,22 @@ export interface CustomActionConfig extends BaseActionConfig {
   action: "fire-dom-event";
 }
 
+// ============================================================================
+// Action Handler Types
+// Sourced from home-assistant/frontend/src/data/lovelace.ts
+// ============================================================================
+
+export interface ActionHandlerOptions {
+  disabled?: boolean;
+  hasHold?: boolean;
+  hasDoubleClick?: boolean;
+  hasTap?: boolean;
+}
+
+export interface ActionHandlerDetail {
+  action: "tap" | "hold" | "double_tap";
+}
+
 export interface AssistActionConfig extends BaseActionConfig {
   action: "assist";
   pipeline_id?: string;

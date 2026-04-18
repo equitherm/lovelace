@@ -1,9 +1,10 @@
 import { html, nothing } from 'lit';
 import { state } from 'lit/decorators.js';
 import type { HassEntity } from 'home-assistant-js-websocket';
-import type { ActionConfig } from '../../ha/data/lovelace';
+import type { ActionConfig, ActionHandlerDetail, ActionHandlerOptions } from '../../ha/data/lovelace';
 import type { LovelaceGridOptions, LovelaceCard } from '../../ha/panels/lovelace/types';
 import type { ClimateEntity } from '../../ha/data/climate';
+import { actionHandler } from '../../ha';
 import { EquithermBaseElement } from './base-element';
 import { executeAction, hasAction } from '../actions';
 import setupCustomlocalize from '../../localize';
@@ -69,7 +70,12 @@ export abstract class EquithermBaseCard<TConfig extends EquithermCardConfig> ext
       displayValue = (value - 32) * 5 / 9;
     }
 
-    return `${displayValue.toFixed(1)}${haUnit}`;
+    const locale = this.hass?.locale?.language;
+    const formatted = locale
+      ? displayValue.toLocaleString(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })
+      : displayValue.toFixed(1);
+
+    return `${formatted}${haUnit}`;
   }
 
   // === Action Handling ===
@@ -90,6 +96,28 @@ export abstract class EquithermBaseCard<TConfig extends EquithermCardConfig> ext
     }
   }
 
+  /** Get actionHandler directive options for the current card config */
+  protected _actionHandlerOptions(entityId: string): ActionHandlerOptions {
+    const config = this._config as any;
+    return {
+      hasHold: this._hasAction(config?.hold_action),
+      hasDoubleClick: this._hasAction(config?.double_tap_action),
+    };
+  }
+
+  /** Handle action events from actionHandler directive */
+  protected _onAction = (entityId: string) => (ev: CustomEvent<ActionHandlerDetail>) => {
+    const actionType = ev.detail.action;
+    const config = this._config as any;
+    const actionConfig = config?.[`${actionType}_action`];
+    if (actionConfig) {
+      executeAction(this, this.hass!, actionConfig, entityId);
+    } else {
+      // Default: more-info for tap
+      this._openMoreInfo(entityId);
+    }
+  };
+
   // === Entity Helpers ===
 
   /** Check if an entity exists */
@@ -98,6 +126,18 @@ export abstract class EquithermBaseCard<TConfig extends EquithermCardConfig> ext
   }
 
   // === Render Helpers ===
+
+  /** Render a relative timestamp for an entity's last update */
+  protected _renderLastUpdated(entityId: string | undefined): typeof nothing | ReturnType<typeof html> {
+    if (!entityId || !this.hass) return nothing;
+    const state = this._entityState(entityId);
+    if (!state) return nothing;
+    return html`
+      <span class="last-updated">
+        <ha-relative-time .hass=${this.hass} .datetime=${state.last_updated} capitalize></ha-relative-time>
+      </span>
+    `;
+  }
 
   /** Render a not-found state for missing entity */
   protected _renderNotFound(entityId: string | undefined, label?: string): typeof nothing | ReturnType<typeof html> {

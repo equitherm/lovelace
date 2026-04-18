@@ -6,6 +6,7 @@ import type { StatusCardConfig } from './status-card-config';
 import type { HomeAssistant } from '../../ha/types';
 import type { LovelaceGridOptions } from '../../ha/panels/lovelace/types';
 import { computeDomain } from '../../ha/common/entity/compute_domain';
+import { actionHandler } from '../../ha';
 import { EquithermBaseCard } from '../../utils/base';
 import { computeEntityNameDisplay } from '../../ha/common/entity/compute_entity_name_display';
 import { cardStyle } from '../../utils/card-styles';
@@ -207,6 +208,14 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
         .temps.vertical .divider {
           display: none;
         }
+        .footer-meta {
+          display: flex;
+          justify-content: center;
+          padding: 4px 0 0;
+          font-size: var(--ha-font-size-xs, 0.68rem);
+          color: var(--secondary-text-color);
+          opacity: 0.7;
+        }
       `,
     ];
   }
@@ -251,7 +260,8 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
           <ha-tile-icon
               .interactive=${true}
               style=${iconStyles}
-              @click=${() => this._openMoreInfo(this._config.climate_entity)}
+              .actionHandler=${actionHandler(this._actionHandlerOptions(this._config.climate_entity))}
+              @action=${this._onAction(this._config.climate_entity)}
             >
               <ha-icon slot="icon" .icon=${'mdi:thermostat'}></ha-icon>
             </ha-tile-icon>
@@ -273,12 +283,18 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
         </div>
 
         <div class=${classMap({ temps: true, vertical })}>
-          <div class="temp-block" @click=${() => this._openMoreInfo(this._config.outdoor_entity)}>
+          <div class="temp-block"
+            .actionHandler=${actionHandler(this._actionHandlerOptions(this._config.outdoor_entity))}
+            @action=${this._onAction(this._config.outdoor_entity)}
+          >
             <div class="temp-value">${this._outdoorTemp}</div>
             <div class="temp-label">${localize('common.outdoor')}</div>
           </div>
           <div class="arrow" aria-hidden="true">→</div>
-          <div class="temp-block" @click=${() => this._openMoreInfo(this._config.flow_entity)}>
+          <div class="temp-block"
+            .actionHandler=${actionHandler(this._actionHandlerOptions(this._config.flow_entity))}
+            @action=${this._onAction(this._config.flow_entity)}
+          >
             ${adjustingDir && curveOutput ? html`
               <div class="flow-dual">
                 <div class="temp-value flow">${this._flowTemp}</div>
@@ -290,11 +306,19 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
             <div class="temp-label">${localize('common.flow')}</div>
           </div>
           <div class="divider"></div>
-          <div class="temp-block" @click=${() => this._openMoreInfo(this._config.climate_entity)}>
+          <div class="temp-block"
+            .actionHandler=${actionHandler(this._actionHandlerOptions(this._config.climate_entity))}
+            @action=${this._onAction(this._config.climate_entity)}
+          >
             <div class="temp-value">${this._roomTemp}</div>
             <div class="temp-label">${localize('common.room')}</div>
           </div>
         </div>
+        ${this._config.show_last_updated ? html`
+          <div class="footer-meta">
+            ${this._renderLastUpdated(this._config.flow_entity)}
+          </div>
+        ` : nothing}
       </ha-card>
     `;
   }

@@ -58,6 +58,7 @@ export class StatusCardEditor extends LitElement implements LovelaceCardEditor {
       schemaHelpers.entityName('name', { entity: 'climate_entity' }),
       schemaHelpers.entity('outdoor_entity', { domain: ['sensor', 'input_number'], device_class: 'temperature' }),
       schemaHelpers.entity('flow_entity', { domain: ['sensor', 'number', 'input_number'], device_class: 'temperature' }),
+      { name: 'show_last_updated', selector: { boolean: {} } },
       // Optional entities
       schemaHelpers.expandable(localize('editor.optional'), 'mdi:connection', [
         schemaHelpers.entity('curve_output_entity', { domain: ['sensor'], device_class: 'temperature', required: false }),
@@ -79,6 +80,12 @@ export class StatusCardEditor extends LitElement implements LovelaceCardEditor {
             },
           },
         },
+      ]),
+      // Actions
+      schemaHelpers.expandable(localize('editor.actions'), 'mdi:gesture-tap', [
+        { name: 'tap_action', selector: { ui_action: {} } },
+        { name: 'hold_action', selector: { ui_action: {} } },
+        { name: 'double_tap_action', selector: { ui_action: {} } },
       ]),
     ] as const satisfies readonly HaFormSchema[];
   });

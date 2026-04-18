@@ -1,6 +1,7 @@
 // src/cards/curve-card/curve-card-config.ts
-import { assert, type, string, number, optional, any } from 'superstruct';
+import { assert, type, string, number, optional, any, boolean } from 'superstruct';
 import type { EntityNameItem } from '../../ha';
+import type { ActionConfig } from '../../ha/data/lovelace';
 import { CURVE_CONFIG_DEFAULTS, curveConfigStructFields, curveEntityStructFields } from '../../utils/curve-config';
 
 export interface CurveCardConfig {
@@ -12,6 +13,7 @@ export interface CurveCardConfig {
   flow_entity: string;
   rate_limiting_entity?: string;
   pid_active_entity?: string;
+  show_last_updated?: boolean;
   name?: string | EntityNameItem | EntityNameItem[];
   /** @deprecated Use `name` instead */
   title?: string;
@@ -30,6 +32,9 @@ export interface CurveCardConfig {
   max_flow: number;
   t_out_min: number;
   t_out_max: number;
+  tap_action?: ActionConfig;
+  hold_action?: ActionConfig;
+  double_tap_action?: ActionConfig;
   [key: string]: unknown;
 }
 
@@ -43,6 +48,7 @@ export const CurveCardConfigStruct = type({
   flow_entity: string(),
   rate_limiting_entity: optional(string()),
   pid_active_entity: optional(string()),
+  show_last_updated: optional(boolean()),
   title: optional(any()),
   name: optional(any()),
   curve_from_entities: optional(any()),
