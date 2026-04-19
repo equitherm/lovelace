@@ -46,8 +46,8 @@ export const manualOverlayStyle = css`
   :host([manual-override]) .chart-wrapper,
   :host([manual-override]) .chart-area {
     position: relative;
-    opacity: 0.3;
-    transition: opacity 300ms ease;
+    opacity: 0.2;
+    transition: opacity 400ms ease;
   }
   .manual-overlay {
     position: absolute;
@@ -56,20 +56,21 @@ export const manualOverlayStyle = css`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 6px;
     pointer-events: none;
     z-index: 10;
-    background: rgba(var(--rgb-card-background, 255, 255, 255), 0.7);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    color: var(--primary-text-color);
+    background: radial-gradient(ellipse at center, rgba(var(--rgb-card-background, 255, 255, 255), 0.85) 0%, rgba(var(--rgb-card-background, 255, 255, 255), 0.4) 100%);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    color: var(--secondary-text-color);
     font-size: var(--ha-font-size-s, 12px);
-    font-weight: 600;
-    letter-spacing: 0.05em;
+    font-weight: 500;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
   }
   .manual-overlay ha-icon {
-    --mdc-icon-size: 24px;
-    opacity: 0.6;
+    --mdc-icon-size: 20px;
+    color: rgb(var(--rgb-warning, 255, 167, 38));
+    opacity: 0.8;
   }
 `;
