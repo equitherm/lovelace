@@ -410,14 +410,6 @@ export class EquithermTuningCard extends EquithermChartCard<TuningCardConfig> {
           padding-bottom: 10px;
         }
 
-        .footer-meta {
-          display: flex;
-          justify-content: center;
-          padding: 4px 0 0;
-          font-size: var(--ha-font-size-xs, 0.68rem);
-          color: var(--secondary-text-color);
-          flex-shrink: 0;
-        }
 
       `,
     ];

@@ -402,13 +402,6 @@ export class EquithermCurveCard extends EquithermChartCard<CurveCardConfig> {
           color: var(--secondary-text-color);
           margin-left: 2px;
         }
-        .footer-meta {
-          display: flex;
-          justify-content: center;
-          padding: 4px 0 0;
-          font-size: var(--ha-font-size-xs, 0.68rem);
-          color: var(--secondary-text-color);
-        }
 
       `,
     ];
