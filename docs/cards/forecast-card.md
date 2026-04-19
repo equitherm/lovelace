@@ -15,15 +15,7 @@ Weather-based heating flow temperature forecast with dual series visualization.
 - Automatic temperature unit conversion
 - Dark mode support
 
-## Installation
-
-Via HACS: Add repository `equitherm/lovelace` as a Lovelace plugin.
-
 ## Configuration
-
-### Visual Editor
-
-Add `Custom: Equitherm Forecast Card` from the card picker.
 
 ### YAML
 

@@ -15,10 +15,6 @@ Interactive heating curve visualization with ApexCharts.
 
 ## Configuration
 
-### Visual Editor
-
-Add `Custom: Equitherm Curve Card` from the card picker.
-
 ### YAML
 
 ```yaml

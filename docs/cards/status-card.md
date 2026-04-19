@@ -13,15 +13,7 @@ Display heating system status with temperature readings.
 - Layout options (default/vertical/horizontal)
 - Automatic temperature unit conversion
 
-## Installation
-
-Via HACS: Add repository `equitherm/lovelace` as a Lovelace plugin.
-
 ## Configuration
-
-### Visual Editor
-
-Add `Custom: Equitherm Status Card` from the card picker.
 
 ### YAML
 

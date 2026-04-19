@@ -15,15 +15,7 @@ Interactive heating curve tuning with real-time chart preview and apply/reset co
 - Click entities for more-info dialogs
 - Dark mode support
 
-## Installation
-
-Via HACS: Add repository `equitherm/lovelace` as a Lovelace plugin.
-
 ## Configuration
-
-### Visual Editor
-
-Add `Custom: Equitherm Tuning Card` from the card picker.
 
 ### YAML
 
