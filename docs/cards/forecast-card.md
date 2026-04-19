@@ -9,6 +9,7 @@ Weather-based heating flow temperature forecast with dual series visualization.
 - Peak demand annotation on highest predicted flow
 - HVAC action badge (heating/idle/off)
 - PID status badge (active/inactive with warning icon)
+- Manual preset indicator (badge + chart dimming when curve is bypassed)
 - Configurable forecast hours (1-48)
 - Click entities for more-info dialogs
 - Automatic temperature unit conversion
@@ -158,6 +159,7 @@ Must have:
 Must have:
 - `attributes.temperature` - Room setpoint (used for curve calculation)
 - `attributes.hvac_action` - Current action for badge
+- `attributes.preset_mode` - Optional; shows "Manual" badge + dims chart when `"Manual"`
 
 ### flow_entity
 

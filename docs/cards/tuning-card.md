@@ -11,6 +11,7 @@ Interactive heating curve tuning with real-time chart preview and apply/reset co
 - Apply All button with success feedback
 - Per-slider reset buttons
 - HVAC action badge
+- Manual preset indicator (badge + chart dimming when curve is bypassed)
 - Click entities for more-info dialogs
 - Dark mode support
 
@@ -148,6 +149,7 @@ The chart automatically adapts to Home Assistant's dark/light mode.
 Must have:
 - `attributes.temperature` - Room setpoint (used for curve calculation)
 - `attributes.hvac_action` - Current action for badge
+- `attributes.preset_mode` - Optional; shows "Manual" badge + dims chart when `"Manual"`
 
 ### outdoor_entity
 

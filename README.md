@@ -11,6 +11,7 @@ Home Assistant Lovelace cards for the [ESPHome equitherm climate component](http
 - Heating curve visualization with customizable gradient
 - Weather-based heating flow temperature forecast
 - Interactive curve tuning with live preview
+- Manual preset indicator (shows when heating curve is bypassed)
 - Discrete data points along the curve
 - Light and dark theme support
 - Temperature unit conversion (C/F)

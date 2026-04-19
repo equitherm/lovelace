@@ -172,6 +172,7 @@ Compact tile showing heating status with temperature displays.
 - Three-column layout: Outdoor → Flow | Room
 - Temperature unit conversion (°C/°F) via HA's unit system
 - Rate-limiting indicator with rising/falling direction
+- Manual preset indicator (badge when `preset_mode === "Manual"`)
 
 ### Equitherm Curve Card (`src/cards/curve-card/`)
 
@@ -202,6 +203,7 @@ Heating curve visualization with ApexCharts.
 - Discrete data points along the curve
 - Interactive 3-column footer (outdoor · flow · room) with click-to-more-info
 - Current operating point marker with rate-limiting indicators
+- Manual preset indicator (badge + chart dimming when `preset_mode === "Manual"`)
 - Dark mode support
 
 ### Equitherm Forecast Card (`src/cards/forecast-card/`)
@@ -228,6 +230,7 @@ Weather-based heating flow temperature forecast with ApexCharts.
 - Peak demand annotation
 - Weather forecast via HA WebSocket subscription
 - HVAC/PID badges in header
+- Manual preset indicator (badge + chart dimming when `preset_mode === "Manual"`)
 
 ### Equitherm Tuning Card (`src/cards/tuning-card/`)
 
@@ -255,6 +258,7 @@ Interactive curve tuning with sliders for hc and shift parameters.
 - Delta indicators and per-slider reset buttons
 - Apply All button with success feedback
 - Calls `recalculate_service` after apply (if configured)
+- Manual preset indicator (badge + chart dimming when `preset_mode === "Manual"`)
 
 ## Utilities (`src/utils/`)
 

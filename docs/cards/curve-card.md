@@ -9,6 +9,7 @@ Interactive heating curve visualization with ApexCharts.
 - Rate-limiting dual markers (target and current)
 - HVAC action badge
 - PID status badge (active/inactive with warning icon)
+- Manual preset indicator (badge + chart dimming when curve is bypassed)
 - Automatic dark mode support
 - Responsive chart sizing
 
@@ -165,6 +166,7 @@ equitherm_curve_card:
 Must have:
 - `attributes.temperature` - Room setpoint (used for curve calculation)
 - `attributes.hvac_action` - Current action for badge
+- `attributes.preset_mode` - Optional; shows "Manual" badge + dims chart when `"Manual"`
 
 ### outdoor_entity
 
