@@ -124,7 +124,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
           transition: background 0.2s;
         }
         .temp-block:hover {
-          background: var(--secondary-background-color, rgba(0,0,0,0.05));
+          background: var(--secondary-background-color, rgba(0,0,0,0.04));
         }
         .temp-value {
           font-size: var(--ha-font-size-xl, 1.4rem);
@@ -149,7 +149,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
           font-size: 0.9rem;
           padding-bottom: calc(0.68rem + 4px);
         }
-        .divider { width: 1px; background: var(--divider-color, rgba(0,0,0,0.1)); height: 32px; flex-shrink: 0; }
+        .divider { width: 1px; background: var(--divider-color, rgba(0,0,0,0.12)); height: 32px; flex-shrink: 0; }
         .flow-dual { display: flex; flex-direction: column; align-items: center; gap: 2px; }
         .flow-dual .target { font-size: 0.7rem; color: var(--secondary-text-color); }
 
@@ -169,7 +169,6 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
           padding: 4px 0 0;
           font-size: var(--ha-font-size-xs, 0.68rem);
           color: var(--secondary-text-color);
-          opacity: 0.7;
         }
       `,
     ];

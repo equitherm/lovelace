@@ -289,7 +289,7 @@ export class EquithermTuningCard extends EquithermChartCard<TuningCardConfig> {
           display: flex;
           flex-direction: column;
         }
-        .header { padding: 12px 14px 0; margin-bottom: 0; }
+        .header { padding: 10px 10px 0; margin-bottom: 0; }
 
         /* ── Chart ── */
         .chart-area {
@@ -390,17 +390,16 @@ export class EquithermTuningCard extends EquithermChartCard<TuningCardConfig> {
           --ha-icon-button-size: 24px;
           --ha-icon-button-padding-inline: 2px;
           --mdc-icon-size: 12px;
-          color: var(--secondary-text-color);
-          opacity: 0.5;
+          color: var(--disabled-text-color);
         }
-        .reset-btn:hover { opacity: 1; }
+        .reset-btn:hover { color: var(--secondary-text-color); }
 
         /* ── Apply ── */
         .apply-row {
           display: flex;
           justify-content: flex-end;
           align-items: center;
-          padding: 0 12px 0;
+          padding: 0 10px 0;
           flex-shrink: 0;
           overflow: hidden;
           max-height: 0;
@@ -414,10 +413,9 @@ export class EquithermTuningCard extends EquithermChartCard<TuningCardConfig> {
         .footer-meta {
           display: flex;
           justify-content: center;
-          padding: 2px 0;
+          padding: 4px 0 0;
           font-size: var(--ha-font-size-xs, 0.68rem);
           color: var(--secondary-text-color);
-          opacity: 0.7;
           flex-shrink: 0;
         }
 

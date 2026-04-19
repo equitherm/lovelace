@@ -376,7 +376,7 @@ export class EquithermForecastCard extends EquithermChartCard<ForecastCardConfig
           gap: 0;
           margin-top: 6px;
           padding-top: 6px;
-          border-top: 1px solid var(--divider-color, rgba(0,0,0,0.08));
+          border-top: 1px solid var(--divider-color, rgba(0,0,0,0.12));
           flex-shrink: 0;
         }
         .footer-metric {
@@ -420,7 +420,6 @@ export class EquithermForecastCard extends EquithermChartCard<ForecastCardConfig
           padding: 4px 0 0;
           font-size: var(--ha-font-size-xs, 0.68rem);
           color: var(--secondary-text-color);
-          opacity: 0.7;
         }
 
       `,
