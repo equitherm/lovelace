@@ -1,7 +1,6 @@
 import { html, css, nothing } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { styleMap } from 'lit/directives/style-map.js';
-import type { PointAnnotations } from 'apexcharts';
+import type { ApexAnnotations, PointAnnotations } from 'apexcharts';
 import type { CurveCardConfig } from './curve-card-config';
 import type { HomeAssistant } from '../../ha';
 import { computeDomain } from '../../ha/common/entity/compute_domain';
@@ -10,8 +9,8 @@ import { cardStyle } from '../../utils/card-styles';
 import { registerCustomCard } from '../../utils/register-card';
 import { CURVE_CARD_NAME, CURVE_CARD_EDITOR_NAME, CLIMATE_ENTITY_DOMAINS, SENSOR_ENTITY_DOMAINS } from './const';
 import { validateCurveCardConfig } from './curve-card-config';
-import { resolveRgbColor, normalizeHvacAction, getHvacActionColor, getHvacBadgeProps } from '../../utils/hvac-colors';
-import { isRateLimitingActive, isPidActive, getAdjustingDirection, getRateTargetEntity } from '../../utils/climate-helpers';
+import { resolveRgbColor } from '../../utils/hvac-colors';
+import { isRateLimitingActive, getAdjustingDirection, getRateTargetEntity } from '../../utils/climate-helpers';
 
 registerCustomCard({
   type: CURVE_CARD_NAME,
@@ -20,6 +19,7 @@ registerCustomCard({
 });
 import { buildCurveSeries, flowAtOutdoor } from '../../utils/curve';
 import { EquithermChartCard } from '../../utils/base';
+import { headerStyles } from '../../utils/base/base-card';
 import setupCustomLocalize from '../../localize';
 import '../../shared/badge-info';
 
@@ -164,8 +164,8 @@ export class EquithermCurveCard extends EquithermChartCard<CurveCardConfig> {
       hc: cfg.curve_from_entities ? this._resolveEntityNumber(cfg.hc_entity, cfg.hc) : cfg.hc,
       n: cfg.curve_from_entities ? this._resolveEntityNumber(cfg.n_entity, cfg.n) : cfg.n,
       shift: cfg.curve_from_entities ? this._resolveEntityNumber(cfg.shift_entity, cfg.shift) : cfg.shift,
-      minFlow: cfg.min_flow,
-      maxFlow: cfg.max_flow,
+      minFlow: cfg.curve_from_entities ? this._resolveEntityNumber(cfg.min_flow_entity, cfg.min_flow) : cfg.min_flow,
+      maxFlow: cfg.curve_from_entities ? this._resolveEntityNumber(cfg.max_flow_entity, cfg.max_flow) : cfg.max_flow,
     };
 
     // Resolve colors at runtime from CSS variables
@@ -224,6 +224,36 @@ export class EquithermCurveCard extends EquithermChartCard<CurveCardConfig> {
       }
     }
 
+    // Build annotations
+    const annotations: ApexAnnotations = { points: annotationPoints };
+
+    // WWSD zone shading
+    if (this._isWWSD) {
+      const tTarget = this._tTarget;
+      annotations.xaxis = [
+        {
+          x: -cfg.t_out_max,
+          x2: -tTarget,
+          borderColor: 'transparent',
+          fillColor: 'rgba(var(--rgb-warning, 255, 167, 38), 0.08)',
+        },
+        {
+          x: -tTarget,
+          borderColor: 'rgba(var(--rgb-warning, 255, 167, 38), 0.4)',
+          strokeDashArray: 4,
+          label: {
+            text: localize('common.wwsd'),
+            borderWidth: 0,
+            style: {
+              color: 'var(--secondary-text-color)',
+              fontSize: '10px',
+              background: 'var(--card-background-color, #fff)',
+            },
+          },
+        },
+      ];
+    }
+
     return {
       chart: {
         type: 'line' as const,
@@ -242,7 +272,7 @@ export class EquithermCurveCard extends EquithermChartCard<CurveCardConfig> {
           data: curveSeries.map((p): ChartDataPoint => ({ x: -p.x, y: p.y })),
         },
       ],
-      annotations: { points: annotationPoints },
+      annotations,
       stroke: { curve: 'straight' as const, width: 2 },
       colors: [heatingColor],
       fill: {
@@ -314,50 +344,11 @@ export class EquithermCurveCard extends EquithermChartCard<CurveCardConfig> {
     return [
       super.styles,
       cardStyle,
+      headerStyles,
       css`
         ha-card {
           height: 100%;
           overflow: hidden;
-        }
-        .header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 12px;
-          gap: 12px;
-          flex-shrink: 0;
-        }
-        ha-tile-icon {
-          cursor: pointer;
-          flex-shrink: 0;
-        }
-        .header-info {
-          flex: 1;
-          min-width: 0;
-          display: flex;
-          flex-direction: column;
-          gap: 2px;
-        }
-        .badges {
-          display: flex;
-          align-items: center;
-          gap: 6px;
-          flex-shrink: 0;
-        }
-        .title {
-          font-size: var(--ha-font-size-m, 1rem);
-          font-weight: 600;
-          color: var(--primary-text-color);
-        }
-        .state {
-          font-size: var(--ha-font-size-s, 12px);
-          font-weight: var(--ha-font-weight-normal, 400);
-          line-height: var(--ha-line-height-condensed, 1.2);
-          letter-spacing: 0.4px;
-          color: var(--primary-text-color);
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
         }
         .chart-wrapper { flex: 1; min-height: 0; }
         #chart { width: 100%; height: 100%; }
@@ -368,7 +359,7 @@ export class EquithermCurveCard extends EquithermChartCard<CurveCardConfig> {
           gap: 0;
           margin-top: 6px;
           padding-top: 6px;
-          border-top: 1px solid var(--divider-color, rgba(0,0,0,0.08));
+          border-top: 1px solid var(--divider-color, rgba(0,0,0,0.12));
           flex-shrink: 0;
         }
         .footer-metric {
@@ -411,6 +402,14 @@ export class EquithermCurveCard extends EquithermChartCard<CurveCardConfig> {
           color: var(--secondary-text-color);
           margin-left: 2px;
         }
+        .footer-meta {
+          display: flex;
+          justify-content: center;
+          padding: 4px 0 0;
+          font-size: var(--ha-font-size-xs, 0.68rem);
+          color: var(--secondary-text-color);
+        }
+
       `,
     ];
   }
@@ -418,81 +417,52 @@ export class EquithermCurveCard extends EquithermChartCard<CurveCardConfig> {
   render() {
     if (!this._config || !this.hass) return nothing;
     const localize = setupCustomLocalize(this.hass);
-    const rawAction = this._climate?.attributes.hvac_action ?? 'off';
-    const hvacAction = normalizeHvacAction(rawAction);
     const lookup = (id: string) => this._entityState(id)!;
     const adjustingDir = getAdjustingDirection(this._config, lookup);
-    const rateLimiting = isRateLimitingActive(this._config, lookup);
-    const pidActive = isPidActive(this._config, lookup);
     const climateState = this.hass.states[this._config.climate_entity];
     const title = climateState
       ? computeEntityNameDisplay(climateState, this._config.name ?? this._config.title, this.hass) || localize('curve_card.default_title')
       : (this._config.title ?? localize('curve_card.default_title'));
 
-    // Build icon styles from action color (Mushroom pattern)
-    const color = getHvacActionColor(hvacAction);
-    const iconStyles = styleMap({
-      '--tile-icon-color': `rgb(${color})`,
-      '--tile-icon-size': '42px',
-    });
-
-    const hvacBadge = getHvacBadgeProps(localize, hvacAction, rateLimiting, adjustingDir);
-
-    // PID status chip
-    const pidChip = this._config.pid_active_entity
-      ? html`<eq-badge-info
-          .label=${'PID'}
-          style=${`--badge-info-color: ${pidActive ? 'var(--rgb-success)' : 'var(--rgb-disabled)'}`}
-          .icon=${pidActive ? undefined : 'mdi:alert-circle-outline'}
-        ></eq-badge-info>`
-      : nothing;
-
     return html`
       <ha-card>
-        <div class="header">
-          <ha-tile-icon
-            .interactive=${true}
-            style=${iconStyles}
-            @click=${() => this._openMoreInfo(this._config.climate_entity)}
-          >
-            <ha-icon slot="icon" .icon=${'mdi:thermostat'}></ha-icon>
-          </ha-tile-icon>
-          <div class="header-info">
-            <span class="title">${title}</span>
-            ${this._climate?.attributes.temperature != null ? html`
-              <span class="state">· ${this._formatTemp(this._climate.attributes.temperature, this.hass?.config?.unit_system?.temperature)}</span>
-            ` : nothing}
-          </div>
-          <div class="badges">
-            ${pidChip}
-            <eq-badge-info
-              .label=${hvacBadge.label}
-              style=${`--badge-info-color: ${hvacBadge.color}`}
-              .icon=${hvacBadge.icon}
-              .active=${hvacBadge.active}
-            ></eq-badge-info>
-          </div>
-        </div>
+        ${this._renderHeader({
+          iconName: 'mdi:thermostat',
+          clickEntity: this._config.climate_entity,
+          title,
+        })}
         <div class="chart-wrapper">
           <div id="chart"></div>
+          ${this._renderManualOverlay()}
         </div>
         <div class="footer">
-          <div class="footer-metric" @click=${() => this._openMoreInfo(this._config.outdoor_entity)}>
+          <div class="footer-metric"
+            @click=${() => this._openMoreInfo(this._config.outdoor_entity)}
+          >
             <span class="footer-value">${this._formatTemp(this._tOutdoor, this._tOutdoorUnit)}</span>
             <span class="footer-label">${localize('common.outdoor')}</span>
           </div>
           <span class="footer-sep" aria-hidden="true">·</span>
-          <div class="footer-metric" @click=${() => this._openMoreInfo(this._config.flow_entity)}>
+          <div class="footer-metric"
+            @click=${() => this._openMoreInfo(this._config.flow_entity)}
+          >
             <span class="footer-value flow">${this._formatTemp(this._flowTemp, this._flowTempUnit)}</span>
             ${adjustingDir && this._curveOutputTemp ? html`<span class="flow-target">→ ${this._curveOutputTemp}</span>` : nothing}
             <span class="footer-label">${localize('common.flow')}</span>
           </div>
           <span class="footer-sep" aria-hidden="true">·</span>
-          <div class="footer-metric" @click=${() => this._openMoreInfo(this._config.climate_entity)}>
+          <div class="footer-metric"
+            @click=${() => this._openMoreInfo(this._config.climate_entity)}
+          >
             <span class="footer-value">${this._roomTemp}</span>
             <span class="footer-label">${localize('common.room')}</span>
           </div>
         </div>
+        ${this._config.show_last_updated ? html`
+          <div class="footer-meta">
+            ${this._renderLastUpdated(this._config.flow_entity)}
+          </div>
+        ` : nothing}
       </ha-card>
     `;
   }

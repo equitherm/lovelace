@@ -1,64 +1,60 @@
-// src/cards/forecast-card/forecast-card-config.ts
+// src/cards/tuning-card/tuning-card-config.ts
 import { assert, type, string, number, optional, any, boolean } from 'superstruct';
 import type { EntityNameItem } from '../../ha';
 import { CURVE_CONFIG_DEFAULTS, curveConfigStructFields, curveEntityStructFields } from '../../utils/curve-config';
 
-export interface ForecastCardConfig {
+export interface TuningCardConfig {
   type: string;
-  weather_entity: string;
   climate_entity: string;
-  flow_entity: string;
-  hours: number;
+  outdoor_entity: string;
+  hc_entity: string;
+  shift_entity: string;
   name?: string | EntityNameItem | EntityNameItem[];
   curve_from_entities?: boolean;
-  hc_entity?: string;
   n_entity?: string;
-  shift_entity?: string;
   min_flow_entity?: string;
   max_flow_entity?: string;
-  outdoor_entity?: string;
+  /** Service to call after applying a value, e.g. "climate.equitherm_force_recalculate". Skipped if not configured or service not found. */
+  recalculate_service?: string;
   pid_active_entity?: string;
   show_last_updated?: boolean;
-  hc: number;
   n: number;
-  shift: number;
   min_flow: number;
   max_flow: number;
+  t_out_min: number;
+  t_out_max: number;
   [key: string]: unknown;
 }
 
-/** Runtime validation schema for ForecastCardConfig */
-export const ForecastCardConfigStruct = type({
+/** Runtime validation schema for TuningCardConfig */
+export const TuningCardConfigStruct = type({
   type: string(),
-  weather_entity: string(),
   climate_entity: string(),
-  flow_entity: string(),
-  hours: optional(number()),
+  outdoor_entity: string(),
+  hc_entity: string(),
+  shift_entity: string(),
   name: optional(any()),
   curve_from_entities: optional(any()),
-  hc_entity: optional(string()),
   n_entity: optional(string()),
-  shift_entity: optional(string()),
   ...curveEntityStructFields,
-  outdoor_entity: optional(string()),
+  recalculate_service: optional(string()),
   pid_active_entity: optional(string()),
   show_last_updated: optional(boolean()),
-  hc: optional(number()),
   ...curveConfigStructFields,
-  shift: optional(number()),
+  t_out_min: optional(number()),
+  t_out_max: optional(number()),
 });
 
-export const FORECAST_CARD_DEFAULTS: Required<
-  Pick<ForecastCardConfig, 'hours' | 'hc' | 'shift'>
+export const TUNING_CARD_DEFAULTS: Required<
+  Pick<TuningCardConfig, 't_out_min' | 't_out_max'>
 > & typeof CURVE_CONFIG_DEFAULTS = {
-  hours: 24,
-  hc: 0.9,
-  shift: 0,
+  t_out_min: -20,
+  t_out_max: 20,
   ...CURVE_CONFIG_DEFAULTS,
 };
 
 /** Validate and apply defaults */
-export function validateForecastCardConfig(config: unknown): ForecastCardConfig {
-  assert(config, ForecastCardConfigStruct);
-  return { ...FORECAST_CARD_DEFAULTS, ...config };
+export function validateTuningCardConfig(config: unknown): TuningCardConfig {
+  assert(config, TuningCardConfigStruct);
+  return { ...TUNING_CARD_DEFAULTS, ...config };
 }

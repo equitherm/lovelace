@@ -12,6 +12,7 @@ export interface StatusCardConfig {
   rate_limiting_entity?: string;
   pid_active_entity?: string;
   vertical?: boolean;
+  show_last_updated?: boolean;
   name?: string | EntityNameItem | EntityNameItem[];
   /** @deprecated Use `name` instead */
   title?: string;
@@ -29,6 +30,7 @@ export const StatusCardConfigStruct = type({
   rate_limiting_entity: optional(string()),
   pid_active_entity: optional(string()),
   vertical: optional(boolean()),
+  show_last_updated: optional(boolean()),
   name: optional(any()),
   title: optional(any()),
 });

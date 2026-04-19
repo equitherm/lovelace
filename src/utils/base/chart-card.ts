@@ -1,7 +1,10 @@
+import { html, nothing } from 'lit';
+import { css, CSSResultGroup } from 'lit';
 import { query } from 'lit/decorators.js';
 import ApexCharts from 'apexcharts';
 import { EquithermBaseCard, type EquithermCardConfig } from './base-card';
 import { computeDarkMode } from './base-element';
+import setupCustomlocalize from '../../localize';
 import type { LovelaceGridOptions } from '../../ha/panels/lovelace/types';
 
 /**
@@ -73,6 +76,7 @@ export abstract class EquithermChartCard<TConfig extends EquithermCardConfig> ex
 
   protected _setupResizeObserver(): void {
     this._resizeObserver?.disconnect();
+    if (!this._chartWrapper) return;
     // Inlined debounced resize observer (was src/utils/resize.ts)
     let timeout: ReturnType<typeof setTimeout>;
     this._resizeObserver = new ResizeObserver(() => {
@@ -93,7 +97,7 @@ export abstract class EquithermChartCard<TConfig extends EquithermCardConfig> ex
   }
 
   protected _initChart(): void {
-    if (this._chartInitialized) return;
+    if (this._chartInitialized || !this._chartEl) return;
     this._chart = new ApexCharts(this._chartEl, this._buildChartOptions());
     this._chart.render();
     this._chartInitialized = true;
@@ -104,4 +108,59 @@ export abstract class EquithermChartCard<TConfig extends EquithermCardConfig> ex
 
   /** Hook called before chart is disconnected. */
   protected _onChartDisconnecting(): void {}
+
+  /** Overlay shown over chart when manual preset bypasses the curve. */
+  protected _renderManualOverlay(): typeof nothing | ReturnType<typeof html> {
+    if (!this._isManualPreset) return nothing;
+    const localize = setupCustomlocalize(this.hass);
+    return html`
+      <div class="manual-overlay">
+        <div class="manual-overlay-chip">
+          <ha-icon icon="mdi:hand-back-right"></ha-icon>
+          ${localize('common.manual_override')}
+        </div>
+      </div>
+    `;
+  }
+
+  static get styles(): CSSResultGroup {
+    return [super.styles, css`
+      :host([manual-override]) #chart {
+        opacity: 0.18;
+        transition: opacity 400ms ease;
+        pointer-events: none;
+      }
+      :host([manual-override]) .chart-legend {
+        opacity: 0.18;
+        transition: opacity 400ms ease;
+      }
+      .manual-overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+        z-index: 10;
+      }
+      .manual-overlay-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 10px;
+        border-radius: 99px;
+        background: color-mix(in srgb, var(--card-background-color, #fff) 80%, transparent);
+        border: 1px solid color-mix(in srgb, var(--divider-color, rgba(0,0,0,0.12)) 60%, transparent);
+        color: var(--secondary-text-color);
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      .manual-overlay-chip ha-icon {
+        --mdc-icon-size: 14px;
+        opacity: 0.7;
+      }
+    `];
+  }
 }

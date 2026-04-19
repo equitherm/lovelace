@@ -50,8 +50,10 @@ export class EquithermForecastCardEditor extends LitElement implements LovelaceC
       schemaHelpers.entity('climate_entity', { domain: 'climate' }),
       schemaHelpers.entityName('name', { entity: 'climate_entity' }),
       schemaHelpers.entity('flow_entity', { domain: ['sensor', 'number', 'input_number'], device_class: 'temperature' }),
+      { name: 'show_last_updated', selector: { boolean: {} } },
       // Optional entities
       schemaHelpers.expandable(localize('editor.optional'), 'mdi:connection', [
+        schemaHelpers.entity('outdoor_entity', { domain: ['sensor', 'number', 'input_number'], device_class: 'temperature', required: false }),
         schemaHelpers.entity('pid_active_entity', { domain: ['binary_sensor'], required: false }),
       ]),
       // Forecast settings
@@ -66,6 +68,8 @@ export class EquithermForecastCardEditor extends LitElement implements LovelaceC
               schemaHelpers.entity('hc_entity', { domain: 'number' }),
               schemaHelpers.entity('n_entity', { domain: 'number' }),
               schemaHelpers.entity('shift_entity', { domain: 'number' }),
+              schemaHelpers.entity('min_flow_entity', { domain: ['sensor', 'number'], required: false }),
+              schemaHelpers.entity('max_flow_entity', { domain: ['sensor', 'number'], required: false }),
             ]
           : [
               schemaHelpers.grid([
@@ -73,11 +77,11 @@ export class EquithermForecastCardEditor extends LitElement implements LovelaceC
                 schemaHelpers.number('n', 1.0, 2.0, 0.05, { default: 1.25 }),
               ]),
               schemaHelpers.number('shift', -15, 15, 1, { unit_of_measurement: '°C', default: 0 }),
+              schemaHelpers.grid([
+                schemaHelpers.number('min_flow', 15, 35, 1, { unit_of_measurement: '°C', default: 20 }),
+                schemaHelpers.number('max_flow', 50, 90, 1, { unit_of_measurement: '°C', default: 70 }),
+              ]),
             ]),
-        schemaHelpers.grid([
-          schemaHelpers.number('min_flow', 15, 35, 1, { unit_of_measurement: '°C', default: 20 }),
-          schemaHelpers.number('max_flow', 50, 90, 1, { unit_of_measurement: '°C', default: 70 }),
-        ]),
       ]),
     ] as const satisfies readonly HaFormSchema[];
   });

@@ -12,7 +12,11 @@
     "fan": "Fan",
     "defrosting": "Defrosting",
     "preheating": "Preheating",
-    "not_found": "{entity} not found"
+    "not_found": "{entity} not found",
+    "wwsd": "Standby",
+    "wwsd_label": "Outdoor temperature meets room setpoint",
+    "manual": "Manual",
+    "manual_override": "Manual override"
   },
   "status_card": {
     "name": "Equitherm Status Card",
@@ -36,6 +40,18 @@
     "flow_temp": "Flow Temp",
     "outdoor_temp": "Outdoor",
     "peak": "Peak"
+  },
+  "tuning_card": {
+    "name": "Equitherm Tuning Card",
+    "description": "Interactive curve tuning with hc/shift sliders",
+    "default_title": "Curve Tuning",
+    "current": "Current",
+    "proposed": "Proposed",
+    "apply": "Apply Changes",
+    "applying": "Applying...",
+    "reset": "Reset",
+    "outdoor_axis": "°C outdoor",
+    "flow_axis": "°C flow"
   },
   "editor": {
     "required": "Required",
@@ -68,11 +84,16 @@
     "shift": "Shift",
     "min_flow": "Min Flow",
     "max_flow": "Max Flow",
+    "min_flow_entity": "Min Flow Entity",
+    "max_flow_entity": "Max Flow Entity",
     "t_out_min": "Min Outdoor",
     "t_out_max": "Max Outdoor",
     "weather_entity": "Weather Entity",
     "hours": "Forecast Hours",
     "forecast_settings": "Forecast",
+    "recalculate_service": "Recalculate Service",
+    "advanced": "Advanced",
+    "show_last_updated": "Show last updated",
     "helper": {
       "curve_from_entities": "Read from ESPHome runtime-tunable numbers instead of static values",
       "hc": "How aggressively heating responds to cold — increase if room is too cold in winter",
@@ -89,7 +110,12 @@
       "curve_output_entity": "Pure heating curve output before PID and rate limiting",
       "pid_output_entity": "Curve output after PID correction (before rate limiting)",
       "rate_limiting_entity": "ON when output is ramping to prevent thermal shock",
-      "pid_active_entity": "ON when at least one PID gain (kp, ki, kd) is non-zero"
+      "pid_active_entity": "ON when at least one PID gain (kp, ki, kd) is non-zero",
+      "outdoor_entity": "Overrides the weather entity's current temperature for footer display",
+      "min_flow_entity": "Runtime-adjustable minimum flow temperature number",
+      "max_flow_entity": "Runtime-adjustable maximum flow temperature number",
+      "recalculate_service": "Service to call after applying a value, e.g. climate.equitherm_force_recalculate. Only called if the service exists.",
+      "show_last_updated": "Display when sensor data was last received"
     }
   }
 }

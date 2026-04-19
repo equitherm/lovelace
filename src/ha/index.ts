@@ -16,7 +16,6 @@ export * from "./common/translations/localize";
 
 // Common utilities
 export * from "./common/util/debounce";
-
 // Data layer
 export * from "./data/climate";
 export * from "./data/entity";

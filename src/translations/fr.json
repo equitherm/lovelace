@@ -12,7 +12,9 @@
     "fan": "Ventilation",
     "defrosting": "Dégivrage",
     "preheating": "Préchauffage",
-    "not_found": "{entity} introuvable"
+    "not_found": "{entity} introuvable",
+    "wwsd": "Veille",
+    "wwsd_label": "Température extérieure ≥ consigne"
   },
   "status_card": {
     "name": "Carte Status Equitherm",
@@ -36,6 +38,18 @@
     "flow_temp": "Temp. Départ",
     "outdoor_temp": "Extérieur",
     "peak": "Pic"
+  },
+  "tuning_card": {
+    "name": "Carte Réglage Equitherm",
+    "description": "Réglage interactif de la courbe avec curseurs hc/shift",
+    "default_title": "Réglage Courbe",
+    "current": "Actuelle",
+    "proposed": "Proposée",
+    "apply": "Appliquer",
+    "applying": "Application...",
+    "reset": "Réinitialiser",
+    "outdoor_axis": "°C extérieur",
+    "flow_axis": "°C départ"
   },
   "editor": {
     "required": "Requis",
@@ -68,11 +82,16 @@
     "shift": "Décalage",
     "min_flow": "Départ Min",
     "max_flow": "Départ Max",
+    "min_flow_entity": "Entité Départ Min",
+    "max_flow_entity": "Entité Départ Max",
     "t_out_min": "Extérieur Min",
     "t_out_max": "Extérieur Max",
     "weather_entity": "Entité Météo",
     "hours": "Heures de Prévision",
     "forecast_settings": "Prévision",
+    "recalculate_service": "Service de Recalcul",
+    "advanced": "Avancé",
+    "show_last_updated": "Afficher dernière mise à jour",
     "helper": {
       "curve_from_entities": "Lire depuis les nombres ESPHome ajustables au lieu de valeurs statiques",
       "hc": "Agressivité du chauffage par temps froid — augmenter si la pièce est trop froide en hiver",
@@ -89,7 +108,12 @@
       "curve_output_entity": "Sortie pure de la courbe de chauffage avant PID et limitation",
       "pid_output_entity": "Sortie de courbe après correction PID (avant limitation)",
       "rate_limiting_entity": "ON quand la sortie est en rampe pour éviter le choc thermique",
-      "pid_active_entity": "ON quand au moins un gain PID (kp, ki, kd) est non nul"
+      "pid_active_entity": "ON quand au moins un gain PID (kp, ki, kd) est non nul",
+      "outdoor_entity": "Remplace la température actuelle de l'entité météo pour l'affichage",
+      "min_flow_entity": "Nombre ajustable de la température de départ minimale",
+      "max_flow_entity": "Nombre ajustable de la température de départ maximale",
+      "recalculate_service": "Service à appeler après l'application d'une valeur, ex. climate.equitherm_force_recalculate. Appelé uniquement si le service existe.",
+      "show_last_updated": "Afficher l'heure de la dernière réception des données du capteur"
     }
   }
 }

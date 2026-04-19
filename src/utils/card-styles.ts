@@ -8,6 +8,7 @@ export const cardStyle = css`
     justify-content: center;
     height: auto;
     padding: 10px;
+    border-radius: var(--ha-card-border-radius, var(--ha-border-radius-lg, 12px));
   }
   ha-card.fill-container {
     height: 100%;

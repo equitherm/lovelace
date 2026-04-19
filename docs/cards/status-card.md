@@ -8,6 +8,7 @@ Display heating system status with temperature readings.
 - HVAC action badge (heating/idle/off)
 - Rate-limiting indicator with direction (rising/falling)
 - PID status badge (active/inactive with warning icon)
+- Manual preset indicator (shows when curve is bypassed)
 - Click entities for more-info dialogs
 - Layout options (default/vertical/horizontal)
 - Automatic temperature unit conversion
@@ -49,6 +50,7 @@ layout: default  # default, vertical, or horizontal
 | `rate_limiting_entity` | string | No | Binary sensor for rate limiting status |
 | `pid_active_entity` | string | No | Binary sensor for PID correction status |
 | `layout` | string | No | `default`, `vertical`, or `horizontal` |
+| `show_last_updated` | boolean | No | Show "last updated" timestamp in card footer |
 | `name` | entity | No | Entity name picker config (defaults to entity friendly name). Examples: `name: { type: entity }` or `name: [{ type: text, text: "Prefix" }, { type: device }]` |
 | `title` | string | No | *Deprecated* — use `name` instead |
 
@@ -144,6 +146,7 @@ Must have:
 - `state` - HVAC mode (off, heat, auto, etc.)
 - `attributes.hvac_action` - Current action (heating, idle, off)
 - `attributes.current_temperature` - Room temperature
+- `attributes.preset_mode` - Optional; shows "Manual" badge when `"Manual"`
 
 ### outdoor_entity
 
