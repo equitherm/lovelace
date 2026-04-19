@@ -12,7 +12,7 @@ import setupCustomlocalize from '../../localize';
 
 /** Minimum config fields shared by all equitherm cards */
 export interface EquithermCardConfig {
-  climate_entity: string;
+  climate_entity?: string;
   flow_entity?: string;
   [key: string]: unknown;
 }
