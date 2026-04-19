@@ -47,6 +47,16 @@ views:
 
       - type: grid
         cards:
+          - type: custom:equitherm-pid-card
+            climate_entity: climate.mock_equitherm
+            pid_active_entity: binary_sensor.mock_pid_active
+            pid_correction_entity: sensor.mock_pid_correction
+            pid_proportional_entity: sensor.mock_pid_proportional
+            pid_integral_entity: sensor.mock_pid_integral
+            pid_derivative_entity: sensor.mock_pid_derivative
+
+      - type: grid
+        cards:
           - type: custom:equitherm-forecast-card
             weather_entity: weather.montlucon
             climate_entity: climate.mock_equitherm
