@@ -51,7 +51,7 @@ export const manualOverlayStyle = css`
   }
   .manual-overlay {
     position: absolute;
-    inset: 0;
+    inset: 8px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -59,18 +59,18 @@ export const manualOverlayStyle = css`
     gap: 6px;
     pointer-events: none;
     z-index: 10;
-    background: radial-gradient(ellipse at center, rgba(var(--rgb-card-background, 255, 255, 255), 0.85) 0%, rgba(var(--rgb-card-background, 255, 255, 255), 0.4) 100%);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    color: var(--secondary-text-color);
+    border-radius: 12px;
+    background: linear-gradient(145deg, rgba(var(--rgb-card-background, 255, 255, 255), 0.8), rgba(var(--rgb-card-background, 255, 255, 255), 0.5));
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: rgb(var(--rgb-warning, 255, 167, 38));
     font-size: var(--ha-font-size-s, 12px);
-    font-weight: 500;
+    font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
   }
   .manual-overlay ha-icon {
-    --mdc-icon-size: 20px;
+    --mdc-icon-size: 22px;
     color: rgb(var(--rgb-warning, 255, 167, 38));
-    opacity: 0.8;
   }
 `;

@@ -325,7 +325,7 @@ function ia(t){if(!t||"string"!=typeof t)return[["M",0,0]];const e=[],s=/([MmLlH
   }
   .manual-overlay {
     position: absolute;
-    inset: 0;
+    inset: 8px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -333,19 +333,19 @@ function ia(t){if(!t||"string"!=typeof t)return[["M",0,0]];const e=[],s=/([MmLlH
     gap: 6px;
     pointer-events: none;
     z-index: 10;
-    background: radial-gradient(ellipse at center, rgba(var(--rgb-card-background, 255, 255, 255), 0.85) 0%, rgba(var(--rgb-card-background, 255, 255, 255), 0.4) 100%);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    color: var(--secondary-text-color);
+    border-radius: 12px;
+    background: linear-gradient(145deg, rgba(var(--rgb-card-background, 255, 255, 255), 0.8), rgba(var(--rgb-card-background, 255, 255, 255), 0.5));
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: rgb(var(--rgb-warning, 255, 167, 38));
     font-size: var(--ha-font-size-s, 12px);
-    font-weight: 500;
+    font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
   }
   .manual-overlay ha-icon {
-    --mdc-icon-size: 20px;
+    --mdc-icon-size: 22px;
     color: rgb(var(--rgb-warning, 255, 167, 38));
-    opacity: 0.8;
   }
 `;function ar(t){const e=window;e.customCards=e.customCards||[];const s=t.type.replace("-card","").replace("equitherm-","");e.customCards.push({...t,preview:!0,documentationURL:`https://github.com/equitherm/lovelace/blob/main/docs/cards/${s}.md`})}class rr extends TypeError{constructor(t,e){let s;const{message:i,explanation:a,...r}=t,{path:o}=t,n=0===o.length?i:`At path: ${o.join(".")} -- ${i}`;super(a??n),null!=a&&(this.cause=n),Object.assign(this,r),this.name=this.constructor.name,this.failures=()=>s??(s=[t,...e()])}}function or(t){return"object"==typeof t&&null!=t}function nr(t){return or(t)&&!Array.isArray(t)}function lr(t){return"symbol"==typeof t?t.toString():"string"==typeof t?JSON.stringify(t):`${t}`}function hr(t,e,s,i){if(!0===t)return;!1===t?t={}:"string"==typeof t&&(t={message:t});const{path:a,branch:r}=e,{type:o}=s,{refinement:n,message:l=`Expected a value of type \`${o}\`${n?` with refinement \`${n}\``:""}, but received: \`${lr(i)}\``}=t;return{value:i,type:o,refinement:n,key:a[a.length-1],path:a,branch:r,...t,message:l}}function*cr(t,e,s,i){(function(t){return or(t)&&"function"==typeof t[Symbol.iterator]})(t)||(t=[t]);for(const a of t){const t=hr(a,e,s,i);t&&(yield t)}}function*dr(t,e,s={}){const{path:i=[],branch:a=[t],coerce:r=!1,mask:o=!1}=s,n={path:i,branch:a,mask:o};r&&(t=e.coercer(t,n));let l="valid";for(const i of e.validator(t,n))i.explanation=s.message,l="not_valid",yield[i,void 0];for(let[h,c,d]of e.entries(t,n)){const e=dr(c,d,{path:void 0===h?i:[...i,h],branch:void 0===h?a:[...a,c],coerce:r,mask:o,message:s.message});for(const s of e)s[0]?(l=null!=s[0].refinement?"not_refined":"not_valid",yield[s[0],void 0]):r&&(c=s[1],void 0===h?t=c:t instanceof Map?t.set(h,c):t instanceof Set?t.add(c):or(t)&&(void 0!==c||h in t)&&(t[h]=c))}if("not_valid"!==l)for(const i of e.refiner(t,n))i.explanation=s.message,l="not_refined",yield[i,void 0];"valid"===l&&(yield[void 0,t])}class gr{constructor(t){const{type:e,schema:s,validator:i,refiner:a,coercer:r=t=>t,entries:o=function*(){}}=t;this.type=e,this.schema=s,this.entries=o,this.coercer=r,this.validator=i?(t,e)=>cr(i(t,e),e,this,t):()=>[],this.refiner=a?(t,e)=>cr(a(t,e),e,this,t):()=>[]}assert(t,e){return pr(t,this,e)}create(t,e){return function(t,e,s){const i=ur(t,e,{coerce:!0,message:s});if(i[0])throw i[0];return i[1]}(t,this,e)}is(t){return function(t,e){const s=ur(t,e);return!s[0]}(t,this)}mask(t,e){return function(t,e,s){const i=ur(t,e,{coerce:!0,mask:!0,message:s});if(i[0])throw i[0];return i[1]}(t,this,e)}validate(t,e={}){return ur(t,this,e)}}function pr(t,e,s){const i=ur(t,e,{message:s});if(i[0])throw i[0]}function ur(t,e,s={}){const i=dr(t,e,s),a=function(t){const{done:e,value:s}=t.next();return e?void 0:s}(i);if(a[0]){const t=new rr(a[0],function*(){for(const t of i)t[0]&&(yield t[0])});return[t,void 0]}return[void 0,a[1]]}function fr(t,e){return new gr({type:t,schema:null,validator:e})}function xr(){return fr("any",()=>!0)}function mr(){return fr("boolean",t=>"boolean"==typeof t)}function br(){return fr("number",t=>"number"==typeof t&&!isNaN(t)||`Expected a number, but received: ${lr(t)}`)}function yr(t){return new gr({...t,validator:(e,s)=>void 0===e||t.validator(e,s),refiner:(e,s)=>void 0===e||t.refiner(e,s)})}function wr(){return fr("string",t=>"string"==typeof t||`Expected a string, but received: ${lr(t)}`)}function vr(t){const e=Object.keys(t);return new gr({type:"type",schema:t,*entries(s){if(or(s))for(const i of e)yield[i,s[i],t[i]]},validator:t=>nr(t)||`Expected an object, but received: ${lr(t)}`,coercer:t=>nr(t)?{...t}:t})}const Ar=vr({type:wr(),climate_entity:wr(),outdoor_entity:wr(),flow_entity:wr(),curve_output_entity:yr(wr()),pid_output_entity:yr(wr()),rate_limiting_entity:yr(wr()),pid_active_entity:yr(wr()),vertical:yr(mr()),show_last_updated:yr(mr()),name:yr(xr()),title:yr(xr())});function Cr(t){return pr(t,Ar),t}const Sr="equitherm",_r=`${Sr}-status-card`,kr=`${_r}-editor`,Er=["climate"],Dr=["sensor"];let Lr=class extends lt{constructor(){super(...arguments),this.label="",this.active=!1}static get styles(){return n`
       :host {
