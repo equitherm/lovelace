@@ -1,3 +1,9 @@
+## [1.4.0](https://github.com/equitherm/lovelace/compare/v1.3.0...v1.4.0) (2026-04-19)
+
+### Features
+
+* tuning card, manual preset indicators, WWSD badges, forecast card ([#12](https://github.com/equitherm/lovelace/issues/12)) ([c085f02](https://github.com/equitherm/lovelace/commit/c085f02ee60c3b154dd93cd0617e8c954be497b5))
+
 ## [1.3.0](https://github.com/equitherm/lovelace/compare/v1.2.0...v1.3.0) (2026-04-17)
 
 ### Features
