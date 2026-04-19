@@ -1,0 +1,65 @@
+name: Stale
+
+on:
+  schedule:
+    - cron: "30 1 * * *"
+  workflow_dispatch:
+
+jobs:
+  stale-prs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v9
+        with:
+          days-before-stale: 60
+          days-before-close: 14
+          days-before-issue-stale: -1
+          days-before-issue-close: -1
+          operations-per-run: 100
+          remove-stale-when-updated: true
+          stale-pr-label: stale
+          exempt-pr-labels: pinned,security
+          stale-pr-message: >
+            This pull request has been automatically marked as stale
+            because it hasn't had any activity in the last 60 days.
+            It will be closed in 14 days if no further activity occurs.
+            If you'd like to keep this open, please leave a comment.
+
+  stale-issues:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v9
+        with:
+          days-before-stale: 90
+          days-before-close: 14
+          days-before-pr-stale: -1
+          days-before-pr-close: -1
+          operations-per-run: 100
+          remove-stale-when-updated: true
+          stale-issue-label: stale
+          exempt-issue-labels: pinned,security,enhancement,help-wanted
+          stale-issue-message: >
+            This issue has been automatically marked as stale
+            because it hasn't had any activity in the last 90 days.
+            It will be closed in 14 days if no further activity occurs.
+            If this is still relevant, please leave a comment.
+
+  needs-info-issues:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v9
+        with:
+          only-labels: needs-more-information
+          days-before-stale: 14
+          days-before-close: 7
+          days-before-pr-stale: -1
+          days-before-pr-close: -1
+          operations-per-run: 100
+          remove-stale-when-updated: true
+          stale-issue-label: stale
+          labels-to-remove-when-unstale: needs-more-information
+          exempt-issue-labels: pinned,security
+          stale-issue-message: >
+            This issue is missing required information and has been
+            inactive for 14 days. It will be closed in 7 days if
+            the requested information is not provided.
