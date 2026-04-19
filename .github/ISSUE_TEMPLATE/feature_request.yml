@@ -1,0 +1,43 @@
+name: Feature Request
+description: Suggest a feature or enhancement
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for your suggestion! Please describe your idea below.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or use case
+      description: What problem does this feature solve? What are you trying to do?
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: How would you like this to work?
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Any alternative approaches you've thought of.
+    validations:
+      required: false
+  - type: dropdown
+    id: card
+    attributes:
+      label: Affected card
+      description: Which card is this request for?
+      options:
+        - Status Card
+        - Curve Card
+        - Forecast Card
+        - Tuning Card
+        - All cards
+        - Other
+    validations:
+      required: true
