@@ -59,7 +59,10 @@ export const manualOverlayStyle = css`
     gap: 8px;
     pointer-events: none;
     z-index: 10;
-    color: var(--disabled-text-color);
+    background: rgba(var(--rgb-card-background, 255, 255, 255), 0.7);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    color: var(--primary-text-color);
     font-size: var(--ha-font-size-s, 12px);
     font-weight: 600;
     letter-spacing: 0.05em;
