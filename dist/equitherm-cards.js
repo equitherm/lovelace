@@ -520,6 +520,26 @@ function ia(t){if(!t||"string"!=typeof t)return[["M",0,0]];const e=[],s=/([MmLlH
           color: var(--secondary-text-color);
           opacity: 0.7;
         }
+
+        /* ── Manual override dimming ── */
+        :host([manual-override]) .chart-wrapper {
+          position: relative;
+          opacity: 0.35;
+          transition: opacity 300ms ease;
+        }
+        :host([manual-override]) .chart-wrapper::after {
+          content: "Manual override — curve not in control";
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          color: var(--disabled-text-color);
+          font-size: var(--ha-font-size-s, 12px);
+          font-weight: 500;
+          text-align: center;
+          pointer-events: none;
+          white-space: nowrap;
+        }
       `]}render(){if(!this._config||!this.hass)return U;const t=ms(this.hass),e=Yt(this._config,t=>this._entityState(t)),s=this.hass.states[this._config.climate_entity],i=s?tr(s,this._config.name??this._config.title,this.hass)||t("curve_card.default_title"):this._config.title??t("curve_card.default_title");return W`
       <ha-card>
         ${this._renderHeader({iconName:"mdi:thermostat",clickEntity:this._config.climate_entity,title:i})}
@@ -615,6 +635,26 @@ function ia(t){if(!t||"string"!=typeof t)return[["M",0,0]];const e=[],s=/([MmLlH
           color: var(--secondary-text-color);
           opacity: 0.7;
         }
+
+        /* ── Manual override dimming ── */
+        :host([manual-override]) .chart-wrapper {
+          position: relative;
+          opacity: 0.35;
+          transition: opacity 300ms ease;
+        }
+        :host([manual-override]) .chart-wrapper::after {
+          content: "Manual override — curve not in control";
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          color: var(--disabled-text-color);
+          font-size: var(--ha-font-size-s, 12px);
+          font-weight: 500;
+          text-align: center;
+          pointer-events: none;
+          white-space: nowrap;
+        }
       `]}render(){if(!this._config||!this.hass)return U;const t=ms(this.hass),e=this.hass.states[this._config.climate_entity],s=e&&tr(e,this._config.name,this.hass)||t("forecast_card.default_title");return W`
       <ha-card>
         ${this._renderHeader({iconName:"mdi:weather-partly-cloudy",clickEntity:this._config.weather_entity,title:s})}
@@ -658,7 +698,7 @@ function ia(t){if(!t||"string"!=typeof t)return[["M",0,0]];const e=[],s=/([MmLlH
           display: flex;
           flex-direction: column;
         }
-        .header { padding: 12px 14px 0; margin-bottom: 0; }
+        .header { padding: 12px 10px 0; margin-bottom: 0; }
 
         /* ── Chart ── */
         .chart-area {
@@ -788,6 +828,26 @@ function ia(t){if(!t||"string"!=typeof t)return[["M",0,0]];const e=[],s=/([MmLlH
           color: var(--secondary-text-color);
           opacity: 0.7;
           flex-shrink: 0;
+        }
+
+        /* ── Manual override dimming ── */
+        :host([manual-override]) .chart-area {
+          position: relative;
+          opacity: 0.35;
+          transition: opacity 300ms ease;
+        }
+        :host([manual-override]) .chart-area::after {
+          content: "Manual override — curve not in control";
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          color: var(--disabled-text-color);
+          font-size: var(--ha-font-size-s, 12px);
+          font-weight: 500;
+          text-align: center;
+          pointer-events: none;
+          white-space: nowrap;
         }
       `]}render(){if(!this._config||!this.hass)return U;const t=ms(this.hass),e=this.hass.states[this._config.climate_entity],s=e&&tr(e,this._config.name,this.hass)||t("tuning_card.default_title");if(void 0===this._proposedHc||void 0===this._proposedShift)return W`<ha-card>
         ${this._renderHeader({iconName:"mdi:tune-vertical",clickEntity:this._config.climate_entity,title:s})}

@@ -289,7 +289,7 @@ export class EquithermTuningCard extends EquithermChartCard<TuningCardConfig> {
           display: flex;
           flex-direction: column;
         }
-        .header { padding: 12px 14px 0; margin-bottom: 0; }
+        .header { padding: 12px 10px 0; margin-bottom: 0; }
 
         /* ── Chart ── */
         .chart-area {
@@ -419,6 +419,26 @@ export class EquithermTuningCard extends EquithermChartCard<TuningCardConfig> {
           color: var(--secondary-text-color);
           opacity: 0.7;
           flex-shrink: 0;
+        }
+
+        /* ── Manual override dimming ── */
+        :host([manual-override]) .chart-area {
+          position: relative;
+          opacity: 0.35;
+          transition: opacity 300ms ease;
+        }
+        :host([manual-override]) .chart-area::after {
+          content: "Manual override — curve not in control";
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          color: var(--disabled-text-color);
+          font-size: var(--ha-font-size-s, 12px);
+          font-weight: 500;
+          text-align: center;
+          pointer-events: none;
+          white-space: nowrap;
         }
       `,
     ];
