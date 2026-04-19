@@ -109,6 +109,7 @@
       "pid_output_entity": "Curve output after PID correction (before rate limiting)",
       "rate_limiting_entity": "ON when output is ramping to prevent thermal shock",
       "pid_active_entity": "ON when at least one PID gain (kp, ki, kd) is non-zero",
+      "outdoor_entity": "Overrides the weather entity's current temperature for footer display",
       "min_flow_entity": "Runtime-adjustable minimum flow temperature number",
       "max_flow_entity": "Runtime-adjustable maximum flow temperature number",
       "recalculate_service": "Service to call after applying a value, e.g. climate.equitherm_force_recalculate. Only called if the service exists.",

@@ -121,23 +121,28 @@ export class EquithermForecastCard extends EquithermChartCard<ForecastCardConfig
     return s ? parseFloat(s.state) : this._config.min_flow;
   }
 
-  /** Whether current outdoor (from weather entity) meets or exceeds room setpoint */
+  /** Current outdoor temp from dedicated sensor (Kalman etc.) or weather entity */
+  private get _outdoorTemp(): number {
+    if (this._config.outdoor_entity) {
+      const s = this._entityState(this._config.outdoor_entity);
+      if (s) return parseFloat(s.state);
+    }
+    const weather = this._entityState(this._config.weather_entity);
+    return weather ? parseFloat(weather.attributes.temperature) : NaN;
+  }
+
+  /** Whether current outdoor meets or exceeds room setpoint */
   protected override get _isWWSD(): boolean {
     const tTarget = this._climate?.attributes.temperature;
     if (tTarget == null) return false;
-    const weather = this._entityState(this._config.weather_entity);
-    if (!weather) return false;
-    const tOutdoor = parseFloat(weather.attributes.temperature);
-    return !isNaN(tOutdoor) && tOutdoor >= tTarget;
+    return !isNaN(this._outdoorTemp) && this._outdoorTemp >= tTarget;
   }
 
   protected override _wwsdDescription(): string {
     const localize = setupCustomLocalize(this.hass);
     const tTarget = this._climate?.attributes.temperature;
-    const weather = this._entityState(this._config.weather_entity);
-    const tOutdoor = weather ? parseFloat(weather.attributes.temperature) : NaN;
-    if (!isNaN(tOutdoor) && tTarget != null) {
-      return `${localize('common.outdoor')} ${this._formatTemp(tOutdoor)} ≥ ${this._formatTemp(tTarget)}`;
+    if (!isNaN(this._outdoorTemp) && tTarget != null) {
+      return `${localize('common.outdoor')} ${this._formatTemp(this._outdoorTemp)} ≥ ${this._formatTemp(tTarget)}`;
     }
     return localize('common.wwsd_label');
   }
@@ -532,9 +537,9 @@ export class EquithermForecastCard extends EquithermChartCard<ForecastCardConfig
         </div>
         <div class="footer">
           <div class="footer-metric"
-            @click=${() => this._openMoreInfo(this._config.weather_entity)}
+            @click=${() => this._openMoreInfo(this._config.outdoor_entity ?? this._config.weather_entity)}
           >
-            <span class="footer-value">${this._formatTemp(this._forecastPoints[0]?.tOutdoor)}</span>
+            <span class="footer-value">${this._formatTemp(this._outdoorTemp)}</span>
             <span class="footer-label">${localize('forecast_card.outdoor_temp')}</span>
           </div>
           <span class="footer-sep" aria-hidden="true">·</span>

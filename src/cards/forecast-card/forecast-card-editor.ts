@@ -53,6 +53,7 @@ export class EquithermForecastCardEditor extends LitElement implements LovelaceC
       { name: 'show_last_updated', selector: { boolean: {} } },
       // Optional entities
       schemaHelpers.expandable(localize('editor.optional'), 'mdi:connection', [
+        schemaHelpers.entity('outdoor_entity', { domain: ['sensor', 'number', 'input_number'], device_class: 'temperature', required: false }),
         schemaHelpers.entity('pid_active_entity', { domain: ['binary_sensor'], required: false }),
       ]),
       // Forecast settings

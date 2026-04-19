@@ -109,6 +109,7 @@
       "pid_output_entity": "Sortie de courbe après correction PID (avant limitation)",
       "rate_limiting_entity": "ON quand la sortie est en rampe pour éviter le choc thermique",
       "pid_active_entity": "ON quand au moins un gain PID (kp, ki, kd) est non nul",
+      "outdoor_entity": "Remplace la température actuelle de l'entité météo pour l'affichage",
       "min_flow_entity": "Nombre ajustable de la température de départ minimale",
       "max_flow_entity": "Nombre ajustable de la température de départ maximale",
       "recalculate_service": "Service à appeler après l'application d'une valeur, ex. climate.equitherm_force_recalculate. Appelé uniquement si le service existe.",
