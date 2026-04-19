@@ -1,6 +1,6 @@
 {
   "name": "lovelace-equitherm-cards",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "Home Assistant Lovelace cards for ESPHome equitherm climate component",
   "author": "P4uLT",
   "license": "MIT",

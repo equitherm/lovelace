@@ -1,3 +1,9 @@
+## [1.5.0](https://github.com/equitherm/lovelace/compare/v1.4.0...v1.5.0) (2026-04-19)
+
+### Features
+
+* add PID diagnostic row to status card + CSS baseline ([#21](https://github.com/equitherm/lovelace/issues/21)) ([601441a](https://github.com/equitherm/lovelace/commit/601441aa0facc90a85c9bda83b5108a2b4327131))
+
 ## [1.4.0](https://github.com/equitherm/lovelace/compare/v1.3.0...v1.4.0) (2026-04-19)
 
 ### Features
