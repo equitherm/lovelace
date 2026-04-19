@@ -25,7 +25,7 @@ A collection of Lovelace cards for the ESPHome equitherm climate component. Moni
 
 ### HACS (recommended)
 
-Equitherm Cards is available in [HACS][hacs] as a Lovelace plugin.
+Equitherm Cards is available in [HACS][hacs] as a Lovelace plugin. Requires Home Assistant 2026.3.1 or later.
 
 1. Open HACS in Home Assistant
 2. Search for "Equitherm Cards"
@@ -81,7 +81,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 MIT — see [LICENSE](LICENSE) for details.
 
 <!-- Badge references -->
-[hacs-url]: https://github.com/hacs/integration
+[hacs-url]: https://hacs.xyz
 [hacs-badge]: https://img.shields.io/badge/hacs-default-orange.svg?style=flat-square
 [release-badge]: https://img.shields.io/github/v/release/equitherm/lovelace?style=flat-square
 [release-url]: https://github.com/equitherm/lovelace/releases
