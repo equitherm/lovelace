@@ -12,10 +12,10 @@ import { cardStyle } from '../../utils/card-styles';
 import { registerCustomCard } from '../../utils/register-card';
 import { TUNING_CARD_NAME, TUNING_CARD_EDITOR_NAME, CLIMATE_ENTITY_DOMAINS, SENSOR_ENTITY_DOMAINS, NUMBER_ENTITY_DOMAINS } from './const';
 import { validateTuningCardConfig } from './tuning-card-config';
-import { resolveRgbColor, normalizeHvacAction, getHvacActionColor, getHvacBadgeProps } from '../../utils/hvac-colors';
+import { resolveRgbColor } from '../../utils/hvac-colors';
 import type { ApexAnnotations, PointAnnotations } from 'apexcharts';
 import { buildCurveSeries, flowAtOutdoor } from '../../utils/curve';
-import { EquithermChartCard } from '../../utils/base';
+import { EquithermChartCard, headerStyles } from '../../utils/base';
 import setupCustomLocalize from '../../localize';
 import '../../shared/badge-info';
 
@@ -279,6 +279,7 @@ export class EquithermTuningCard extends EquithermChartCard<TuningCardConfig> {
     return [
       super.styles,
       cardStyle,
+      headerStyles,
       css`
         :host { --tc-proposed: rgb(var(--rgb-state-climate-cool, 38, 142, 213)); }
         ha-card {
@@ -288,19 +289,7 @@ export class EquithermTuningCard extends EquithermChartCard<TuningCardConfig> {
           display: flex;
           flex-direction: column;
         }
-
-        /* ── Header ── */
-        .header {
-          display: flex;
-          align-items: center;
-          padding: 12px 14px 0;
-          gap: 10px;
-          flex-shrink: 0;
-        }
-        ha-tile-icon { cursor: pointer; flex-shrink: 0; }
-        .header-info { flex: 1; min-width: 0; }
-        .title { font-size: var(--ha-font-size-l, 16px); font-weight: 600; color: var(--primary-text-color); }
-        .badges { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+        .header { padding: 12px 14px 0; margin-bottom: 0; }
 
         /* ── Chart ── */
         .chart-area {
@@ -440,28 +429,18 @@ export class EquithermTuningCard extends EquithermChartCard<TuningCardConfig> {
   render() {
     if (!this._config || !this.hass) return nothing;
     const localize = setupCustomLocalize(this.hass);
-    const rawAction = this._climate?.attributes.hvac_action ?? 'off';
-    const hvacAction = normalizeHvacAction(rawAction);
     const climateState = this.hass.states[this._config.climate_entity];
     const title = climateState
       ? computeEntityNameDisplay(climateState, this._config.name, this.hass) || localize('tuning_card.default_title')
       : localize('tuning_card.default_title');
 
-    const color = getHvacActionColor(hvacAction);
-    const iconStyles = styleMap({ '--tile-icon-color': `rgb(${color})`, '--tile-icon-size': '42px' });
-    const hvacBadge = getHvacBadgeProps(localize, hvacAction);
-
     if (this._proposedHc === undefined || this._proposedShift === undefined) {
       return html`<ha-card>
-        <div class="header">
-          <ha-tile-icon .interactive=${true} style=${iconStyles} @click=${() => this._openMoreInfo(this._config.climate_entity)}>
-            <ha-icon slot="icon" .icon=${'mdi:tune-vertical'}></ha-icon>
-          </ha-tile-icon>
-          <div class="header-info"><span class="title">${title}</span></div>
-          <div class="badges">
-            <eq-badge-info .label=${hvacBadge.label} style=${`--badge-info-color: ${hvacBadge.color}`} .icon=${hvacBadge.icon} .active=${hvacBadge.active}></eq-badge-info>
-          </div>
-        </div>
+        ${this._renderHeader({
+          iconName: 'mdi:tune-vertical',
+          clickEntity: this._config.climate_entity,
+          title,
+        })}
       </ha-card>`;
     }
 
@@ -478,21 +457,11 @@ export class EquithermTuningCard extends EquithermChartCard<TuningCardConfig> {
 
     return html`
       <ha-card>
-        <!-- Header -->
-        <div class="header">
-          <ha-tile-icon .interactive=${true} style=${iconStyles} @click=${() => this._openMoreInfo(this._config.climate_entity)}>
-            <ha-icon slot="icon" .icon=${'mdi:tune-vertical'}></ha-icon>
-          </ha-tile-icon>
-          <div class="header-info"><span class="title">${title}</span></div>
-          <div class="badges">
-            ${this._isWWSD ? html`
-              <ha-tooltip .content=${this._wwsdDescription()} placement="left">
-                <ha-icon icon="mdi:weather-sunny-alert" style="--mdc-icon-size:18px;color:rgb(var(--rgb-warning,255,167,38))"></ha-icon>
-              </ha-tooltip>
-            ` : nothing}
-            <eq-badge-info .label=${hvacBadge.label} style=${`--badge-info-color: ${hvacBadge.color}`} .icon=${hvacBadge.icon} .active=${hvacBadge.active}></eq-badge-info>
-          </div>
-        </div>
+        ${this._renderHeader({
+          iconName: 'mdi:tune-vertical',
+          clickEntity: this._config.climate_entity,
+          title,
+        })}
 
         <!-- Chart (primary visual) -->
         <div class="chart-area">

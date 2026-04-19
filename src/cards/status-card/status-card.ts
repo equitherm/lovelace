@@ -1,20 +1,18 @@
 import { html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
-import { styleMap } from 'lit/directives/style-map.js';
 import type { StatusCardConfig } from './status-card-config';
 import type { HomeAssistant } from '../../ha/types';
 import type { LovelaceGridOptions } from '../../ha/panels/lovelace/types';
 import { computeDomain } from '../../ha/common/entity/compute_domain';
-import { EquithermBaseCard } from '../../utils/base';
+import { EquithermBaseCard, headerStyles } from '../../utils/base';
 import { computeEntityNameDisplay } from '../../ha/common/entity/compute_entity_name_display';
 import { cardStyle } from '../../utils/card-styles';
 import { registerCustomCard } from '../../utils/register-card';
 import setupCustomLocalize from '../../localize';
 import { validateStatusCardConfig } from './status-card-config';
 import { STATUS_CARD_NAME, STATUS_CARD_EDITOR_NAME, CLIMATE_ENTITY_DOMAINS, SENSOR_ENTITY_DOMAINS } from './const';
-import { getHvacActionColor, normalizeHvacAction, getHvacBadgeProps } from '../../utils/hvac-colors';
-import { isRateLimitingActive, isPidActive, getAdjustingDirection, getRateTargetEntity } from '../../utils/climate-helpers';
+import { getAdjustingDirection, getRateTargetEntity } from '../../utils/climate-helpers';
 import '../../shared/badge-info';
 
 registerCustomCard({
@@ -104,52 +102,10 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
     return [
       super.styles,
       cardStyle,
+      headerStyles,
       css`
         ha-card {
           height: 100%;
-        }
-        .header {
-          display: flex;
-          align-items: center;
-          margin-bottom: 12px;
-          gap: 12px;
-          flex-shrink: 0;
-        }
-        ha-tile-icon {
-          cursor: pointer;
-          flex-shrink: 0;
-        }
-        .header-info {
-          flex: 1;
-          min-width: 0;
-          display: flex;
-          flex-direction: column;
-          gap: 2px;
-        }
-        .title {
-          font-size: var(--ha-font-size-m, 1rem);
-          font-weight: 600;
-          color: var(--primary-text-color);
-          line-height: 1.2;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-        }
-        .state {
-          font-size: var(--ha-font-size-s, 12px);
-          font-weight: var(--ha-font-weight-normal, 400);
-          line-height: var(--ha-line-height-condensed, 1.2);
-          letter-spacing: 0.4px;
-          color: var(--primary-text-color);
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-        }
-        .badges {
-          display: flex;
-          align-items: center;
-          gap: 6px;
-          flex-shrink: 0;
         }
         .temps {
           display: grid;
@@ -223,72 +179,21 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
     if (!this._config || !this.hass) return nothing;
     const localize = setupCustomLocalize(this.hass);
     const vertical = this._config.vertical ?? false;
-    const rawAction = this._climate?.attributes.hvac_action ?? 'off';
-    const hvacAction = normalizeHvacAction(rawAction);
     const lookup = (id: string) => this._entityState(id)!;
     const adjustingDir = getAdjustingDirection(this._config, lookup);
-    const rateLimiting = isRateLimitingActive(this._config, lookup);
-    const pidActive = isPidActive(this._config, lookup);
     const curveOutput = this._curveOutputTemp;
     const climateState = this.hass.states[this._config.climate_entity];
     const title = climateState
       ? computeEntityNameDisplay(climateState, this._config.name ?? this._config.title, this.hass) || localize('status_card.default_title')
       : (this._config.title ?? localize('status_card.default_title'));
 
-    // Build icon styles from action color (Mushroom pattern)
-    const color = getHvacActionColor(hvacAction);
-    const iconStyles = styleMap({
-      '--tile-icon-color': `rgb(${color})`,
-      '--tile-icon-size': '42px',
-    });
-
-    const hvacBadge = getHvacBadgeProps(localize, hvacAction, rateLimiting, adjustingDir);
-
-    // PID status chip
-    const pidChip = this._config.pid_active_entity
-      ? html`<eq-badge-info
-          .label=${'PID'}
-          style=${`--badge-info-color: ${pidActive ? 'var(--rgb-success)' : 'var(--rgb-disabled)'}`}
-          .icon=${pidActive ? undefined : 'mdi:alert-circle-outline'}
-        ></eq-badge-info>`
-      : nothing;
-
     return html`
       <ha-card>
-        <div class="header">
-          <ha-tile-icon
-              .interactive=${true}
-              style=${iconStyles}
-              @click=${() => this._openMoreInfo(this._config.climate_entity)}
-            >
-              <ha-icon slot="icon" .icon=${'mdi:thermostat'}></ha-icon>
-            </ha-tile-icon>
-          <div class="header-info">
-            <span class="title">${title}</span>
-            ${this._climate?.attributes.temperature != null ? html`
-              <span class="state">· ${this._formatTemp(this._climate.attributes.temperature, this.hass?.config?.unit_system?.temperature)}</span>
-            ` : nothing}
-          </div>
-          <div class="badges">
-            ${pidChip}
-            ${this._isWWSD ? html`
-              <eq-badge-info
-                id="wwsd-badge"
-                .label=${localize('common.wwsd')}
-                style=${`--badge-info-color: var(--rgb-warning, 255, 167, 38)`}
-                .icon=${'mdi:weather-sunny-alert'}
-                .active=${true}
-              ></eq-badge-info>
-              <ha-tooltip for="wwsd-badge" placement="top"><span style="white-space: nowrap">${this._wwsdDescription()}</span></ha-tooltip>
-            ` : nothing}
-            <eq-badge-info
-              .label=${hvacBadge.label}
-              style=${`--badge-info-color: ${hvacBadge.color}`}
-              .icon=${hvacBadge.icon}
-              .active=${hvacBadge.active}
-            ></eq-badge-info>
-          </div>
-        </div>
+        ${this._renderHeader({
+          iconName: 'mdi:thermostat',
+          clickEntity: this._config.climate_entity,
+          title,
+        })}
 
         <div class=${classMap({ temps: true, vertical })}>
           <div class="temp-block"

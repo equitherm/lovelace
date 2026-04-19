@@ -78,6 +78,7 @@ export class EquithermTuningCardEditor extends LitElement implements LovelaceCar
       ]),
       // Advanced
       schemaHelpers.expandable(localize('editor.advanced'), 'mdi:cog', [
+        schemaHelpers.entity('pid_active_entity', { domain: ['binary_sensor'], required: false }),
         { name: 'recalculate_service', selector: { text: {} } },
       ]),
     ] as const satisfies readonly HaFormSchema[];

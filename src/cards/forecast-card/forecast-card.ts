@@ -1,19 +1,17 @@
 import { html, css, nothing } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
-import { styleMap } from 'lit/directives/style-map.js';
 import type ApexCharts from 'apexcharts';
 import type { ForecastCardConfig } from './forecast-card-config';
 import type { HomeAssistant } from '../../ha';
 import type { ForecastPoint, ForecastCurveConfig } from '../../utils/forecast';
 import { computeDomain } from '../../ha/common/entity/compute_domain';
-import { EquithermChartCard } from '../../utils/base';
+import { EquithermChartCard, headerStyles } from '../../utils/base';
 import { computeEntityNameDisplay } from '../../ha/common/entity/compute_entity_name_display';
 import { cardStyle } from '../../utils/card-styles';
 import { registerCustomCard } from '../../utils/register-card';
 import { FORECAST_CARD_NAME, FORECAST_CARD_EDITOR_NAME, CLIMATE_ENTITY_DOMAINS, SENSOR_ENTITY_DOMAINS } from './const';
 import { validateForecastCardConfig } from './forecast-card-config';
-import { resolveRgbColor, normalizeHvacAction, getHvacActionColor, getHvacBadgeProps } from '../../utils/hvac-colors';
-import { isPidActive } from '../../utils/climate-helpers';
+import { resolveRgbColor } from '../../utils/hvac-colors';
 import { buildForecastSeries, peakDemand } from '../../utils/forecast';
 import setupCustomLocalize from '../../localize';
 import '../../shared/badge-info';
@@ -363,50 +361,11 @@ export class EquithermForecastCard extends EquithermChartCard<ForecastCardConfig
     return [
       super.styles,
       cardStyle,
+      headerStyles,
       css`
         ha-card {
           height: 100%;
           overflow: hidden;
-        }
-        .header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 12px;
-          gap: 12px;
-          flex-shrink: 0;
-        }
-        ha-tile-icon {
-          cursor: pointer;
-          flex-shrink: 0;
-        }
-        .header-info {
-          flex: 1;
-          min-width: 0;
-          display: flex;
-          flex-direction: column;
-          gap: 2px;
-        }
-        .badges {
-          display: flex;
-          align-items: center;
-          gap: 6px;
-          flex-shrink: 0;
-        }
-        .title {
-          font-size: var(--ha-font-size-m, 1rem);
-          font-weight: 600;
-          color: var(--primary-text-color);
-        }
-        .state {
-          font-size: var(--ha-font-size-s, 12px);
-          font-weight: var(--ha-font-weight-normal, 400);
-          line-height: var(--ha-line-height-condensed, 1.2);
-          letter-spacing: 0.4px;
-          color: var(--primary-text-color);
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
         }
         .chart-wrapper { flex: 1; min-height: 0; }
         #chart { width: 100%; height: 100%; }
@@ -470,68 +429,18 @@ export class EquithermForecastCard extends EquithermChartCard<ForecastCardConfig
   render() {
     if (!this._config || !this.hass) return nothing;
     const localize = setupCustomLocalize(this.hass);
-    const rawAction = this._climate?.attributes.hvac_action ?? 'off';
-    const hvacAction = normalizeHvacAction(rawAction);
     const climateState = this.hass.states[this._config.climate_entity];
     const title = climateState
       ? computeEntityNameDisplay(climateState, this._config.name, this.hass) || localize('forecast_card.default_title')
       : localize('forecast_card.default_title');
 
-    // Build icon styles from action color (Mushroom pattern)
-    const color = getHvacActionColor(hvacAction);
-    const iconStyles = styleMap({
-      '--tile-icon-color': `rgb(${color})`,
-      '--tile-icon-size': '42px',
-    });
-
-    const hvacBadge = getHvacBadgeProps(localize, hvacAction);
-    const pidActive = isPidActive(this._config, (id) => this._entityState(id)!);
-
-    // PID status chip
-    const pidChip = this._config.pid_active_entity
-      ? html`<eq-badge-info
-          .label=${'PID'}
-          style=${`--badge-info-color: ${pidActive ? 'var(--rgb-success)' : 'var(--rgb-disabled)'}`}
-          .icon=${pidActive ? undefined : 'mdi:alert-circle-outline'}
-        ></eq-badge-info>`
-      : nothing;
-
     return html`
       <ha-card>
-        <div class="header">
-          <ha-tile-icon
-            .interactive=${true}
-            style=${iconStyles}
-            @click=${() => this._openMoreInfo(this._config.weather_entity)}
-          >
-            <ha-icon slot="icon" .icon=${'mdi:weather-partly-cloudy'}></ha-icon>
-          </ha-tile-icon>
-          <div class="header-info">
-            <span class="title">${title}</span>
-            ${this._climate?.attributes.temperature != null ? html`
-              <span class="state">· ${this._formatTemp(this._climate.attributes.temperature, this.hass?.config?.unit_system?.temperature)}</span>
-            ` : nothing}
-          </div>
-          <div class="badges">
-            ${pidChip}
-            ${this._isWWSD ? html`
-              <eq-badge-info
-                id="wwsd-badge"
-                .label=${localize('common.wwsd')}
-                style=${`--badge-info-color: var(--rgb-warning, 255, 167, 38)`}
-                .icon=${'mdi:weather-sunny-alert'}
-                .active=${true}
-              ></eq-badge-info>
-              <ha-tooltip for="wwsd-badge" placement="top"><span style="white-space: nowrap">${this._wwsdDescription()}</span></ha-tooltip>
-            ` : nothing}
-            <eq-badge-info
-              .label=${hvacBadge.label}
-              style=${`--badge-info-color: ${hvacBadge.color}`}
-              .icon=${hvacBadge.icon}
-              .active=${hvacBadge.active}
-            ></eq-badge-info>
-          </div>
-        </div>
+        ${this._renderHeader({
+          iconName: 'mdi:weather-partly-cloudy',
+          clickEntity: this._config.weather_entity,
+          title,
+        })}
         <div class="chart-wrapper">
           <div id="chart"></div>
         </div>

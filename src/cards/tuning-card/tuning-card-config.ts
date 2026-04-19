@@ -16,6 +16,7 @@ export interface TuningCardConfig {
   max_flow_entity?: string;
   /** Service to call after applying a value, e.g. "climate.equitherm_force_recalculate". Skipped if not configured or service not found. */
   recalculate_service?: string;
+  pid_active_entity?: string;
   show_last_updated?: boolean;
   n: number;
   min_flow: number;
@@ -37,6 +38,7 @@ export const TuningCardConfigStruct = type({
   n_entity: optional(string()),
   ...curveEntityStructFields,
   recalculate_service: optional(string()),
+  pid_active_entity: optional(string()),
   show_last_updated: optional(boolean()),
   ...curveConfigStructFields,
   t_out_min: optional(number()),
