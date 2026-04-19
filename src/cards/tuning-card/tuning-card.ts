@@ -366,8 +366,9 @@ export class EquithermTuningCard extends EquithermChartCard<TuningCardConfig> {
           gap: 0;
         }
         .step-btn {
-          --mdc-icon-button-size: 36px;
-          --mdc-icon-size: 18px;
+          --ha-icon-button-size: 32px;
+          --ha-icon-button-padding-inline: 2px;
+          --mdc-icon-size: 16px;
           color: var(--primary-text-color);
         }
         .ctrl-value {
@@ -397,7 +398,8 @@ export class EquithermTuningCard extends EquithermChartCard<TuningCardConfig> {
           position: absolute;
           top: 4px;
           right: 4px;
-          --mdc-icon-button-size: 20px;
+          --ha-icon-button-size: 24px;
+          --ha-icon-button-padding-inline: 2px;
           --mdc-icon-size: 12px;
           color: var(--secondary-text-color);
           opacity: 0.5;
