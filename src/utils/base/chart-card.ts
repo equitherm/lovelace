@@ -1,8 +1,10 @@
 import { html, nothing } from 'lit';
+import { css, CSSResultGroup } from 'lit';
 import { query } from 'lit/decorators.js';
 import ApexCharts from 'apexcharts';
 import { EquithermBaseCard, type EquithermCardConfig } from './base-card';
 import { computeDarkMode } from './base-element';
+import setupCustomlocalize from '../../localize';
 import type { LovelaceGridOptions } from '../../ha/panels/lovelace/types';
 
 /**
@@ -110,11 +112,39 @@ export abstract class EquithermChartCard<TConfig extends EquithermCardConfig> ex
   /** Overlay shown over chart when manual preset bypasses the curve. */
   protected _renderManualOverlay(): typeof nothing | ReturnType<typeof html> {
     if (!this._isManualPreset) return nothing;
+    const localize = setupCustomlocalize(this.hass);
     return html`
-      <div class="manual-overlay">
-        <ha-icon icon="mdi:hand-back-right"></ha-icon>
-        <span>Manual override</span>
-      </div>
+      <div class="manual-overlay">${localize('common.manual_override')}</div>
+    `;
+  }
+
+  static get styles(): CSSResultGroup {
+    return css`
+      :host([manual-override]) #chart {
+        opacity: 0.15;
+        transition: opacity 400ms ease;
+      }
+      :host([manual-override]) .chart-legend {
+        opacity: 0.15;
+      }
+      .manual-overlay {
+        position: absolute;
+        inset: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+        z-index: 10;
+        border-radius: 12px;
+        background: linear-gradient(145deg, rgba(var(--rgb-card-background, 255, 255, 255), 0.82), rgba(var(--rgb-card-background, 255, 255, 255), 0.55));
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        color: rgb(var(--rgb-warning, 255, 167, 38));
+        font-size: var(--ha-font-size-s, 12px);
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
     `;
   }
 }

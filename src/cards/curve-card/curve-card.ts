@@ -5,7 +5,7 @@ import type { CurveCardConfig } from './curve-card-config';
 import type { HomeAssistant } from '../../ha';
 import { computeDomain } from '../../ha/common/entity/compute_domain';
 import { computeEntityNameDisplay } from '../../ha/common/entity/compute_entity_name_display';
-import { cardStyle, manualOverlayStyle } from '../../utils/card-styles';
+import { cardStyle } from '../../utils/card-styles';
 import { registerCustomCard } from '../../utils/register-card';
 import { CURVE_CARD_NAME, CURVE_CARD_EDITOR_NAME, CLIMATE_ENTITY_DOMAINS, SENSOR_ENTITY_DOMAINS } from './const';
 import { validateCurveCardConfig } from './curve-card-config';
@@ -412,7 +412,6 @@ export class EquithermCurveCard extends EquithermChartCard<CurveCardConfig> {
         }
 
       `,
-      manualOverlayStyle,
     ];
   }
 

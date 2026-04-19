@@ -7,7 +7,7 @@ import type { ForecastPoint, ForecastCurveConfig } from '../../utils/forecast';
 import { computeDomain } from '../../ha/common/entity/compute_domain';
 import { EquithermChartCard, headerStyles } from '../../utils/base';
 import { computeEntityNameDisplay } from '../../ha/common/entity/compute_entity_name_display';
-import { cardStyle, manualOverlayStyle } from '../../utils/card-styles';
+import { cardStyle } from '../../utils/card-styles';
 import { registerCustomCard } from '../../utils/register-card';
 import { FORECAST_CARD_NAME, FORECAST_CARD_EDITOR_NAME, CLIMATE_ENTITY_DOMAINS, SENSOR_ENTITY_DOMAINS } from './const';
 import { validateForecastCardConfig } from './forecast-card-config';
@@ -424,7 +424,6 @@ export class EquithermForecastCard extends EquithermChartCard<ForecastCardConfig
         }
 
       `,
-      manualOverlayStyle,
     ];
   }
 

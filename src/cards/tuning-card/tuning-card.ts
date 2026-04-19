@@ -8,7 +8,7 @@ import type { HomeAssistant } from '../../ha';
 import type { LovelaceGridOptions } from '../../ha/panels/lovelace/types';
 import { computeDomain } from '../../ha/common/entity/compute_domain';
 import { computeEntityNameDisplay } from '../../ha/common/entity/compute_entity_name_display';
-import { cardStyle, manualOverlayStyle } from '../../utils/card-styles';
+import { cardStyle } from '../../utils/card-styles';
 import { registerCustomCard } from '../../utils/register-card';
 import { TUNING_CARD_NAME, TUNING_CARD_EDITOR_NAME, CLIMATE_ENTITY_DOMAINS, SENSOR_ENTITY_DOMAINS, NUMBER_ENTITY_DOMAINS } from './const';
 import { validateTuningCardConfig } from './tuning-card-config';
@@ -422,7 +422,6 @@ export class EquithermTuningCard extends EquithermChartCard<TuningCardConfig> {
         }
 
       `,
-      manualOverlayStyle,
     ];
   }
 

@@ -15,7 +15,8 @@
     "not_found": "{entity} not found",
     "wwsd": "Standby",
     "wwsd_label": "Outdoor temperature meets room setpoint",
-    "manual": "Manual"
+    "manual": "Manual",
+    "manual_override": "Manual override"
   },
   "status_card": {
     "name": "Equitherm Status Card",
