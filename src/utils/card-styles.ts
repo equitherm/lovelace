@@ -5,9 +5,9 @@ export const cardStyle = css`
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     height: auto;
-    padding: 10px;
+    padding: 0;
+    overflow: hidden;
     border-radius: var(--ha-card-border-radius, var(--ha-border-radius-lg, 12px));
   }
   ha-card.fill-container {
@@ -33,6 +33,14 @@ export const cardStyle = css`
   .actions::-webkit-scrollbar {
     background: transparent; /* Chrome/Safari/Webkit */
     height: 0px;
+  }
+  .footer-meta {
+    display: flex;
+    justify-content: center;
+    padding: 4px 10px 10px;
+    font-size: var(--ha-font-size-xs, 0.68rem);
+    color: var(--secondary-text-color);
+    flex-shrink: 0;
   }
   .unavailable {
     --main-color: rgb(var(--rgb-warning));

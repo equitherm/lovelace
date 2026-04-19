@@ -12,7 +12,7 @@ import setupCustomlocalize from '../../localize';
 
 /** Minimum config fields shared by all equitherm cards */
 export interface EquithermCardConfig {
-  climate_entity: string;
+  climate_entity?: string;
   flow_entity?: string;
   [key: string]: unknown;
 }
@@ -22,6 +22,7 @@ export const headerStyles = css`
   .header {
     display: flex;
     align-items: center;
+    padding: 10px 10px 0;
     margin-bottom: 12px;
     gap: 12px;
     flex-shrink: 0;

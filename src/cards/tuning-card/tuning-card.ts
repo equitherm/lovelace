@@ -284,12 +284,7 @@ export class EquithermTuningCard extends EquithermChartCard<TuningCardConfig> {
         :host { --tc-proposed: rgb(var(--rgb-state-climate-cool, 38, 142, 213)); }
         ha-card {
           height: 100%;
-          overflow: hidden;
-          padding: 0;
-          display: flex;
-          flex-direction: column;
         }
-        .header { padding: 10px 10px 0; margin-bottom: 0; }
 
         /* ── Chart ── */
         .chart-area {
@@ -410,14 +405,6 @@ export class EquithermTuningCard extends EquithermChartCard<TuningCardConfig> {
           padding-bottom: 10px;
         }
 
-        .footer-meta {
-          display: flex;
-          justify-content: center;
-          padding: 4px 0 0;
-          font-size: var(--ha-font-size-xs, 0.68rem);
-          color: var(--secondary-text-color);
-          flex-shrink: 0;
-        }
 
       `,
     ];

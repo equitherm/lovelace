@@ -27,9 +27,12 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
   @property({ reflect: true, type: Boolean }) vertical = false;
 
   public getGridOptions(): LovelaceGridOptions {
-    return this.vertical
-      ? { columns: 6, rows: 4, min_rows: 4 }
-      : { columns: 12, rows: 3, min_rows: 1 };
+    if (this.vertical) {
+      return this._hasPidDiagnostic
+        ? { columns: 9, rows: 5, min_rows: 4 }
+        : { columns: 6, rows: 4, min_rows: 4 };
+    }
+    return { columns: 12, rows: 3, min_rows: 1 };
   }
 
   static async getStubConfig(hass: HomeAssistant): Promise<StatusCardConfig> {
@@ -98,6 +101,25 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
     return this._formatTemp(value, this._entityAttr<string>(entity, 'unit_of_measurement'));
   }
 
+  private _readNum(entityId: string | undefined): number | null {
+    const s = this._entityState(entityId);
+    if (!s) return null;
+    const v = parseFloat(s.state);
+    return isNaN(v) ? null : v;
+  }
+
+  private _formatNum(value: number | null, decimals = 2): string {
+    if (value === null) return '—';
+    const locale = this.hass?.locale?.language;
+    return locale
+      ? value.toLocaleString(locale, { minimumFractionDigits: decimals, maximumFractionDigits: decimals })
+      : value.toFixed(decimals);
+  }
+
+  private get _hasPidDiagnostic(): boolean {
+    return !!this._config.pid_correction_entity;
+  }
+
   static get styles() {
     return [
       super.styles,
@@ -114,6 +136,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
           gap: 8px;
           flex: 1;
           min-width: 0;
+          padding: 0 10px;
         }
         .temp-block {
           text-align: center;
@@ -163,13 +186,69 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
         .temps.vertical .divider {
           display: none;
         }
-        .footer-meta {
+
+        /* PID diagnostic */
+        .pid-row {
           display: flex;
+          align-items: center;
           justify-content: center;
-          padding: 4px 0 0;
-          font-size: var(--ha-font-size-xs, 0.68rem);
+          gap: 6px;
+          padding: 6px 10px 8px;
+          font-variant-numeric: tabular-nums;
+          flex-shrink: 0;
+        }
+        .pid-row .sep {
+          color: var(--divider-color, rgba(0,0,0,0.25));
+          font-size: 10px;
+        }
+        .pid-row .divider-v {
+          width: 1px;
+          height: 12px;
+          background: var(--divider-color, rgba(0,0,0,0.2));
+          flex-shrink: 0;
+          margin: 0 2px;
+        }
+        .pid-row .term {
+          cursor: pointer;
+          border-radius: 4px;
+          padding: 1px 3px;
+          transition: background 0.2s;
+          white-space: nowrap;
+        }
+        .pid-row .term:hover {
+          background: var(--secondary-background-color, rgba(0,0,0,0.04));
+        }
+        .pid-row .correction {
+          border-radius: 10px;
+          padding: 2px 7px;
+          transition: background 0.2s;
+        }
+        .pid-row .correction:hover {
+          filter: brightness(0.94);
+        }
+        .pid-row .correction.positive { background: rgba(76,175,80,0.13); }
+        .pid-row .correction.negative { background: rgba(229,57,53,0.13); }
+        .pid-row .correction.neutral  { background: var(--secondary-background-color, rgba(0,0,0,0.06)); }
+        .pid-row .lbl {
+          font-size: 10px;
+          font-weight: var(--ha-font-weight-medium, 500);
           color: var(--secondary-text-color);
         }
+        .pid-row .val {
+          font-size: var(--ha-font-size-s, 0.8rem);
+          font-weight: 600;
+          color: var(--primary-text-color);
+        }
+        .pid-row .correction .val {
+          font-size: var(--ha-font-size-m, 1rem);
+          font-weight: 700;
+        }
+        .pid-row .val.positive { color: var(--success-color, #4caf50); }
+        .pid-row .val.negative { color: var(--error-color, #e53935); }
+
+        .pid-row.vertical .term:not(.correction),
+        .pid-row.vertical .sep,
+        .pid-row.vertical .divider-v { display: none; }
       `,
     ];
   }
@@ -223,12 +302,42 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
             <div class="temp-label">${localize('common.room')}</div>
           </div>
         </div>
+        ${this._hasPidDiagnostic ? this._renderPidSection() : nothing}
         ${this._config.show_last_updated ? html`
           <div class="footer-meta">
             ${this._renderLastUpdated(this._config.flow_entity)}
           </div>
         ` : nothing}
       </ha-card>
+    `;
+  }
+
+  private _renderPidSection() {
+    const correction = this._readNum(this._config.pid_correction_entity);
+    const pValue = this._readNum(this._config.pid_proportional_entity);
+    const iValue = this._readNum(this._config.pid_integral_entity);
+    const dValue = this._readNum(this._config.pid_derivative_entity);
+    const correctionClass = correction !== null
+      ? (correction > 0 ? 'positive' : correction < 0 ? 'negative' : '')
+      : '';
+
+    const term = (label: string, value: number | null, entityId: string | undefined, termClass = '', valClass = '') => html`
+      <span class="term ${termClass}" @click=${() => this._openMoreInfo(entityId)}>
+        <span class="lbl">${label}</span> <span class="val ${valClass}">${this._formatNum(value)}°</span>
+      </span>
+    `;
+
+    const chipClass = correctionClass || 'neutral';
+    return html`
+      <div class=${classMap({ 'pid-row': true, vertical: this.vertical })}>
+        ${term('P', pValue, this._config.pid_proportional_entity)}
+        <span class="sep">·</span>
+        ${term('I', iValue, this._config.pid_integral_entity)}
+        <span class="sep">·</span>
+        ${term('D', dValue, this._config.pid_derivative_entity)}
+        <span class="divider-v"></span>
+        ${term('Σ', correction, this._config.pid_correction_entity, `correction ${chipClass}`, chipClass)}
+      </div>
     `;
   }
 }

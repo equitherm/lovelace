@@ -94,6 +94,10 @@
     "recalculate_service": "Recalculate Service",
     "advanced": "Advanced",
     "show_last_updated": "Show last updated",
+    "pid_correction_entity": "PID Correction",
+    "pid_proportional_entity": "PID Proportional",
+    "pid_integral_entity": "PID Integral",
+    "pid_derivative_entity": "PID Derivative",
     "helper": {
       "curve_from_entities": "Read from ESPHome runtime-tunable numbers instead of static values",
       "hc": "How aggressively heating responds to cold — increase if room is too cold in winter",
@@ -115,7 +119,11 @@
       "min_flow_entity": "Runtime-adjustable minimum flow temperature number",
       "max_flow_entity": "Runtime-adjustable maximum flow temperature number",
       "recalculate_service": "Service to call after applying a value, e.g. climate.equitherm_force_recalculate. Only called if the service exists.",
-      "show_last_updated": "Display when sensor data was last received"
+      "show_last_updated": "Display when sensor data was last received",
+      "pid_correction_entity": "Total PID correction applied to the curve output",
+      "pid_proportional_entity": "Proportional term output (response to current error)",
+      "pid_integral_entity": "Integral term output (response to accumulated error)",
+      "pid_derivative_entity": "Derivative term output (response to error rate of change)"
     }
   }
 }

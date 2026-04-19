@@ -92,6 +92,10 @@
     "recalculate_service": "Service de Recalcul",
     "advanced": "Avancé",
     "show_last_updated": "Afficher dernière mise à jour",
+    "pid_correction_entity": "Correction PID",
+    "pid_proportional_entity": "PID Proportionnel",
+    "pid_integral_entity": "PID Intégral",
+    "pid_derivative_entity": "PID Dérivé",
     "helper": {
       "curve_from_entities": "Lire depuis les nombres ESPHome ajustables au lieu de valeurs statiques",
       "hc": "Agressivité du chauffage par temps froid — augmenter si la pièce est trop froide en hiver",
@@ -113,7 +117,11 @@
       "min_flow_entity": "Nombre ajustable de la température de départ minimale",
       "max_flow_entity": "Nombre ajustable de la température de départ maximale",
       "recalculate_service": "Service à appeler après l'application d'une valeur, ex. climate.equitherm_force_recalculate. Appelé uniquement si le service existe.",
-      "show_last_updated": "Afficher l'heure de la dernière réception des données du capteur"
+      "show_last_updated": "Afficher l'heure de la dernière réception des données du capteur",
+      "pid_correction_entity": "Correction totale du PID appliquée à la sortie de courbe",
+      "pid_proportional_entity": "Terme proportionnel (réponse à l'erreur actuelle)",
+      "pid_integral_entity": "Terme intégral (réponse à l'erreur accumulée)",
+      "pid_derivative_entity": "Terme dérivé (réponse à la vitesse de changement de l'erreur)"
     }
   }
 }

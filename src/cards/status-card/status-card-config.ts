@@ -11,6 +11,10 @@ export interface StatusCardConfig {
   pid_output_entity?: string;
   rate_limiting_entity?: string;
   pid_active_entity?: string;
+  pid_correction_entity?: string;
+  pid_proportional_entity?: string;
+  pid_integral_entity?: string;
+  pid_derivative_entity?: string;
   vertical?: boolean;
   show_last_updated?: boolean;
   name?: string | EntityNameItem | EntityNameItem[];
@@ -29,6 +33,10 @@ export const StatusCardConfigStruct = type({
   pid_output_entity: optional(string()),
   rate_limiting_entity: optional(string()),
   pid_active_entity: optional(string()),
+  pid_correction_entity: optional(string()),
+  pid_proportional_entity: optional(string()),
+  pid_integral_entity: optional(string()),
+  pid_derivative_entity: optional(string()),
   vertical: optional(boolean()),
   show_last_updated: optional(boolean()),
   name: optional(any()),

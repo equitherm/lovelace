@@ -414,13 +414,6 @@ export class EquithermForecastCard extends EquithermChartCard<ForecastCardConfig
           color: var(--divider-color, rgba(0,0,0,0.2));
           user-select: none;
         }
-        .footer-meta {
-          display: flex;
-          justify-content: center;
-          padding: 4px 0 0;
-          font-size: var(--ha-font-size-xs, 0.68rem);
-          color: var(--secondary-text-color);
-        }
 
       `,
     ];

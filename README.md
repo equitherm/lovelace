@@ -13,7 +13,7 @@ A collection of Lovelace cards for the ESPHome equitherm climate component. Moni
 
 ## Features
 
-- **Status Card** — Live temperatures, HVAC state, rate-limiting indicators
+- **Status Card** — Live temperatures, HVAC state, PID diagnostics, rate-limiting indicators
 - **Curve Card** — Interactive heating curve with operating point marker
 - **Forecast Card** — Weather-based flow temperature prediction
 - **Tuning Card** — Real-time curve tuning with hc/shift controls and preview
@@ -48,7 +48,7 @@ Equitherm Cards is available in [HACS][hacs] as a Lovelace plugin. Requires Home
 
 | Card | Type | Description |
 |------|------|-------------|
-| Status | `equitherm-status-card` | Temperature readings with HVAC badge |
+| Status | `equitherm-status-card` | Temperature readings, PID diagnostics, HVAC badge |
 | Curve | `equitherm-curve-card` | Heating curve visualization |
 | Forecast | `equitherm-forecast-card` | Weather-based flow prediction |
 | Tuning | `equitherm-tuning-card` | Interactive parameter tuning |

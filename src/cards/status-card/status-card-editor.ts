@@ -65,6 +65,10 @@ export class StatusCardEditor extends LitElement implements LovelaceCardEditor {
         schemaHelpers.entity('pid_output_entity', { domain: ['sensor'], device_class: 'temperature', required: false }),
         schemaHelpers.entity('rate_limiting_entity', { domain: ['binary_sensor'], required: false }),
         schemaHelpers.entity('pid_active_entity', { domain: ['binary_sensor'], required: false }),
+        schemaHelpers.entity('pid_correction_entity', { domain: ['sensor', 'input_number'], device_class: 'temperature', required: false }),
+        schemaHelpers.entity('pid_proportional_entity', { domain: ['sensor', 'input_number'], required: false }),
+        schemaHelpers.entity('pid_integral_entity', { domain: ['sensor', 'input_number'], required: false }),
+        schemaHelpers.entity('pid_derivative_entity', { domain: ['sensor', 'input_number'], required: false }),
       ]),
       // Appearance
       schemaHelpers.expandable(localize('editor.appearance'), 'mdi:palette-outline', [
