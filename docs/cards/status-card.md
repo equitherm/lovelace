@@ -5,6 +5,7 @@ Display heating system status with temperature readings.
 ## Features
 
 - Three-column temperature display: Outdoor -> Flow | Room
+- Inline PID diagnostic row (P/I/D terms + correction sum)
 - HVAC action badge (heating/idle/off)
 - Rate-limiting indicator with direction (rising/falling)
 - PID status badge (active/inactive with warning icon)
@@ -26,6 +27,10 @@ flow_entity: sensor.flow_setpoint
 curve_output_entity: sensor.heating_curve_output
 rate_limiting_entity: binary_sensor.rate_limiting
 pid_active_entity: binary_sensor.pid_active
+pid_correction_entity: sensor.pid_correction
+pid_proportional_entity: sensor.pid_proportional
+pid_integral_entity: sensor.pid_integral
+pid_derivative_entity: sensor.pid_derivative
 name:  # entity name picker (recommended)
   type: entity
 layout: default  # default, vertical, or horizontal
@@ -41,6 +46,10 @@ layout: default  # default, vertical, or horizontal
 | `curve_output_entity` | string | No | Shows "Adjusting" indicator with target temperature |
 | `rate_limiting_entity` | string | No | Binary sensor for rate limiting status |
 | `pid_active_entity` | string | No | Binary sensor for PID correction status |
+| `pid_correction_entity` | string | No | PID total correction sensor — enables inline PID diagnostic row |
+| `pid_proportional_entity` | string | No | PID proportional term sensor |
+| `pid_integral_entity` | string | No | PID integral term sensor |
+| `pid_derivative_entity` | string | No | PID derivative term sensor |
 | `layout` | string | No | `default`, `vertical`, or `horizontal` |
 | `show_last_updated` | boolean | No | Show "last updated" timestamp in card footer |
 | `name` | entity | No | Entity name picker config (defaults to entity friendly name). Examples: `name: { type: entity }` or `name: [{ type: text, text: "Prefix" }, { type: device }]` |
@@ -126,8 +135,8 @@ equitherm_status_card:
 
 | Layout | Columns | Rows | Min Rows |
 |--------|---------|------|----------|
-| default | 12 | 2 | 1 |
-| vertical | 6 | 3 | 2 |
+| default | 12 | 3 (4 with PID) | 1 |
+| vertical | 6 | 4 (5 with PID) | 4 |
 | horizontal | 12 | 1 | 1 |
 
 ## Entity Requirements
@@ -160,3 +169,15 @@ Must have:
 
 - Binary sensor (`on`/`off`) indicating whether PID correction is active
 - Shows green badge when active, dimmed badge with warning icon when inactive
+
+### pid_correction_entity (optional)
+
+- Sensor with total PID correction value (°C)
+- When configured, enables the inline PID diagnostic row below temperatures
+- Clickable for more-info dialog
+
+### pid_proportional_entity / pid_integral_entity / pid_derivative_entity (optional)
+
+- Sensors with individual PID term values (°C)
+- Displayed alongside the correction sum in the PID diagnostic row
+- Clickable for more-info dialogs
