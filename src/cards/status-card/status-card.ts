@@ -114,6 +114,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
           gap: 8px;
           flex: 1;
           min-width: 0;
+          padding: 0 10px;
         }
         .temp-block {
           text-align: center;

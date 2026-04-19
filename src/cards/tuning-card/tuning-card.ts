@@ -284,12 +284,7 @@ export class EquithermTuningCard extends EquithermChartCard<TuningCardConfig> {
         :host { --tc-proposed: rgb(var(--rgb-state-climate-cool, 38, 142, 213)); }
         ha-card {
           height: 100%;
-          overflow: hidden;
-          padding: 0;
-          display: flex;
-          flex-direction: column;
         }
-        .header { padding: 10px 10px 0; margin-bottom: 0; }
 
         /* ── Chart ── */
         .chart-area {

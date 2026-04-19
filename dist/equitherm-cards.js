@@ -156,6 +156,7 @@ const Lt="important",Pt=" !"+Lt,Mt=mt(class extends bt{constructor(t){if(super(t
   .header {
     display: flex;
     align-items: center;
+    padding: 10px 10px 0;
     margin-bottom: 12px;
     gap: 12px;
     flex-shrink: 0;
@@ -320,9 +321,9 @@ function ra(t){if(!t||"string"!=typeof t)return[["M",0,0]];const e=[],s=/([MmLlH
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     height: auto;
-    padding: 10px;
+    padding: 0;
+    overflow: hidden;
     border-radius: var(--ha-card-border-radius, var(--ha-border-radius-lg, 12px));
   }
   ha-card.fill-container {
@@ -352,7 +353,7 @@ function ra(t){if(!t||"string"!=typeof t)return[["M",0,0]];const e=[],s=/([MmLlH
   .footer-meta {
     display: flex;
     justify-content: center;
-    padding: 4px 0 0;
+    padding: 4px 10px 10px;
     font-size: var(--ha-font-size-xs, 0.68rem);
     color: var(--secondary-text-color);
     flex-shrink: 0;
@@ -411,6 +412,7 @@ function ra(t){if(!t||"string"!=typeof t)return[["M",0,0]];const e=[],s=/([MmLlH
           gap: 8px;
           flex: 1;
           min-width: 0;
+          padding: 0 10px;
         }
         .temp-block {
           text-align: center;
@@ -685,12 +687,7 @@ function ra(t){if(!t||"string"!=typeof t)return[["M",0,0]];const e=[],s=/([MmLlH
         :host { --tc-proposed: rgb(var(--rgb-state-climate-cool, 38, 142, 213)); }
         ha-card {
           height: 100%;
-          overflow: hidden;
-          padding: 0;
-          display: flex;
-          flex-direction: column;
         }
-        .header { padding: 10px 10px 0; margin-bottom: 0; }
 
         /* ── Chart ── */
         .chart-area {

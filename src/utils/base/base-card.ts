@@ -22,6 +22,7 @@ export const headerStyles = css`
   .header {
     display: flex;
     align-items: center;
+    padding: 10px 10px 0;
     margin-bottom: 12px;
     gap: 12px;
     flex-shrink: 0;
