@@ -205,37 +205,54 @@ export abstract class EquithermBaseCard<TConfig extends EquithermCardConfig> ext
 
   // === Shared Header ===
 
-  /** Override to inject extra badges into the header. */
-  protected _renderExtraBadges(): typeof nothing {
-    return nothing;
+  /** Render the header icon tile with HVAC action color. */
+  protected _renderHeaderIcon(iconName: string, clickEntity: string): ReturnType<typeof html> | typeof nothing {
+    const rawAction = this._climate?.attributes.hvac_action ?? 'off';
+    const color = getHvacActionColor(normalizeHvacAction(rawAction));
+    return html`
+      <ha-tile-icon
+        .interactive=${true}
+        style=${styleMap({ '--tile-icon-color': `rgb(${color})`, '--tile-icon-size': '42px' })}
+        @click=${() => this._openMoreInfo(clickEntity)}
+      >
+        <ha-icon slot="icon" .icon=${iconName}></ha-icon>
+      </ha-tile-icon>
+    `;
   }
 
-  /** Shared header renderer for all equitherm cards. */
-  protected _renderHeader(opts: { iconName: string; clickEntity: string; title: string }): ReturnType<typeof html> | typeof nothing {
-    if (!this._config || !this.hass) return nothing;
-
-    const localize = setupCustomlocalize(this.hass);
-    const rawAction = this._climate?.attributes.hvac_action ?? 'off';
-    const hvacAction = normalizeHvacAction(rawAction);
-
-    const color = getHvacActionColor(hvacAction);
-    const iconStyles = styleMap({
-      '--tile-icon-color': `rgb(${color})`,
-      '--tile-icon-size': '42px',
-    });
-
-    const lookup = (id: string) => this._entityState(id)!;
-    const cfg = this._config as unknown as ClimateHelperConfig;
-    const pidActive = isPidActive(cfg, lookup);
-    const pidChip = cfg.pid_active_entity
-      ? html`<eq-badge-info
-          .label=${'PID'}
-          style=${`--badge-info-color: ${pidActive ? 'var(--rgb-success)' : 'var(--rgb-disabled)'}`}
-          .icon=${pidActive ? undefined : 'mdi:alert-circle-outline'}
-        ></eq-badge-info>`
+  /** Render the title and optional climate target temp state line. */
+  protected _renderHeaderInfo(title: string): ReturnType<typeof html> {
+    const stateLine = this._climate?.attributes.temperature != null
+      ? html`<span class="state">· ${this._formatTemp(this._climate.attributes.temperature, this.hass?.config?.unit_system?.temperature)}</span>`
       : nothing;
+    return html`
+      <div class="header-info">
+        <span class="title">${title}</span>
+        ${stateLine}
+      </div>
+    `;
+  }
 
-    const wwsdBadge = this._isWWSD ? html`
+  /** Render PID status chip. */
+  protected _renderPidBadge(): ReturnType<typeof html> | typeof nothing {
+    const cfg = this._config as unknown as ClimateHelperConfig;
+    if (!cfg.pid_active_entity) return nothing;
+    const lookup = (id: string) => this._entityState(id)!;
+    const active = isPidActive(cfg, lookup);
+    return html`
+      <eq-badge-info
+        .label=${'PID'}
+        style=${`--badge-info-color: ${active ? 'var(--rgb-success)' : 'var(--rgb-disabled)'}`}
+        .icon=${active ? undefined : 'mdi:alert-circle-outline'}
+      ></eq-badge-info>
+    `;
+  }
+
+  /** Render WWSD warning badge. */
+  protected _renderWwsdBadge(): ReturnType<typeof html> | typeof nothing {
+    if (!this._isWWSD) return nothing;
+    const localize = setupCustomlocalize(this.hass);
+    return html`
       <eq-badge-info
         id="wwsd-badge"
         .label=${localize('common.wwsd')}
@@ -244,40 +261,56 @@ export abstract class EquithermBaseCard<TConfig extends EquithermCardConfig> ext
         .active=${true}
       ></eq-badge-info>
       <ha-tooltip for="wwsd-badge" placement="top"><span style="white-space: nowrap">${this._wwsdDescription()}</span></ha-tooltip>
-    ` : nothing;
+    `;
+  }
 
-    const rateLimiting = isRateLimitingActive(cfg, lookup);
-    const adjustingDir = getAdjustingDirection(cfg, lookup);
-    const hvacBadge = getHvacBadgeProps(localize, hvacAction, rateLimiting, adjustingDir);
+  /** Render HVAC action badge with optional rate-limiting indicator. */
+  protected _renderHvacBadge(): ReturnType<typeof html> {
+    const localize = setupCustomlocalize(this.hass);
+    const rawAction = this._climate?.attributes.hvac_action ?? 'off';
+    const hvacAction = normalizeHvacAction(rawAction);
+    const lookup = (id: string) => this._entityState(id)!;
+    const cfg = this._config as unknown as ClimateHelperConfig;
+    const badge = getHvacBadgeProps(
+      localize, hvacAction,
+      isRateLimitingActive(cfg, lookup),
+      getAdjustingDirection(cfg, lookup),
+    );
+    return html`
+      <eq-badge-info
+        .label=${badge.label}
+        style=${`--badge-info-color: ${badge.color}`}
+        .icon=${badge.icon}
+        .active=${badge.active}
+      ></eq-badge-info>
+    `;
+  }
 
-    const stateLine = this._climate?.attributes.temperature != null
-      ? html`<span class="state">· ${this._formatTemp(this._climate.attributes.temperature, this.hass?.config?.unit_system?.temperature)}</span>`
-      : nothing;
+  /** Override to inject extra badges into the header. */
+  protected _renderExtraBadges(): typeof nothing {
+    return nothing;
+  }
 
+  /** Render the full badges row. */
+  protected _renderHeaderBadges(): ReturnType<typeof html> {
+    return html`
+      <div class="badges">
+        ${this._renderPidBadge()}
+        ${this._renderWwsdBadge()}
+        ${this._renderExtraBadges()}
+        ${this._renderHvacBadge()}
+      </div>
+    `;
+  }
+
+  /** Shared header renderer for all equitherm cards. */
+  protected _renderHeader(opts: { iconName: string; clickEntity: string; title: string }): ReturnType<typeof html> | typeof nothing {
+    if (!this._config || !this.hass) return nothing;
     return html`
       <div class="header">
-        <ha-tile-icon
-          .interactive=${true}
-          style=${iconStyles}
-          @click=${() => this._openMoreInfo(opts.clickEntity)}
-        >
-          <ha-icon slot="icon" .icon=${opts.iconName}></ha-icon>
-        </ha-tile-icon>
-        <div class="header-info">
-          <span class="title">${opts.title}</span>
-          ${stateLine}
-        </div>
-        <div class="badges">
-          ${pidChip}
-          ${wwsdBadge}
-          ${this._renderExtraBadges()}
-          <eq-badge-info
-            .label=${hvacBadge.label}
-            style=${`--badge-info-color: ${hvacBadge.color}`}
-            .icon=${hvacBadge.icon}
-            .active=${hvacBadge.active}
-          ></eq-badge-info>
-        </div>
+        ${this._renderHeaderIcon(opts.iconName, opts.clickEntity)}
+        ${this._renderHeaderInfo(opts.title)}
+        ${this._renderHeaderBadges()}
       </div>
     `;
   }
