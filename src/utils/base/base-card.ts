@@ -1,4 +1,4 @@
-import { html, css, nothing } from 'lit';
+import { html, css, nothing, PropertyValues } from 'lit';
 import { state } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
 import type { HassEntity } from 'home-assistant-js-websocket';
@@ -76,6 +76,18 @@ export abstract class EquithermBaseCard<TConfig extends EquithermCardConfig> ext
   /** Get the climate entity state */
   protected get _climate(): ClimateEntity | undefined {
     return this._entityState(this._config.climate_entity) as ClimateEntity | undefined;
+  }
+
+  /** Whether climate preset_mode is "Manual" (curve bypassed) */
+  protected get _isManualPreset(): boolean {
+    return this._climate?.attributes.preset_mode === 'Manual';
+  }
+
+  protected override updated(changedProps: PropertyValues): void {
+    super.updated(changedProps);
+    if (changedProps.has('hass') && this.hass) {
+      this.toggleAttribute('manual-override', this._isManualPreset);
+    }
   }
 
   /** Read a number from an entity state, falling back to a config default */
@@ -264,6 +276,19 @@ export abstract class EquithermBaseCard<TConfig extends EquithermCardConfig> ext
     `;
   }
 
+  /** Render Manual preset badge when curve is bypassed. */
+  protected _renderManualBadge(): ReturnType<typeof html> | typeof nothing {
+    if (!this._isManualPreset) return nothing;
+    const localize = setupCustomlocalize(this.hass);
+    return html`
+      <eq-badge-info
+        .label=${localize('common.manual')}
+        style=${`--badge-info-color: var(--rgb-warning, 255, 167, 38)`}
+        .icon=${'mdi:hand-back-right'}
+      ></eq-badge-info>
+    `;
+  }
+
   /** Render HVAC action badge with optional rate-limiting indicator. */
   protected _renderHvacBadge(): ReturnType<typeof html> {
     const localize = setupCustomlocalize(this.hass);
@@ -293,11 +318,13 @@ export abstract class EquithermBaseCard<TConfig extends EquithermCardConfig> ext
 
   /** Render the full badges row. */
   protected _renderHeaderBadges(): ReturnType<typeof html> {
+    const manual = this._isManualPreset;
     return html`
       <div class="badges">
-        ${this._renderPidBadge()}
-        ${this._renderWwsdBadge()}
-        ${this._renderExtraBadges()}
+        ${manual ? nothing : this._renderPidBadge()}
+        ${manual ? nothing : this._renderWwsdBadge()}
+        ${this._renderManualBadge()}
+        ${manual ? nothing : this._renderExtraBadges()}
         ${this._renderHvacBadge()}
       </div>
     `;

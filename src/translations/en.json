@@ -14,7 +14,8 @@
     "preheating": "Preheating",
     "not_found": "{entity} not found",
     "wwsd": "Standby",
-    "wwsd_label": "Outdoor temperature meets room setpoint"
+    "wwsd_label": "Outdoor temperature meets room setpoint",
+    "manual": "Manual"
   },
   "status_card": {
     "name": "Equitherm Status Card",
