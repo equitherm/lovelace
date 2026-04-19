@@ -5,7 +5,7 @@ import type { CurveCardConfig } from './curve-card-config';
 import type { HomeAssistant } from '../../ha';
 import { computeDomain } from '../../ha/common/entity/compute_domain';
 import { computeEntityNameDisplay } from '../../ha/common/entity/compute_entity_name_display';
-import { cardStyle } from '../../utils/card-styles';
+import { cardStyle, manualOverlayStyle } from '../../utils/card-styles';
 import { registerCustomCard } from '../../utils/register-card';
 import { CURVE_CARD_NAME, CURVE_CARD_EDITOR_NAME, CLIMATE_ENTITY_DOMAINS, SENSOR_ENTITY_DOMAINS } from './const';
 import { validateCurveCardConfig } from './curve-card-config';
@@ -411,26 +411,8 @@ export class EquithermCurveCard extends EquithermChartCard<CurveCardConfig> {
           opacity: 0.7;
         }
 
-        /* ── Manual override dimming ── */
-        :host([manual-override]) .chart-wrapper {
-          position: relative;
-          opacity: 0.35;
-          transition: opacity 300ms ease;
-        }
-        :host([manual-override]) .chart-wrapper::after {
-          content: "Manual override — curve not in control";
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          color: var(--disabled-text-color);
-          font-size: var(--ha-font-size-s, 12px);
-          font-weight: 500;
-          text-align: center;
-          pointer-events: none;
-          white-space: nowrap;
-        }
       `,
+      manualOverlayStyle,
     ];
   }
 
@@ -453,6 +435,7 @@ export class EquithermCurveCard extends EquithermChartCard<CurveCardConfig> {
         })}
         <div class="chart-wrapper">
           <div id="chart"></div>
+          ${this._renderManualOverlay()}
         </div>
         <div class="footer">
           <div class="footer-metric"

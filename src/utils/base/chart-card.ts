@@ -1,3 +1,4 @@
+import { html, nothing } from 'lit';
 import { query } from 'lit/decorators.js';
 import ApexCharts from 'apexcharts';
 import { EquithermBaseCard, type EquithermCardConfig } from './base-card';
@@ -105,4 +106,15 @@ export abstract class EquithermChartCard<TConfig extends EquithermCardConfig> ex
 
   /** Hook called before chart is disconnected. */
   protected _onChartDisconnecting(): void {}
+
+  /** Overlay shown over chart when manual preset bypasses the curve. */
+  protected _renderManualOverlay(): typeof nothing | ReturnType<typeof html> {
+    if (!this._isManualPreset) return nothing;
+    return html`
+      <div class="manual-overlay">
+        <ha-icon icon="mdi:hand-back-right"></ha-icon>
+        <span>Manual override</span>
+      </div>
+    `;
+  }
 }

@@ -8,7 +8,7 @@ import type { HomeAssistant } from '../../ha';
 import type { LovelaceGridOptions } from '../../ha/panels/lovelace/types';
 import { computeDomain } from '../../ha/common/entity/compute_domain';
 import { computeEntityNameDisplay } from '../../ha/common/entity/compute_entity_name_display';
-import { cardStyle } from '../../utils/card-styles';
+import { cardStyle, manualOverlayStyle } from '../../utils/card-styles';
 import { registerCustomCard } from '../../utils/register-card';
 import { TUNING_CARD_NAME, TUNING_CARD_EDITOR_NAME, CLIMATE_ENTITY_DOMAINS, SENSOR_ENTITY_DOMAINS, NUMBER_ENTITY_DOMAINS } from './const';
 import { validateTuningCardConfig } from './tuning-card-config';
@@ -289,7 +289,7 @@ export class EquithermTuningCard extends EquithermChartCard<TuningCardConfig> {
           display: flex;
           flex-direction: column;
         }
-        .header { padding: 12px 10px 0; margin-bottom: 0; }
+        .header { padding: 12px 14px 0; margin-bottom: 0; }
 
         /* ── Chart ── */
         .chart-area {
@@ -421,26 +421,8 @@ export class EquithermTuningCard extends EquithermChartCard<TuningCardConfig> {
           flex-shrink: 0;
         }
 
-        /* ── Manual override dimming ── */
-        :host([manual-override]) .chart-area {
-          position: relative;
-          opacity: 0.35;
-          transition: opacity 300ms ease;
-        }
-        :host([manual-override]) .chart-area::after {
-          content: "Manual override — curve not in control";
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          color: var(--disabled-text-color);
-          font-size: var(--ha-font-size-s, 12px);
-          font-weight: 500;
-          text-align: center;
-          pointer-events: none;
-          white-space: nowrap;
-        }
       `,
+      manualOverlayStyle,
     ];
   }
 
@@ -490,6 +472,7 @@ export class EquithermTuningCard extends EquithermChartCard<TuningCardConfig> {
             <span class="legend-item"><span class="legend-line dashed"></span>${localize('tuning_card.proposed')}</span>
           </div>
           <div id="chart"></div>
+          ${this._renderManualOverlay()}
         </div>
 
         <!-- Controls: HC and Shift steppers -->

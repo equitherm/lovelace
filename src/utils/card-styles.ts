@@ -41,3 +41,32 @@ export const cardStyle = css`
     --main-color: rgb(var(--rgb-danger));
   }
 `;
+
+export const manualOverlayStyle = css`
+  :host([manual-override]) .chart-wrapper,
+  :host([manual-override]) .chart-area {
+    position: relative;
+    opacity: 0.3;
+    transition: opacity 300ms ease;
+  }
+  .manual-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    pointer-events: none;
+    z-index: 10;
+    color: var(--disabled-text-color);
+    font-size: var(--ha-font-size-s, 12px);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .manual-overlay ha-icon {
+    --mdc-icon-size: 24px;
+    opacity: 0.6;
+  }
+`;
