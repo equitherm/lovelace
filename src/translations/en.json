@@ -53,12 +53,6 @@
     "outdoor_axis": "°C outdoor",
     "flow_axis": "°C flow"
   },
-  "pid_card": {
-    "name": "Equitherm PID Diagnostic Card",
-    "description": "Display PID diagnostic values with correction",
-    "default_title": "PID Diagnostic",
-    "correction": "Correction"
-  },
   "editor": {
     "required": "Required",
     "optional": "Optional",

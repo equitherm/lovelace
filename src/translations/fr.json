@@ -51,12 +51,6 @@
     "outdoor_axis": "°C extérieur",
     "flow_axis": "°C départ"
   },
-  "pid_card": {
-    "name": "Carte Diagnostic PID Equitherm",
-    "description": "Affiche les valeurs de diagnostic PID avec correction",
-    "default_title": "Diagnostic PID",
-    "correction": "Correction"
-  },
   "editor": {
     "required": "Requis",
     "optional": "Optionnel",
