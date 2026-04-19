@@ -1,0 +1,77 @@
+name: Bug Report
+description: Report a problem with an equitherm card
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting a bug! Please fill out the sections below.
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug description
+      description: A clear description of what the bug is.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: How can we reproduce this behavior?
+      placeholder: |
+        1. Go to '...'
+        2. Click on '...'
+        3. See error
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What did you expect to happen?
+    validations:
+      required: true
+  - type: textarea
+    id: yaml
+    attributes:
+      label: Card YAML configuration
+      description: The YAML config for the affected card (sanitize any sensitive data).
+      render: yaml
+    validations:
+      required: false
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: If applicable, add screenshots to help explain the problem.
+    validations:
+      required: false
+  - type: textarea
+    id: logs
+    attributes:
+      label: Browser console logs
+      description: Any errors from the browser developer console (F12 → Console).
+      render: text
+    validations:
+      required: false
+  - type: input
+    id: card-version
+    attributes:
+      label: Equitherm Cards version
+      placeholder: e.g. 2.0.0
+    validations:
+      required: true
+  - type: input
+    id: ha-version
+    attributes:
+      label: Home Assistant version
+      placeholder: e.g. 2026.4.0
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser/App
+      placeholder: e.g. Chrome 136, Home Assistant Companion 2026.4
+    validations:
+      required: false
