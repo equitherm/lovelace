@@ -144,20 +144,15 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
   }
 
   private _renderParamsFooterWithTune() {
-    const inner = this._renderParamsFooter({
-      hc: this._config.hc_entity ? { entity: this._config.hc_entity, fallback: 0.9 } : undefined,
-      n: this._config.n_entity ? { entity: this._config.n_entity, fallback: 1.25 } : undefined,
-      shift: this._config.shift_entity ? { entity: this._config.shift_entity, fallback: 0 } : undefined,
-      pid_correction: this._config.pid_correction_entity ? { entity: this._config.pid_correction_entity } : undefined,
-    });
-    if (inner === nothing) return nothing;
-    if (!this._config.tunable) return inner;
-    return html`
-      <div class="params-footer-tunable" @click=${() => { this._showTuningDialog = true; }}>
-        ${inner}
-        <ha-icon class="pencil-icon" icon="mdi:pencil"></ha-icon>
-      </div>
-    `;
+    return this._renderTunableParamsFooter(
+      {
+        hc: this._config.hc_entity ? { entity: this._config.hc_entity, fallback: 0.9 } : undefined,
+        n: this._config.n_entity ? { entity: this._config.n_entity, fallback: 1.25 } : undefined,
+        shift: this._config.shift_entity ? { entity: this._config.shift_entity, fallback: 0 } : undefined,
+        pid_correction: this._config.pid_correction_entity ? { entity: this._config.pid_correction_entity } : undefined,
+      },
+      () => { this._showTuningDialog = true; },
+    );
   }
 
   render() {

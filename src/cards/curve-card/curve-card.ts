@@ -193,26 +193,14 @@ export class EquithermCurveCard extends EquithermEChartCard<CurveCardConfig> {
   private _renderParamsFooterContent(): TemplateResult | typeof nothing {
     if (!this._config.curve_from_entities) return nothing;
 
-    if (this._config.tunable) {
-      const inner = this._renderParamsFooter({
-        hc: this._config.hc_entity ? { entity: this._config.hc_entity, fallback: this._config.hc } : undefined,
+    return this._renderTunableParamsFooter(
+      {
+        hc: this._config.hc_entity ? { entity: this._config.hc_entity, fallback: this._config.hc, onClick: this._config.tunable ? undefined : () => { this._showDialog = true; } } : undefined,
         n: this._config.n_entity ? { entity: this._config.n_entity, fallback: this._config.n } : undefined,
-        shift: this._config.shift_entity ? { entity: this._config.shift_entity, fallback: this._config.shift } : undefined,
-      });
-      if (inner === nothing) return nothing;
-      return html`
-        <div class="params-footer-tunable" @click=${() => { this._showDialog = true; }}>
-          ${inner}
-          <ha-icon class="pencil-icon" icon="mdi:pencil"></ha-icon>
-        </div>
-      `;
-    }
-
-    return this._renderParamsFooter({
-      hc: this._config.hc_entity ? { entity: this._config.hc_entity, fallback: this._config.hc, onClick: () => { this._showDialog = true; } } : undefined,
-      n: this._config.n_entity ? { entity: this._config.n_entity, fallback: this._config.n } : undefined,
-      shift: this._config.shift_entity ? { entity: this._config.shift_entity, fallback: this._config.shift, onClick: () => { this._showDialog = true; } } : undefined,
-    });
+        shift: this._config.shift_entity ? { entity: this._config.shift_entity, fallback: this._config.shift, onClick: this._config.tunable ? undefined : () => { this._showDialog = true; } } : undefined,
+      },
+      () => { this._showDialog = true; },
+    );
   }
 
   protected override _buildEChartOptions(): EChartConfig {

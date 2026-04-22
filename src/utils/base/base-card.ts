@@ -347,4 +347,19 @@ export abstract class EquithermBaseCard<TConfig extends EquithermCardConfig> ext
     if (items.length === 0) return nothing;
     return html`<div class="params-footer">${items}</div>`;
   }
+
+  protected _renderTunableParamsFooter(
+    params: Parameters<typeof this._renderParamsFooter>[0],
+    onTune: () => void,
+  ): TemplateResult | typeof nothing {
+    const inner = this._renderParamsFooter(params);
+    if (inner === nothing) return nothing;
+    if (!this._config.tunable) return inner;
+    return html`
+      <div class="params-footer-tunable" @click=${onTune}>
+        ${inner}
+        <ha-icon class="pencil-icon" icon="mdi:pencil"></ha-icon>
+      </div>
+    `;
+  }
 }
