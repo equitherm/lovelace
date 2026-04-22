@@ -42,9 +42,12 @@ export const cardStyle = css`
     display: flex;
     justify-content: center;
     padding: 4px 10px 10px;
-    font-size: var(--ha-font-size-xs, 0.68rem);
+    font-size: var(--ha-font-size-xs, 0.75rem);
     color: var(--secondary-text-color);
     flex-shrink: 0;
+  }
+  .footer-meta--warn {
+    color: var(--warning-color, rgb(var(--rgb-warning)));
   }
   .unavailable {
     --main-color: rgb(var(--rgb-warning));
