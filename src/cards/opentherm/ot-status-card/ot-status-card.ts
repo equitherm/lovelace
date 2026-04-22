@@ -66,6 +66,14 @@ export class OtStatusCard extends OtBaseCard<OtStatusCardConfig> {
     return this._boilerTemp - this._returnTemp;
   }
 
+  private get _formattedDeltaT(): string {
+    const delta = this._deltaT;
+    if (isNaN(delta)) return '—';
+    const unit = this.hass?.config?.unit_system?.temperature ?? '°C';
+    const sign = delta > 0 ? '+' : '';
+    return `${sign}${delta.toFixed(1)}${unit}`;
+  }
+
   private get _modulation(): number {
     if (!this._config.modulation_entity) return NaN;
     return this._resolveEntityNumber(this._config.modulation_entity, NaN);
@@ -241,7 +249,7 @@ export class OtStatusCard extends OtBaseCard<OtStatusCardConfig> {
             </div>
             <div class="divider"></div>
             <div class="temp-block">
-              <div class="temp-value">${isNaN(delta) ? '—' : `${delta > 0 ? '+' : ''}${delta.toFixed(1)}${this.hass?.config?.unit_system?.temperature ?? '°C'}`}</div>
+              <div class="temp-value">${this._formattedDeltaT}</div>
               <div class="temp-label">ΔT</div>
             </div>
           </div>
