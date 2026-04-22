@@ -61,20 +61,16 @@ export const CurveCardConfigStruct = type({
   recalculate_service: optional(string()),
   ...curveEntityStructFields,
   hc: optional(number()),
-  ...curveConfigStructFields,
   shift: optional(number()),
-  t_out_min: optional(number()),
-  t_out_max: optional(number()),
+  ...curveConfigStructFields,
 });
 
 /** Default curve parameter values (matching @equitherm/core defaults) */
 export const CURVE_CARD_DEFAULTS: Required<
-  Pick<CurveCardConfig, 'hc' | 'shift' | 't_out_min' | 't_out_max'>
+  Pick<CurveCardConfig, 'hc' | 'shift'>
 > & typeof CURVE_CONFIG_DEFAULTS = {
   hc: 0.9,
   shift: 0,
-  t_out_min: -20,
-  t_out_max: 20,
   ...CURVE_CONFIG_DEFAULTS,
 };
 

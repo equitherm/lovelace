@@ -10,6 +10,7 @@ import { cardStyle, paramsFooterStyles, kpiFooterStyles, tunableFooterStyles } f
 import { registerCustomCard } from '../../utils/register-card';
 import setupCustomLocalize from '../../localize';
 import { validateStatusCardConfig } from './status-card-config';
+import { CURVE_CONFIG_DEFAULTS } from '../../utils/curve-config';
 import { STATUS_CARD_NAME, STATUS_CARD_EDITOR_NAME, CLIMATE_ENTITY_DOMAINS, SENSOR_ENTITY_DOMAINS } from './const';
 import { getAdjustingDirection } from '../../utils/climate-helpers';
 import '../../shared/badge-info';
@@ -38,11 +39,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
       flow_entity: cfg.flow_entity,
       n_entity: cfg.n_entity,
       curve_from_entities: !!cfg.n_entity,
-      n: 1.25,
-      min_flow: 20,
-      max_flow: 70,
-      t_out_min: -20,
-      t_out_max: 20,
+      ...CURVE_CONFIG_DEFAULTS,
     };
   }
 

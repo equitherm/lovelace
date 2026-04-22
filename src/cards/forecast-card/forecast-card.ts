@@ -10,6 +10,7 @@ import { cardStyle, paramsFooterStyles, kpiFooterStyles } from '../../utils/card
 import { registerCustomCard } from '../../utils/register-card';
 import { FORECAST_CARD_NAME, FORECAST_CARD_EDITOR_NAME, CLIMATE_ENTITY_DOMAINS, SENSOR_ENTITY_DOMAINS } from './const';
 import { validateForecastCardConfig } from './forecast-card-config';
+import { CURVE_CONFIG_DEFAULTS } from '../../utils/curve-config';
 import { resolveRgbColor } from '../../utils/hvac-colors';
 import { buildForecastSeries, peakDemand } from '../../utils/forecast';
 import setupCustomLocalize from '../../localize';
@@ -196,8 +197,8 @@ export class EquithermForecastCard extends EquithermEChartCard<ForecastCardConfi
       n: cfg.n,
       min_flow: cfg.min_flow,
       max_flow: cfg.max_flow,
-      t_out_min: -20,
-      t_out_max: 20,
+      t_out_min: CURVE_CONFIG_DEFAULTS.t_out_min,
+      t_out_max: CURVE_CONFIG_DEFAULTS.t_out_max,
     };
   }
 
