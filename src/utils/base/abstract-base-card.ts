@@ -62,14 +62,35 @@ export abstract class BaseCard<TConfig extends Record<string, unknown>>
     }
   }
 
-  protected _renderLastUpdated(entityId: string | undefined): typeof nothing | ReturnType<typeof html> {
-    if (!entityId || !this.hass) return nothing;
+  /** Override to control footer visibility. Defaults to checking config.show_last_updated. */
+  protected _showFooterMeta(): boolean {
+    return !!(this._config as Record<string, unknown>)?.show_last_updated;
+  }
+
+  /** Override to specify which entity's freshness the footer should track. */
+  protected _lastUpdatedEntity(): string | undefined {
+    return undefined;
+  }
+
+  /** Render the footer meta line — only visible when entity is stale (>5 min) or unavailable. */
+  protected _renderFooterMeta(): typeof nothing | ReturnType<typeof html> {
+    if (!this._showFooterMeta()) return nothing;
+
+    const entityId = this._lastUpdatedEntity();
     const state = this._entityState(entityId);
-    if (!state) return nothing;
+    if (!entityId || !state || !this.hass) return nothing;
+
+    const isUnavailable = state.state === 'unavailable' || state.state === 'unknown';
+    const staleThresholdMs = 5 * 60 * 1000;
+    const age = Date.now() - new Date(state.last_updated).getTime();
+    const isStale = age > staleThresholdMs;
+
+    if (!isUnavailable && !isStale) return nothing;
+
     return html`
-      <span class="last-updated">
+      <div class="footer-meta${isUnavailable ? ' footer-meta--warn' : ''}">
         <ha-relative-time .hass=${this.hass} .datetime=${state.last_updated} capitalize></ha-relative-time>
-      </span>
+      </div>
     `;
   }
 
