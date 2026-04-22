@@ -2,6 +2,7 @@ import { html, css, nothing, type TemplateResult } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import type { OtEfficiencyCardConfig } from './ot-efficiency-card-config';
 import { EquithermEChartCard, type EChartConfig, headerStyles } from '../../../utils/base';
+import type { HomeAssistant } from '../../../ha';
 import { cardStyle } from '../../../utils/card-styles';
 import { registerCustomCard } from '../../../utils/register-card';
 import { OT_EFFICIENCY_CARD_NAME, OT_EFFICIENCY_CARD_EDITOR_NAME } from './const';
@@ -21,10 +22,6 @@ registerCustomCard({
 });
 
 @customElement(OT_EFFICIENCY_CARD_NAME)
-// NOTE: Intentionally extends EquithermEChartCard (equitherm base) for the
-// ECharts lifecycle. Inherited equitherm methods (_isWWSD, _renderKpiFooter, etc.)
-// are unused noise — no behavioral impact. A shared EChartCard base would be
-// warranted only when a third chart family emerges.
 export class OtEfficiencyCard extends EquithermEChartCard<OtEfficiencyCardConfig> {
   private _boilerHistory: OtHistoryPoint[] = [];
   private _returnHistory: OtHistoryPoint[] = [];
@@ -39,7 +36,7 @@ export class OtEfficiencyCard extends EquithermEChartCard<OtEfficiencyCardConfig
     return document.createElement(OT_EFFICIENCY_CARD_EDITOR_NAME);
   }
 
-  static async getStubConfig(hass: any): Promise<OtEfficiencyCardConfig> {
+  static async getStubConfig(hass: HomeAssistant): Promise<OtEfficiencyCardConfig> {
     const entityIds = Object.keys(hass.states);
     const boiler = entityIds.find(e => e.includes('boiler') || e.includes('t_boiler')) ?? '';
     const ret = entityIds.find(e => e.includes('ret') || e.includes('return')) ?? '';
@@ -86,14 +83,16 @@ export class OtEfficiencyCard extends EquithermEChartCard<OtEfficiencyCardConfig
     `;
   }
 
-  protected override _onChartDisconnecting(): void {
-    clearInterval(this._fetchTimer);
-    this._fetchTimer = undefined;
-  }
-
-  protected override _onChartReconnected(): void {
+  override connectedCallback() {
+    super.connectedCallback();
     this._fetchHistory();
     this._fetchTimer = setInterval(() => this._fetchHistory(), 60_000);
+  }
+
+  override disconnectedCallback() {
+    super.disconnectedCallback();
+    clearInterval(this._fetchTimer);
+    this._fetchTimer = undefined;
   }
 
   private async _fetchHistory(): Promise<void> {
@@ -109,23 +108,48 @@ export class OtEfficiencyCard extends EquithermEChartCard<OtEfficiencyCardConfig
     this._updateChartConfig();
   }
 
+  private _toChartData(history: OtHistoryPoint[], currentEntity?: string): [number, number][] {
+    const data = history
+      .map(p => [new Date(p.last_changed).getTime(), parseFloat(p.state)] as [number, number])
+      .filter(p => !isNaN(p[1]));
+    if (currentEntity) {
+      const current = this._resolveEntityNumber(currentEntity, NaN);
+      if (!isNaN(current)) data.push([Date.now(), current]);
+    }
+    return data;
+  }
+
+  private _buildMarkLine(threshold: number): object {
+    const unit = this.hass?.config?.unit_system?.temperature ?? '°C';
+    return {
+      silent: true,
+      symbol: 'none' as const,
+      lineStyle: { color: 'rgba(76,175,80,0.5)', type: 'dashed' as const, width: 1 },
+      data: [{ yAxis: threshold, label: { formatter: `${threshold}${unit}`, fontSize: 10, position: 'insideEndTop' } }],
+    };
+  }
+
+  private _buildTooltipFormatter(): (params: any) => string {
+    const unit = this.hass?.config?.unit_system?.temperature ?? '°C';
+    return (params: any) => {
+      const time = new Date(params[0].value[0]).toLocaleTimeString(
+        this.hass?.locale?.language,
+        { hour: '2-digit', minute: '2-digit' },
+      );
+      let html = `<span style="opacity:0.6">${time}</span><br/>`;
+      for (const p of params) {
+        const marker = `<span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:${p.color};"></span>`;
+        html += `${marker}${p.seriesName}: <b>${p.value[1].toFixed(1)}${unit}</b><br/>`;
+      }
+      return html;
+    };
+  }
+
   protected override _buildEChartOptions(): EChartConfig {
     const threshold = this._config.condensing_threshold ?? this._defaultThreshold;
     const localize = setupCustomLocalize(this.hass);
     const heatingColor = resolveRgbColor(this, 'heating');
     const coolingColor = resolveRgbColor(this, 'cooling');
-
-    const toData = (h: OtHistoryPoint[], currentEntity?: string) => {
-      const data = h
-        .map(p => [new Date(p.last_changed).getTime(), parseFloat(p.state)] as [number, number])
-        .filter(p => !isNaN(p[1]));
-      // Extend to now with current value so the line doesn't stop at the last history point
-      if (currentEntity) {
-        const current = this._resolveEntityNumber(currentEntity, NaN);
-        if (!isNaN(current)) data.push([Date.now(), current]);
-      }
-      return data;
-    };
 
     return {
       options: {
@@ -134,57 +158,32 @@ export class OtEfficiencyCard extends EquithermEChartCard<OtEfficiencyCardConfig
           type: 'time' as const,
           axisTick: { show: false },
           axisLine: { show: false },
-          axisLabel: {
-            fontSize: 10,
-            hideOverlap: true,
-          },
+          axisLabel: { fontSize: 10, hideOverlap: true },
         },
         yAxis: {
           type: 'value' as const,
           name: `${localize('opentherm.efficiency_card.temp_axis')} (${this.hass?.config?.unit_system?.temperature ?? '°C'})`,
-          axisLabel: {
-            fontSize: 10,
-            formatter: (v: number) => `${v.toFixed(1)}`,
-          },
+          axisLabel: { fontSize: 10, formatter: (v: number) => `${v.toFixed(1)}` },
         },
         grid: { top: 10, right: 10, bottom: 25, left: 40 },
-        tooltip: {
-          trigger: 'axis' as const,
-          formatter: (params: any) => {
-            const time = new Date(params[0].value[0]).toLocaleTimeString(
-              this.hass?.locale?.language,
-              { hour: '2-digit', minute: '2-digit' },
-            );
-            let html = `<span style="opacity:0.6">${time}</span><br/>`;
-            for (const p of params) {
-              const marker = `<span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:${p.color};"></span>`;
-              html += `${marker}${p.seriesName}: <b>${p.value[1].toFixed(1)}${this.hass?.config?.unit_system?.temperature ?? '°C'}</b><br/>`;
-            }
-            return html;
-          },
-        },
+        tooltip: { trigger: 'axis' as const, formatter: this._buildTooltipFormatter() },
         legend: { show: false },
       },
       data: [
         {
           type: 'line' as const,
           name: 'Flow',
-          data: toData(this._boilerHistory, this._config.boiler_temp_entity),
+          data: this._toChartData(this._boilerHistory, this._config.boiler_temp_entity),
           smooth: true,
           showSymbol: false,
           lineStyle: { width: 2 },
           itemStyle: { color: heatingColor },
-          markLine: {
-            silent: true,
-            symbol: 'none' as const,
-            lineStyle: { color: 'rgba(76,175,80,0.5)', type: 'dashed' as const, width: 1 },
-            data: [{ yAxis: threshold, label: { formatter: `${threshold}${this.hass?.config?.unit_system?.temperature ?? '°C'}`, fontSize: 10, position: 'insideEndTop' } }],
-          },
+          markLine: this._buildMarkLine(threshold),
         },
         {
           type: 'line' as const,
           name: 'Return',
-          data: toData(this._returnHistory, this._config.return_temp_entity),
+          data: this._toChartData(this._returnHistory, this._config.return_temp_entity),
           smooth: true,
           showSymbol: false,
           lineStyle: { width: 1.5 },
