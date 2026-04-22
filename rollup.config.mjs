@@ -10,7 +10,7 @@ import pkg from "./package.json" with { type: "json" };
 const dev = process.env.ROLLUP_WATCH;
 
 export default {
-  input: "src/equitherm-cards.ts",
+  input: "src/index.ts",
   output: {
     file: "dist/equitherm-cards.js",
     format: "es",
