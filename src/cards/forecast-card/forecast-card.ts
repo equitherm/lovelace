@@ -3,12 +3,12 @@ import { customElement, state } from 'lit/decorators.js';
 import type { ForecastCardConfig } from './forecast-card-config';
 import type { HomeAssistant } from '../../ha';
 import type { ForecastPoint, ForecastCurveConfig } from '../../utils/forecast';
-import { computeDomain } from '../../ha/common/entity/compute_domain';
 import { EquithermEChartCard, type EChartConfig, headerStyles } from '../../utils/base';
 import { computeEntityNameDisplay } from '../../ha/common/entity/compute_entity_name_display';
 import { cardStyle, paramsFooterStyles, kpiFooterStyles } from '../../utils/card-styles';
 import { registerCustomCard } from '../../utils/register-card';
-import { FORECAST_CARD_NAME, FORECAST_CARD_EDITOR_NAME, CLIMATE_ENTITY_DOMAINS, SENSOR_ENTITY_DOMAINS } from './const';
+import { FORECAST_CARD_NAME, FORECAST_CARD_EDITOR_NAME } from './const';
+import { findClimateEntity, findWeatherEntity, findFlowEntity } from '../../utils/stub-config';
 import { validateForecastCardConfig } from './forecast-card-config';
 import { CURVE_CONFIG_DEFAULTS } from '../../utils/curve-config';
 import { resolveRgbColor } from '../../utils/hvac-colors';
@@ -46,36 +46,11 @@ export class EquithermForecastCard extends EquithermEChartCard<ForecastCardConfi
   }
 
   static async getStubConfig(hass: HomeAssistant): Promise<ForecastCardConfig> {
-    const states = hass.states;
-    const entityIds = Object.keys(states);
-
-    // Find climate entity
-    const climateEntity = entityIds.find(e =>
-      CLIMATE_ENTITY_DOMAINS.includes(computeDomain(e))
-    );
-
-    // Find weather entity
-    const weatherEntity = entityIds.find(e =>
-      computeDomain(e) === 'weather'
-    );
-
-    // Find temperature sensors
-    const tempSensors = entityIds.filter(e => {
-      const state = states[e];
-      return SENSOR_ENTITY_DOMAINS.includes(computeDomain(e))
-        && state?.attributes?.device_class === 'temperature';
-    });
-
-    // Prefer flow/supply in name for flow temp
-    const flowEntity = tempSensors.find(e =>
-      e.includes('flow') || e.includes('supply') || e.includes('forward')
-    ) ?? tempSensors[0];
-
     return {
       type: 'custom:equitherm-forecast-card',
-      weather_entity: weatherEntity ?? '',
-      climate_entity: climateEntity ?? '',
-      flow_entity: flowEntity ?? '',
+      weather_entity: findWeatherEntity(hass) ?? '',
+      climate_entity: findClimateEntity(hass) ?? '',
+      flow_entity: findFlowEntity(hass) ?? '',
       hours: 24,
       hc: 1.2,
       n: 1.25,
