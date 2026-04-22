@@ -19,6 +19,10 @@ export interface ForecastCardConfig {
   outdoor_entity?: string;
   pid_active_entity?: string;
   show_last_updated?: boolean;
+  show_kpi_footer?: boolean;
+  show_params_footer?: boolean;
+  tunable?: boolean;
+  recalculate_service?: string;
   hc: number;
   n: number;
   shift: number;
@@ -43,6 +47,10 @@ export const ForecastCardConfigStruct = type({
   outdoor_entity: optional(string()),
   pid_active_entity: optional(string()),
   show_last_updated: optional(boolean()),
+  show_kpi_footer: optional(boolean()),
+  show_params_footer: optional(boolean()),
+  tunable: optional(boolean()),
+  recalculate_service: optional(string()),
   hc: optional(number()),
   ...curveConfigStructFields,
   shift: optional(number()),

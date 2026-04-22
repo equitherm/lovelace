@@ -128,6 +128,102 @@ input_number:
     initial: 0
     unit_of_measurement: "s"
 
+  # ── OpenTherm mock entities ──────────────────────────────────────
+  ot_t_boiler:
+    name: "OT Boiler Flow Temp"
+    min: 20
+    max: 90
+    step: 0.1
+    initial: 58.2
+    unit_of_measurement: "°C"
+
+  ot_t_ret:
+    name: "OT Return Temp"
+    min: 20
+    max: 80
+    step: 0.1
+    initial: 41.5
+    unit_of_measurement: "°C"
+
+  ot_t_set:
+    name: "OT Flow Setpoint"
+    min: 20
+    max: 90
+    step: 0.5
+    initial: 62.0
+    unit_of_measurement: "°C"
+
+  ot_rel_mod_level:
+    name: "OT Modulation Level"
+    min: 0
+    max: 100
+    step: 1
+    initial: 65
+    unit_of_measurement: "%"
+
+  ot_max_rel_mod_level:
+    name: "OT Max Modulation Level"
+    min: 0
+    max: 100
+    step: 1
+    initial: 100
+    unit_of_measurement: "%"
+
+  ot_t_dhw_set:
+    name: "OT DHW Setpoint"
+    min: 35
+    max: 65
+    step: 1
+    initial: 55
+    unit_of_measurement: "°C"
+
+  ot_dhw_temp:
+    name: "OT DHW Temperature"
+    min: 10
+    max: 80
+    step: 0.5
+    initial: 48.2
+    unit_of_measurement: "°C"
+
+  ot_t_dhw_set_lb:
+    name: "OT DHW Setpoint Lower Bound"
+    min: 0
+    max: 100
+    step: 1
+    initial: 35
+    unit_of_measurement: "°C"
+
+  ot_t_dhw_set_ub:
+    name: "OT DHW Setpoint Upper Bound"
+    min: 0
+    max: 100
+    step: 1
+    initial: 65
+    unit_of_measurement: "°C"
+
+  ot_device_id:
+    name: "OT Device ID"
+    min: 0
+    max: 255
+    step: 1
+    initial: 12
+
+  ot_max_capacity:
+    name: "OT Max Capacity"
+    min: 0
+    max: 100
+    step: 1
+    initial: 24
+    unit_of_measurement: "kW"
+
+  ot_min_mod_level:
+    name: "OT Min Modulation Level"
+    min: 0
+    max: 50
+    step: 1
+    initial: 18
+    unit_of_measurement: "%"
+
 input_boolean:
   mock_heating_active:
     name: "Heating Active"
@@ -146,6 +242,27 @@ input_boolean:
     name: "PID Active"
     initial: true
     icon: mdi:check-circle
+
+  ot_flame_on:
+    name: "OT Flame On"
+    initial: true
+    icon: mdi:fire
+
+  ot_ch_enable:
+    name: "OT CH Enable"
+    initial: true
+
+  ot_ch_active:
+    name: "OT CH Active"
+    initial: true
+
+  ot_dhw_enable:
+    name: "OT DHW Enable"
+    initial: true
+
+  ot_dhw_active:
+    name: "OT DHW Active"
+    initial: false
 
 # ─── Climate entity (mirrors climate.equitherm) ───────────────────────────────
 
@@ -236,6 +353,43 @@ template:
         state_class: measurement
         state: "{{ states('input_number.mock_fallback_duration') }}"
 
+      # ── OpenTherm template sensors ────────────────────────────────
+      - name: "OT Boiler Flow Temp"
+        unique_id: ot_t_boiler_sensor
+        unit_of_measurement: "°C"
+        state_class: measurement
+        device_class: temperature
+        state: "{{ states('input_number.ot_t_boiler') }}"
+
+      - name: "OT Return Temp"
+        unique_id: ot_t_ret_sensor
+        unit_of_measurement: "°C"
+        state_class: measurement
+        device_class: temperature
+        state: "{{ states('input_number.ot_t_ret') }}"
+
+      - name: "OT Modulation Level"
+        unique_id: ot_rel_mod_level_sensor
+        unit_of_measurement: "%"
+        state_class: measurement
+        state: "{{ states('input_number.ot_rel_mod_level') }}"
+
+      - name: "OT Device ID"
+        unique_id: ot_device_id_sensor
+        state: "{{ states('input_number.ot_device_id') | int }}"
+
+      - name: "OT Max Capacity"
+        unique_id: ot_max_capacity_sensor
+        unit_of_measurement: "kW"
+        state_class: measurement
+        state: "{{ states('input_number.ot_max_capacity') | int }}"
+
+      - name: "OT Min Modulation Level"
+        unique_id: ot_min_mod_level_sensor
+        unit_of_measurement: "%"
+        state_class: measurement
+        state: "{{ states('input_number.ot_min_mod_level') | int }}"
+
   - binary_sensor:
       - name: "Mock PID Active"
         unique_id: mock_pid_active
@@ -259,3 +413,32 @@ template:
           {% set curve = states('sensor.mock_heating_curve_output') | float(0) %}
           {% set flow = states('sensor.mock_flow_setpoint') | float(curve) %}
           {{ (curve - flow) | abs > 0.1 }}
+
+      # ── OpenTherm template binary sensors ─────────────────────────
+      - name: "OT Flame On"
+        unique_id: ot_flame_on_sensor
+        device_class: heat
+        state: "{{ is_state('input_boolean.ot_flame_on', 'on') }}"
+
+      - name: "OT CH Enable"
+        unique_id: ot_ch_enable_sensor
+        state: "{{ is_state('input_boolean.ot_ch_enable', 'on') }}"
+
+      - name: "OT CH Active"
+        unique_id: ot_ch_active_sensor
+        device_class: heat
+        state: "{{ is_state('input_boolean.ot_ch_active', 'on') }}"
+
+      - name: "OT DHW Enable"
+        unique_id: ot_dhw_enable_sensor
+        state: "{{ is_state('input_boolean.ot_dhw_enable', 'on') }}"
+
+      - name: "OT DHW Active"
+        unique_id: ot_dhw_active_sensor
+        state: "{{ is_state('input_boolean.ot_dhw_active', 'on') }}"
+
+      - name: "OT DHW Temperature"
+        unique_id: ot_dhw_temp
+        unit_of_measurement: "°C"
+        device_class: temperature
+        state: "{{ states('input_number.ot_dhw_temp') | float(0) | round(1) }}"

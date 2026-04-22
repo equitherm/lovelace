@@ -7,12 +7,14 @@ export interface CurveCardConfig {
   type: string;
   climate_entity: string;
   outdoor_entity: string;
-  curve_output_entity: string;
+  curve_output_entity?: string;
   pid_output_entity?: string;
   flow_entity: string;
   rate_limiting_entity?: string;
   pid_active_entity?: string;
   show_last_updated?: boolean;
+  show_kpi_footer?: boolean;
+  show_params_footer?: boolean;
   name?: string | EntityNameItem | EntityNameItem[];
   /** @deprecated Use `name` instead */
   title?: string;
@@ -21,6 +23,8 @@ export interface CurveCardConfig {
   hc_entity?: string;
   n_entity?: string;
   shift_entity?: string;
+  tunable?: boolean;
+  recalculate_service?: string;
   min_flow_entity?: string;
   max_flow_entity?: string;
   // Curve parameters (required after validation, optional in raw config)
@@ -39,18 +43,22 @@ export const CurveCardConfigStruct = type({
   type: string(),
   climate_entity: string(),
   outdoor_entity: string(),
-  curve_output_entity: string(),
+  curve_output_entity: optional(string()),
   pid_output_entity: optional(string()),
   flow_entity: string(),
   rate_limiting_entity: optional(string()),
   pid_active_entity: optional(string()),
   show_last_updated: optional(boolean()),
+  show_kpi_footer: optional(boolean()),
+  show_params_footer: optional(boolean()),
   title: optional(any()),
   name: optional(any()),
   curve_from_entities: optional(any()),
   hc_entity: optional(string()),
   n_entity: optional(string()),
   shift_entity: optional(string()),
+  tunable: optional(boolean()),
+  recalculate_service: optional(string()),
   ...curveEntityStructFields,
   hc: optional(number()),
   ...curveConfigStructFields,

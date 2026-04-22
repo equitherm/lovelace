@@ -42,7 +42,7 @@ export class EquithermForecastCardEditor extends LitElement implements LovelaceC
     }
   `;
 
-  private _getSchema = memoizeOne((curveFromEntities: boolean): readonly HaFormSchema[] => {
+  private _getSchema = memoizeOne((curveFromEntities: boolean, tunable: boolean): readonly HaFormSchema[] => {
     const localize = setupCustomLocalize(this.hass);
     return [
       // Required entities — top level
@@ -50,7 +50,17 @@ export class EquithermForecastCardEditor extends LitElement implements LovelaceC
       schemaHelpers.entity('climate_entity', { domain: 'climate' }),
       schemaHelpers.entityName('name', { entity: 'climate_entity' }),
       schemaHelpers.entity('flow_entity', { domain: ['sensor', 'number', 'input_number'], device_class: 'temperature' }),
-      { name: 'show_last_updated', selector: { boolean: {} } },
+      { name: 'show_last_updated', selector: { boolean: {} }, default: false },
+      { name: 'show_kpi_footer', selector: { boolean: {} }, default: true },
+      { name: 'show_params_footer', selector: { boolean: {} }, default: true },
+      { name: 'tunable', selector: { boolean: {} }, default: false },
+      ...(tunable
+        ? [schemaHelpers.expandable(localize('editor.tuning'), 'mdi:tune-variant', [
+            schemaHelpers.entity('hc_entity', { domain: ['number', 'input_number'] }),
+            schemaHelpers.entity('shift_entity', { domain: ['number', 'input_number'] }),
+            { name: 'recalculate_service', selector: { text: {} } },
+          ])]
+        : []),
       // Optional entities
       schemaHelpers.expandable(localize('editor.optional'), 'mdi:connection', [
         schemaHelpers.entity('outdoor_entity', { domain: ['sensor', 'number', 'input_number'], device_class: 'temperature', required: false }),
@@ -107,7 +117,7 @@ export class EquithermForecastCardEditor extends LitElement implements LovelaceC
       <ha-form
         .hass=${this.hass}
         .data=${this._config}
-        .schema=${this._getSchema(!!this._config.curve_from_entities)}
+        .schema=${this._getSchema(!!this._config.curve_from_entities, !!this._config.tunable)}
         .computeLabel=${this._computeLabel}
         .computeHelper=${this._computeHelper}
         .error=${this._error}

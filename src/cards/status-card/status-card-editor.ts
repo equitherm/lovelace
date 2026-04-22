@@ -25,14 +25,7 @@ export class StatusCardEditor extends LitElement implements LovelaceCardEditor {
   protected _valueChanged(ev: CustomEvent): void {
     ev.stopPropagation();
     if (!this._config) return;
-    let newConfig = { ...this._config, ...ev.detail.value } as Record<string, unknown>;
-    // Convert content_layout selector → vertical boolean
-    if ('content_layout' in newConfig) {
-      newConfig.vertical = newConfig.content_layout === 'vertical';
-      delete newConfig.content_layout;
-    }
-    // Clean up legacy layout field
-    delete (newConfig as Record<string, unknown>).layout;
+    const newConfig = { ...this._config, ...ev.detail.value } as Record<string, unknown>;
     try {
       validateStatusCardConfig(newConfig);
       this._error = undefined;
@@ -50,7 +43,7 @@ export class StatusCardEditor extends LitElement implements LovelaceCardEditor {
     }
   `;
 
-  private _getSchema = memoizeOne((): readonly HaFormSchema[] => {
+  private _getSchema = memoizeOne((tunable: boolean): readonly HaFormSchema[] => {
     const localize = setupCustomLocalize(this.hass);
     return [
       // Required entities
@@ -58,7 +51,16 @@ export class StatusCardEditor extends LitElement implements LovelaceCardEditor {
       schemaHelpers.entityName('name', { entity: 'climate_entity' }),
       schemaHelpers.entity('outdoor_entity', { domain: ['sensor', 'input_number'], device_class: 'temperature' }),
       schemaHelpers.entity('flow_entity', { domain: ['sensor', 'number', 'input_number'], device_class: 'temperature' }),
-      { name: 'show_last_updated', selector: { boolean: {} } },
+      { name: 'show_last_updated', selector: { boolean: {} }, default: false },
+      { name: 'show_params_footer', selector: { boolean: {} }, default: true },
+      { name: 'tunable', selector: { boolean: {} }, default: false },
+      ...(tunable
+        ? [schemaHelpers.expandable(localize('editor.tuning'), 'mdi:tune-variant', [
+            schemaHelpers.entity('hc_entity', { domain: ['number', 'input_number'] }),
+            schemaHelpers.entity('shift_entity', { domain: ['number', 'input_number'] }),
+            { name: 'recalculate_service', selector: { text: {} } },
+          ])]
+        : []),
       // Optional entities
       schemaHelpers.expandable(localize('editor.optional'), 'mdi:connection', [
         schemaHelpers.entity('curve_output_entity', { domain: ['sensor'], device_class: 'temperature', required: false }),
@@ -66,24 +68,11 @@ export class StatusCardEditor extends LitElement implements LovelaceCardEditor {
         schemaHelpers.entity('rate_limiting_entity', { domain: ['binary_sensor'], required: false }),
         schemaHelpers.entity('pid_active_entity', { domain: ['binary_sensor'], required: false }),
         schemaHelpers.entity('pid_correction_entity', { domain: ['sensor', 'input_number'], device_class: 'temperature', required: false }),
-        schemaHelpers.entity('pid_proportional_entity', { domain: ['sensor', 'input_number'], required: false }),
-        schemaHelpers.entity('pid_integral_entity', { domain: ['sensor', 'input_number'], required: false }),
-        schemaHelpers.entity('pid_derivative_entity', { domain: ['sensor', 'input_number'], required: false }),
       ]),
-      // Appearance
-      schemaHelpers.expandable(localize('editor.appearance'), 'mdi:palette-outline', [
-        {
-          name: 'content_layout',
-          selector: {
-            select: {
-              mode: 'box',
-              options: ['horizontal', 'vertical'].map((value) => ({
-                value,
-                label: localize(`editor.layout_options.${value}`),
-              })),
-            },
-          },
-        },
+      schemaHelpers.expandable(localize('editor.curve_parameters'), 'mdi:chart-bell-curve-cumulative', [
+        schemaHelpers.entity('hc_entity', { domain: ['number', 'input_number'], required: false }),
+        schemaHelpers.entity('shift_entity', { domain: ['number', 'input_number'], required: false }),
+        schemaHelpers.entity('n_entity', { domain: ['number', 'input_number'], required: false }),
       ]),
     ] as const satisfies readonly HaFormSchema[];
   });
@@ -108,8 +97,8 @@ export class StatusCardEditor extends LitElement implements LovelaceCardEditor {
     return html`
       <ha-form
         .hass=${this.hass}
-        .data=${{ ...this._config, content_layout: this._config.vertical ? 'vertical' : 'horizontal' }}
-        .schema=${this._getSchema()}
+        .data=${this._config}
+        .schema=${this._getSchema(!!this._config.tunable)}
         .computeLabel=${this._computeLabel}
         .computeHelper=${this._computeHelper}
         .error=${this._error}

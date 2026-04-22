@@ -43,9 +43,8 @@ lovelace/
 │   ├── equitherm-cards.ts    # Entry point, card registration
 │   ├── cards/                 # Card implementations (co-located)
 │   │   ├── status-card/       # Status card + editor + config + const
-│   │   ├── curve-card/        # Curve card + editor + config + const
+│   │   ├── curve-card/        # Curve card + editor + config + const (includes tuning mode)
 │   │   ├── forecast-card/     # Forecast card + editor + config + const
-│   │   └── tuning-card/       # Tuning card + editor + config + const
 │   ├── shared/                # Shared Lit components
 │   ├── utils/                 # Helper functions and base classes
 │   ├── ha/                    # Vendored HA types (from Mushroom)
@@ -176,15 +175,15 @@ Compact tile showing heating status with temperature displays.
 
 ### Equitherm Curve Card (`src/cards/curve-card/`)
 
-Heating curve visualization with ApexCharts.
+Heating curve visualization with ApexCharts. Supports optional tuning mode for interactive hc/shift adjustment.
 
 **Required config:**
 - `climate_entity` - Climate entity with curve parameters
 - `outdoor_entity` - Outdoor temperature sensor
 - `flow_entity` - Flow setpoint sensor
-- `curve_output_entity` - Curve output temperature sensor
 
 **Optional config:**
+- `curve_output_entity` - Curve output temperature sensor
 - `name` - Entity name picker object/array (same format as status card)
 - `title` - *Deprecated* — use `name` instead
 - `pid_output_entity` - PID output sensor for rate-limit direction
@@ -197,14 +196,25 @@ Heating curve visualization with ApexCharts.
 - `min_flow_entity` - Sensor/number entity for live min flow temperature
 - `max_flow_entity` - Sensor/number entity for live max flow temperature
 - `show_last_updated` - Boolean, show "last updated" timestamp in footer
+- `tunable` - Boolean, enable tuning controls (tune button + dialog)
+- `recalculate_service` - Service to call after applying tuning values
 
-**Features:**
+**Features (base mode):**
 - Line chart with horizontal gradient (customizable via `--curve-gradient-start` / `--curve-gradient-end` CSS vars)
 - Discrete data points along the curve
 - Interactive 3-column footer (outdoor · flow · room) with click-to-more-info
 - Current operating point marker with rate-limiting indicators
 - Manual preset indicator (badge + chart dimming when `preset_mode === "Manual"`)
 - Dark mode support
+
+**Features (tuning mode, when `tunable: true`):**
+- Tune button in header opens tuning dialog
+- Clickable params footer with pencil icon opens dialog
+- Dual-curve chart: current (solid) vs proposed (dashed)
+- Operating point marker on current curve
+- hc/shift step controls with delta indicators
+- Apply/Reset buttons with success feedback
+- Calls `recalculate_service` after apply (if configured)
 
 ### Equitherm Forecast Card (`src/cards/forecast-card/`)
 
@@ -230,35 +240,7 @@ Weather-based heating flow temperature forecast with ApexCharts.
 - Peak demand annotation
 - Weather forecast via HA WebSocket subscription
 - HVAC/PID badges in header
-- Manual preset indicator (badge + chart dimming when `preset_mode === "Manual"`)
-
-### Equitherm Tuning Card (`src/cards/tuning-card/`)
-
-Interactive curve tuning with sliders for hc and shift parameters.
-
-**Required config:**
-- `climate_entity` - Climate entity with temperature setpoint
-- `outdoor_entity` - Outdoor temperature sensor
-- `hc_entity` - Writable number entity for heat curve coefficient
-- `shift_entity` - Writable number entity for shift offset
-
-**Optional config:**
-- `name` - Entity name picker
-- `show_last_updated` - Boolean, show "last updated" timestamp in footer
-- `curve_from_entities` - Read additional params from entities
-- `n_entity` - Entity for live exponent
-- `min_flow_entity`, `max_flow_entity` - Sensor/number entities for live flow limits
-- Static params: `n`, `min_flow`, `max_flow`, `t_out_min`, `t_out_max`
-- `recalculate_service` - Service to call after applying values
-
-**Features:**
-- Interactive hc/shift sliders with real-time chart preview
-- Current (orange) vs proposed (blue) curve comparison
-- Operating point marker on current curve
-- Delta indicators and per-slider reset buttons
-- Apply All button with success feedback
 - Calls `recalculate_service` after apply (if configured)
-- Manual preset indicator (badge + chart dimming when `preset_mode === "Manual"`)
 
 ## Utilities (`src/utils/`)
 
