@@ -29,7 +29,6 @@ registerCustomCard({
 @customElement(FORECAST_CARD_NAME)
 export class EquithermForecastCard extends EquithermEChartCard<ForecastCardConfig> {
   @state() private _forecastPoints: ForecastPoint[] = [];
-  @state() private _showDialog = false;
   private _unsub?: () => void;
 
   protected override updated(changedProps: Map<string, unknown>): void {
@@ -123,24 +122,6 @@ export class EquithermForecastCard extends EquithermEChartCard<ForecastCardConfi
       return `${localize('common.outdoor')} ${this._formatCalcTemp(this._outdoorTemp)} ≥ ${this._formatCalcTemp(tTarget)}`;
     }
     return localize('common.wwsd_label');
-  }
-
-  protected override _renderHeaderBadges(): ReturnType<typeof html> {
-    if (!this._config.tunable) return super._renderHeaderBadges();
-
-    const manual = this._isManualPreset;
-    return html`
-      <div class="badges">
-        ${manual ? nothing : this._renderPidBadge()}
-        ${manual ? nothing : this._renderWwsdBadge()}
-        ${this._renderManualBadge()}
-        ${this._renderHvacBadge()}
-        <ha-icon-button
-          @click=${() => { this._showDialog = true; }}
-          style="--mdc-icon-button-size: 28px; --mdc-icon-size: 16px; color: var(--secondary-text-color)"
-        ><ha-icon icon="mdi:tune-variant"></ha-icon></ha-icon-button>
-      </div>
-    `;
   }
 
   /** Build the curve params from config, optionally reading from live entities */
@@ -363,7 +344,7 @@ export class EquithermForecastCard extends EquithermEChartCard<ForecastCardConfi
     if (inner === nothing) return nothing;
     if (!this._config.tunable) return inner;
     return html`
-      <div class="params-footer-tunable" @click=${() => { this._showDialog = true; }}>
+      <div class="params-footer-tunable" @click=${() => { this._showTuningDialog = true; }}>
         ${inner}
         <ha-icon class="pencil-icon" icon="mdi:pencil"></ha-icon>
       </div>
@@ -456,12 +437,12 @@ export class EquithermForecastCard extends EquithermEChartCard<ForecastCardConfi
         ${this._renderFooterMeta()}
       </ha-card>
 
-      ${this._tuningDialogConfig && this._showDialog ? html`
+      ${this._tuningDialogConfig && this._showTuningDialog ? html`
         <eq-tuning-dialog
           .hass=${this.hass}
           .config=${this._tuningDialogConfig}
-          .open=${this._showDialog}
-          @closed=${() => { this._showDialog = false; }}
+          .open=${this._showTuningDialog}
+          @closed=${() => { this._showTuningDialog = false; }}
         ></eq-tuning-dialog>
       ` : nothing}
     `;

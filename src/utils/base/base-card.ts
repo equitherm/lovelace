@@ -1,4 +1,5 @@
 import { html, nothing, PropertyValues, type TemplateResult } from 'lit';
+import { state } from 'lit/decorators.js';
 import type { LovelaceCard } from '../../ha/panels/lovelace/types';
 import type { ClimateEntity } from '../../ha/data/climate';
 import { formatNumber } from '../../ha';
@@ -26,6 +27,8 @@ export interface EquithermCardConfig {
  * Extends BaseCard with equitherm-specific helpers.
  */
 export abstract class EquithermBaseCard<TConfig extends EquithermCardConfig> extends BaseCard<TConfig> implements LovelaceCard {
+
+  @state() protected _showTuningDialog = false;
 
   /** Get the climate entity state */
   protected get _climate(): ClimateEntity | undefined {
@@ -203,6 +206,21 @@ export abstract class EquithermBaseCard<TConfig extends EquithermCardConfig> ext
     return nothing;
   }
 
+  /** Render the tune button when tunable mode is active. */
+  protected _renderTuneButton(): typeof nothing | ReturnType<typeof html> {
+    if (!this._config.tunable) return nothing;
+    return html`
+      <ha-icon-button
+        @click=${this._openTuningDialog}
+        style="--mdc-icon-button-size: 28px; --mdc-icon-size: 16px; color: var(--secondary-text-color)"
+      ><ha-icon icon="mdi:tune-variant"></ha-icon></ha-icon-button>
+    `;
+  }
+
+  private _openTuningDialog = (): void => {
+    this._showTuningDialog = true;
+  };
+
   /** Render the full badges row. */
   protected override _renderHeaderBadges(): ReturnType<typeof html> {
     const manual = this._isManualPreset;
@@ -213,6 +231,7 @@ export abstract class EquithermBaseCard<TConfig extends EquithermCardConfig> ext
         ${this._renderManualBadge()}
         ${this._renderExtraBadges()}
         ${this._renderHvacBadge()}
+        ${this._renderTuneButton()}
       </div>
     `;
   }

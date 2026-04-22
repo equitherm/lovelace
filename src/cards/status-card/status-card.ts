@@ -1,5 +1,5 @@
 import { html, css, nothing } from 'lit';
-import { customElement, state } from 'lit/decorators.js';
+import { customElement } from 'lit/decorators.js';
 import type { StatusCardConfig } from './status-card-config';
 import type { HomeAssistant } from '../../ha/types';
 import type { LovelaceGridOptions } from '../../ha/panels/lovelace/types';
@@ -26,7 +26,6 @@ registerCustomCard({
 
 @customElement(STATUS_CARD_NAME)
 export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
-  @state() private _showTuningDialog = false;
 
   private get _tuningDialogConfig(): TuningDialogConfig | undefined {
     const cfg = this._config;
@@ -72,24 +71,6 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
   private get _hasParamsFooter(): boolean {
     const cfg = this._config;
     return !!cfg.hc_entity || !!cfg.shift_entity || !!cfg.n_entity || !!cfg.pid_correction_entity;
-  }
-
-  protected override _renderHeaderBadges(): ReturnType<typeof html> {
-    if (!this._config.tunable) return super._renderHeaderBadges();
-
-    const manual = this._isManualPreset;
-    return html`
-      <div class="badges">
-        ${manual ? nothing : this._renderPidBadge()}
-        ${manual ? nothing : this._renderWwsdBadge()}
-        ${this._renderManualBadge()}
-        ${this._renderHvacBadge()}
-        <ha-icon-button
-          @click=${() => { this._showTuningDialog = true; }}
-          style="--mdc-icon-button-size: 28px; --mdc-icon-size: 16px; color: var(--secondary-text-color)"
-        ><ha-icon icon="mdi:tune-variant"></ha-icon></ha-icon-button>
-      </div>
-    `;
   }
 
   static get styles() {

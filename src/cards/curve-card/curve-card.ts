@@ -32,7 +32,6 @@ const MARKER_RATE_LIMITED = 8;
 @customElement(CURVE_CARD_NAME)
 export class EquithermCurveCard extends EquithermEChartCard<CurveCardConfig> {
 
-  @state() private _showDialog = false;
   @state() private _dialogConfig?: TuningDialogConfig;
 
   protected override willUpdate(changedProps: Map<string, unknown>): void {
@@ -144,34 +143,16 @@ export class EquithermCurveCard extends EquithermEChartCard<CurveCardConfig> {
     };
   }
 
-  protected override _renderHeaderBadges(): ReturnType<typeof html> {
-    if (!this._config.tunable) return super._renderHeaderBadges();
-
-    const manual = this._isManualPreset;
-    return html`
-      <div class="badges">
-        ${manual ? nothing : this._renderPidBadge()}
-        ${manual ? nothing : this._renderWwsdBadge()}
-        ${this._renderManualBadge()}
-        ${this._renderHvacBadge()}
-        <ha-icon-button
-          @click=${() => { this._showDialog = true; }}
-          style="--mdc-icon-button-size: 28px; --mdc-icon-size: 16px; color: var(--secondary-text-color)"
-        ><ha-icon icon="mdi:tune-variant"></ha-icon></ha-icon-button>
-      </div>
-    `;
-  }
-
   private _renderParamsFooterContent(): TemplateResult | typeof nothing {
     if (!this._config.curve_from_entities) return nothing;
 
     return this._renderTunableParamsFooter(
       {
-        hc: this._config.hc_entity ? { entity: this._config.hc_entity, fallback: this._config.hc, onClick: this._config.tunable ? undefined : () => { this._showDialog = true; } } : undefined,
+        hc: this._config.hc_entity ? { entity: this._config.hc_entity, fallback: this._config.hc, onClick: this._config.tunable ? undefined : () => { this._showTuningDialog = true; } } : undefined,
         n: this._config.n_entity ? { entity: this._config.n_entity, fallback: this._config.n } : undefined,
-        shift: this._config.shift_entity ? { entity: this._config.shift_entity, fallback: this._config.shift, onClick: this._config.tunable ? undefined : () => { this._showDialog = true; } } : undefined,
+        shift: this._config.shift_entity ? { entity: this._config.shift_entity, fallback: this._config.shift, onClick: this._config.tunable ? undefined : () => { this._showTuningDialog = true; } } : undefined,
       },
-      () => { this._showDialog = true; },
+      () => { this._showTuningDialog = true; },
     );
   }
 
@@ -436,12 +417,12 @@ export class EquithermCurveCard extends EquithermEChartCard<CurveCardConfig> {
         ${this._renderFooterMeta()}
       </ha-card>
 
-      ${this._dialogConfig && this._showDialog ? html`
+      ${this._dialogConfig && this._showTuningDialog ? html`
         <eq-tuning-dialog
           .hass=${this.hass}
           .config=${this._dialogConfig}
-          .open=${this._showDialog}
-          @closed=${() => { this._showDialog = false; }}
+          .open=${this._showTuningDialog}
+          @closed=${() => { this._showTuningDialog = false; }}
         ></eq-tuning-dialog>
       ` : nothing}
     `;
