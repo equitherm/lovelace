@@ -120,6 +120,10 @@ export class OtStatusCard extends OtBaseCard<OtStatusCardConfig> {
     `;
   }
 
+  protected override _lastUpdatedEntity(): string | undefined {
+    return this._config.boiler_temp_entity;
+  }
+
   static get styles() {
     return [
       super.styles,
@@ -250,9 +254,7 @@ export class OtStatusCard extends OtBaseCard<OtStatusCardConfig> {
             </div>
           ` : nothing}
         </div>
-        ${cfg.show_last_updated ? html`
-          <div class="footer-meta">${this._renderLastUpdated(cfg.boiler_temp_entity)}</div>
-        ` : nothing}
+        ${this._renderFooterMeta()}
       </ha-card>
     `;
   }

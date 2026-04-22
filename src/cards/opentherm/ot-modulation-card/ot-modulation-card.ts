@@ -145,6 +145,10 @@ export class OtModulationCard extends OtBaseCard<OtModulationCardConfig> {
     return { segments, startTime, endTime };
   }
 
+  protected override _lastUpdatedEntity(): string | undefined {
+    return this._config.flame_entity;
+  }
+
   static get styles() {
     return [
       super.styles,
@@ -252,9 +256,7 @@ export class OtModulationCard extends OtBaseCard<OtModulationCardConfig> {
             .endTime=${endTime}
           ></eq-binary-timeline>
         </div>
-        ${cfg.show_last_updated ? html`
-          <div class="footer-meta">${this._renderLastUpdated(cfg.flame_entity)}</div>
-        ` : nothing}
+        ${this._renderFooterMeta()}
       </ha-card>
     `;
   }

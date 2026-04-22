@@ -193,6 +193,10 @@ export class OtEfficiencyCard extends EquithermEChartCard<OtEfficiencyCardConfig
     };
   }
 
+  protected override _lastUpdatedEntity(): string | undefined {
+    return this._config.boiler_temp_entity;
+  }
+
   static get styles() {
     return [
       super.styles,
@@ -229,9 +233,7 @@ export class OtEfficiencyCard extends EquithermEChartCard<OtEfficiencyCardConfig
       <ha-card>
         ${this._renderHeader({ iconName: 'mdi:chart-areaspline', clickEntity: cfg.boiler_temp_entity, title })}
         ${this._renderChart()}
-        ${cfg.show_last_updated ? html`
-          <div class="footer-meta">${this._renderLastUpdated(cfg.boiler_temp_entity)}</div>
-        ` : nothing}
+        ${this._renderFooterMeta()}
       </ha-card>
     `;
   }

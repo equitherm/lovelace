@@ -105,6 +105,10 @@ export class OtDhwCard extends OtBaseCard<OtDhwCardConfig> {
     `;
   }
 
+  protected override _lastUpdatedEntity(): string | undefined {
+    return this._config.dhw_setpoint_entity;
+  }
+
   private _toggleDhw(): void {
     if (!this.hass) return;
     const { dhw_enable_entity: entityId } = this._config;
@@ -253,9 +257,7 @@ export class OtDhwCard extends OtBaseCard<OtDhwCardConfig> {
             ></ha-slider>
           </div>
         </div>
-        ${cfg.show_last_updated ? html`
-          <div class="footer-meta">${this._renderLastUpdated(cfg.dhw_setpoint_entity)}</div>
-        ` : nothing}
+        ${this._renderFooterMeta()}
       </ha-card>
     `;
   }
