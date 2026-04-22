@@ -1,6 +1,6 @@
 import { optional, number, string } from 'superstruct';
 
-/** Curve parameters shared across curve-card, tuning-card, and forecast-card */
+/** Curve parameters shared across curve-card and forecast-card */
 export interface CurveConfigFields {
   n: number;
   min_flow: number;

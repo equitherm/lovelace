@@ -1,78 +1,32 @@
-import { html, css, nothing, PropertyValues } from 'lit';
-import { state } from 'lit/decorators.js';
+import { html, nothing, PropertyValues, type TemplateResult } from 'lit';
 import { styleMap } from 'lit/directives/style-map.js';
-import type { HassEntity } from 'home-assistant-js-websocket';
-import type { LovelaceGridOptions, LovelaceCard } from '../../ha/panels/lovelace/types';
+import type { LovelaceCard } from '../../ha/panels/lovelace/types';
 import type { ClimateEntity } from '../../ha/data/climate';
-import { EquithermBaseElement } from './base-element';
-import { executeAction } from '../actions';
+import { formatNumber } from '../../ha';
+import { BaseCard } from './abstract-base-card';
 import { normalizeHvacAction, getHvacActionColor, getHvacBadgeProps } from '../hvac-colors';
-import { isRateLimitingActive, isPidActive, getAdjustingDirection, type ClimateHelperConfig } from '../climate-helpers';
+import { isRateLimitingActive, isPidActive, getAdjustingDirection, getRateTargetEntity, type ClimateHelperConfig } from '../climate-helpers';
 import setupCustomlocalize from '../../localize';
+import '../../shared/eq-param-bar';
+import { headerStyles } from './header-styles';
+
+export { headerStyles };
 
 /** Minimum config fields shared by all equitherm cards */
 export interface EquithermCardConfig {
   climate_entity?: string;
   flow_entity?: string;
+  outdoor_entity?: string;
+  show_kpi_footer?: boolean;
+  show_params_footer?: boolean;
   [key: string]: unknown;
 }
 
-/** Shared CSS for card headers (used by all equitherm cards) */
-export const headerStyles = css`
-  .header {
-    display: flex;
-    align-items: center;
-    padding: 10px 10px 0;
-    margin-bottom: 12px;
-    gap: 12px;
-    flex-shrink: 0;
-  }
-  ha-tile-icon {
-    cursor: pointer;
-    flex-shrink: 0;
-  }
-  .header-info {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-  .title {
-    font-size: var(--ha-font-size-m, 1rem);
-    font-weight: 600;
-    color: var(--primary-text-color);
-    line-height: 1.2;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .state {
-    font-size: var(--ha-font-size-s, 12px);
-    font-weight: var(--ha-font-weight-normal, 400);
-    line-height: var(--ha-line-height-condensed, 1.2);
-    letter-spacing: 0.4px;
-    color: var(--primary-text-color);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .badges {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex-shrink: 0;
-  }
-`;
-
 /**
  * Base class for equitherm cards.
- * Extends EquithermBaseElement with card-specific helpers.
+ * Extends BaseCard with equitherm-specific helpers.
  */
-export abstract class EquithermBaseCard<TConfig extends EquithermCardConfig> extends EquithermBaseElement implements LovelaceCard {
-  @state() protected _config!: TConfig;
-
-  abstract setConfig(config: unknown): void;
+export abstract class EquithermBaseCard<TConfig extends EquithermCardConfig> extends BaseCard<TConfig> implements LovelaceCard {
 
   /** Get the climate entity state */
   protected get _climate(): ClimateEntity | undefined {
@@ -91,66 +45,27 @@ export abstract class EquithermBaseCard<TConfig extends EquithermCardConfig> ext
     }
   }
 
-  /** Read a number from an entity state, falling back to a config default */
-  protected _resolveEntityNumber(entityId: string | undefined, fallback: number): number {
-    const s = this._entityState(entityId);
-    if (!s) return fallback;
-    const val = parseFloat(s.state);
-    return isNaN(val) ? fallback : val;
-  }
-
   /** Formatted room temperature from climate entity */
   protected get _roomTemp(): string {
     const temp = this._climate?.attributes.current_temperature;
-    return this._formatTemp(temp, this.hass?.config?.unit_system?.temperature);
+    return this._formatCalcTemp(temp);
   }
 
-  /** Get entity state by ID */
-  protected _entityState(entityId: string | undefined): HassEntity | undefined {
-    if (!entityId || !this.hass) return undefined;
-    return this.hass.states[entityId] as HassEntity | undefined;
+  /** Formatted outdoor temperature from outdoor_entity */
+  protected get _outdoorTempFormatted(): string {
+    return this._formatEntityTemp(this._config.outdoor_entity);
   }
 
-  /** Get entity attribute value (typed) */
-  protected _entityAttr<T = unknown>(entityId: string | undefined, key: string): T | undefined {
-    return this._entityState(entityId)?.attributes?.[key] as T | undefined;
+  /** Formatted flow temperature from flow_entity */
+  protected get _flowTempFormatted(): string {
+    return this._formatEntityTemp(this._config.flow_entity);
   }
 
-  /** Format a temperature value using HA's unit system */
-  protected _formatTemp(value: number | undefined | null, entityUnit?: string): string {
-    if (value == null || isNaN(value)) return '—';
-
-    const haUnit = this.hass?.config?.unit_system?.temperature ?? '°C';
-    const sourceUnit = entityUnit ?? '°C';
-
-    let displayValue = value;
-
-    if (sourceUnit === '°C' && haUnit === '°F') {
-      displayValue = value * 9 / 5 + 32;
-    } else if (sourceUnit === '°F' && haUnit === '°C') {
-      displayValue = (value - 32) * 5 / 9;
-    }
-
-    const locale = this.hass?.locale?.language;
-    const formatted = locale
-      ? displayValue.toLocaleString(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })
-      : displayValue.toFixed(1);
-
-    return `${formatted}${haUnit}`;
-  }
-
-  /** Open more-info panel for an entity */
-  protected _openMoreInfo(entityId: string | undefined): void {
-    if (entityId && this.hass) {
-      executeAction(this, this.hass, { action: 'more-info' }, entityId);
-    }
-  }
-
-  // === Entity Helpers ===
-
-  /** Check if an entity exists */
-  protected _entityExists(entityId: string | undefined): boolean {
-    return !!this._entityState(entityId);
+  /** Formatted curve output temp from rate target entity (for adjusting indicator) */
+  protected get _curveOutputTempFormatted(): string {
+    const entity = getRateTargetEntity(this._config as unknown as ClimateHelperConfig);
+    if (!entity) return '';
+    return this._formatEntityTemp(entity);
   }
 
   /** Whether outdoor temperature meets or exceeds room setpoint (Warm Weather Shutdown) */
@@ -158,11 +73,11 @@ export abstract class EquithermBaseCard<TConfig extends EquithermCardConfig> ext
     if (!this._config?.climate_entity) return false;
     const tTarget = this._climate?.attributes.temperature;
     if (tTarget == null) return false;
-    const outdoorEntity = (this._config as Record<string, unknown>).outdoor_entity as string | undefined;
-    if (!outdoorEntity) return false;
-    const s = this._entityState(outdoorEntity);
+    if (!this._config.outdoor_entity) return false;
+    const s = this._entityState(this._config.outdoor_entity);
     if (!s) return false;
-    const tOutdoor = parseFloat(s.state);
+    const val = parseFloat(s.state);
+    const tOutdoor = isNaN(val) ? NaN : this._fromDisplayTemp(val);
     return !isNaN(tOutdoor) && tOutdoor >= tTarget;
   }
 
@@ -170,28 +85,16 @@ export abstract class EquithermBaseCard<TConfig extends EquithermCardConfig> ext
   protected _wwsdDescription(): string {
     const localize = setupCustomlocalize(this.hass);
     const tTarget = this._climate?.attributes.temperature;
-    const outdoorEntity = (this._config as Record<string, unknown>).outdoor_entity as string | undefined;
+    const outdoorEntity = this._config.outdoor_entity;
     const s = outdoorEntity ? this._entityState(outdoorEntity) : undefined;
-    const tOutdoor = s ? parseFloat(s.state) : NaN;
+    const tOutdoor = s ? this._fromDisplayTemp(parseFloat(s.state)) : NaN;
     if (!isNaN(tOutdoor) && tTarget != null) {
-      return `${localize('common.outdoor')} ${this._formatTemp(tOutdoor)} ≥ ${this._formatTemp(tTarget)}`;
+      return `${localize('common.outdoor')} ${this._formatEntityTemp(outdoorEntity)} ≥ ${this._formatCalcTemp(tTarget)}`;
     }
     return localize('common.wwsd_label');
   }
 
   // === Render Helpers ===
-
-  /** Render a relative timestamp for an entity's last update */
-  protected _renderLastUpdated(entityId: string | undefined): typeof nothing | ReturnType<typeof html> {
-    if (!entityId || !this.hass) return nothing;
-    const state = this._entityState(entityId);
-    if (!state) return nothing;
-    return html`
-      <span class="last-updated">
-        <ha-relative-time .hass=${this.hass} .datetime=${state.last_updated} capitalize></ha-relative-time>
-      </span>
-    `;
-  }
 
   /** Render a not-found state for missing entity */
   protected _renderNotFound(entityId: string | undefined, label?: string): typeof nothing | ReturnType<typeof html> {
@@ -205,15 +108,6 @@ export abstract class EquithermBaseCard<TConfig extends EquithermCardConfig> ext
         <span>${localize('common.not_found', { entity: display })}</span>
       </div>
     `;
-  }
-
-  /** Default grid options. Override in subclass. */
-  public getGridOptions(): LovelaceGridOptions {
-    return { columns: 6, rows: 2, min_rows: 1 };
-  }
-
-  getCardSize(): number {
-    return 2;
   }
 
   // === Shared Header ===
@@ -234,10 +128,12 @@ export abstract class EquithermBaseCard<TConfig extends EquithermCardConfig> ext
   }
 
   /** Render the title and optional climate target temp state line. */
-  protected _renderHeaderInfo(title: string): ReturnType<typeof html> {
-    const stateLine = this._climate?.attributes.temperature != null
-      ? html`<span class="state">· ${this._formatTemp(this._climate.attributes.temperature, this.hass?.config?.unit_system?.temperature)}</span>`
-      : nothing;
+  protected _renderHeaderInfo(title: string, subtitle?: string | typeof nothing): ReturnType<typeof html> {
+    const stateLine = subtitle !== undefined
+      ? (subtitle === nothing ? nothing : html`<span class="state">${subtitle}</span>`)
+      : (this._climate?.attributes.temperature != null
+          ? html`<span class="state">· ${this._formatCalcTemp(this._climate!.attributes.temperature)}</span>`
+          : nothing);
     return html`
       <div class="header-info">
         <span class="title">${title}</span>
@@ -250,7 +146,7 @@ export abstract class EquithermBaseCard<TConfig extends EquithermCardConfig> ext
   protected _renderPidBadge(): ReturnType<typeof html> | typeof nothing {
     const cfg = this._config as unknown as ClimateHelperConfig;
     if (!cfg.pid_active_entity) return nothing;
-    const lookup = (id: string) => this._entityState(id)!;
+    const lookup = (id: string) => this._entityState(id);
     const active = isPidActive(cfg, lookup);
     return html`
       <eq-badge-info
@@ -295,7 +191,7 @@ export abstract class EquithermBaseCard<TConfig extends EquithermCardConfig> ext
     const localize = setupCustomlocalize(this.hass);
     const rawAction = this._climate?.attributes.hvac_action ?? 'off';
     const hvacAction = normalizeHvacAction(rawAction);
-    const lookup = (id: string) => this._entityState(id)!;
+    const lookup = (id: string) => this._entityState(id);
     const cfg = this._config as unknown as ClimateHelperConfig;
     const badge = getHvacBadgeProps(
       localize, hvacAction,
@@ -325,21 +221,152 @@ export abstract class EquithermBaseCard<TConfig extends EquithermCardConfig> ext
         ${manual ? nothing : this._renderPidBadge()}
         ${manual ? nothing : this._renderWwsdBadge()}
         ${this._renderManualBadge()}
-        ${manual ? nothing : this._renderExtraBadges()}
+        ${this._renderExtraBadges()}
         ${this._renderHvacBadge()}
       </div>
     `;
   }
 
   /** Shared header renderer for all equitherm cards. */
-  protected _renderHeader(opts: { iconName: string; clickEntity: string; title: string }): ReturnType<typeof html> | typeof nothing {
+  protected _renderHeader(opts: { iconName: string; clickEntity: string; title: string; subtitle?: string | typeof nothing }): ReturnType<typeof html> | typeof nothing {
     if (!this._config || !this.hass) return nothing;
     return html`
       <div class="header">
         ${this._renderHeaderIcon(opts.iconName, opts.clickEntity)}
-        ${this._renderHeaderInfo(opts.title)}
+        ${this._renderHeaderInfo(opts.title, opts.subtitle)}
         ${this._renderHeaderBadges()}
       </div>
     `;
+  }
+
+  // ── KPI footer (shared) ──
+
+  protected _renderKpiFooter(opts?: {
+    adjustingDir?: string;
+    curveOutput?: string;
+    outdoorClickEntity?: string;
+  }): TemplateResult | typeof nothing {
+    if (this._config.show_kpi_footer === false) return nothing;
+    if (!this._config || !this.hass) return nothing;
+    const localize = setupCustomlocalize(this.hass);
+    const outdoorEntity = opts?.outdoorClickEntity ?? this._config.outdoor_entity;
+    const outdoorMissing = !this._entityExists(outdoorEntity);
+    const flowMissing = !this._entityExists(this._config.flow_entity);
+    const climateMissing = !this._entityExists(this._config.climate_entity);
+    return html`
+      <div class="kpi-footer">
+        <div class="kpi-block${outdoorMissing ? ' missing' : ''}" @click=${outdoorMissing ? undefined : () => this._openMoreInfo(outdoorEntity)}>
+          <div class="kpi-value">${this._outdoorTempFormatted}</div>
+          <div class="kpi-label">${localize('common.outdoor')}</div>
+        </div>
+        <div class="kpi-divider"></div>
+        <div class="kpi-block${flowMissing ? ' missing' : ''}" @click=${flowMissing ? undefined : () => this._openMoreInfo(this._config.flow_entity)}>
+          ${opts?.adjustingDir && opts?.curveOutput ? html`
+            <div class="kpi-dual">
+              <div class="kpi-value flow">${this._flowTempFormatted}</div>
+              <div class="kpi-target">
+                <ha-icon .icon=${opts.adjustingDir === 'rising' ? 'mdi:arrow-up-thin' : 'mdi:arrow-down-thin'}></ha-icon>
+                ${opts.curveOutput}
+              </div>
+            </div>
+          ` : html`<div class="kpi-value flow">${this._flowTempFormatted}</div>`}
+          <div class="kpi-label">${localize('common.flow')}</div>
+        </div>
+        <div class="kpi-divider"></div>
+        <div class="kpi-block${climateMissing ? ' missing' : ''}" @click=${climateMissing ? undefined : () => this._openMoreInfo(this._config.climate_entity)}>
+          <div class="kpi-value">${this._roomTemp}</div>
+          <div class="kpi-label">${localize('common.room')}</div>
+        </div>
+      </div>
+    `;
+  }
+
+  // ── Params footer (shared) ──
+
+  protected _getEntityRange(entityId: string | undefined, defaultMin: number, defaultMax: number): [number, number] {
+    if (!entityId) return [defaultMin, defaultMax];
+    const min = this._entityAttr<number>(entityId, 'min');
+    const max = this._entityAttr<number>(entityId, 'max');
+    return [min ?? defaultMin, max ?? defaultMax];
+  }
+
+  private _formatParamNum(value: number, decimals: number, options?: Intl.NumberFormatOptions): string {
+    return formatNumber(value, this.hass?.locale, { minimumFractionDigits: decimals, maximumFractionDigits: decimals, ...options });
+  }
+
+  protected _renderParamsFooter(params: {
+    hc?: { entity: string; fallback: number; onClick?: () => void };
+    n?: { entity: string; fallback: number; onClick?: () => void };
+    shift?: { entity: string; fallback: number; onClick?: () => void };
+    pid_correction?: { entity: string; fallback?: number };
+  }): TemplateResult | typeof nothing {
+    if (this._config.show_params_footer === false) return nothing;
+    const items: TemplateResult[] = [];
+
+    if (params.hc) {
+      const value = this._resolveEntityNumber(params.hc.entity, params.hc.fallback);
+      const [min, max] = this._getEntityRange(params.hc.entity, 0.5, 3.0);
+      const hcClick = () => params.hc!.onClick ? params.hc!.onClick!() : this._openMoreInfo(params.hc!.entity);
+      items.push(html`
+        <div class="param-item" @click=${hcClick}>
+          <span class="param-label">HC</span>
+          <span class="param-value">${this._formatParamNum(value, 2)}</span>
+          <eq-param-bar .min=${min} .max=${max} .value=${value} indicator></eq-param-bar>
+        </div>
+      `);
+    }
+
+    if (params.n) {
+      const value = this._resolveEntityNumber(params.n.entity, params.n.fallback);
+      const [min, max] = this._getEntityRange(params.n.entity, 1.0, 2.0);
+      const nClick = () => params.n!.onClick ? params.n!.onClick!() : this._openMoreInfo(params.n!.entity);
+      items.push(html`
+        <div class="param-item" @click=${nClick}>
+          <span class="param-label">n</span>
+          <span class="param-value">${this._formatParamNum(value, 2)}</span>
+          <eq-param-bar .min=${min} .max=${max} .value=${value} indicator></eq-param-bar>
+        </div>
+      `);
+    }
+
+    if (params.shift) {
+      const rawValue = this._resolveEntityNumber(params.shift.entity, params.shift.fallback);
+      const [rawMin, rawMax] = this._getEntityRange(params.shift.entity, -15, 15);
+      const displayVal = this._toDisplayDelta(rawValue);
+      const displayMin = this._toDisplayDelta(rawMin);
+      const displayMax = this._toDisplayDelta(rawMax);
+      const formatted = this._formatParamNum(displayVal, 1, { signDisplay: 'always' }) + (this.hass?.config?.unit_system?.temperature ?? '°C');
+      const valClass = displayVal > 0 ? 'positive' : displayVal < 0 ? 'negative' : '';
+      const color = displayVal >= 0 ? 'var(--success-color, #4caf50)' : 'var(--error-color, #e53935)';
+      const shiftClick = () => params.shift!.onClick ? params.shift!.onClick!() : this._openMoreInfo(params.shift!.entity);
+      items.push(html`
+        <div class="param-item" @click=${shiftClick}>
+          <span class="param-label">Shift</span>
+          <span class="param-value ${valClass}">${formatted}</span>
+          <eq-param-bar .min=${displayMin} .max=${displayMax} .value=${displayVal} centered .color=${color} indicator></eq-param-bar>
+        </div>
+      `);
+    }
+
+    if (params.pid_correction) {
+      const rawValue = this._resolveEntityNumber(params.pid_correction.entity, params.pid_correction.fallback ?? 0);
+      const [rawMin, rawMax] = this._getEntityRange(params.pid_correction.entity, -10, 10);
+      const displayVal = this._toDisplayDelta(rawValue);
+      const displayMin = this._toDisplayDelta(rawMin);
+      const displayMax = this._toDisplayDelta(rawMax);
+      const formatted = this._formatParamNum(displayVal, 1, { signDisplay: 'always' }) + (this.hass?.config?.unit_system?.temperature ?? '°C');
+      const valClass = displayVal > 0 ? 'positive' : displayVal < 0 ? 'negative' : '';
+      const color = displayVal >= 0 ? 'var(--success-color, #4caf50)' : 'var(--error-color, #e53935)';
+      items.push(html`
+        <div class="param-item" @click=${() => this._openMoreInfo(params.pid_correction!.entity)}>
+          <span class="param-label">Σ</span>
+          <span class="param-value ${valClass}">${formatted}</span>
+          <eq-param-bar .min=${displayMin} .max=${displayMax} .value=${displayVal} centered .color=${color} indicator></eq-param-bar>
+        </div>
+      `);
+    }
+
+    if (items.length === 0) return nothing;
+    return html`<div class="params-footer">${items}</div>`;
   }
 }
