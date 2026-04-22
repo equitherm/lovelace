@@ -3,6 +3,7 @@ import { html, css, nothing, type CSSResultGroup, type PropertyValues, type Temp
 import { state } from 'lit/decorators.js';
 import type { EChartsOption } from 'echarts/types/dist/shared';
 import { EquithermBaseCard, type EquithermCardConfig } from './base-card';
+import { formatTime } from '../../ha';
 import type { LovelaceGridOptions } from '../../ha/panels/lovelace/types';
 import type { HomeAssistant } from '../../ha/types';
 
@@ -25,6 +26,16 @@ export abstract class EquithermEChartCard<TConfig extends EquithermCardConfig> e
 
   protected abstract _buildEChartOptions(): EChartConfig;
 
+  protected _formatChartTime(timestampMs: number): string {
+    return formatTime(new Date(timestampMs), this.hass!.locale);
+  }
+
+  protected _formatChartDateTime(timestampMs: number): string {
+    const date = new Date(timestampMs);
+    const weekday = date.toLocaleDateString(this.hass?.locale?.language, { weekday: 'short' });
+    return `${weekday} ${formatTime(date, this.hass!.locale)}`;
+  }
+
   protected _updateChartConfig(): void {
     if (this._config && this.hass) {
       this._echartConfig = this._buildEChartOptions();
@@ -35,7 +46,11 @@ export abstract class EquithermEChartCard<TConfig extends EquithermCardConfig> e
     super.updated(changedProps);
     if (changedProps.has('hass')) {
       const oldHass = changedProps.get('hass') as HomeAssistant | undefined;
-      if (oldHass && this.hass?.config?.unit_system?.temperature !== oldHass.config?.unit_system?.temperature) {
+      const tempChanged = oldHass &&
+        this.hass?.config?.unit_system?.temperature !== oldHass.config?.unit_system?.temperature;
+      const timeFormatChanged = oldHass &&
+        this.hass?.locale?.time_format !== oldHass.locale?.time_format;
+      if (tempChanged || timeFormatChanged) {
         this._updateChartConfig();
       }
     }

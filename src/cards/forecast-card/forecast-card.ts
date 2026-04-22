@@ -218,7 +218,7 @@ export class EquithermForecastCard extends EquithermEChartCard<ForecastCardConfi
         animation: false,
         xAxis: {
           type: 'time' as const,
-          axisLabel: { fontSize: 10, hideOverlap: true },
+          axisLabel: { fontSize: 10, hideOverlap: true, formatter: (value: number) => this._formatChartTime(value) },
           axisTick: { show: false },
           axisLine: { show: false },
         },
@@ -243,10 +243,7 @@ export class EquithermForecastCard extends EquithermEChartCard<ForecastCardConfi
           padding: [8, 12],
           textStyle: { color: 'var(--primary-text-color)', fontSize: 12 },
           formatter: (params: any) => {
-            const time = new Date(params[0].value[0]).toLocaleTimeString(
-              this.hass?.locale?.language,
-              { hour: '2-digit', minute: '2-digit' },
-            );
+            const time = this._formatChartTime(params[0].value[0] as number);
             const unit = this.hass?.config?.unit_system?.temperature ?? '°C';
             let out = `<span style="opacity:0.6">${time}</span><br/>`;
             for (const p of params) {

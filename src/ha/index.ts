@@ -14,6 +14,9 @@ export * from "./common/entity/compute_entity_name_display";
 // Common translations
 export * from "./common/translations/localize";
 
+// Common datetime formatting
+export { formatTime } from "./common/datetime/format_time";
+
 // Common number formatting
 export { formatNumber } from "./common/number/format_number";
 
