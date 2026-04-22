@@ -55,17 +55,10 @@ export class OtModulationCard extends OtBaseCard<OtModulationCardConfig> {
     return this._entityState(this._config.flame_entity)?.state === 'on';
   }
 
-  protected override _renderHeaderIcon(iconName: string, clickEntity: string) {
-    const tileColor = this._flameOn
+  protected override _headerIconColor(): string {
+    return this._flameOn
       ? 'var(--rgb-state-climate-heat, 244,81,30)'
       : 'var(--rgb-disabled, 158,158,158)';
-    return html`
-      <ha-tile-icon .interactive=${true}
-        style="--tile-icon-color: rgb(${tileColor}); --tile-icon-size: 42px"
-        @click=${() => this._openMoreInfo(clickEntity)}>
-        <ha-icon slot="icon" .icon=${iconName}></ha-icon>
-      </ha-tile-icon>
-    `;
   }
 
   protected override _renderHeaderBadges(): ReturnType<typeof html> {

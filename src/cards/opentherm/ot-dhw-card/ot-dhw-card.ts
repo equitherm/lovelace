@@ -86,17 +86,10 @@ export class OtDhwCard extends OtBaseCard<OtDhwCardConfig> {
     return this._entityAttr<number>(this._config.dhw_setpoint_entity, 'step') ?? 0.5;
   }
 
-  protected override _renderHeaderIcon(iconName: string, clickEntity: string) {
-    const tileColor = this._dhwEnabled
+  protected override _headerIconColor(): string {
+    return this._dhwEnabled
       ? 'var(--rgb-state-climate-heat, 244,81,30)'
       : 'var(--rgb-disabled, 158,158,158)';
-    return html`
-      <ha-tile-icon .interactive=${true}
-        style="--tile-icon-color: rgb(${tileColor}); --tile-icon-size: 42px"
-        @click=${() => this._openMoreInfo(clickEntity)}>
-        <ha-icon slot="icon" .icon=${iconName}></ha-icon>
-      </ha-tile-icon>
-    `;
   }
 
   protected override _renderHeaderBadges(): ReturnType<typeof html> {
