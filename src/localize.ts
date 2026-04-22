@@ -23,10 +23,15 @@ function getTranslatedString(key: string, lang: string): string | undefined {
   }
 }
 
-export default function setupCustomlocalize(hass?: HomeAssistant) {
-  return function localize(key: string, argObject: Record<string, any> = {}) {
-    const lang = hass?.locale.language ?? DEFAULT_LANG;
+type LocalizeFn = (key: string, argObject?: Record<string, any>) => string;
+const localizeCache = new Map<string, LocalizeFn>();
 
+export default function setupCustomlocalize(hass?: HomeAssistant): LocalizeFn {
+  const lang = hass?.locale.language ?? DEFAULT_LANG;
+  let cached = localizeCache.get(lang);
+  if (cached) return cached;
+
+  cached = function localize(key: string, argObject: Record<string, any> = {}): string {
     let translated = getTranslatedString(key, lang);
     if (!translated) translated = getTranslatedString(key, DEFAULT_LANG);
 
@@ -42,4 +47,7 @@ export default function setupCustomlocalize(hass?: HomeAssistant) {
       return translated;
     }
   };
+
+  localizeCache.set(lang, cached);
+  return cached;
 }
