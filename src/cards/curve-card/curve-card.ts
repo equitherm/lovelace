@@ -1,5 +1,5 @@
 import { html, css, nothing, type TemplateResult } from 'lit';
-import { customElement, state } from 'lit/decorators.js';
+import { customElement } from 'lit/decorators.js';
 import type { CurveCardConfig } from './curve-card-config';
 import type { HomeAssistant } from '../../ha/types';
 import { computeEntityNameDisplay } from '../../ha/common/entity/compute_entity_name_display';
@@ -23,6 +23,7 @@ import '../../shared/badge-info';
 import '../../shared/eq-manual-overlay';
 import '../../shared/eq-tuning-dialog';
 import type { TuningDialogConfig } from '../../shared/eq-tuning-dialog-config';
+import { buildTuningDialogConfig } from '../../utils/tuning-dialog-config';
 
 /** Marker sizes for chart annotations */
 const MARKER_SINGLE = 9;
@@ -32,12 +33,9 @@ const MARKER_RATE_LIMITED = 8;
 @customElement(CURVE_CARD_NAME)
 export class EquithermCurveCard extends EquithermEChartCard<CurveCardConfig> {
 
-  @state() private _dialogConfig?: TuningDialogConfig;
-
   protected override willUpdate(changedProps: Map<string, unknown>): void {
     super.willUpdate(changedProps);
     if (changedProps.has('_config')) {
-      this._dialogConfig = this._computeDialogConfig();
       this._updateChartConfig();
       return;
     }
@@ -121,26 +119,8 @@ export class EquithermCurveCard extends EquithermEChartCard<CurveCardConfig> {
       : this._config.n;
   }
 
-  private _computeDialogConfig(): TuningDialogConfig | undefined {
-    const cfg = this._config;
-    if (!cfg?.hc_entity || !cfg?.shift_entity) return undefined;
-    return {
-      climate_entity: cfg.climate_entity,
-      outdoor_entity: cfg.outdoor_entity,
-      hc_entity: cfg.hc_entity,
-      shift_entity: cfg.shift_entity,
-      flow_entity: cfg.flow_entity,
-      n_entity: cfg.n_entity,
-      min_flow_entity: cfg.min_flow_entity,
-      max_flow_entity: cfg.max_flow_entity,
-      recalculate_service: cfg.recalculate_service,
-      curve_from_entities: cfg.curve_from_entities,
-      n: cfg.n,
-      min_flow: cfg.min_flow,
-      max_flow: cfg.max_flow,
-      t_out_min: cfg.t_out_min,
-      t_out_max: cfg.t_out_max,
-    };
+  private get _tuningDialogConfig(): TuningDialogConfig | undefined {
+    return buildTuningDialogConfig(this._config);
   }
 
   private _renderParamsFooterContent(): TemplateResult | typeof nothing {
@@ -417,10 +397,10 @@ export class EquithermCurveCard extends EquithermEChartCard<CurveCardConfig> {
         ${this._renderFooterMeta()}
       </ha-card>
 
-      ${this._dialogConfig && this._showTuningDialog ? html`
+      ${this._tuningDialogConfig && this._showTuningDialog ? html`
         <eq-tuning-dialog
           .hass=${this.hass}
-          .config=${this._dialogConfig}
+          .config=${this._tuningDialogConfig}
           .open=${this._showTuningDialog}
           @closed=${() => { this._showTuningDialog = false; }}
         ></eq-tuning-dialog>

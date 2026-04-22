@@ -9,7 +9,6 @@ import { cardStyle, paramsFooterStyles, kpiFooterStyles, tunableFooterStyles } f
 import { registerCustomCard } from '../../utils/register-card';
 import setupCustomLocalize from '../../localize';
 import { validateStatusCardConfig } from './status-card-config';
-import { CURVE_CONFIG_DEFAULTS } from '../../utils/curve-config';
 import { STATUS_CARD_NAME, STATUS_CARD_EDITOR_NAME } from './const';
 import { findClimateEntity, findOutdoorEntity, findFlowEntity } from '../../utils/stub-config';
 import { getAdjustingDirection } from '../../utils/climate-helpers';
@@ -17,6 +16,7 @@ import '../../shared/badge-info';
 import '../../shared/eq-param-bar';
 import '../../shared/eq-tuning-dialog';
 import type { TuningDialogConfig } from '../../shared/eq-tuning-dialog-config';
+import { buildTuningDialogConfig } from '../../utils/tuning-dialog-config';
 
 registerCustomCard({
   type: STATUS_CARD_NAME,
@@ -28,18 +28,7 @@ registerCustomCard({
 export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
 
   private get _tuningDialogConfig(): TuningDialogConfig | undefined {
-    const cfg = this._config;
-    if (!cfg?.hc_entity || !cfg?.shift_entity) return undefined;
-    return {
-      climate_entity: cfg.climate_entity,
-      outdoor_entity: cfg.outdoor_entity,
-      hc_entity: cfg.hc_entity,
-      shift_entity: cfg.shift_entity,
-      flow_entity: cfg.flow_entity,
-      n_entity: cfg.n_entity,
-      curve_from_entities: !!cfg.n_entity,
-      ...CURVE_CONFIG_DEFAULTS,
-    };
+    return buildTuningDialogConfig(this._config);
   }
 
   public getGridOptions(): LovelaceGridOptions {

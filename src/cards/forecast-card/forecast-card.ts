@@ -10,7 +10,6 @@ import { registerCustomCard } from '../../utils/register-card';
 import { FORECAST_CARD_NAME, FORECAST_CARD_EDITOR_NAME } from './const';
 import { findClimateEntity, findWeatherEntity, findFlowEntity } from '../../utils/stub-config';
 import { validateForecastCardConfig } from './forecast-card-config';
-import { CURVE_CONFIG_DEFAULTS } from '../../utils/curve-config';
 import { resolveRgbColor } from '../../utils/hvac-colors';
 import { buildForecastSeries, peakDemand } from '../../utils/forecast';
 import setupCustomLocalize from '../../localize';
@@ -19,6 +18,7 @@ import '../../shared/eq-manual-overlay';
 import '../../shared/eq-param-bar';
 import '../../shared/eq-tuning-dialog';
 import type { TuningDialogConfig } from '../../shared/eq-tuning-dialog-config';
+import { buildTuningDialogConfig } from '../../utils/tuning-dialog-config';
 
 registerCustomCard({
   type: FORECAST_CARD_NAME,
@@ -138,24 +138,7 @@ export class EquithermForecastCard extends EquithermEChartCard<ForecastCardConfi
   }
 
   private get _tuningDialogConfig(): TuningDialogConfig | undefined {
-    const cfg = this._config;
-    if (!cfg?.hc_entity || !cfg?.shift_entity) return undefined;
-    return {
-      climate_entity: cfg.climate_entity,
-      outdoor_entity: cfg.outdoor_entity ?? '',
-      hc_entity: cfg.hc_entity,
-      shift_entity: cfg.shift_entity,
-      flow_entity: cfg.flow_entity,
-      n_entity: cfg.n_entity,
-      min_flow_entity: cfg.min_flow_entity,
-      max_flow_entity: cfg.max_flow_entity,
-      curve_from_entities: cfg.curve_from_entities,
-      n: cfg.n,
-      min_flow: cfg.min_flow,
-      max_flow: cfg.max_flow,
-      t_out_min: CURVE_CONFIG_DEFAULTS.t_out_min,
-      t_out_max: CURVE_CONFIG_DEFAULTS.t_out_max,
-    };
+    return buildTuningDialogConfig(this._config);
   }
 
   /** Process forecast data and update chart (converts display units to °C for computation) */
