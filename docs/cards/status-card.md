@@ -51,7 +51,7 @@ layout: default  # default, vertical, or horizontal
 | `pid_integral_entity` | string | No | PID integral term sensor |
 | `pid_derivative_entity` | string | No | PID derivative term sensor |
 | `layout` | string | No | `default`, `vertical`, or `horizontal` |
-| `show_last_updated` | boolean | No | Show "last updated" timestamp in card footer |
+| `show_last_updated` | boolean | No | Show timestamp when entity is stale (>5 min) or unavailable |
 | `name` | entity | No | Entity name picker config (defaults to entity friendly name). Examples: `name: { type: entity }` or `name: [{ type: text, text: "Prefix" }, { type: device }]` |
 | `title` | string | No | *Deprecated* — use `name` instead |
 
@@ -135,7 +135,7 @@ equitherm_status_card:
 
 | Layout | Columns | Rows | Min Rows |
 |--------|---------|------|----------|
-| default | 12 | 3 (4 with PID) | 1 |
+| default | 12 | 3 (4 with `show_last_updated`) | 3 |
 | vertical | 6 | 4 (5 with PID) | 4 |
 | horizontal | 12 | 1 | 1 |
 

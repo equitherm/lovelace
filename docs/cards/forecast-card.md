@@ -49,7 +49,7 @@ max_flow: 70
 | `hours` | number | No | 24 | Forecast hours to display (1-48) |
 | `pid_active_entity` | string | No | - | Binary sensor for PID correction status |
 | `name` | entity | No | - | Entity name picker config (defaults to entity friendly name). Examples: `name: { type: entity }` or `name: [{ type: text, text: "Prefix" }, { type: device }]` |
-| `show_last_updated` | boolean | No | false | Show "last updated" timestamp in card footer |
+| `show_last_updated` | boolean | No | false | Show timestamp when entity is stale (>5 min) or unavailable |
 | `curve_from_entities` | boolean | No | false | Read curve parameters from entities instead of static values |
 | `hc_entity` | string | No | - | Entity for live heat curve coefficient (requires `curve_from_entities`) |
 | `n_entity` | string | No | - | Entity for live exponent (requires `curve_from_entities`) |
