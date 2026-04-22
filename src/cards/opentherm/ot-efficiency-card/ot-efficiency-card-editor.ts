@@ -28,6 +28,8 @@ export class OtEfficiencyCardEditor extends EquithermBaseEditor<OtEfficiencyCard
       schemaHelpers.entity('return_temp_entity', { domain: ['sensor', 'input_number'] }),
       // Optional
       schemaHelpers.expandable(localize('editor.optional'), 'mdi:connection', [
+        schemaHelpers.entity('flame_entity', { domain: ['binary_sensor', 'input_boolean'] }),
+        schemaHelpers.entity('ch_active_entity', { domain: ['binary_sensor', 'input_boolean'] }),
         schemaHelpers.number('condensing_threshold', 30, 80, 1, { unit_of_measurement: '°C' }),
         schemaHelpers.number('hours', 1, 48, 1),
         { name: 'show_last_updated', selector: { boolean: {} } },

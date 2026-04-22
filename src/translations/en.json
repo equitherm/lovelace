@@ -144,7 +144,7 @@
       "flame_entity": "Binary sensor indicating boiler flame is on",
       "setpoint_entity": "Target flow temperature setpoint",
       "modulation_entity": "Current boiler modulation level (%)",
-      "ch_active_entity": "Binary sensor indicating central heating is actively running",
+      "ch_active_entity": "Recommended to avoid false positives during DHW cycles. If absent, flame is used as proxy.",
       "dhw_active_entity": "Binary sensor indicating domestic hot water is actively heating",
       "dhw_temp_entity": "DHW temperature sensor showing current hot water temperature"
     }
@@ -175,7 +175,8 @@
       "default_title": "Efficiency",
       "temp_axis": "Temperature",
       "condensing": "Condensing",
-      "non_condensing": "Non-condensing"
+      "non_condensing": "Non-condensing",
+      "too_hot": "Return too hot"
     },
     "modulation_card": {
       "name": "OpenTherm Modulation",

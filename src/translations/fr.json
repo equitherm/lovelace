@@ -142,7 +142,7 @@
       "flame_entity": "Capteur binaire indiquant que la flamme chaudière est allumée",
       "setpoint_entity": "Consigne de température de départ cible",
       "modulation_entity": "Niveau actuel de modulation chaudière (%)",
-      "ch_active_entity": "Capteur binaire indiquant que le chauffage central fonctionne activement",
+      "ch_active_entity": "Recommandé pour éviter les faux positifs lors des cycles ECS. Si absent, la flamme est utilisée comme proxy.",
       "dhw_active_entity": "Capteur binaire indiquant que l'eau chaude sanitaire chauffe activement",
       "dhw_temp_entity": "Capteur de température ECS affichant la température actuelle de l'eau chaude"
     }
@@ -173,7 +173,8 @@
       "default_title": "Efficacité",
       "temp_axis": "Température",
       "condensing": "Condensation",
-      "non_condensing": "Sans condensation"
+      "non_condensing": "Sans condensation",
+      "too_hot": "Retour trop chaud"
     },
     "modulation_card": {
       "name": "Modulation OpenTherm",

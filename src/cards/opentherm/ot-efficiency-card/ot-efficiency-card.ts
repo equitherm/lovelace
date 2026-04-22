@@ -5,6 +5,7 @@ import { EquithermEChartCard, type EChartConfig, headerStyles } from '../../../u
 import type { HomeAssistant } from '../../../ha';
 import { cardStyle } from '../../../utils/card-styles';
 import { registerCustomCard } from '../../../utils/register-card';
+import { computeDomain } from '../../../ha/common/entity/compute_domain';
 import { OT_EFFICIENCY_CARD_NAME, OT_EFFICIENCY_CARD_EDITOR_NAME } from './const';
 import { validateOtEfficiencyCardConfig } from './ot-efficiency-card-config';
 import { OtHistoryHelper, type OtHistoryPoint } from '../../../utils/ot-history';
@@ -40,10 +41,18 @@ export class OtEfficiencyCard extends EquithermEChartCard<OtEfficiencyCardConfig
     const entityIds = Object.keys(hass.states);
     const boiler = entityIds.find(e => e.includes('boiler') || e.includes('t_boiler')) ?? '';
     const ret = entityIds.find(e => e.includes('ret') || e.includes('return')) ?? '';
+    const flame = entityIds.find(e =>
+      computeDomain(e) === 'binary_sensor' && e.includes('flame')
+    ) ?? '';
+    const chActive = entityIds.find(e =>
+      computeDomain(e) === 'binary_sensor' && (e.includes('ch_active') || e.includes('central_heating'))
+    ) ?? '';
     return {
       type: `custom:${OT_EFFICIENCY_CARD_NAME}`,
       boiler_temp_entity: boiler,
       return_temp_entity: ret,
+      flame_entity: flame || undefined,
+      ch_active_entity: chActive || undefined,
     } as OtEfficiencyCardConfig;
   }
 
@@ -51,16 +60,38 @@ export class OtEfficiencyCard extends EquithermEChartCard<OtEfficiencyCardConfig
     return this.hass?.config?.unit_system?.temperature === '°F' ? 131 : 55;
   }
 
+  private get _isChActive(): boolean {
+    if (this._config.ch_active_entity) {
+      return this._entityState(this._config.ch_active_entity)?.state === 'on';
+    }
+    // Fallback: flame as proxy — may include DHW cycles.
+    // User should configure ch_active_entity for accurate condensing detection.
+    if (this._config.flame_entity) {
+      return this._entityState(this._config.flame_entity)?.state === 'on';
+    }
+    return false;
+  }
+
+  private get _returnTemp(): number {
+    return this._resolveEntityNumber(this._config.return_temp_entity, NaN);
+  }
+
   private get _isCondensing(): boolean {
+    if (!this._isChActive) return false;
     const threshold = this._config.condensing_threshold ?? this._defaultThreshold;
-    const returnTemp = this._resolveEntityNumber(this._config.return_temp_entity, NaN);
-    return !isNaN(returnTemp) && returnTemp < threshold;
+    return !isNaN(this._returnTemp) && this._returnTemp < threshold;
+  }
+
+  private get _isHeatingTooHot(): boolean {
+    if (!this._isChActive) return false;
+    const threshold = this._config.condensing_threshold ?? this._defaultThreshold;
+    return !isNaN(this._returnTemp) && this._returnTemp >= threshold;
   }
 
   protected override _headerIconColor(): string {
-    return this._isCondensing
-      ? 'var(--rgb-success, 76,175,80)'
-      : 'var(--rgb-disabled, 158,158,158)';
+    if (this._isCondensing) return 'var(--rgb-success, 76,175,80)';
+    if (this._isHeatingTooHot) return 'var(--rgb-state-climate-heat, 244,81,30)';
+    return 'var(--rgb-disabled, 158,158,158)';
   }
 
   protected override _renderHeaderBadges(): ReturnType<typeof html> {
@@ -68,8 +99,13 @@ export class OtEfficiencyCard extends EquithermEChartCard<OtEfficiencyCardConfig
     return html`
       <div class="badges">
         ${this._isCondensing ? html`
-          <eq-badge-info .label=${localize('opentherm.efficiency_card.condensing')} .icon=${'mdi:snowflake'} .active=${true}
+          <eq-badge-info .label=${localize('opentherm.efficiency_card.condensing')} .icon=${'mdi:water-percent'} .active=${true}
             style="--badge-info-color: var(--rgb-success, 76,175,80)">
+          </eq-badge-info>
+        ` : nothing}
+        ${this._isHeatingTooHot ? html`
+          <eq-badge-info .label=${localize('opentherm.efficiency_card.too_hot')} .icon=${'mdi:thermometer-alert'} .active=${true}
+            style="--badge-info-color: var(--rgb-state-climate-heat, 244,81,30)">
           </eq-badge-info>
         ` : nothing}
       </div>

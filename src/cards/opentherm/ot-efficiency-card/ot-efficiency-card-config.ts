@@ -4,6 +4,8 @@ export interface OtEfficiencyCardConfig {
   type: string;
   boiler_temp_entity: string;
   return_temp_entity: string;
+  flame_entity?: string;
+  ch_active_entity?: string;
   condensing_threshold?: number;
   hours?: number;
   name?: any;
@@ -15,6 +17,8 @@ export const OtEfficiencyCardConfigStruct = type({
   type: string(),
   boiler_temp_entity: string(),
   return_temp_entity: string(),
+  flame_entity: optional(string()),
+  ch_active_entity: optional(string()),
   condensing_threshold: optional(number()),
   hours: optional(number()),
   name: optional(any()),
