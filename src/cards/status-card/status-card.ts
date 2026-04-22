@@ -6,7 +6,7 @@ import type { LovelaceGridOptions } from '../../ha/panels/lovelace/types';
 import { computeDomain } from '../../ha/common/entity/compute_domain';
 import { EquithermBaseCard, headerStyles } from '../../utils/base';
 import { computeEntityNameDisplay } from '../../ha/common/entity/compute_entity_name_display';
-import { cardStyle, paramsFooterStyles, kpiFooterStyles } from '../../utils/card-styles';
+import { cardStyle, paramsFooterStyles, kpiFooterStyles, tunableFooterStyles } from '../../utils/card-styles';
 import { registerCustomCard } from '../../utils/register-card';
 import setupCustomLocalize from '../../localize';
 import { validateStatusCardConfig } from './status-card-config';
@@ -126,6 +126,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
       cardStyle,
       headerStyles,
       paramsFooterStyles,
+      tunableFooterStyles,
       kpiFooterStyles,
       css`
         ha-card {
@@ -137,39 +138,6 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
           flex: 1;
           min-width: 0;
           place-content: center;
-        }
-        .params-footer-tunable {
-          display: flex;
-          align-items: stretch;
-          gap: 4px;
-          padding: var(--eq-params-padding, 8px 12px);
-          border-top: 1px solid var(--divider-color, rgba(0,0,0,0.1));
-          font-variant-numeric: tabular-nums;
-          flex-shrink: 0;
-          cursor: pointer;
-          position: relative;
-          transition: background 0.2s;
-        }
-        .params-footer-tunable:hover {
-          background: rgba(var(--rgb-primary, 33, 150, 243), 0.06);
-        }
-        .params-footer-tunable .params-footer {
-          border-top: none;
-          padding: 0;
-          flex: 1;
-        }
-        .params-footer-tunable .param-item {
-          pointer-events: none;
-        }
-        .params-footer-tunable .pencil-icon {
-          --mdc-icon-size: 14px;
-          color: var(--secondary-text-color);
-          opacity: 0.5;
-          align-self: center;
-          flex-shrink: 0;
-        }
-        .params-footer-tunable:hover .pencil-icon {
-          opacity: 0.8;
         }
       `,
     ];
