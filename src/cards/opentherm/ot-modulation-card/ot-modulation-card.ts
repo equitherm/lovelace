@@ -1,6 +1,7 @@
 import { html, css, nothing } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import type { OtModulationCardConfig } from './ot-modulation-card-config';
+import type { HomeAssistant } from '../../../ha';
 import { OtBaseCard, headerStyles } from '../../../utils/base';
 import { cardStyle } from '../../../utils/card-styles';
 import { registerCustomCard } from '../../../utils/register-card';
@@ -39,7 +40,7 @@ export class OtModulationCard extends OtBaseCard<OtModulationCardConfig> {
     return document.createElement(OT_MODULATION_CARD_EDITOR_NAME);
   }
 
-  static async getStubConfig(hass: any): Promise<OtModulationCardConfig> {
+  static async getStubConfig(hass: HomeAssistant): Promise<OtModulationCardConfig> {
     const entityIds = Object.keys(hass.states);
     const mod = entityIds.find(e => e.includes('modulation') || e.includes('rel_mod')) ?? '';
     const maxMod = entityIds.find(e => e.includes('max_rel_mod') || e.includes('max_modulation')) ?? '';
