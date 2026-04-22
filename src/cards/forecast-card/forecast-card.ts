@@ -4,7 +4,7 @@ import type { ForecastCardConfig } from './forecast-card-config';
 import type { HomeAssistant } from '../../ha';
 import type { ForecastPoint, ForecastCurveConfig } from '../../utils/forecast';
 import { EquithermEChartCard, type EChartConfig, headerStyles } from '../../utils/base';
-import { cardStyle, paramsFooterStyles, kpiFooterStyles } from '../../utils/card-styles';
+import { cardStyle, paramsFooterStyles, kpiFooterStyles, tunableFooterStyles } from '../../utils/card-styles';
 import { registerCustomCard } from '../../utils/register-card';
 import { FORECAST_CARD_NAME, FORECAST_CARD_EDITOR_NAME } from './const';
 import { findClimateEntity, findWeatherEntity, findFlowEntity } from '../../utils/stub-config';
@@ -317,22 +317,6 @@ export class EquithermForecastCard extends EquithermEChartCard<ForecastCardConfi
     `;
   }
 
-  private _renderParamsFooterWithTune(): TemplateResult | typeof nothing {
-    const inner = this._renderParamsFooter({
-      hc: this._config.hc_entity ? { entity: this._config.hc_entity, fallback: this._config.hc } : undefined,
-      n: this._config.n_entity ? { entity: this._config.n_entity, fallback: this._config.n } : undefined,
-      shift: this._config.shift_entity ? { entity: this._config.shift_entity, fallback: this._config.shift } : undefined,
-    });
-    if (inner === nothing) return nothing;
-    if (!this._config.tunable) return inner;
-    return html`
-      <div class="params-footer-tunable" @click=${() => { this._showTuningDialog = true; }}>
-        ${inner}
-        <ha-icon class="pencil-icon" icon="mdi:pencil"></ha-icon>
-      </div>
-    `;
-  }
-
   protected override _onChartDisconnecting(): void {
     this._unsubscribeForecast();
   }
@@ -348,6 +332,7 @@ export class EquithermForecastCard extends EquithermEChartCard<ForecastCardConfi
       headerStyles,
       paramsFooterStyles,
       kpiFooterStyles,
+      tunableFooterStyles,
       css`
         ha-card {
           height: 100%;
@@ -358,39 +343,6 @@ export class EquithermForecastCard extends EquithermEChartCard<ForecastCardConfi
         }
         .chart-wrapper ha-chart-base {
           height: 100%;
-        }
-        .params-footer-tunable {
-          display: flex;
-          align-items: stretch;
-          gap: 4px;
-          padding: var(--eq-params-padding, 8px 12px);
-          border-top: 1px solid var(--divider-color, rgba(0,0,0,0.1));
-          font-variant-numeric: tabular-nums;
-          flex-shrink: 0;
-          cursor: pointer;
-          position: relative;
-          transition: background 0.2s;
-        }
-        .params-footer-tunable:hover {
-          background: rgba(var(--rgb-primary, 33, 150, 243), 0.06);
-        }
-        .params-footer-tunable .params-footer {
-          border-top: none;
-          padding: 0;
-          flex: 1;
-        }
-        .params-footer-tunable .param-item {
-          pointer-events: none;
-        }
-        .params-footer-tunable .pencil-icon {
-          --mdc-icon-size: 14px;
-          color: var(--secondary-text-color);
-          opacity: 0.5;
-          align-self: center;
-          flex-shrink: 0;
-        }
-        .params-footer-tunable:hover .pencil-icon {
-          opacity: 0.8;
         }
       `,
     ];
@@ -411,7 +363,16 @@ export class EquithermForecastCard extends EquithermEChartCard<ForecastCardConfi
         ${this._renderKpiFooter({
           outdoorClickEntity: this._config.outdoor_entity ?? this._config.weather_entity,
         })}
-        ${this._config.curve_from_entities ? this._renderParamsFooterWithTune() : nothing}
+        ${this._config.curve_from_entities
+          ? this._renderTunableParamsFooter(
+              {
+                hc: this._config.hc_entity ? { entity: this._config.hc_entity, fallback: this._config.hc } : undefined,
+                n: this._config.n_entity ? { entity: this._config.n_entity, fallback: this._config.n } : undefined,
+                shift: this._config.shift_entity ? { entity: this._config.shift_entity, fallback: this._config.shift } : undefined,
+              },
+              () => { this._showTuningDialog = true; },
+            )
+          : nothing}
         ${this._renderFooterMeta()}
       </ha-card>
 
