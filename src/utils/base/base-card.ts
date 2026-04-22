@@ -4,6 +4,7 @@ import type { LovelaceCard } from '../../ha/panels/lovelace/types';
 import type { ClimateEntity } from '../../ha/data/climate';
 import { formatNumber } from '../../ha';
 import { BaseCard } from './abstract-base-card';
+import { computeEntityNameDisplay } from '../../ha/common/entity/compute_entity_name_display';
 import { normalizeHvacAction, getHvacActionColor, getHvacBadgeProps } from '../hvac-colors';
 import { isRateLimitingActive, isPidActive, getAdjustingDirection, getRateTargetEntity, type ClimateHelperConfig } from '../climate-helpers';
 import setupCustomlocalize from '../../localize';
@@ -110,6 +111,19 @@ export abstract class EquithermBaseCard<TConfig extends EquithermCardConfig> ext
         <span>${localize('common.not_found', { entity: display })}</span>
       </div>
     `;
+  }
+
+  /**
+   * Compute the display title for a card.
+   * Resolves in order: entity name → config.name → deprecated config.title → localized default.
+   */
+  protected _computeCardTitle(defaultTitleKey: string): string {
+    const localize = setupCustomlocalize(this.hass);
+    const fallback = localize(defaultTitleKey);
+    const climateState = this.hass?.states[this._config.climate_entity ?? ''];
+    const configName = (this._config.name ?? (this._config as { title?: string }).title) as string | undefined;
+    if (!climateState) return configName ?? fallback;
+    return computeEntityNameDisplay(climateState, configName, this.hass) || configName || fallback;
   }
 
   // === Header ===

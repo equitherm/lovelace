@@ -4,10 +4,8 @@ import type { StatusCardConfig } from './status-card-config';
 import type { HomeAssistant } from '../../ha/types';
 import type { LovelaceGridOptions } from '../../ha/panels/lovelace/types';
 import { EquithermBaseCard, headerStyles } from '../../utils/base';
-import { computeEntityNameDisplay } from '../../ha/common/entity/compute_entity_name_display';
 import { cardStyle, paramsFooterStyles, kpiFooterStyles, tunableFooterStyles } from '../../utils/card-styles';
 import { registerCustomCard } from '../../utils/register-card';
-import setupCustomLocalize from '../../localize';
 import { validateStatusCardConfig } from './status-card-config';
 import { STATUS_CARD_NAME, STATUS_CARD_EDITOR_NAME } from './const';
 import { findClimateEntity, findOutdoorEntity, findFlowEntity } from '../../utils/stub-config';
@@ -99,13 +97,9 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
 
   render() {
     if (!this._config || !this.hass) return nothing;
-    const localize = setupCustomLocalize(this.hass);
     const lookup = (id: string) => this._entityState(id)!;
     const adjustingDir = getAdjustingDirection(this._config, lookup);
-    const climateState = this.hass.states[this._config.climate_entity];
-    const title = climateState
-      ? computeEntityNameDisplay(climateState, this._config.name ?? this._config.title, this.hass) || localize('status_card.default_title')
-      : (this._config.title ?? localize('status_card.default_title'));
+    const title = this._computeCardTitle('status_card.default_title');
 
     return html`
       <ha-card>

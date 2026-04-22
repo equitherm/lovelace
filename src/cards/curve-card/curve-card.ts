@@ -2,7 +2,6 @@ import { html, css, nothing, type TemplateResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import type { CurveCardConfig } from './curve-card-config';
 import type { HomeAssistant } from '../../ha/types';
-import { computeEntityNameDisplay } from '../../ha/common/entity/compute_entity_name_display';
 import { cardStyle, paramsFooterStyles, kpiFooterStyles, tunableFooterStyles } from '../../utils/card-styles';
 import { registerCustomCard } from '../../utils/register-card';
 import { CURVE_CARD_NAME, CURVE_CARD_EDITOR_NAME } from './const';
@@ -373,13 +372,9 @@ export class EquithermCurveCard extends EquithermEChartCard<CurveCardConfig> {
 
   render() {
     if (!this._config || !this.hass) return nothing;
-    const localize = setupCustomLocalize(this.hass);
     const lookup = (id: string) => this._entityState(id)!;
     const adjustingDir = getAdjustingDirection(this._config, lookup);
-    const climateState = this.hass.states[this._config.climate_entity];
-    const title = climateState
-      ? computeEntityNameDisplay(climateState, this._config.name ?? this._config.title, this.hass) || localize('curve_card.default_title')
-      : (this._config.title ?? localize('curve_card.default_title'));
+    const title = this._computeCardTitle('curve_card.default_title');
 
     return html`
       <ha-card>

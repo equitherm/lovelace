@@ -4,7 +4,6 @@ import type { ForecastCardConfig } from './forecast-card-config';
 import type { HomeAssistant } from '../../ha';
 import type { ForecastPoint, ForecastCurveConfig } from '../../utils/forecast';
 import { EquithermEChartCard, type EChartConfig, headerStyles } from '../../utils/base';
-import { computeEntityNameDisplay } from '../../ha/common/entity/compute_entity_name_display';
 import { cardStyle, paramsFooterStyles, kpiFooterStyles } from '../../utils/card-styles';
 import { registerCustomCard } from '../../utils/register-card';
 import { FORECAST_CARD_NAME, FORECAST_CARD_EDITOR_NAME } from './const';
@@ -399,11 +398,7 @@ export class EquithermForecastCard extends EquithermEChartCard<ForecastCardConfi
 
   render() {
     if (!this._config || !this.hass) return nothing;
-    const localize = setupCustomLocalize(this.hass);
-    const climateState = this.hass.states[this._config.climate_entity];
-    const title = climateState
-      ? computeEntityNameDisplay(climateState, this._config.name, this.hass) || localize('forecast_card.default_title')
-      : localize('forecast_card.default_title');
+    const title = this._computeCardTitle('forecast_card.default_title');
 
     return html`
       <ha-card>
