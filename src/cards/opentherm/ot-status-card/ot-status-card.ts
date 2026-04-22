@@ -12,6 +12,7 @@ import { OT_STATUS_CARD_NAME, OT_STATUS_CARD_EDITOR_NAME, BINARY_SENSOR_DOMAINS,
 import { validateOtStatusCardConfig } from './ot-status-card-config';
 import setupCustomLocalize from '../../../localize';
 import '../../../shared/badge-info';
+import '../../../shared/eq-param-bar';
 
 registerCustomCard({
   type: OT_STATUS_CARD_NAME,
@@ -179,18 +180,13 @@ export class OtStatusCard extends OtBaseCard<OtStatusCardConfig> {
           white-space: nowrap;
           min-width: 70px;
         }
-        .mod-track {
+        .mod-row eq-param-bar {
           flex: 1;
-          height: 6px;
-          border-radius: 3px;
-          background: var(--secondary-background-color, rgba(0,0,0,0.08));
-          overflow: hidden;
+          --eq-bar-height: 6px;
+          --eq-bar-fill-color: var(--gradient-hot, #f97316);
         }
-        .mod-fill {
-          height: 100%;
-          border-radius: 3px;
-          background: var(--gradient-hot, #f97316);
-          transition: width 0.4s ease;
+        .mod-row:hover eq-param-bar {
+          --eq-bar-height: 8px;
         }
         .mod-value {
           font-size: 13px;
@@ -249,9 +245,7 @@ export class OtStatusCard extends OtBaseCard<OtStatusCardConfig> {
           ${!isNaN(mod) ? html`
             <div class="mod-row">
               <span class="mod-label">${localize('opentherm.status_card.modulation')}</span>
-              <div class="mod-track">
-                <div class="mod-fill" style="width: ${Math.max(0, Math.min(100, mod))}%"></div>
-              </div>
+              <eq-param-bar .min=${0} .max=${100} .value=${mod}></eq-param-bar>
               <span class="mod-value">${mod.toFixed(0)}%</span>
             </div>
           ` : nothing}
