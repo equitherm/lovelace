@@ -110,15 +110,10 @@ export class OtDhwCard extends OtBaseCard<OtDhwCardConfig> {
 
   private _toggleDhw(): void {
     if (!this.hass) return;
-    const entityId = this._config.dhw_enable_entity;
+    const { dhw_enable_entity: entityId } = this._config;
     const domain = computeDomain(entityId);
-    const enabled = this._dhwEnabled;
-    const service = domain === 'switch'
-      ? (enabled ? 'switch.turn_off' : 'switch.turn_on')
-      : (enabled ? 'input_boolean.turn_off' : 'input_boolean.turn_on');
-    this.hass.callService(service.split('.')[0], service.split('.')[1], {
-      entity_id: entityId,
-    });
+    const service = this._dhwEnabled ? 'turn_off' : 'turn_on';
+    this.hass.callService(domain, service, { entity_id: entityId });
   }
 
   private _setpointChanged(ev: CustomEvent): void {
