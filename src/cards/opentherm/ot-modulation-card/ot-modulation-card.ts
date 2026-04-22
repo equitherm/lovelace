@@ -25,8 +25,9 @@ registerCustomCard({
 
 @customElement(OT_MODULATION_CARD_NAME)
 export class OtModulationCard extends OtBaseCard<OtModulationCardConfig> {
-  @state() private _flameHistory: OtHistoryPoint[] = [];
+  private _flameHistory: OtHistoryPoint[] = [];
   @state() private _cyclesPerHour = 0;
+  private _timelineCache: { segments: BinarySegment[]; startTime: number; endTime: number } | null = null;
   private _fetchTimer?: ReturnType<typeof setInterval>;
 
   setConfig(config: unknown) {
@@ -96,12 +97,12 @@ export class OtModulationCard extends OtBaseCard<OtModulationCardConfig> {
     const history = await OtHistoryHelper.fetch(this.hass, [this._config.flame_entity], hours);
     this._flameHistory = history[this._config.flame_entity] ?? [];
 
-    if (hours <= 1) {
-      this._cyclesPerHour = OtHistoryHelper.countCycles(this._flameHistory);
-    } else {
-      const lastHour = await OtHistoryHelper.fetch(this.hass, [this._config.flame_entity], 1);
-      this._cyclesPerHour = OtHistoryHelper.countCycles(lastHour[this._config.flame_entity] ?? []);
-    }
+    const oneHourAgo = Date.now() - 3600 * 1000;
+    const lastHourHistory = this._flameHistory.filter(
+      p => new Date(p.last_changed).getTime() >= oneHourAgo,
+    );
+    this._cyclesPerHour = OtHistoryHelper.countCycles(lastHourHistory);
+    this._timelineCache = this._buildTimelineData();
   }
 
   private async _setMaxModulation(value: number): Promise<void> {
@@ -217,7 +218,7 @@ export class OtModulationCard extends OtBaseCard<OtModulationCardConfig> {
       ? computeEntityNameDisplay(modState, cfg.name, this.hass) || localize('opentherm.modulation_card.default_title')
       : localize('opentherm.modulation_card.default_title');
 
-    const { segments, startTime, endTime } = this._buildTimelineData();
+    const { segments, startTime, endTime } = this._timelineCache ?? this._buildTimelineData();
 
     return html`
       <ha-card>
