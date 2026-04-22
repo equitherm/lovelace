@@ -291,6 +291,29 @@ export abstract class EquithermBaseCard<TConfig extends EquithermCardConfig> ext
     return formatNumber(value, this.hass?.locale, { minimumFractionDigits: decimals, maximumFractionDigits: decimals, ...options });
   }
 
+  private _renderDeltaParamItem(
+    label: string,
+    entityId: string,
+    fallback: number,
+    defaultRange: [number, number],
+    onClick: () => void,
+  ): TemplateResult {
+    const rawValue = this._resolveEntityNumber(entityId, fallback);
+    const [rawMin, rawMax] = this._getEntityRange(entityId, defaultRange[0], defaultRange[1]);
+    const displayVal = this._toDisplayDelta(rawValue);
+    const unit = this.hass?.config?.unit_system?.temperature ?? '°C';
+    const formatted = this._formatParamNum(displayVal, 1, { signDisplay: 'always' }) + unit;
+    const valClass = displayVal > 0 ? 'positive' : displayVal < 0 ? 'negative' : '';
+    const color = displayVal >= 0 ? 'var(--success-color, #4caf50)' : 'var(--error-color, #e53935)';
+    return html`
+      <div class="param-item" @click=${onClick}>
+        <span class="param-label">${label}</span>
+        <span class="param-value ${valClass}">${formatted}</span>
+        <eq-param-bar .min=${this._toDisplayDelta(rawMin)} .max=${this._toDisplayDelta(rawMax)} .value=${displayVal} centered .color=${color} indicator></eq-param-bar>
+      </div>
+    `;
+  }
+
   protected _renderParamsFooter(params: {
     hc?: { entity: string; fallback: number; onClick?: () => void };
     n?: { entity: string; fallback: number; onClick?: () => void };
@@ -327,40 +350,17 @@ export abstract class EquithermBaseCard<TConfig extends EquithermCardConfig> ext
     }
 
     if (params.shift) {
-      const rawValue = this._resolveEntityNumber(params.shift.entity, params.shift.fallback);
-      const [rawMin, rawMax] = this._getEntityRange(params.shift.entity, -15, 15);
-      const displayVal = this._toDisplayDelta(rawValue);
-      const displayMin = this._toDisplayDelta(rawMin);
-      const displayMax = this._toDisplayDelta(rawMax);
-      const formatted = this._formatParamNum(displayVal, 1, { signDisplay: 'always' }) + (this.hass?.config?.unit_system?.temperature ?? '°C');
-      const valClass = displayVal > 0 ? 'positive' : displayVal < 0 ? 'negative' : '';
-      const color = displayVal >= 0 ? 'var(--success-color, #4caf50)' : 'var(--error-color, #e53935)';
-      const shiftClick = () => params.shift!.onClick ? params.shift!.onClick!() : this._openMoreInfo(params.shift!.entity);
-      items.push(html`
-        <div class="param-item" @click=${shiftClick}>
-          <span class="param-label">Shift</span>
-          <span class="param-value ${valClass}">${formatted}</span>
-          <eq-param-bar .min=${displayMin} .max=${displayMax} .value=${displayVal} centered .color=${color} indicator></eq-param-bar>
-        </div>
-      `);
+      items.push(this._renderDeltaParamItem(
+        'Shift', params.shift.entity, params.shift.fallback, [-15, 15],
+        () => params.shift!.onClick ? params.shift!.onClick!() : this._openMoreInfo(params.shift!.entity),
+      ));
     }
 
     if (params.pid_correction) {
-      const rawValue = this._resolveEntityNumber(params.pid_correction.entity, params.pid_correction.fallback ?? 0);
-      const [rawMin, rawMax] = this._getEntityRange(params.pid_correction.entity, -10, 10);
-      const displayVal = this._toDisplayDelta(rawValue);
-      const displayMin = this._toDisplayDelta(rawMin);
-      const displayMax = this._toDisplayDelta(rawMax);
-      const formatted = this._formatParamNum(displayVal, 1, { signDisplay: 'always' }) + (this.hass?.config?.unit_system?.temperature ?? '°C');
-      const valClass = displayVal > 0 ? 'positive' : displayVal < 0 ? 'negative' : '';
-      const color = displayVal >= 0 ? 'var(--success-color, #4caf50)' : 'var(--error-color, #e53935)';
-      items.push(html`
-        <div class="param-item" @click=${() => this._openMoreInfo(params.pid_correction!.entity)}>
-          <span class="param-label">Σ</span>
-          <span class="param-value ${valClass}">${formatted}</span>
-          <eq-param-bar .min=${displayMin} .max=${displayMax} .value=${displayVal} centered .color=${color} indicator></eq-param-bar>
-        </div>
-      `);
+      items.push(this._renderDeltaParamItem(
+        'Σ', params.pid_correction.entity, params.pid_correction.fallback ?? 0, [-10, 10],
+        () => this._openMoreInfo(params.pid_correction!.entity),
+      ));
     }
 
     if (items.length === 0) return nothing;
