@@ -1,48 +1,26 @@
 // src/cards/forecast-card/forecast-card-editor.ts
-import { LitElement, html, css, nothing } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { customElement } from 'lit/decorators.js';
 import memoizeOne from 'memoize-one';
 import type { ForecastCardConfig } from './forecast-card-config';
 import { validateForecastCardConfig } from './forecast-card-config';
-import type { HomeAssistant } from '../../ha/types';
-import type { LovelaceCardEditor } from '../../ha/panels/lovelace/types';
-import { fireEvent } from '../../ha/common/dom/fire_event';
+import type { LovelaceCardConfig } from '../../ha/data/lovelace';
+import { EquithermBaseEditor } from '../../utils/base';
 import { schemaHelpers } from '../../utils/form';
 import type { HaFormSchema } from '../../utils/form';
 import setupCustomLocalize from '../../localize';
 import { FORECAST_CARD_EDITOR_NAME } from './const';
 
 @customElement(FORECAST_CARD_EDITOR_NAME)
-export class EquithermForecastCardEditor extends LitElement implements LovelaceCardEditor {
-  @property({ attribute: false }) hass!: HomeAssistant;
-  @state() private _config!: ForecastCardConfig;
-  @state() private _error?: Record<string, string>;
-
-  setConfig(config: ForecastCardConfig) {
-    this._config = { ...config };
+export class EquithermForecastCardEditor extends EquithermBaseEditor<ForecastCardConfig> {
+  setConfig(config: LovelaceCardConfig): void {
+    this._config = { ...config } as ForecastCardConfig;
   }
 
-  protected _valueChanged(ev: CustomEvent): void {
-    if (!this._config) return;
-    const newConfig = { ...this._config, ...ev.detail.value } as ForecastCardConfig;
-    try {
-      validateForecastCardConfig(newConfig);
-      this._error = undefined;
-      fireEvent(this, 'config-changed', { config: newConfig });
-    } catch (err) {
-      this._error = { base: (err as Error).message };
-    }
+  protected _validate(config: ForecastCardConfig): void {
+    validateForecastCardConfig(config);
   }
 
-  static styles = css`
-    ha-form { display: block; }
-    ha-expandable {
-      margin: 8px 0;
-      --ha-card-border-radius: 8px;
-    }
-  `;
-
-  private _getSchema = memoizeOne((curveFromEntities: boolean, tunable: boolean): readonly HaFormSchema[] => {
+  private _schemaMemo = memoizeOne((curveFromEntities: boolean, tunable: boolean): readonly HaFormSchema[] => {
     const localize = setupCustomLocalize(this.hass);
     return [
       // Required entities — top level
@@ -96,33 +74,7 @@ export class EquithermForecastCardEditor extends LitElement implements LovelaceC
     ] as const satisfies readonly HaFormSchema[];
   });
 
-  private _computeLabel = (schema: { name: string; required?: boolean }): string => {
-    const localize = setupCustomLocalize(this.hass);
-    const key = `editor.${schema.name}`;
-    const localized = localize(key);
-    const label = localized !== key ? localized : schema.name;
-    return schema.required === false ? `${label} (${localize('editor.optional')})` : label;
-  };
-
-  private _computeHelper = (schema: { name: string }): string => {
-    const localize = setupCustomLocalize(this.hass);
-    const key = `editor.helper.${schema.name}`;
-    const localized = localize(key);
-    return localized !== key ? localized : '';
-  };
-
-  render() {
-    if (!this.hass || !this._config) return nothing;
-    return html`
-      <ha-form
-        .hass=${this.hass}
-        .data=${this._config}
-        .schema=${this._getSchema(!!this._config.curve_from_entities, !!this._config.tunable)}
-        .computeLabel=${this._computeLabel}
-        .computeHelper=${this._computeHelper}
-        .error=${this._error}
-        @value-changed=${this._valueChanged}
-      ></ha-form>
-    `;
+  protected _getSchema(): readonly HaFormSchema[] {
+    return this._schemaMemo(!!this._config.curve_from_entities, !!this._config.tunable);
   }
 }
