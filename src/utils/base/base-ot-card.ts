@@ -12,9 +12,16 @@ export abstract class OtBaseCard<TConfig extends OtCardConfig>
 
   // ── Header (template method) ──
 
+  /** Override to customize header icon color. Return a CSS rgb() value or var() reference. */
+  protected _headerIconColor(): string {
+    return 'var(--rgb-disabled, 158,158,158)';
+  }
+
   protected _renderHeaderIcon(iconName: string, clickEntity: string): ReturnType<typeof html> {
     return html`
-      <ha-tile-icon .interactive @click=${() => this._openMoreInfo(clickEntity)}>
+      <ha-tile-icon .interactive=${true}
+        style="--tile-icon-color: rgb(${this._headerIconColor()}); --tile-icon-size: 42px"
+        @click=${() => this._openMoreInfo(clickEntity)}>
         <ha-icon slot="icon" .icon=${iconName}></ha-icon>
       </ha-tile-icon>
     `;
