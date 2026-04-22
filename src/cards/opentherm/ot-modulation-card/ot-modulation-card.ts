@@ -185,35 +185,7 @@ export class OtModulationCard extends OtBaseCard<OtModulationCardConfig> {
           align-items: center;
           gap: 8px;
         }
-        input[type="range"] {
-          flex: 1;
-          height: 4px;
-          -webkit-appearance: none;
-          appearance: none;
-          background: var(--secondary-background-color, rgba(0,0,0,0.08));
-          border-radius: 2px;
-          outline: none;
-        }
-        input[type="range"]::-webkit-slider-thumb {
-          -webkit-appearance: none;
-          appearance: none;
-          width: 14px;
-          height: 14px;
-          border-radius: 50%;
-          background: var(--primary-color);
-          cursor: pointer;
-          border: 2px solid var(--card-background-color, #fff);
-          box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-        }
-        input[type="range"]::-moz-range-thumb {
-          width: 14px;
-          height: 14px;
-          border-radius: 50%;
-          background: var(--primary-color);
-          cursor: pointer;
-          border: 2px solid var(--card-background-color, #fff);
-          box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-        }
+        ha-slider { width: 100%; }
         .timeline-section {
           padding: 6px 12px 0;
           border-top: 1px solid var(--divider-color, rgba(0,0,0,0.08));
@@ -258,13 +230,14 @@ export class OtModulationCard extends OtBaseCard<OtModulationCardConfig> {
           </div>
           <div class="max-row">
             <span class="mod-label">${localize('opentherm.modulation_card.max')}</span>
-            <input type="range"
-              .min=${String(maxMin)}
-              .max=${String(maxMax)}
-              .step=${'1'}
-              .value=${String(maxMod)}
+            <ha-slider
+              .min=${maxMin}
+              .max=${maxMax}
+              .step=${1}
+              .value=${maxMod}
+              pin
               @change=${(e: Event) => this._setMaxModulation(parseFloat((e.target as HTMLInputElement).value))}
-            />
+            ></ha-slider>
             <span class="mod-value">${maxMod.toFixed(0)}%</span>
           </div>
         </div>
