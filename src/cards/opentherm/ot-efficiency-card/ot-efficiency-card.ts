@@ -57,17 +57,10 @@ export class OtEfficiencyCard extends EquithermEChartCard<OtEfficiencyCardConfig
     return !isNaN(returnTemp) && returnTemp < threshold;
   }
 
-  protected override _renderHeaderIcon(iconName: string, clickEntity: string) {
-    const tileColor = this._isCondensing
+  protected override _headerIconColor(): string {
+    return this._isCondensing
       ? 'var(--rgb-success, 76,175,80)'
       : 'var(--rgb-disabled, 158,158,158)';
-    return html`
-      <ha-tile-icon .interactive=${true}
-        style="--tile-icon-color: rgb(${tileColor}); --tile-icon-size: 42px"
-        @click=${() => this._openMoreInfo(clickEntity)}>
-        <ha-icon slot="icon" .icon=${iconName}></ha-icon>
-      </ha-tile-icon>
-    `;
   }
 
   protected override _renderHeaderBadges(): ReturnType<typeof html> {
