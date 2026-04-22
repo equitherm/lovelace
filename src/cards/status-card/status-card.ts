@@ -47,7 +47,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
   }
 
   public getGridOptions(): LovelaceGridOptions {
-    return { columns: 12, rows: 3, min_rows: 1 };
+    return { columns: 12, rows: this._config.show_last_updated ? 4 : 3, min_rows: 3 };
   }
 
   static async getStubConfig(hass: HomeAssistant): Promise<StatusCardConfig> {

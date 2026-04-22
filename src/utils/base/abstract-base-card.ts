@@ -72,20 +72,23 @@ export abstract class BaseCard<TConfig extends Record<string, unknown>>
     return undefined;
   }
 
-  /** Render the footer meta line — only visible when entity is stale (>5 min) or unavailable. */
-  protected _renderFooterMeta(): typeof nothing | ReturnType<typeof html> {
-    if (!this._showFooterMeta()) return nothing;
-
+  /** Whether the tracked entity is stale (>5 min) or unavailable. */
+  protected _isFooterVisible(): boolean {
     const entityId = this._lastUpdatedEntity();
     const state = this._entityState(entityId);
-    if (!entityId || !state || !this.hass) return nothing;
+    if (!entityId || !state || !this.hass) return false;
 
     const isUnavailable = state.state === 'unavailable' || state.state === 'unknown';
-    const staleThresholdMs = 5 * 60 * 1000;
     const age = Date.now() - new Date(state.last_updated).getTime();
-    const isStale = age > staleThresholdMs;
+    return isUnavailable || age > 5 * 60 * 1000;
+  }
 
-    if (!isUnavailable && !isStale) return nothing;
+  /** Render the footer meta line — only visible when entity is stale (>5 min) or unavailable. */
+  protected _renderFooterMeta(): typeof nothing | ReturnType<typeof html> {
+    if (!this._showFooterMeta() || !this._isFooterVisible()) return nothing;
+
+    const state = this._entityState(this._lastUpdatedEntity())!;
+    const isUnavailable = state.state === 'unavailable' || state.state === 'unknown';
 
     return html`
       <div class="footer-meta${isUnavailable ? ' footer-meta--warn' : ''}">
