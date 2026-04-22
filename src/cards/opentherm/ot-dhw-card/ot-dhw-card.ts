@@ -69,21 +69,18 @@ export class OtDhwCard extends OtBaseCard<OtDhwCardConfig> {
     return this._resolveEntityNumber(this._config.dhw_setpoint_entity, NaN);
   }
 
-  private get _setpointMin(): number {
-    return this._entityAttr<number>(this._config.dhw_setpoint_entity, 'min') ?? 30;
-  }
-
-  private get _setpointMax(): number {
-    return this._entityAttr<number>(this._config.dhw_setpoint_entity, 'max') ?? 60;
+  private get _sliderProps() {
+    const id = this._config.dhw_setpoint_entity;
+    return {
+      min: this._entityAttr<number>(id, 'min') ?? 30,
+      max: this._entityAttr<number>(id, 'max') ?? 60,
+      step: this._entityAttr<number>(id, 'step') ?? 0.5,
+    };
   }
 
   private get _dhwTemp(): number {
     if (!this._config.dhw_temp_entity) return NaN;
     return this._resolveEntityNumber(this._config.dhw_temp_entity, NaN);
-  }
-
-  private get _setpointStep(): number {
-    return this._entityAttr<number>(this._config.dhw_setpoint_entity, 'step') ?? 0.5;
   }
 
   protected override _headerIconColor(): string {
@@ -246,10 +243,10 @@ export class OtDhwCard extends OtBaseCard<OtDhwCardConfig> {
               <span class="slider-value">${isNaN(setpoint) ? '—' : this._formatCalcTemp(setpoint)}</span>
             </div>
             <ha-slider
-              .min=${this._setpointMin}
-              .max=${this._setpointMax}
-              .step=${this._setpointStep}
-              .value=${isNaN(setpoint) ? this._setpointMin : setpoint}
+              .min=${this._sliderProps.min}
+              .max=${this._sliderProps.max}
+              .step=${this._sliderProps.step}
+              .value=${isNaN(setpoint) ? this._sliderProps.min : setpoint}
               .disabled=${!enabled}
               pin
               @change=${this._setpointChanged}
