@@ -93,6 +93,10 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
     this._config = validateStatusCardConfig(config);
   }
 
+  protected override _lastUpdatedEntity(): string | undefined {
+    return this._config.flow_entity;
+  }
+
   private get _hasParamsFooter(): boolean {
     const cfg = this._config;
     return !!cfg.hc_entity || !!cfg.shift_entity || !!cfg.n_entity || !!cfg.pid_correction_entity;
@@ -211,11 +215,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
           curveOutput: this._curveOutputTempFormatted || undefined,
         })}
         ${this._renderParamsFooterWithTune()}
-        ${this._config.show_last_updated ? html`
-          <div class="footer-meta">
-            ${this._renderLastUpdated(this._config.flow_entity)}
-          </div>
-        ` : nothing}
+        ${this._renderFooterMeta()}
       </ha-card>
 
       ${this._tuningDialogConfig && this._showTuningDialog ? html`

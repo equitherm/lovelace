@@ -120,6 +120,10 @@ export class EquithermCurveCard extends EquithermEChartCard<CurveCardConfig> {
     this._config = validateCurveCardConfig(config);
   }
 
+  protected override _lastUpdatedEntity(): string | undefined {
+    return this._config.flow_entity;
+  }
+
   private get _tTarget(): number {
     return this._climate?.attributes.temperature ?? 21;
   }
@@ -501,11 +505,7 @@ export class EquithermCurveCard extends EquithermEChartCard<CurveCardConfig> {
           curveOutput: this._curveOutputTempFormatted || undefined,
         })}
         ${this._renderParamsFooterContent()}
-        ${this._config.show_last_updated ? html`
-          <div class="footer-meta">
-            ${this._renderLastUpdated(this._config.flow_entity)}
-          </div>
-        ` : nothing}
+        ${this._renderFooterMeta()}
       </ha-card>
 
       ${this._dialogConfig && this._showDialog ? html`

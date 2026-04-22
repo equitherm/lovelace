@@ -93,6 +93,10 @@ export class EquithermForecastCard extends EquithermEChartCard<ForecastCardConfi
     this._config = validateForecastCardConfig(config);
   }
 
+  protected override _lastUpdatedEntity(): string | undefined {
+    return this._config.weather_entity;
+  }
+
   private get _tTarget(): number {
     return this._climate?.attributes.temperature ?? 21;
   }
@@ -473,11 +477,7 @@ export class EquithermForecastCard extends EquithermEChartCard<ForecastCardConfi
           outdoorClickEntity: this._config.outdoor_entity ?? this._config.weather_entity,
         })}
         ${this._config.curve_from_entities ? this._renderParamsFooterWithTune() : nothing}
-        ${this._config.show_last_updated ? html`
-          <div class="footer-meta">
-            ${this._renderLastUpdated(this._config.weather_entity)}
-          </div>
-        ` : nothing}
+        ${this._renderFooterMeta()}
       </ha-card>
 
       ${this._tuningDialogConfig && this._showDialog ? html`
