@@ -1,5 +1,4 @@
 import { html, nothing, PropertyValues, type TemplateResult } from 'lit';
-import { styleMap } from 'lit/directives/style-map.js';
 import type { LovelaceCard } from '../../ha/panels/lovelace/types';
 import type { ClimateEntity } from '../../ha/data/climate';
 import { formatNumber } from '../../ha';
@@ -110,25 +109,16 @@ export abstract class EquithermBaseCard<TConfig extends EquithermCardConfig> ext
     `;
   }
 
-  // === Shared Header ===
+  // === Header ===
 
-  /** Render the header icon tile with HVAC action color. */
-  protected _renderHeaderIcon(iconName: string, clickEntity: string): ReturnType<typeof html> | typeof nothing {
+  /** HVAC action color for header icon. */
+  protected override _headerIconColor(): string {
     const rawAction = this._climate?.attributes.hvac_action ?? 'off';
-    const color = getHvacActionColor(normalizeHvacAction(rawAction));
-    return html`
-      <ha-tile-icon
-        .interactive=${true}
-        style=${styleMap({ '--tile-icon-color': `rgb(${color})`, '--tile-icon-size': '42px' })}
-        @click=${() => this._openMoreInfo(clickEntity)}
-      >
-        <ha-icon slot="icon" .icon=${iconName}></ha-icon>
-      </ha-tile-icon>
-    `;
+    return getHvacActionColor(normalizeHvacAction(rawAction));
   }
 
   /** Render the title and optional climate target temp state line. */
-  protected _renderHeaderInfo(title: string, subtitle?: string | typeof nothing): ReturnType<typeof html> {
+  protected override _renderHeaderInfo(title: string, subtitle?: string | typeof nothing): ReturnType<typeof html> {
     const stateLine = subtitle !== undefined
       ? (subtitle === nothing ? nothing : html`<span class="state">${subtitle}</span>`)
       : (this._climate?.attributes.temperature != null
@@ -214,7 +204,7 @@ export abstract class EquithermBaseCard<TConfig extends EquithermCardConfig> ext
   }
 
   /** Render the full badges row. */
-  protected _renderHeaderBadges(): ReturnType<typeof html> {
+  protected override _renderHeaderBadges(): ReturnType<typeof html> {
     const manual = this._isManualPreset;
     return html`
       <div class="badges">
@@ -223,18 +213,6 @@ export abstract class EquithermBaseCard<TConfig extends EquithermCardConfig> ext
         ${this._renderManualBadge()}
         ${this._renderExtraBadges()}
         ${this._renderHvacBadge()}
-      </div>
-    `;
-  }
-
-  /** Shared header renderer for all equitherm cards. */
-  protected _renderHeader(opts: { iconName: string; clickEntity: string; title: string; subtitle?: string | typeof nothing }): ReturnType<typeof html> | typeof nothing {
-    if (!this._config || !this.hass) return nothing;
-    return html`
-      <div class="header">
-        ${this._renderHeaderIcon(opts.iconName, opts.clickEntity)}
-        ${this._renderHeaderInfo(opts.title, opts.subtitle)}
-        ${this._renderHeaderBadges()}
       </div>
     `;
   }

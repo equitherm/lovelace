@@ -1,4 +1,5 @@
 import { html, nothing } from 'lit';
+import { styleMap } from 'lit/directives/style-map.js';
 import { state } from 'lit/decorators.js';
 import type { HassEntity } from 'home-assistant-js-websocket';
 import type { LovelaceCard, LovelaceGridOptions } from '../../ha/panels/lovelace/types';
@@ -93,6 +94,60 @@ export abstract class BaseCard<TConfig extends Record<string, unknown>>
     return html`
       <div class="footer-meta${isUnavailable ? ' footer-meta--warn' : ''}">
         <ha-relative-time .hass=${this.hass} .datetime=${state.last_updated} capitalize></ha-relative-time>
+      </div>
+    `;
+  }
+
+  // === Shared Header ===
+
+  /** Hook to customize header icon color. Return a CSS rgb() value or var() reference. */
+  protected _headerIconColor(): string {
+    return 'var(--rgb-disabled, 158,158,158)';
+  }
+
+  /** Render the header icon tile with customizable color via _headerIconColor(). */
+  protected _renderHeaderIcon(iconName: string, clickEntity: string): ReturnType<typeof html> {
+    return html`
+      <ha-tile-icon
+        .interactive=${true}
+        style=${styleMap({ '--tile-icon-color': `rgb(${this._headerIconColor()})`, '--tile-icon-size': '42px' })}
+        @click=${() => this._openMoreInfo(clickEntity)}
+      >
+        <ha-icon slot="icon" .icon=${iconName}></ha-icon>
+      </ha-tile-icon>
+    `;
+  }
+
+  /** Render the title and optional subtitle. */
+  protected _renderHeaderInfo(title: string, subtitle?: string | typeof nothing): ReturnType<typeof html> {
+    const stateLine = subtitle !== undefined && subtitle !== nothing
+      ? html`<span class="state">${subtitle}</span>` : nothing;
+    return html`
+      <div class="header-info">
+        <span class="title">${title}</span>
+        ${stateLine}
+      </div>
+    `;
+  }
+
+  /** Override to add badges to the header. */
+  protected _renderHeaderBadges(): ReturnType<typeof html> | typeof nothing {
+    return nothing;
+  }
+
+  /** Shared header renderer for all cards. */
+  protected _renderHeader(opts: {
+    iconName: string;
+    clickEntity: string;
+    title: string;
+    subtitle?: string | typeof nothing;
+  }): ReturnType<typeof html> | typeof nothing {
+    if (!this._config || !this.hass) return nothing;
+    return html`
+      <div class="header">
+        ${this._renderHeaderIcon(opts.iconName, opts.clickEntity)}
+        ${this._renderHeaderInfo(opts.title, opts.subtitle)}
+        ${this._renderHeaderBadges()}
       </div>
     `;
   }
