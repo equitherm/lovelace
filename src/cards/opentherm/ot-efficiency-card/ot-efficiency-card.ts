@@ -112,20 +112,17 @@ export class OtEfficiencyCard extends EquithermEChartCard<OtEfficiencyCardConfig
     `;
   }
 
-  override connectedCallback() {
-    super.connectedCallback();
+  protected override _onChartReconnected(): void {
     this._fetchHistory();
     this._fetchTimer = setInterval(() => this._fetchHistory(), 60_000);
   }
 
-  override disconnectedCallback() {
-    super.disconnectedCallback();
+  protected override _onChartDisconnecting(): void {
     clearInterval(this._fetchTimer);
     this._fetchTimer = undefined;
   }
 
   private async _fetchHistory(): Promise<void> {
-    if (!this.hass) return;
     const hours = this._config.hours ?? DEFAULT_HOURS;
     const history = await OtHistoryHelper.fetch(
       this.hass,
