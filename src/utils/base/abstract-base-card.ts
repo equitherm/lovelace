@@ -4,6 +4,8 @@ import { state } from 'lit/decorators.js';
 import type { HassEntity } from 'home-assistant-js-websocket';
 import type { LovelaceCard, LovelaceGridOptions } from '../../ha/panels/lovelace/types';
 import { formatNumber } from '../../ha';
+import { computeEntityNameDisplay } from '../../ha/common/entity/compute_entity_name_display';
+import setupCustomLocalize from '../../localize';
 import { EquithermBaseElement } from './base-element';
 import { executeAction } from '../actions';
 
@@ -61,6 +63,21 @@ export abstract class BaseCard<TConfig extends Record<string, unknown>>
     if (entityId && this.hass) {
       executeAction(this, this.hass, { action: 'more-info' }, entityId);
     }
+  }
+
+  /** Hook — override to return the primary entity used for the card title. */
+  protected _titleEntity(): string | undefined {
+    return undefined;
+  }
+
+  /** Resolve card title: entity name → config.name → fallback i18n key. */
+  protected _computeCardTitle(fallbackKey: string): string {
+    const localize = setupCustomLocalize(this.hass);
+    const fallback = localize(fallbackKey);
+    const stateObj = this._entityState(this._titleEntity());
+    const configName = (this._config as Record<string, unknown>).name as string | undefined;
+    if (!stateObj) return configName ?? fallback;
+    return computeEntityNameDisplay(stateObj, configName, this.hass) || configName || fallback;
   }
 
   /** Override to control footer visibility. Defaults to checking config.show_last_updated. */
