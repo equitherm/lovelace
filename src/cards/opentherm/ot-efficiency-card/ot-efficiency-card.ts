@@ -161,10 +161,7 @@ export class OtEfficiencyCard extends EquithermEChartCard<OtEfficiencyCardConfig
   private _buildTooltipFormatter(): (params: any) => string {
     const unit = this.hass?.config?.unit_system?.temperature ?? '°C';
     return (params: any) => {
-      const time = new Date(params[0].value[0]).toLocaleTimeString(
-        this.hass?.locale?.language,
-        { hour: '2-digit', minute: '2-digit' },
-      );
+      const time = this._formatChartTime(params[0].value[0] as number);
       let html = `<span style="opacity:0.6">${time}</span><br/>`;
       for (const p of params) {
         const marker = `<span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:${p.color};"></span>`;
