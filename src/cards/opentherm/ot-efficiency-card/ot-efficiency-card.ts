@@ -10,7 +10,6 @@ import { OT_EFFICIENCY_CARD_NAME, OT_EFFICIENCY_CARD_EDITOR_NAME } from './const
 import { validateOtEfficiencyCardConfig } from './ot-efficiency-card-config';
 import { OtHistoryHelper, type OtHistoryPoint } from '../../../utils/ot-history';
 import { resolveRgbColor } from '../../../utils/hvac-colors';
-import { computeEntityNameDisplay } from '../../../ha/common/entity/compute_entity_name_display';
 import setupCustomLocalize from '../../../localize';
 import '../../../shared/badge-info';
 
@@ -86,6 +85,10 @@ export class OtEfficiencyCard extends EquithermEChartCard<OtEfficiencyCardConfig
     if (!this._isChActive) return false;
     const threshold = this._config.condensing_threshold ?? this._defaultThreshold;
     return !isNaN(this._returnTemp) && this._returnTemp >= threshold;
+  }
+
+  protected override _titleEntity(): string | undefined {
+    return this._config.boiler_temp_entity;
   }
 
   protected override _headerIconColor(): string {
@@ -247,10 +250,7 @@ export class OtEfficiencyCard extends EquithermEChartCard<OtEfficiencyCardConfig
     if (!this._config || !this.hass) return nothing;
     const cfg = this._config;
     const localize = setupCustomLocalize(this.hass);
-    const boilerState = this._entityState(cfg.boiler_temp_entity);
-    const title = boilerState
-      ? computeEntityNameDisplay(boilerState, cfg.name, this.hass) || localize('opentherm.efficiency_card.default_title')
-      : localize('opentherm.efficiency_card.default_title');
+    const title = this._computeCardTitle('opentherm.efficiency_card.default_title');
 
     return html`
       <ha-card>

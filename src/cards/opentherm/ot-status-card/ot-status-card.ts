@@ -4,7 +4,6 @@ import type { OtStatusCardConfig } from './ot-status-card-config';
 import type { HomeAssistant } from '../../../ha';
 import type { LovelaceGridOptions } from '../../../ha/panels/lovelace/types';
 import { computeDomain } from '../../../ha/common/entity/compute_domain';
-import { computeEntityNameDisplay } from '../../../ha/common/entity/compute_entity_name_display';
 import { OtBaseCard, headerStyles } from '../../../utils/base';
 import { cardStyle } from '../../../utils/card-styles';
 import { registerCustomCard } from '../../../utils/register-card';
@@ -78,6 +77,10 @@ export class OtStatusCard extends OtBaseCard<OtStatusCardConfig> {
   private get _modulation(): number {
     if (!this._config.modulation_entity) return NaN;
     return this._resolveEntityNumber(this._config.modulation_entity, NaN);
+  }
+
+  protected override _titleEntity(): string | undefined {
+    return this._config.boiler_temp_entity;
   }
 
   protected override _headerIconColor(): string {
@@ -216,10 +219,7 @@ export class OtStatusCard extends OtBaseCard<OtStatusCardConfig> {
     const mod = this._modulation;
     const setpoint = cfg.setpoint_entity ? this._resolveEntityNumber(cfg.setpoint_entity, NaN) : NaN;
     const fmtTemp = (v: number) => isNaN(v) ? '—' : this._formatCalcTemp(v);
-    const boilerState = this._entityState(cfg.boiler_temp_entity);
-    const title = boilerState
-      ? computeEntityNameDisplay(boilerState, cfg.name, this.hass) || localize('opentherm.status_card.default_title')
-      : localize('opentherm.status_card.default_title');
+    const title = this._computeCardTitle('opentherm.status_card.default_title');
 
     return html`
       <ha-card>

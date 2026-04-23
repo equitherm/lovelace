@@ -4,7 +4,6 @@ import type { OtDhwCardConfig } from './ot-dhw-card-config';
 import type { HomeAssistant } from '../../../ha';
 import type { LovelaceGridOptions } from '../../../ha/panels/lovelace/types';
 import { computeDomain } from '../../../ha/common/entity/compute_domain';
-import { computeEntityNameDisplay } from '../../../ha/common/entity/compute_entity_name_display';
 import { OtBaseCard, headerStyles } from '../../../utils/base';
 import { cardStyle } from '../../../utils/card-styles';
 import { registerCustomCard } from '../../../utils/register-card';
@@ -81,6 +80,10 @@ export class OtDhwCard extends OtBaseCard<OtDhwCardConfig> {
   private get _dhwTemp(): number {
     if (!this._config.dhw_temp_entity) return NaN;
     return this._resolveEntityNumber(this._config.dhw_temp_entity, NaN);
+  }
+
+  protected override _titleEntity(): string | undefined {
+    return this._config.dhw_enable_entity;
   }
 
   protected override _headerIconColor(): string {
@@ -215,10 +218,7 @@ export class OtDhwCard extends OtBaseCard<OtDhwCardConfig> {
     const setpoint = this._setpointValue;
     const dhwTemp = this._dhwTemp;
     const hasDhwTemp = cfg.dhw_temp_entity && !isNaN(dhwTemp);
-    const enableState = this._entityState(cfg.dhw_enable_entity);
-    const title = enableState
-      ? computeEntityNameDisplay(enableState, cfg.name, this.hass) || localize('opentherm.dhw_card.default_title')
-      : localize('opentherm.dhw_card.default_title');
+    const title = this._computeCardTitle('opentherm.dhw_card.default_title');
 
     return html`
       <ha-card>

@@ -8,7 +8,6 @@ import { registerCustomCard } from '../../../utils/register-card';
 import { OT_MODULATION_CARD_NAME, OT_MODULATION_CARD_EDITOR_NAME } from './const';
 import { validateOtModulationCardConfig } from './ot-modulation-card-config';
 import { OtHistoryHelper, type OtHistoryPoint } from '../../../utils/ot-history';
-import { computeEntityNameDisplay } from '../../../ha/common/entity/compute_entity_name_display';
 import setupCustomLocalize from '../../../localize';
 import '../../../shared/badge-info';
 import '../../../shared/eq-binary-timeline';
@@ -55,6 +54,10 @@ export class OtModulationCard extends OtBaseCard<OtModulationCardConfig> {
 
   private get _flameOn(): boolean {
     return this._entityState(this._config.flame_entity)?.state === 'on';
+  }
+
+  protected override _titleEntity(): string | undefined {
+    return this._config.modulation_entity;
   }
 
   protected override _headerIconColor(): string {
@@ -218,10 +221,7 @@ export class OtModulationCard extends OtBaseCard<OtModulationCardConfig> {
     const maxMod = this._resolveEntityNumber(cfg.max_modulation_entity, 100);
     const maxMin = this._entityAttr<number>(cfg.max_modulation_entity, 'min') ?? 0;
     const maxMax = this._entityAttr<number>(cfg.max_modulation_entity, 'max') ?? 100;
-    const modState = this._entityState(cfg.modulation_entity);
-    const title = modState
-      ? computeEntityNameDisplay(modState, cfg.name, this.hass) || localize('opentherm.modulation_card.default_title')
-      : localize('opentherm.modulation_card.default_title');
+    const title = this._computeCardTitle('opentherm.modulation_card.default_title');
 
     const { segments, startTime, endTime } = this._timelineCache ?? this._buildTimelineData();
 
