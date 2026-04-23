@@ -63,7 +63,7 @@ export function normalizeHvacAction(action: string | undefined): HvacAction {
 /**
  * Get RGB triple CSS var for an HVAC action.
  * Maps action → mode → --rgb-state-climate-{mode} CSS variable.
- * Used by eq-badge-info and ApexCharts which need RGB triples.
+ * Used by eq-badge-info and ECharts which need RGB triples.
  */
 export function getHvacActionColor(action: HvacAction): string {
   const mode = CLIMATE_HVAC_ACTION_TO_MODE[action] ?? 'off';
@@ -127,12 +127,12 @@ export function getHvacBadgeProps(
 }
 
 // ============================================================================
-// Runtime Color Resolution (for ApexCharts)
+// Runtime Color Resolution (for ECharts)
 // ============================================================================
 
 /**
  * Resolve a CSS variable to its actual RGB value at runtime.
- * Used for ApexCharts which can't parse CSS variables.
+ * Used for ECharts which can't parse CSS variables.
  */
 export function resolveRgbColor(element: Element, action: HvacAction): string {
   const cssVar = getHvacActionColor(action);

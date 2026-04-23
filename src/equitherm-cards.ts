@@ -1,10 +1,9 @@
-// Cards
 import './cards/status-card/status-card';
 import './cards/curve-card/curve-card';
 import './cards/forecast-card/forecast-card';
-import './cards/tuning-card/tuning-card';
 
 // Shared components
+import './shared/eq-tuning-dialog';
 
 console.info(
   '%c EQUITHERM-CARDS %c __VERSION__ ',
