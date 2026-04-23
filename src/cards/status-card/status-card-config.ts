@@ -20,8 +20,6 @@ export interface StatusCardConfig {
   tunable?: boolean;
   recalculate_service?: string;
   name?: string | EntityNameItem | EntityNameItem[];
-  /** @deprecated Use `name` instead */
-  title?: string;
   [key: string]: unknown;
 }
 
@@ -44,11 +42,13 @@ export const StatusCardConfigStruct = type({
   tunable: optional(boolean()),
   recalculate_service: optional(string()),
   name: optional(any()),
-  title: optional(any()),
 });
 
 /** Validate and apply defaults */
 export function validateStatusCardConfig(config: unknown): StatusCardConfig {
-  assert(config, StatusCardConfigStruct);
-  return config as StatusCardConfig;
+  const c = { ...(config as Record<string, unknown>) };
+  if ('title' in c && !('name' in c)) c.name = c.title;
+  delete c.title;
+  assert(c, StatusCardConfigStruct);
+  return c as StatusCardConfig;
 }

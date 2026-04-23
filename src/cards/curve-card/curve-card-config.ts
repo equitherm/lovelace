@@ -16,8 +16,6 @@ export interface CurveCardConfig {
   show_kpi_footer?: boolean;
   show_params_footer?: boolean;
   name?: string | EntityNameItem | EntityNameItem[];
-  /** @deprecated Use `name` instead */
-  title?: string;
   // Live curve parameters from device entities
   curve_from_entities?: boolean;
   hc_entity?: string;
@@ -51,7 +49,6 @@ export const CurveCardConfigStruct = type({
   show_last_updated: optional(boolean()),
   show_kpi_footer: optional(boolean()),
   show_params_footer: optional(boolean()),
-  title: optional(any()),
   name: optional(any()),
   curve_from_entities: optional(any()),
   hc_entity: optional(string()),
@@ -76,6 +73,9 @@ export const CURVE_CARD_DEFAULTS: Required<
 
 /** Validate and apply defaults */
 export function validateCurveCardConfig(config: unknown): CurveCardConfig {
-  assert(config, CurveCardConfigStruct);
-  return { ...CURVE_CARD_DEFAULTS, ...config };
+  const c = { ...(config as Record<string, unknown>) };
+  if ('title' in c && !('name' in c)) c.name = c.title;
+  delete c.title;
+  assert(c, CurveCardConfigStruct);
+  return { ...CURVE_CARD_DEFAULTS, ...(c as CurveCardConfig) };
 }
