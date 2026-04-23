@@ -1,20 +1,22 @@
-import { html, css, nothing } from 'lit';
+import { html, css, nothing, type TemplateResult } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
-import type ApexCharts from 'apexcharts';
 import type { ForecastCardConfig } from './forecast-card-config';
 import type { HomeAssistant } from '../../ha';
 import type { ForecastPoint, ForecastCurveConfig } from '../../utils/forecast';
-import { computeDomain } from '../../ha/common/entity/compute_domain';
-import { EquithermChartCard, headerStyles } from '../../utils/base';
-import { computeEntityNameDisplay } from '../../ha/common/entity/compute_entity_name_display';
-import { cardStyle } from '../../utils/card-styles';
+import { EquithermEChartCard, type EChartConfig, headerStyles } from '../../utils/base';
+import { cardStyle, paramsFooterStyles, kpiFooterStyles, tunableFooterStyles } from '../../utils/card-styles';
 import { registerCustomCard } from '../../utils/register-card';
-import { FORECAST_CARD_NAME, FORECAST_CARD_EDITOR_NAME, CLIMATE_ENTITY_DOMAINS, SENSOR_ENTITY_DOMAINS } from './const';
+import { FORECAST_CARD_NAME, FORECAST_CARD_EDITOR_NAME } from './const';
+import { findClimateEntity, findWeatherEntity, findFlowEntity } from '../../utils/stub-config';
 import { validateForecastCardConfig } from './forecast-card-config';
 import { resolveRgbColor } from '../../utils/hvac-colors';
 import { buildForecastSeries, peakDemand } from '../../utils/forecast';
 import setupCustomLocalize from '../../localize';
 import '../../shared/badge-info';
+import '../../shared/eq-manual-overlay';
+import '../../shared/eq-param-bar';
+import '../../shared/eq-tuning-dialog';
+import { buildTuningDialogConfig } from '../../utils/tuning-dialog-config';
 
 registerCustomCard({
   type: FORECAST_CARD_NAME,
@@ -22,23 +24,12 @@ registerCustomCard({
   description: 'Heating forecast based on weather predictions',
 });
 
-/** Series data point for ApexCharts (datetime category axis) */
-interface FlowDataPoint {
-  x: string;
-  y: number;
-}
-
-interface OutdoorDataPoint {
-  x: string;
-  y: number;
-}
-
 @customElement(FORECAST_CARD_NAME)
-export class EquithermForecastCard extends EquithermChartCard<ForecastCardConfig> {
+export class EquithermForecastCard extends EquithermEChartCard<ForecastCardConfig> {
   @state() private _forecastPoints: ForecastPoint[] = [];
   private _unsub?: () => void;
 
-  protected updated(changedProps: Map<string, unknown>): void {
+  protected override updated(changedProps: Map<string, unknown>): void {
     super.updated(changedProps);
 
     // Subscribe to forecast on config change or first hass
@@ -46,52 +37,17 @@ export class EquithermForecastCard extends EquithermChartCard<ForecastCardConfig
       this._subscribeForecast();
     }
 
-    if (!this._chart) return;
-
-    // Handle hass changes (entity states + dark mode)
-    if (changedProps.has('hass') && this.hass) {
-      const isDark = this._isDark;
-      const darkChanged = this._prevDarkMode !== undefined && this._prevDarkMode !== isDark;
-      this._prevDarkMode = isDark;
-
-      if (darkChanged) {
-        this._updateChartOptions();
-      }
-      // Forecast data arrives via subscription callback, no manual re-fetch needed
+    if (changedProps.has('_forecastPoints')) {
+      this._updateChartConfig();
     }
   }
 
   static async getStubConfig(hass: HomeAssistant): Promise<ForecastCardConfig> {
-    const states = hass.states;
-    const entityIds = Object.keys(states);
-
-    // Find climate entity
-    const climateEntity = entityIds.find(e =>
-      CLIMATE_ENTITY_DOMAINS.includes(computeDomain(e))
-    );
-
-    // Find weather entity
-    const weatherEntity = entityIds.find(e =>
-      computeDomain(e) === 'weather'
-    );
-
-    // Find temperature sensors
-    const tempSensors = entityIds.filter(e => {
-      const state = states[e];
-      return SENSOR_ENTITY_DOMAINS.includes(computeDomain(e))
-        && state?.attributes?.device_class === 'temperature';
-    });
-
-    // Prefer flow/supply in name for flow temp
-    const flowEntity = tempSensors.find(e =>
-      e.includes('flow') || e.includes('supply') || e.includes('forward')
-    ) ?? tempSensors[0];
-
     return {
       type: 'custom:equitherm-forecast-card',
-      weather_entity: weatherEntity ?? '',
-      climate_entity: climateEntity ?? '',
-      flow_entity: flowEntity ?? '',
+      weather_entity: findWeatherEntity(hass) ?? '',
+      climate_entity: findClimateEntity(hass) ?? '',
+      flow_entity: findFlowEntity(hass) ?? '',
       hours: 24,
       hc: 1.2,
       n: 1.25,
@@ -108,6 +64,11 @@ export class EquithermForecastCard extends EquithermChartCard<ForecastCardConfig
 
   setConfig(config: unknown) {
     this._config = validateForecastCardConfig(config);
+    this._dialogConfig = buildTuningDialogConfig(this._config);
+  }
+
+  protected override _lastUpdatedEntity(): string | undefined {
+    return this._config.weather_entity;
   }
 
   private get _tTarget(): number {
@@ -116,17 +77,34 @@ export class EquithermForecastCard extends EquithermChartCard<ForecastCardConfig
 
   private get _flowTemp(): number {
     const s = this._entityState(this._config.flow_entity);
-    return s ? parseFloat(s.state) : this._config.min_flow;
+    if (s) {
+      const val = parseFloat(s.state);
+      if (!isNaN(val)) return this._fromDisplayTemp(val);
+    }
+    return this._config.min_flow; // config values always °C
   }
 
-  /** Current outdoor temp from dedicated sensor (Kalman etc.) or weather entity */
+  /** Current outdoor temp from dedicated sensor (Kalman etc.) or weather entity (always °C) */
   private get _outdoorTemp(): number {
     if (this._config.outdoor_entity) {
       const s = this._entityState(this._config.outdoor_entity);
-      if (s) return parseFloat(s.state);
+      if (s) {
+        const val = parseFloat(s.state);
+        if (!isNaN(val)) return this._fromDisplayTemp(val);
+      }
     }
     const weather = this._entityState(this._config.weather_entity);
-    return weather ? parseFloat(weather.attributes.temperature) : NaN;
+    if (weather) {
+      const val = parseFloat(weather.attributes.temperature);
+      if (!isNaN(val)) return this._fromDisplayTemp(val);
+    }
+    return NaN;
+  }
+
+  /** Override: outdoor formatted with weather entity fallback */
+  protected override get _outdoorTempFormatted(): string {
+    const temp = this._outdoorTemp;
+    return isNaN(temp) ? '—' : this._formatCalcTemp(temp);
   }
 
   /** Whether current outdoor meets or exceeds room setpoint */
@@ -140,13 +118,9 @@ export class EquithermForecastCard extends EquithermChartCard<ForecastCardConfig
     const localize = setupCustomLocalize(this.hass);
     const tTarget = this._climate?.attributes.temperature;
     if (!isNaN(this._outdoorTemp) && tTarget != null) {
-      return `${localize('common.outdoor')} ${this._formatTemp(this._outdoorTemp)} ≥ ${this._formatTemp(tTarget)}`;
+      return `${localize('common.outdoor')} ${this._formatCalcTemp(this._outdoorTemp)} ≥ ${this._formatCalcTemp(tTarget)}`;
     }
     return localize('common.wwsd_label');
-  }
-
-  private get _flowTempUnit(): string | undefined {
-    return this._entityAttr<string>(this._config.flow_entity, 'unit_of_measurement');
   }
 
   /** Build the curve params from config, optionally reading from live entities */
@@ -162,14 +136,13 @@ export class EquithermForecastCard extends EquithermChartCard<ForecastCardConfig
     };
   }
 
-  /** Process forecast data and update chart */
+  /** Process forecast data and update chart (converts display units to °C for computation) */
   private _processForecast(forecast: { datetime: string; temperature: number }[]): void {
-    const points = buildForecastSeries(forecast, this._curveParams, this._config.hours);
-    this._forecastPoints = points;
-
-    if (this._chartInitialized && this._chart) {
-      this._updateChartWithData(points);
-    }
+    const celsiusForecast = forecast.map(f => ({
+      datetime: f.datetime,
+      temperature: this._fromDisplayTemp(f.temperature),
+    }));
+    this._forecastPoints = buildForecastSeries(celsiusForecast, this._curveParams, this._config.hours);
   }
 
   /** Unsubscribe from forecast updates */
@@ -210,143 +183,131 @@ export class EquithermForecastCard extends EquithermChartCard<ForecastCardConfig
     }
   }
 
-  protected _buildChartOptions(points: ForecastPoint[] = []): ApexCharts.ApexOptions {
+  protected override _buildEChartOptions(): EChartConfig {
+    const points = this._forecastPoints;
     const localize = setupCustomLocalize(this.hass);
-    const cfg = this._config;
+    const heatingColor = resolveRgbColor(this, 'heating');
+    const coolingColor = resolveRgbColor(this, 'cooling');
 
-    // Resolve colors at runtime from CSS variables
-    const style = getComputedStyle(this);
-    const gradientStart = style.getPropertyValue('--curve-gradient-start').trim();
-    const gradientEnd = style.getPropertyValue('--curve-gradient-end').trim();
-    const heatingColor = gradientStart ? `rgb(${gradientStart})` : resolveRgbColor(this, 'heating');
-    const coolingColor = gradientEnd ? `rgb(${gradientEnd})` : resolveRgbColor(this, 'cooling');
-
-    // Build dual series data
-    const flowData: FlowDataPoint[] = points.map((p) => ({ x: p.datetime, y: p.tFlow }));
-    const outdoorData: OutdoorDataPoint[] = points.map((p) => ({ x: p.datetime, y: p.tOutdoor }));
-
-    // Peak demand annotation
     const peak = peakDemand(points);
-    const annotations: Record<string, unknown> = {};
-    if (peak) {
-      (annotations as any).points = [{
-        x: peak.datetime,
-        y: peak.tFlow,
-        marker: { size: 6, fillColor: heatingColor, strokeColor: '#ffffff', strokeWidth: 2 },
-        label: {
-          text: `${localize('forecast_card.peak')}: ${peak.tFlow.toFixed(1)}°`,
-          style: {
-            color: '#ffffff',
-            background: heatingColor,
-            fontSize: '11px',
-            fontWeight: 600,
-            padding: { left: 6, right: 6, top: 2, bottom: 2 },
-          },
-        },
-      }];
-    }
+
+    // Peak marker data (markPoint workaround)
+    const peakData = peak ? [{
+      value: [new Date(peak.datetime).getTime(), this._toDisplayTemp(peak.tFlow)] as [number, number],
+      symbolSize: 6,
+      itemStyle: { color: heatingColor, borderColor: '#fff', borderWidth: 2 },
+      label: {
+        show: true,
+        formatter: `${localize('forecast_card.peak')}: ${this._toDisplayTemp(peak.tFlow).toFixed(1)}${this.hass?.config?.unit_system?.temperature ?? '°C'}`,
+        color: '#fff',
+        backgroundColor: heatingColor,
+        fontSize: 11,
+        fontWeight: 600,
+        padding: [2, 6] as [number, number],
+        borderRadius: 3,
+        position: 'top' as const,
+      },
+    }] : [];
 
     return {
-      chart: {
-        type: 'area' as const,
-        width: '100%',
-        height: '100%',
-        toolbar: { show: false },
-        zoom: { enabled: false },
-        animations: { enabled: true, speed: 400 },
-        background: 'transparent',
+      options: {
+        animation: false,
+        xAxis: {
+          type: 'time' as const,
+          axisLabel: { fontSize: 10, hideOverlap: true, formatter: (value: number) => this._formatChartTime(value) },
+          axisTick: { show: false },
+          axisLine: { show: false },
+        },
+        yAxis: [
+          {
+            type: 'value' as const,
+            axisLabel: { fontSize: 10 },
+            min: this._toDisplayTemp((this._curveParams.minFlow ?? 20) - 5),
+            max: this._toDisplayTemp((this._curveParams.maxFlow ?? 70) + 5),
+          },
+          {
+            type: 'value' as const,
+            axisLabel: { fontSize: 10 },
+          },
+        ],
+        grid: { top: 15, right: 15, bottom: 25, left: 35 },
+        tooltip: {
+          trigger: 'axis' as const,
+          backgroundColor: 'rgba(var(--rgb-card-background-color, 255, 255, 255), 0.95)',
+          borderColor: 'var(--divider-color, rgba(0,0,0,0.12))',
+          borderWidth: 1,
+          padding: [8, 12],
+          textStyle: { color: 'var(--primary-text-color)', fontSize: 12 },
+          formatter: (params: any) => {
+            const time = this._formatChartTime(params[0].value[0] as number);
+            const unit = this.hass?.config?.unit_system?.temperature ?? '°C';
+            let out = `<span style="opacity:0.6">${time}</span><br/>`;
+            for (const p of params) {
+              if (p.seriesName === 'peak') continue;
+              const marker = `<span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:${p.color};"></span>`;
+              out += `${marker}${p.seriesName}: <b>${p.value[1].toFixed(1)}${unit}</b><br/>`;
+            }
+            return out;
+          },
+        },
+        legend: { show: false },
       },
-      theme: { mode: this._isDark ? 'dark' as const : 'light' as const },
-      series: [
+      data: [
         {
+          type: 'line' as const,
           name: localize('forecast_card.flow_temp'),
-          data: flowData,
+          data: points.map(p => [new Date(p.datetime).getTime(), this._toDisplayTemp(p.tFlow)]),
+          showSymbol: false,
+          lineStyle: { width: 2 },
+          itemStyle: { color: heatingColor },
+          areaStyle: {
+            color: {
+              type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
+              colorStops: [
+                { offset: 0, color: `rgba(${heatingColor.replace('rgb(', '').replace(')', '')}, 0.4)` },
+                { offset: 1, color: `rgba(${heatingColor.replace('rgb(', '').replace(')', '')}, 0.05)` },
+              ],
+            },
+          },
         },
         {
+          type: 'line' as const,
           name: localize('forecast_card.outdoor_temp'),
-          data: outdoorData,
+          data: points.map(p => [new Date(p.datetime).getTime(), this._toDisplayTemp(p.tOutdoor)]),
+          yAxisIndex: 1,
+          showSymbol: false,
+          lineStyle: { width: 1.5, type: 'dashed' as const },
+          itemStyle: { color: coolingColor },
         },
+        // Peak marker (markPoint workaround)
+        ...(peak ? [{
+          type: 'line' as const,
+          name: 'peak',
+          data: peakData,
+          showSymbol: true,
+          symbol: 'circle',
+          lineStyle: { width: 0 },
+          tooltip: { show: false },
+        }] : []),
       ],
-      annotations,
-      stroke: {
-        curve: 'straight' as const,
-        width: [2, 1.5],
-        dashArray: [0, 4],
-      },
-      colors: [heatingColor, coolingColor],
-      fill: {
-        type: 'gradient',
-        gradient: {
-          type: 'vertical',
-          shadeIntensity: 0.3,
-          opacityFrom: 0.4,
-          opacityTo: 0.05,
-          stops: [0, 100],
-        },
-      },
-      markers: {
-        size: 0,
-        hover: { size: 4 },
-      },
-      xaxis: {
-        type: 'datetime' as const,
-        title: {
-          text: '',
-          style: { color: 'var(--secondary-text-color)', fontWeight: 400 },
-        },
-        labels: {
-          style: { colors: 'var(--secondary-text-color)', fontWeight: 400 },
-          datetimeUTC: false,
-          format: 'HH:mm',
-        },
-        axisBorder: { show: false },
-        axisTicks: { show: false },
-      },
-      yaxis: [
-        {
-          title: {
-            text: localize('forecast_card.flow_temp'),
-            style: { color: 'var(--secondary-text-color)', fontWeight: 400 },
-          },
-          labels: { style: { colors: 'var(--secondary-text-color)', fontWeight: 400 } },
-          min: (this._curveParams.minFlow ?? 20) - 5,
-          max: (this._curveParams.maxFlow ?? 70) + 5,
-        },
-        {
-          opposite: true,
-          title: {
-            text: localize('forecast_card.outdoor_temp'),
-            style: { color: 'var(--secondary-text-color)', fontWeight: 400 },
-          },
-          labels: { style: { colors: 'var(--secondary-text-color)', fontWeight: 400 } },
-        },
-      ],
-      grid: { show: false },
-      legend: { show: false },
-      dataLabels: { enabled: false },
-      tooltip: {
-        theme: this._isDark ? 'dark' : 'light',
-        x: { format: 'HH:mm' },
-        y: {
-          formatter: (v: number) => {
-            return this._formatTemp(v, this.hass?.config?.unit_system?.temperature);
-          },
-        },
-      },
     };
   }
 
-
-  private _updateChartWithData(points: ForecastPoint[]): void {
-    if (!this._chart) return;
-    const opts = this._buildChartOptions(points);
-    this._chart.updateOptions(opts, false, false);
-  }
-
-  protected _updateChartOptions(): void {
-    if (!this._chart) return;
-    const opts = this._buildChartOptions(this._forecastPoints);
-    this._chart.updateOptions(opts, false, false);
+  protected override _renderChart(): TemplateResult | typeof nothing {
+    if (!this._echartConfig) return nothing;
+    const { options, data } = this._echartConfig;
+    return html`
+      <div class="chart-wrapper">
+        <ha-chart-base
+          .hass=${this.hass}
+          .options=${options}
+          .data=${data}
+          height="100%"
+          hide-reset-button
+        ></ha-chart-base>
+        <eq-manual-overlay></eq-manual-overlay>
+      </div>
+    `;
   }
 
   protected override _onChartDisconnecting(): void {
@@ -362,70 +323,27 @@ export class EquithermForecastCard extends EquithermChartCard<ForecastCardConfig
       super.styles,
       cardStyle,
       headerStyles,
+      paramsFooterStyles,
+      kpiFooterStyles,
+      tunableFooterStyles,
       css`
         ha-card {
           height: 100%;
           overflow: hidden;
         }
-        .chart-wrapper { flex: 1; min-height: 0; }
-        #chart { width: 100%; height: 100%; }
-        .footer {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 0;
-          margin-top: 6px;
-          padding-top: 6px;
-          border-top: 1px solid var(--divider-color, rgba(0,0,0,0.12));
-          flex-shrink: 0;
+        .chart-wrapper {
+          --chart-max-height: none;
         }
-        .footer-metric {
-          display: flex;
-          align-items: baseline;
-          gap: 4px;
-          padding: 0 12px;
-          cursor: pointer;
-          border-radius: 6px;
-          transition: background 0.15s;
+        .chart-wrapper ha-chart-base {
+          height: 100%;
         }
-        .footer-metric:hover {
-          background: var(--secondary-background-color, rgba(0,0,0,0.04));
-        }
-        .footer-value {
-          font-size: var(--ha-font-size-m, 1rem);
-          font-weight: 600;
-          font-variant-numeric: tabular-nums;
-          color: var(--primary-text-color);
-          white-space: nowrap;
-          line-height: 1;
-        }
-        .footer-value.flow { color: var(--gradient-hot); }
-        .footer-label {
-          font-size: 0.68rem;
-          font-weight: 500;
-          letter-spacing: 0.04em;
-          text-transform: uppercase;
-          color: var(--secondary-text-color);
-          white-space: nowrap;
-          margin-top: 0;
-        }
-        .footer-sep {
-          font-size: var(--ha-font-size-s, 0.8rem);
-          color: var(--divider-color, rgba(0,0,0,0.2));
-          user-select: none;
-        }
-
       `,
     ];
   }
 
   render() {
     if (!this._config || !this.hass) return nothing;
-    const localize = setupCustomLocalize(this.hass);
-    const climateState = this.hass.states[this._config.climate_entity];
-    const title = climateState
-      ? computeEntityNameDisplay(climateState, this._config.name, this.hass) || localize('forecast_card.default_title')
-      : localize('forecast_card.default_title');
+    const title = this._computeCardTitle('forecast_card.default_title');
 
     return html`
       <ha-card>
@@ -434,38 +352,32 @@ export class EquithermForecastCard extends EquithermChartCard<ForecastCardConfig
           clickEntity: this._config.weather_entity,
           title,
         })}
-        <div class="chart-wrapper">
-          <div id="chart"></div>
-          ${this._renderManualOverlay()}
-        </div>
-        <div class="footer">
-          <div class="footer-metric"
-            @click=${() => this._openMoreInfo(this._config.outdoor_entity ?? this._config.weather_entity)}
-          >
-            <span class="footer-value">${this._formatTemp(this._outdoorTemp)}</span>
-            <span class="footer-label">${localize('forecast_card.outdoor_temp')}</span>
-          </div>
-          <span class="footer-sep" aria-hidden="true">·</span>
-          <div class="footer-metric"
-            @click=${() => this._openMoreInfo(this._config.flow_entity)}
-          >
-            <span class="footer-value flow">${this._formatTemp(this._flowTemp, this._flowTempUnit)}</span>
-            <span class="footer-label">${localize('common.flow')}</span>
-          </div>
-          <span class="footer-sep" aria-hidden="true">·</span>
-          <div class="footer-metric"
-            @click=${() => this._openMoreInfo(this._config.climate_entity)}
-          >
-            <span class="footer-value">${this._roomTemp}</span>
-            <span class="footer-label">${localize('common.room')}</span>
-          </div>
-        </div>
-        ${this._config.show_last_updated ? html`
-          <div class="footer-meta">
-            ${this._renderLastUpdated(this._config.weather_entity)}
-          </div>
-        ` : nothing}
+        ${this._renderChart()}
+        ${this._renderKpiFooter({
+          outdoorClickEntity: this._config.outdoor_entity ?? this._config.weather_entity,
+        })}
+        ${this._config.curve_from_entities
+          ? this._renderTunableParamsFooter(
+              {
+                hc: this._config.hc_entity ? { entity: this._config.hc_entity, fallback: this._config.hc } : undefined,
+                n: this._config.n_entity ? { entity: this._config.n_entity, fallback: this._config.n } : undefined,
+                shift: this._config.shift_entity ? { entity: this._config.shift_entity, fallback: this._config.shift } : undefined,
+              },
+              () => { this._showTuningDialog = true; },
+            )
+          : nothing}
+        ${this._renderFooterMeta()}
       </ha-card>
+
+      ${this._dialogConfig && this._showTuningDialog ? html`
+        <eq-tuning-dialog
+          .hass=${this.hass}
+          .config=${this._dialogConfig}
+          .open=${this._showTuningDialog}
+          @closed=${() => { this._showTuningDialog = false; }}
+        ></eq-tuning-dialog>
+      ` : nothing}
     `;
   }
+
 }

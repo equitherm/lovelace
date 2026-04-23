@@ -35,9 +35,13 @@ views:
 
       - type: grid
         cards:
-          - type: custom:equitherm-tuning-card
+          - type: custom:equitherm-curve-card
             climate_entity: climate.mock_equitherm
             outdoor_entity: input_number.mock_outdoor_temp
+            curve_output_entity: sensor.mock_heating_curve_output
+            pid_output_entity: sensor.mock_pid_adjusted_output
+            flow_entity: sensor.mock_flow_setpoint
+            tunable: true
             hc_entity: input_number.heat_curve_coefficient
             shift_entity: input_number.heat_curve_shift
             curve_from_entities: true
@@ -122,3 +126,34 @@ views:
               - binary_sensor.mock_outdoor_sensor_fault
               - input_boolean.mock_indoor_fault
               - binary_sensor.mock_indoor_sensor_fault
+
+      - type: grid
+        title: OpenTherm
+        cards:
+          - type: custom:opentherm-status-card
+            boiler_temp_entity: sensor.ot_boiler_flow_temp
+            return_temp_entity: sensor.ot_return_temp
+            flame_entity: binary_sensor.ot_flame_on
+            setpoint_entity: input_number.ot_t_set
+            modulation_entity: sensor.ot_modulation_level
+            ch_active_entity: binary_sensor.ot_ch_active
+            dhw_active_entity: binary_sensor.ot_dhw_active
+            show_last_updated: true
+          - type: custom:opentherm-dhw-card
+            dhw_enable_entity: input_boolean.ot_dhw_enable
+            dhw_setpoint_entity: input_number.ot_t_dhw_set
+            dhw_active_entity: binary_sensor.ot_dhw_active
+            dhw_temp_entity: sensor.ot_dhw_temp
+            show_last_updated: true
+          - type: custom:opentherm-efficiency-card
+            boiler_temp_entity: sensor.ot_boiler_flow_temp
+            return_temp_entity: sensor.ot_return_temp
+            condensing_threshold: 55
+            hours: 6
+            show_last_updated: true
+          - type: custom:opentherm-modulation-card
+            modulation_entity: sensor.ot_modulation_level
+            max_modulation_entity: input_number.ot_max_rel_mod_level
+            flame_entity: binary_sensor.ot_flame_on
+            hours: 1
+            show_last_updated: true

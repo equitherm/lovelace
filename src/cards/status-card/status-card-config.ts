@@ -12,14 +12,14 @@ export interface StatusCardConfig {
   rate_limiting_entity?: string;
   pid_active_entity?: string;
   pid_correction_entity?: string;
-  pid_proportional_entity?: string;
-  pid_integral_entity?: string;
-  pid_derivative_entity?: string;
-  vertical?: boolean;
+  hc_entity?: string;
+  shift_entity?: string;
+  n_entity?: string;
   show_last_updated?: boolean;
+  show_params_footer?: boolean;
+  tunable?: boolean;
+  recalculate_service?: string;
   name?: string | EntityNameItem | EntityNameItem[];
-  /** @deprecated Use `name` instead */
-  title?: string;
   [key: string]: unknown;
 }
 
@@ -34,17 +34,21 @@ export const StatusCardConfigStruct = type({
   rate_limiting_entity: optional(string()),
   pid_active_entity: optional(string()),
   pid_correction_entity: optional(string()),
-  pid_proportional_entity: optional(string()),
-  pid_integral_entity: optional(string()),
-  pid_derivative_entity: optional(string()),
-  vertical: optional(boolean()),
+  hc_entity: optional(string()),
+  shift_entity: optional(string()),
+  n_entity: optional(string()),
   show_last_updated: optional(boolean()),
+  show_params_footer: optional(boolean()),
+  tunable: optional(boolean()),
+  recalculate_service: optional(string()),
   name: optional(any()),
-  title: optional(any()),
 });
 
 /** Validate and apply defaults */
 export function validateStatusCardConfig(config: unknown): StatusCardConfig {
-  assert(config, StatusCardConfigStruct);
-  return config as StatusCardConfig;
+  const c = { ...(config as Record<string, unknown>) };
+  if ('title' in c && !('name' in c)) c.name = c.title;
+  delete c.title;
+  assert(c, StatusCardConfigStruct);
+  return c as StatusCardConfig;
 }
