@@ -21,7 +21,6 @@ import setupCustomLocalize from '../../localize';
 import '../../shared/badge-info';
 import '../../shared/eq-manual-overlay';
 import '../../shared/eq-tuning-dialog';
-import type { TuningDialogConfig } from '../../shared/eq-tuning-dialog-config';
 import { buildTuningDialogConfig } from '../../utils/tuning-dialog-config';
 
 /** Marker sizes for chart annotations */
@@ -86,6 +85,7 @@ export class EquithermCurveCard extends EquithermEChartCard<CurveCardConfig> {
 
   setConfig(config: unknown) {
     this._config = validateCurveCardConfig(config);
+    this._dialogConfig = buildTuningDialogConfig(this._config);
   }
 
   protected override _lastUpdatedEntity(): string | undefined {
@@ -116,10 +116,6 @@ export class EquithermCurveCard extends EquithermEChartCard<CurveCardConfig> {
     return this._config.curve_from_entities
       ? this._resolveEntityNumber(this._config.n_entity, this._config.n)
       : this._config.n;
-  }
-
-  private get _tuningDialogConfig(): TuningDialogConfig | undefined {
-    return buildTuningDialogConfig(this._config);
   }
 
   private _renderParamsFooterContent(): TemplateResult | typeof nothing {
@@ -392,10 +388,10 @@ export class EquithermCurveCard extends EquithermEChartCard<CurveCardConfig> {
         ${this._renderFooterMeta()}
       </ha-card>
 
-      ${this._tuningDialogConfig && this._showTuningDialog ? html`
+      ${this._dialogConfig && this._showTuningDialog ? html`
         <eq-tuning-dialog
           .hass=${this.hass}
-          .config=${this._tuningDialogConfig}
+          .config=${this._dialogConfig}
           .open=${this._showTuningDialog}
           @closed=${() => { this._showTuningDialog = false; }}
         ></eq-tuning-dialog>

@@ -55,7 +55,7 @@ export class EqTuningDialog extends EquithermBaseElement {
       this._syncProposedValues();
     } else if (changedProps.has('open') && this.open) {
       this._syncProposedValues();
-    } else if (changedProps.has('hass') && this.hass && this.config) {
+    } else if (changedProps.has('hass') && this.hass && this.config && !this._isDirty) {
       this._syncProposedValues();
     }
 
@@ -339,14 +339,21 @@ export class EqTuningDialog extends EquithermBaseElement {
     this._proposedShift = this._currentShift;
   }
 
-  private _stepHc(dir: number): void {
-    this._proposedHc = Math.min(this._hcMax, Math.max(this._hcMin, parseFloat((this._proposedHc + dir * this._hcStep).toFixed(4))));
-  }
+  private _onHcMoved = (e: CustomEvent) => {
+    this._proposedHc = e.detail.value;
+  };
 
-  /** Step shift in °C — conversion to display unit happens only at render. */
-  private _stepShift(dir: number): void {
-    this._proposedShift = Math.min(this._shiftMax, Math.max(this._shiftMin, parseFloat((this._proposedShift + dir * this._shiftStep).toFixed(4))));
-  }
+  private _onHcChanged = (e: CustomEvent) => {
+    this._proposedHc = e.detail.value;
+  };
+
+  private _onShiftMoved = (e: CustomEvent) => {
+    this._proposedShift = this._fromDisplayDelta(e.detail.value);
+  };
+
+  private _onShiftChanged = (e: CustomEvent) => {
+    this._proposedShift = this._fromDisplayDelta(e.detail.value);
+  };
 
   // --- Render ---
 
@@ -354,7 +361,8 @@ export class EqTuningDialog extends EquithermBaseElement {
     if (!this.open || !this.config || !this.hass) return nothing;
     const localize = setupCustomlocalize(this.hass);
     const hcDecimals = this._hcStep < 1 ? Math.ceil(-Math.log10(this._hcStep)) : 0;
-    const shiftDecimals = this._shiftStep < 1 ? Math.ceil(-Math.log10(this._shiftStep)) : 0;
+    const shiftDisplayStep = this._toDisplayDelta(this._shiftStep);
+    const shiftDecimals = shiftDisplayStep < 1 ? Math.ceil(-Math.log10(shiftDisplayStep)) : 0;
     const dirty = this._isDirty;
     const hcDelta = this._proposedHc - this._currentHc;
     const shiftDelta = this._proposedShift - this._currentShift;
@@ -377,32 +385,41 @@ export class EqTuningDialog extends EquithermBaseElement {
           <div class="ctrl-panel">
             <span class="ctrl-label">${localize('tuning_dialog.hc_short')}</span>
             <div class="hero-row">
-              <span class="hero-value">${this._proposedHc.toFixed(hcDecimals)}</span>
+              <span class="hero-value">${formatNumber(this._proposedHc, this.hass?.locale, { minimumFractionDigits: hcDecimals, maximumFractionDigits: hcDecimals })}</span>
               ${Math.abs(hcDelta) > this._hcStep / 2 ? html`
                 <span class="ctrl-delta ${hcDelta > 0 ? 'pos' : 'neg'}">${formatNumber(hcDelta, this.hass?.locale, { minimumFractionDigits: hcDecimals, maximumFractionDigits: hcDecimals, signDisplay: 'always' })}</span>
               ` : nothing}
             </div>
-            <div class="step-row">
-              <ha-icon-button @click=${() => this._stepHc(-1)}><ha-icon icon="mdi:minus"></ha-icon></ha-icon-button>
-              <ha-icon-button @click=${() => this._stepHc(1)}><ha-icon icon="mdi:plus"></ha-icon></ha-icon-button>
-            </div>
-            <eq-param-bar .min=${this._hcMin} .max=${this._hcMax} .value=${this._proposedHc} indicator></eq-param-bar>
+            <eq-param-bar
+              .min=${this._hcMin} .max=${this._hcMax}
+              .step=${this._hcStep}
+              .value=${this._proposedHc}
+              interactive indicator
+              ariaUnit="HC"
+              @slider-moved=${this._onHcMoved}
+              @value-changed=${this._onHcChanged}
+            ></eq-param-bar>
           </div>
           <div class="ctrl-divider"></div>
           <!-- Shift panel -->
           <div class="ctrl-panel">
             <span class="ctrl-label">${localize('tuning_dialog.shift_short')}</span>
             <div class="hero-row">
-              <span class="hero-value">${this._toDisplayDelta(this._proposedShift).toFixed(shiftDecimals)}${this.hass?.config?.unit_system?.temperature ?? '°C'}</span>
+              <span class="hero-value">${formatNumber(this._toDisplayDelta(this._proposedShift), this.hass?.locale, { minimumFractionDigits: shiftDecimals, maximumFractionDigits: shiftDecimals })}${this.hass?.config?.unit_system?.temperature ?? '°C'}</span>
               ${Math.abs(shiftDelta) > this._shiftStep / 2 ? html`
                 <span class="ctrl-delta ${shiftDelta > 0 ? 'pos' : 'neg'}">${formatNumber(this._toDisplayDelta(shiftDelta), this.hass?.locale, { minimumFractionDigits: shiftDecimals, maximumFractionDigits: shiftDecimals, signDisplay: 'always' })}${this.hass?.config?.unit_system?.temperature ?? '°C'}</span>
               ` : nothing}
             </div>
-            <div class="step-row">
-              <ha-icon-button @click=${() => this._stepShift(-1)}><ha-icon icon="mdi:minus"></ha-icon></ha-icon-button>
-              <ha-icon-button @click=${() => this._stepShift(1)}><ha-icon icon="mdi:plus"></ha-icon></ha-icon-button>
-            </div>
-            <eq-param-bar .min=${this._toDisplayDelta(this._shiftMin)} .max=${this._toDisplayDelta(this._shiftMax)} .value=${this._toDisplayDelta(this._proposedShift)} centered indicator></eq-param-bar>
+            <eq-param-bar
+              .min=${this._toDisplayDelta(this._shiftMin)}
+              .max=${this._toDisplayDelta(this._shiftMax)}
+              .step=${this._toDisplayDelta(this._shiftStep)}
+              .value=${this._toDisplayDelta(this._proposedShift)}
+              centered indicator interactive
+              ariaUnit=${this.hass?.config?.unit_system?.temperature ?? '°C'}
+              @slider-moved=${this._onShiftMoved}
+              @value-changed=${this._onShiftChanged}
+            ></eq-param-bar>
           </div>
         </div>
 
@@ -482,11 +499,6 @@ export class EqTuningDialog extends EquithermBaseElement {
           font-size: 1.5rem; font-weight: 600;
           font-variant-numeric: tabular-nums;
           color: var(--primary-text-color); line-height: 1;
-        }
-        .step-row { display: flex; gap: 8px; }
-        .step-row ha-icon-button {
-          --mdc-icon-button-size: 36px; --mdc-icon-size: 20px;
-          color: rgb(var(--rgb-primary, 33, 150, 243));
         }
         .ctrl-delta {
           font-size: 10px; font-weight: var(--ha-font-weight-medium, 500);

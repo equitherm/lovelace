@@ -16,7 +16,6 @@ import '../../shared/badge-info';
 import '../../shared/eq-manual-overlay';
 import '../../shared/eq-param-bar';
 import '../../shared/eq-tuning-dialog';
-import type { TuningDialogConfig } from '../../shared/eq-tuning-dialog-config';
 import { buildTuningDialogConfig } from '../../utils/tuning-dialog-config';
 
 registerCustomCard({
@@ -65,6 +64,7 @@ export class EquithermForecastCard extends EquithermEChartCard<ForecastCardConfi
 
   setConfig(config: unknown) {
     this._config = validateForecastCardConfig(config);
+    this._dialogConfig = buildTuningDialogConfig(this._config);
   }
 
   protected override _lastUpdatedEntity(): string | undefined {
@@ -134,10 +134,6 @@ export class EquithermForecastCard extends EquithermEChartCard<ForecastCardConfi
       minFlow: cfg.curve_from_entities ? this._resolveEntityNumber(cfg.min_flow_entity, cfg.min_flow) : cfg.min_flow,
       maxFlow: cfg.curve_from_entities ? this._resolveEntityNumber(cfg.max_flow_entity, cfg.max_flow) : cfg.max_flow,
     };
-  }
-
-  private get _tuningDialogConfig(): TuningDialogConfig | undefined {
-    return buildTuningDialogConfig(this._config);
   }
 
   /** Process forecast data and update chart (converts display units to °C for computation) */
@@ -373,10 +369,10 @@ export class EquithermForecastCard extends EquithermEChartCard<ForecastCardConfi
         ${this._renderFooterMeta()}
       </ha-card>
 
-      ${this._tuningDialogConfig && this._showTuningDialog ? html`
+      ${this._dialogConfig && this._showTuningDialog ? html`
         <eq-tuning-dialog
           .hass=${this.hass}
-          .config=${this._tuningDialogConfig}
+          .config=${this._dialogConfig}
           .open=${this._showTuningDialog}
           @closed=${() => { this._showTuningDialog = false; }}
         ></eq-tuning-dialog>

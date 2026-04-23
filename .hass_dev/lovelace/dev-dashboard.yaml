@@ -38,6 +38,8 @@ views:
           - type: custom:equitherm-curve-card
             climate_entity: climate.mock_equitherm
             outdoor_entity: input_number.mock_outdoor_temp
+            curve_output_entity: sensor.mock_heating_curve_output
+            pid_output_entity: sensor.mock_pid_adjusted_output
             flow_entity: sensor.mock_flow_setpoint
             tunable: true
             hc_entity: input_number.heat_curve_coefficient

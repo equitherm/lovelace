@@ -374,6 +374,13 @@ template:
         state_class: measurement
         state: "{{ states('input_number.ot_rel_mod_level') }}"
 
+      - name: "OT DHW Temperature"
+        unique_id: ot_dhw_temp
+        unit_of_measurement: "°C"
+        device_class: temperature
+        state_class: measurement
+        state: "{{ states('input_number.ot_dhw_temp') | float(0) | round(1) }}"
+
       - name: "OT Device ID"
         unique_id: ot_device_id_sensor
         state: "{{ states('input_number.ot_device_id') | int }}"
@@ -436,9 +443,3 @@ template:
       - name: "OT DHW Active"
         unique_id: ot_dhw_active_sensor
         state: "{{ is_state('input_boolean.ot_dhw_active', 'on') }}"
-
-      - name: "OT DHW Temperature"
-        unique_id: ot_dhw_temp
-        unit_of_measurement: "°C"
-        device_class: temperature
-        state: "{{ states('input_number.ot_dhw_temp') | float(0) | round(1) }}"

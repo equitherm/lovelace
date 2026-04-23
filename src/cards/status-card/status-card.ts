@@ -13,7 +13,6 @@ import { getAdjustingDirection } from '../../utils/climate-helpers';
 import '../../shared/badge-info';
 import '../../shared/eq-param-bar';
 import '../../shared/eq-tuning-dialog';
-import type { TuningDialogConfig } from '../../shared/eq-tuning-dialog-config';
 import { buildTuningDialogConfig } from '../../utils/tuning-dialog-config';
 
 registerCustomCard({
@@ -24,10 +23,6 @@ registerCustomCard({
 
 @customElement(STATUS_CARD_NAME)
 export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
-
-  private get _tuningDialogConfig(): TuningDialogConfig | undefined {
-    return buildTuningDialogConfig(this._config);
-  }
 
   public getGridOptions(): LovelaceGridOptions {
     return { columns: 12, rows: this._config.show_last_updated ? 4 : 3, min_rows: 3 };
@@ -49,6 +44,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
 
   setConfig(config: unknown) {
     this._config = validateStatusCardConfig(config);
+    this._dialogConfig = buildTuningDialogConfig(this._config);
   }
 
   protected override _lastUpdatedEntity(): string | undefined {
@@ -117,10 +113,10 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
         ${this._renderFooterMeta()}
       </ha-card>
 
-      ${this._tuningDialogConfig && this._showTuningDialog ? html`
+      ${this._dialogConfig && this._showTuningDialog ? html`
         <eq-tuning-dialog
           .hass=${this.hass}
-          .config=${this._tuningDialogConfig}
+          .config=${this._dialogConfig}
           .open=${this._showTuningDialog}
           @closed=${() => { this._showTuningDialog = false; }}
         ></eq-tuning-dialog>

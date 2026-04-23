@@ -1,5 +1,5 @@
 import { LitElement, html, css, nothing } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
 
 @customElement('eq-param-bar')
@@ -11,6 +11,11 @@ export class EqParamBar extends LitElement {
   @property({ type: Boolean }) indicator = false;
   @property({ type: String }) color?: string;
   @property({ type: Number }) minFill = 4;
+  @property({ type: Number }) step = 1;
+  @property({ type: Boolean, reflect: true }) interactive = false;
+  @property({ type: String }) ariaUnit?: string;
+
+  @state() private _pressed = false;
 
   static styles = css`
     :host {
@@ -27,6 +32,10 @@ export class EqParamBar extends LitElement {
       border-radius: var(--eq-bar-radius);
       background: var(--eq-bar-track-color);
       position: relative;
+    }
+    :host([interactive]) .track {
+      cursor: pointer;
+      touch-action: none;
     }
     .fill {
       height: 100%;
@@ -59,10 +68,88 @@ export class EqParamBar extends LitElement {
       transition: left 0.3s ease;
       z-index: 1;
     }
+    .pressed .fill,
+    .pressed .dot {
+      transition: none;
+    }
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
   `;
 
+  /** Cached track element reference from pointerdown, avoids null issues during drag */
+  private _trackEl: HTMLElement | null = null;
+
   private _pct(v: number): number {
-    return Math.max(0, Math.min(100, ((v - this.min) / (this.max - this.min)) * 100));
+    const range = this.max - this.min;
+    if (range === 0) return 0;
+    return Math.max(0, Math.min(100, ((v - this.min) / range) * 100));
+  }
+
+  private _onRangeInput(e: Event) {
+    const value = parseFloat((e.target as HTMLInputElement).value);
+    if (value === this.value) return;
+    this.value = value;
+    this.dispatchEvent(
+      new CustomEvent('value-changed', {
+        detail: { value },
+        bubbles: true,
+        composed: true,
+      }),
+    );
+  }
+
+  private _onPointerDown(e: PointerEvent) {
+    if (!this.interactive) return;
+    this._pressed = true;
+    this._trackEl = e.currentTarget as HTMLElement;
+    this._trackEl.setPointerCapture(e.pointerId);
+    this._updateFromPointer(e, false);
+  }
+
+  private _onPointerMove(e: PointerEvent) {
+    if (!this.interactive || !(e.buttons & 1)) return;
+    this._updateFromPointer(e, false);
+  }
+
+  private _onPointerUp(e: PointerEvent) {
+    if (!this.interactive) return;
+    this._pressed = false;
+    this._updateFromPointer(e, true);
+    this._trackEl = null;
+  }
+
+  private _updateFromPointer(e: PointerEvent, final: boolean) {
+    const track = this._trackEl ?? this.renderRoot.querySelector<HTMLElement>('.track');
+    if (!track) return;
+
+    const rect = track.getBoundingClientRect();
+    const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    const raw = this.min + pct * (this.max - this.min);
+    const effectiveStep = this.step || 1;
+    const snapped = Math.round(raw / effectiveStep) * effectiveStep;
+    const clamped = parseFloat(
+      Math.max(this.min, Math.min(this.max, snapped)).toFixed(10),
+    );
+
+    if (clamped === this.value) return;
+
+    this.value = clamped;
+    this.dispatchEvent(
+      new CustomEvent(final ? 'value-changed' : 'slider-moved', {
+        detail: { value: clamped },
+        bubbles: true,
+        composed: true,
+      }),
+    );
   }
 
   render() {
@@ -70,6 +157,18 @@ export class EqParamBar extends LitElement {
 
     const fillColor = this.color ?? 'var(--eq-bar-fill-color)';
     const dotColor = fillColor;
+    const hiddenRange = this.interactive
+      ? html`<input
+          type="range"
+          class="sr-only"
+          min=${this.min}
+          max=${this.max}
+          step=${this.step}
+          value=${this.value ?? 0}
+          aria-valuetext="${this.value} ${this.ariaUnit ?? ''}"
+          @input=${this._onRangeInput}
+        />`
+      : nothing;
 
     if (this.centered) {
       const centerPct = this._pct(0);
@@ -77,7 +176,11 @@ export class EqParamBar extends LitElement {
       const barLeft = Math.min(centerPct, valPct);
       const rawWidth = Math.abs(valPct - centerPct);
       return html`
-        <div class="track">
+        <div class="track${this._pressed ? ' pressed' : ''}"
+          @pointerdown=${this._onPointerDown}
+          @pointermove=${this._onPointerMove}
+          @pointerup=${this._onPointerUp}
+        >
           <div class="center-mark"></div>
           ${rawWidth > 0 ? html`
             <div class="fill" style=${styleMap({
@@ -93,13 +196,18 @@ export class EqParamBar extends LitElement {
               background: dotColor,
             })}></div>
           ` : nothing}
+          ${hiddenRange}
         </div>
       `;
     }
 
     const pct = this._pct(this.value);
     return html`
-      <div class="track">
+      <div class="track${this._pressed ? ' pressed' : ''}"
+        @pointerdown=${this._onPointerDown}
+        @pointermove=${this._onPointerMove}
+        @pointerup=${this._onPointerUp}
+      >
         <div class="fill" style=${styleMap({
           width: `${pct}%`,
           left: '0',
@@ -111,6 +219,7 @@ export class EqParamBar extends LitElement {
             background: fillColor,
           })}></div>
         ` : nothing}
+        ${hiddenRange}
       </div>
     `;
   }

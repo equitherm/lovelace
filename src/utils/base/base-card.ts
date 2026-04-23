@@ -9,6 +9,8 @@ import { isRateLimitingActive, isPidActive, getAdjustingDirection, getRateTarget
 import setupCustomlocalize from '../../localize';
 import '../../shared/eq-param-bar';
 import { headerStyles } from './header-styles';
+import type { TuningDialogConfig } from '../../shared/eq-tuning-dialog-config';
+import { buildTuningDialogConfig } from '../tuning-dialog-config';
 
 export { headerStyles };
 
@@ -29,6 +31,7 @@ export interface EquithermCardConfig {
 export abstract class EquithermBaseCard<TConfig extends EquithermCardConfig> extends BaseCard<TConfig> implements LovelaceCard {
 
   @state() protected _showTuningDialog = false;
+  @state() protected _dialogConfig?: TuningDialogConfig;
 
   /** Get the climate entity state */
   protected get _climate(): ClimateEntity | undefined {
