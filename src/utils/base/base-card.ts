@@ -177,7 +177,9 @@ export abstract class EquithermBaseCard<TConfig extends EquithermCardConfig> ext
         .icon=${'mdi:weather-sunny-alert'}
         .active=${true}
       ></eq-badge-info>
-      <ha-tooltip for="wwsd-badge" placement="top"><span style="white-space: nowrap">${this._wwsdDescription()}</span></ha-tooltip>
+      <ha-tooltip for="wwsd-badge" placement="top" without-arrow>
+        <span style="white-space: nowrap">${this._wwsdDescription()}</span>
+      </ha-tooltip>
     `;
   }
 

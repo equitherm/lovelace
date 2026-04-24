@@ -26,6 +26,7 @@ flow_entity: sensor.flow_setpoint
 # Optional:
 rate_limiting_entity: binary_sensor.rate_limiting
 pid_active_entity: binary_sensor.pid_active
+wws_entity: binary_sensor.wws_active
 name:  # entity name picker (recommended)
   type: entity
 
@@ -49,6 +50,7 @@ t_out_max: 20
 | `flow_entity` | string | Yes | - | Current flow setpoint sensor |
 | `rate_limiting_entity` | string | No | - | Binary sensor for rate limiting |
 | `pid_active_entity` | string | No | - | Binary sensor for PID correction status |
+| `wws_entity` | string | No | - | Warm Weather Shutdown binary sensor. When configured, uses entity state directly instead of inferring from outdoor >= target. |
 | `name` | entity | No | - | Entity name picker config (defaults to entity friendly name). Examples: `name: { type: entity }` or `name: [{ type: text, text: "Prefix" }, { type: device }]` |
 | `title` | string | No | - | *Deprecated* — use `name` instead |
 | `show_last_updated` | boolean | No | false | Show timestamp when entity is stale (>5 min) or unavailable |
@@ -184,6 +186,12 @@ Must have:
 
 - Binary sensor (`on`/`off`) indicating whether PID correction is active
 - Shows green badge when active, dimmed badge with warning icon when inactive
+
+### wws_entity (optional)
+
+- Binary sensor (`on`/`off`) indicating Warm Weather Shutdown is active
+- When configured, uses entity state directly instead of inferring from outdoor >= target
+- Provides authoritative WWS status from the equitherm ESPHome component
 
 ## Examples
 

@@ -243,6 +243,11 @@ input_boolean:
     initial: true
     icon: mdi:check-circle
 
+  mock_wws_active:
+    name: "WWS Active"
+    initial: false
+    icon: mdi:weather-sunny-alert
+
   ot_flame_on:
     name: "OT Flame On"
     initial: true
@@ -420,6 +425,16 @@ template:
           {% set curve = states('sensor.mock_heating_curve_output') | float(0) %}
           {% set flow = states('sensor.mock_flow_setpoint') | float(curve) %}
           {{ (curve - flow) | abs > 0.1 }}
+
+      - name: "Mock WWS Active"
+        unique_id: mock_wws_active
+        icon: mdi:weather-sunny-alert
+        state: >
+          {% if is_state('input_boolean.mock_wws_active', 'on') %}
+            true
+          {% else %}
+            {{ states('input_number.mock_outdoor_temp') | float >= state_attr('climate.mock_equitherm', 'temperature') | float }}
+          {% endif %}
 
       # ── OpenTherm template binary sensors ─────────────────────────
       - name: "OT Flame On"
