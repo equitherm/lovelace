@@ -12,6 +12,7 @@ export interface CurveCardConfig {
   flow_entity: string;
   rate_limiting_entity?: string;
   pid_active_entity?: string;
+  wws_entity?: string;
   show_last_updated?: boolean;
   show_kpi_footer?: boolean;
   show_params_footer?: boolean;
@@ -46,6 +47,7 @@ export const CurveCardConfigStruct = type({
   flow_entity: string(),
   rate_limiting_entity: optional(string()),
   pid_active_entity: optional(string()),
+  wws_entity: optional(string()),
   show_last_updated: optional(boolean()),
   show_kpi_footer: optional(boolean()),
   show_params_footer: optional(boolean()),

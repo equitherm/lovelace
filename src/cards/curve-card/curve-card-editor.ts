@@ -77,6 +77,7 @@ export class EquithermCurveCardEditor extends EquithermBaseEditor<CurveCardConfi
           schemaHelpers.entity('pid_output_entity', { domain: ['sensor'], device_class: 'temperature', required: false }),
           schemaHelpers.entity('rate_limiting_entity', { domain: ['binary_sensor'], required: false }),
           schemaHelpers.entity('pid_active_entity', { domain: ['binary_sensor'], required: false }),
+          schemaHelpers.entity('wws_entity', { domain: ['binary_sensor'], required: false }),
         ]),
         // Curve parameters
         schemaHelpers.expandable(localize('editor.curve_parameters'), 'mdi:chart-bell-curve', [

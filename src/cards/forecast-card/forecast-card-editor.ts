@@ -43,6 +43,7 @@ export class EquithermForecastCardEditor extends EquithermBaseEditor<ForecastCar
       schemaHelpers.expandable(localize('editor.optional'), 'mdi:connection', [
         schemaHelpers.entity('outdoor_entity', { domain: ['sensor', 'number', 'input_number'], device_class: 'temperature', required: false }),
         schemaHelpers.entity('pid_active_entity', { domain: ['binary_sensor'], required: false }),
+        schemaHelpers.entity('wws_entity', { domain: ['binary_sensor'], required: false }),
       ]),
       // Forecast settings
       schemaHelpers.expandable(localize('editor.forecast_settings'), 'mdi:clock-outline', [

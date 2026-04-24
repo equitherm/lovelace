@@ -18,6 +18,7 @@ export interface ForecastCardConfig {
   max_flow_entity?: string;
   outdoor_entity?: string;
   pid_active_entity?: string;
+  wws_entity?: string;
   show_last_updated?: boolean;
   show_kpi_footer?: boolean;
   show_params_footer?: boolean;
@@ -46,6 +47,7 @@ export const ForecastCardConfigStruct = type({
   ...curveEntityStructFields,
   outdoor_entity: optional(string()),
   pid_active_entity: optional(string()),
+  wws_entity: optional(string()),
   show_last_updated: optional(boolean()),
   show_kpi_footer: optional(boolean()),
   show_params_footer: optional(boolean()),

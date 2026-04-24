@@ -20,6 +20,7 @@ export interface EquithermCardConfig {
   climate_entity?: string;
   flow_entity?: string;
   outdoor_entity?: string;
+  wws_entity?: string;
   show_kpi_footer?: boolean;
   show_params_footer?: boolean;
   [key: string]: unknown;
@@ -74,8 +75,14 @@ export abstract class EquithermBaseCard<TConfig extends EquithermCardConfig> ext
     return this._formatEntityTemp(entity);
   }
 
-  /** Whether outdoor temperature meets or exceeds room setpoint (Warm Weather Shutdown) */
+  /** Whether Warm Weather Shutdown is active.
+   *  When wws_entity is configured, uses its state directly (authoritative).
+   *  Otherwise falls back to inferring from outdoor >= target. */
   protected get _isWWSD(): boolean {
+    if (this._config?.wws_entity) {
+      const s = this._entityState(this._config.wws_entity);
+      return s?.state === 'on';
+    }
     if (!this._config?.climate_entity) return false;
     const tTarget = this._climate?.attributes.temperature;
     if (tTarget == null) return false;

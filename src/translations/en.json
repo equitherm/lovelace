@@ -65,6 +65,7 @@
     "pid_output_entity": "PID Output",
     "rate_limiting_entity": "Rate Limiting",
     "pid_active_entity": "PID Active",
+    "wws_entity": "WWS Active",
     "title": "Title (optional)",
     "name": "Name",
     "entities": "Entities",

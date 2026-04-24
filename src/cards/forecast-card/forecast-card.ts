@@ -107,8 +107,13 @@ export class EquithermForecastCard extends EquithermEChartCard<ForecastCardConfi
     return isNaN(temp) ? '—' : this._formatCalcTemp(temp);
   }
 
-  /** Whether current outdoor meets or exceeds room setpoint */
+  /** Whether Warm Weather Shutdown is active.
+   *  Prefers wws_entity when configured, otherwise infers from forecast outdoor temp. */
   protected override get _isWWSD(): boolean {
+    if (this._config?.wws_entity) {
+      const s = this._entityState(this._config.wws_entity);
+      return s?.state === 'on';
+    }
     const tTarget = this._climate?.attributes.temperature;
     if (tTarget == null) return false;
     return !isNaN(this._outdoorTemp) && this._outdoorTemp >= tTarget;
