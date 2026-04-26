@@ -1,90 +1,194 @@
-function t(t,e,s,i){var a,r=arguments.length,o=r<3?e:null===i?i=Object.getOwnPropertyDescriptor(e,s):i;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)o=Reflect.decorate(t,e,s,i);else for(var n=t.length-1;n>=0;n--)(a=t[n])&&(o=(r<3?a(o):r>3?a(e,s,o):a(e,s))||o);return r>3&&o&&Object.defineProperty(e,s,o),o}"function"==typeof SuppressedError&&SuppressedError;
+/******************************************************************************
+Copyright (c) Microsoft Corporation.
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
+***************************************************************************** */
+/* global Reflect, Promise, SuppressedError, Symbol, Iterator */
+
+
+function __decorate(decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+}
+
+typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
+    var e = new Error(message);
+    return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+};
+
 /**
  * @license
  * Copyright 2019 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const e=globalThis,s=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow)&&"adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.prototype,i=Symbol(),a=new WeakMap;let r=class{constructor(t,e,s){if(this._$cssResult$=!0,s!==i)throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");this.cssText=t,this.t=e}get styleSheet(){let t=this.o;const e=this.t;if(s&&void 0===t){const s=void 0!==e&&1===e.length;s&&(t=a.get(e)),void 0===t&&((this.o=t=new CSSStyleSheet).replaceSync(this.cssText),s&&a.set(e,t))}return t}toString(){return this.cssText}};const o=t=>new r("string"==typeof t?t:t+"",void 0,i),n=(t,...e)=>{const s=1===t.length?t[0]:e.reduce((e,s,i)=>e+(t=>{if(!0===t._$cssResult$)return t.cssText;if("number"==typeof t)return t;throw Error("Value passed to 'css' function must be a 'css' function result: "+t+". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.")})(s)+t[i+1],t[0]);return new r(s,t,i)},l=s?t=>t:t=>t instanceof CSSStyleSheet?(t=>{let e="";for(const s of t.cssRules)e+=s.cssText;return o(e)})(t):t,{is:h,defineProperty:c,getOwnPropertyDescriptor:d,getOwnPropertyNames:g,getOwnPropertySymbols:p,getPrototypeOf:u}=Object,f=globalThis,x=f.trustedTypes,m=x?x.emptyScript:"",b=f.reactiveElementPolyfillSupport,y=(t,e)=>t,w={toAttribute(t,e){switch(e){case Boolean:t=t?m:null;break;case Object:case Array:t=null==t?t:JSON.stringify(t)}return t},fromAttribute(t,e){let s=t;switch(e){case Boolean:s=null!==t;break;case Number:s=null===t?null:Number(t);break;case Object:case Array:try{s=JSON.parse(t)}catch(t){s=null}}return s}},v=(t,e)=>!h(t,e),A={attribute:!0,type:String,converter:w,reflect:!1,useDefault:!1,hasChanged:v};
+const t$3=globalThis,e$4=t$3.ShadowRoot&&(void 0===t$3.ShadyCSS||t$3.ShadyCSS.nativeShadow)&&"adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.prototype,s$2=Symbol(),o$5=new WeakMap;let n$4 = class n{constructor(t,e,o){if(this._$cssResult$=true,o!==s$2)throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");this.cssText=t,this.t=e;}get styleSheet(){let t=this.o;const s=this.t;if(e$4&&void 0===t){const e=void 0!==s&&1===s.length;e&&(t=o$5.get(s)),void 0===t&&((this.o=t=new CSSStyleSheet).replaceSync(this.cssText),e&&o$5.set(s,t));}return t}toString(){return this.cssText}};const r$4=t=>new n$4("string"==typeof t?t:t+"",void 0,s$2),i$5=(t,...e)=>{const o=1===t.length?t[0]:e.reduce((e,s,o)=>e+(t=>{if(true===t._$cssResult$)return t.cssText;if("number"==typeof t)return t;throw Error("Value passed to 'css' function must be a 'css' function result: "+t+". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.")})(s)+t[o+1],t[0]);return new n$4(o,t,s$2)},S$1=(s,o)=>{if(e$4)s.adoptedStyleSheets=o.map(t=>t instanceof CSSStyleSheet?t:t.styleSheet);else for(const e of o){const o=document.createElement("style"),n=t$3.litNonce;void 0!==n&&o.setAttribute("nonce",n),o.textContent=e.cssText,s.appendChild(o);}},c$2=e$4?t=>t:t=>t instanceof CSSStyleSheet?(t=>{let e="";for(const s of t.cssRules)e+=s.cssText;return r$4(e)})(t):t;
+
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
- */Symbol.metadata??=Symbol("metadata"),f.litPropertyMetadata??=new WeakMap;let C=class extends HTMLElement{static addInitializer(t){this._$Ei(),(this.l??=[]).push(t)}static get observedAttributes(){return this.finalize(),this._$Eh&&[...this._$Eh.keys()]}static createProperty(t,e=A){if(e.state&&(e.attribute=!1),this._$Ei(),this.prototype.hasOwnProperty(t)&&((e=Object.create(e)).wrapped=!0),this.elementProperties.set(t,e),!e.noAccessor){const s=Symbol(),i=this.getPropertyDescriptor(t,s,e);void 0!==i&&c(this.prototype,t,i)}}static getPropertyDescriptor(t,e,s){const{get:i,set:a}=d(this.prototype,t)??{get(){return this[e]},set(t){this[e]=t}};return{get:i,set(e){const r=i?.call(this);a?.call(this,e),this.requestUpdate(t,r,s)},configurable:!0,enumerable:!0}}static getPropertyOptions(t){return this.elementProperties.get(t)??A}static _$Ei(){if(this.hasOwnProperty(y("elementProperties")))return;const t=u(this);t.finalize(),void 0!==t.l&&(this.l=[...t.l]),this.elementProperties=new Map(t.elementProperties)}static finalize(){if(this.hasOwnProperty(y("finalized")))return;if(this.finalized=!0,this._$Ei(),this.hasOwnProperty(y("properties"))){const t=this.properties,e=[...g(t),...p(t)];for(const s of e)this.createProperty(s,t[s])}const t=this[Symbol.metadata];if(null!==t){const e=litPropertyMetadata.get(t);if(void 0!==e)for(const[t,s]of e)this.elementProperties.set(t,s)}this._$Eh=new Map;for(const[t,e]of this.elementProperties){const s=this._$Eu(t,e);void 0!==s&&this._$Eh.set(s,t)}this.elementStyles=this.finalizeStyles(this.styles)}static finalizeStyles(t){const e=[];if(Array.isArray(t)){const s=new Set(t.flat(1/0).reverse());for(const t of s)e.unshift(l(t))}else void 0!==t&&e.push(l(t));return e}static _$Eu(t,e){const s=e.attribute;return!1===s?void 0:"string"==typeof s?s:"string"==typeof t?t.toLowerCase():void 0}constructor(){super(),this._$Ep=void 0,this.isUpdatePending=!1,this.hasUpdated=!1,this._$Em=null,this._$Ev()}_$Ev(){this._$ES=new Promise(t=>this.enableUpdating=t),this._$AL=new Map,this._$E_(),this.requestUpdate(),this.constructor.l?.forEach(t=>t(this))}addController(t){(this._$EO??=new Set).add(t),void 0!==this.renderRoot&&this.isConnected&&t.hostConnected?.()}removeController(t){this._$EO?.delete(t)}_$E_(){const t=new Map,e=this.constructor.elementProperties;for(const s of e.keys())this.hasOwnProperty(s)&&(t.set(s,this[s]),delete this[s]);t.size>0&&(this._$Ep=t)}createRenderRoot(){const t=this.shadowRoot??this.attachShadow(this.constructor.shadowRootOptions);return((t,i)=>{if(s)t.adoptedStyleSheets=i.map(t=>t instanceof CSSStyleSheet?t:t.styleSheet);else for(const s of i){const i=document.createElement("style"),a=e.litNonce;void 0!==a&&i.setAttribute("nonce",a),i.textContent=s.cssText,t.appendChild(i)}})(t,this.constructor.elementStyles),t}connectedCallback(){this.renderRoot??=this.createRenderRoot(),this.enableUpdating(!0),this._$EO?.forEach(t=>t.hostConnected?.())}enableUpdating(t){}disconnectedCallback(){this._$EO?.forEach(t=>t.hostDisconnected?.())}attributeChangedCallback(t,e,s){this._$AK(t,s)}_$ET(t,e){const s=this.constructor.elementProperties.get(t),i=this.constructor._$Eu(t,s);if(void 0!==i&&!0===s.reflect){const a=(void 0!==s.converter?.toAttribute?s.converter:w).toAttribute(e,s.type);this._$Em=t,null==a?this.removeAttribute(i):this.setAttribute(i,a),this._$Em=null}}_$AK(t,e){const s=this.constructor,i=s._$Eh.get(t);if(void 0!==i&&this._$Em!==i){const t=s.getPropertyOptions(i),a="function"==typeof t.converter?{fromAttribute:t.converter}:void 0!==t.converter?.fromAttribute?t.converter:w;this._$Em=i;const r=a.fromAttribute(e,t.type);this[i]=r??this._$Ej?.get(i)??r,this._$Em=null}}requestUpdate(t,e,s,i=!1,a){if(void 0!==t){const r=this.constructor;if(!1===i&&(a=this[t]),s??=r.getPropertyOptions(t),!((s.hasChanged??v)(a,e)||s.useDefault&&s.reflect&&a===this._$Ej?.get(t)&&!this.hasAttribute(r._$Eu(t,s))))return;this.C(t,e,s)}!1===this.isUpdatePending&&(this._$ES=this._$EP())}C(t,e,{useDefault:s,reflect:i,wrapped:a},r){s&&!(this._$Ej??=new Map).has(t)&&(this._$Ej.set(t,r??e??this[t]),!0!==a||void 0!==r)||(this._$AL.has(t)||(this.hasUpdated||s||(e=void 0),this._$AL.set(t,e)),!0===i&&this._$Em!==t&&(this._$Eq??=new Set).add(t))}async _$EP(){this.isUpdatePending=!0;try{await this._$ES}catch(t){Promise.reject(t)}const t=this.scheduleUpdate();return null!=t&&await t,!this.isUpdatePending}scheduleUpdate(){return this.performUpdate()}performUpdate(){if(!this.isUpdatePending)return;if(!this.hasUpdated){if(this.renderRoot??=this.createRenderRoot(),this._$Ep){for(const[t,e]of this._$Ep)this[t]=e;this._$Ep=void 0}const t=this.constructor.elementProperties;if(t.size>0)for(const[e,s]of t){const{wrapped:t}=s,i=this[e];!0!==t||this._$AL.has(e)||void 0===i||this.C(e,void 0,s,i)}}let t=!1;const e=this._$AL;try{t=this.shouldUpdate(e),t?(this.willUpdate(e),this._$EO?.forEach(t=>t.hostUpdate?.()),this.update(e)):this._$EM()}catch(e){throw t=!1,this._$EM(),e}t&&this._$AE(e)}willUpdate(t){}_$AE(t){this._$EO?.forEach(t=>t.hostUpdated?.()),this.hasUpdated||(this.hasUpdated=!0,this.firstUpdated(t)),this.updated(t)}_$EM(){this._$AL=new Map,this.isUpdatePending=!1}get updateComplete(){return this.getUpdateComplete()}getUpdateComplete(){return this._$ES}shouldUpdate(t){return!0}update(t){this._$Eq&&=this._$Eq.forEach(t=>this._$ET(t,this[t])),this._$EM()}updated(t){}firstUpdated(t){}};C.elementStyles=[],C.shadowRootOptions={mode:"open"},C[y("elementProperties")]=new Map,C[y("finalized")]=new Map,b?.({ReactiveElement:C}),(f.reactiveElementVersions??=[]).push("2.1.2");
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-const _=globalThis,S=t=>t,k=_.trustedTypes,E=k?k.createPolicy("lit-html",{createHTML:t=>t}):void 0,D="$lit$",L=`lit$${Math.random().toFixed(9).slice(2)}$`,P="?"+L,M=`<${P}>`,T=document,I=()=>T.createComment(""),H=t=>null===t||"object"!=typeof t&&"function"!=typeof t,F=Array.isArray,R="[ \t\n\f\r]",B=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,N=/-->/g,z=/>/g,O=RegExp(`>|${R}(?:([^\\s"'>=/]+)(${R}*=${R}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`,"g"),X=/'/g,Y=/"/g,$=/^(?:script|style|textarea|title)$/i,W=(t=>(e,...s)=>({_$litType$:t,strings:e,values:s}))(1),G=Symbol.for("lit-noChange"),U=Symbol.for("lit-nothing"),j=new WeakMap,V=T.createTreeWalker(T,129);function q(t,e){if(!F(t)||!t.hasOwnProperty("raw"))throw Error("invalid template strings array");return void 0!==E?E.createHTML(e):e}const Z=(t,e)=>{const s=t.length-1,i=[];let a,r=2===e?"<svg>":3===e?"<math>":"",o=B;for(let e=0;e<s;e++){const s=t[e];let n,l,h=-1,c=0;for(;c<s.length&&(o.lastIndex=c,l=o.exec(s),null!==l);)c=o.lastIndex,o===B?"!--"===l[1]?o=N:void 0!==l[1]?o=z:void 0!==l[2]?($.test(l[2])&&(a=RegExp("</"+l[2],"g")),o=O):void 0!==l[3]&&(o=O):o===O?">"===l[0]?(o=a??B,h=-1):void 0===l[1]?h=-2:(h=o.lastIndex-l[2].length,n=l[1],o=void 0===l[3]?O:'"'===l[3]?Y:X):o===Y||o===X?o=O:o===N||o===z?o=B:(o=O,a=void 0);const d=o===O&&t[e+1].startsWith("/>")?" ":"";r+=o===B?s+M:h>=0?(i.push(n),s.slice(0,h)+D+s.slice(h)+L+d):s+L+(-2===h?e:d)}return[q(t,r+(t[s]||"<?>")+(2===e?"</svg>":3===e?"</math>":"")),i]};class K{constructor({strings:t,_$litType$:e},s){let i;this.parts=[];let a=0,r=0;const o=t.length-1,n=this.parts,[l,h]=Z(t,e);if(this.el=K.createElement(l,s),V.currentNode=this.el.content,2===e||3===e){const t=this.el.content.firstChild;t.replaceWith(...t.childNodes)}for(;null!==(i=V.nextNode())&&n.length<o;){if(1===i.nodeType){if(i.hasAttributes())for(const t of i.getAttributeNames())if(t.endsWith(D)){const e=h[r++],s=i.getAttribute(t).split(L),o=/([.?@])?(.*)/.exec(e);n.push({type:1,index:a,name:o[2],strings:s,ctor:"."===o[1]?st:"?"===o[1]?it:"@"===o[1]?at:et}),i.removeAttribute(t)}else t.startsWith(L)&&(n.push({type:6,index:a}),i.removeAttribute(t));if($.test(i.tagName)){const t=i.textContent.split(L),e=t.length-1;if(e>0){i.textContent=k?k.emptyScript:"";for(let s=0;s<e;s++)i.append(t[s],I()),V.nextNode(),n.push({type:2,index:++a});i.append(t[e],I())}}}else if(8===i.nodeType)if(i.data===P)n.push({type:2,index:a});else{let t=-1;for(;-1!==(t=i.data.indexOf(L,t+1));)n.push({type:7,index:a}),t+=L.length-1}a++}}static createElement(t,e){const s=T.createElement("template");return s.innerHTML=t,s}}function J(t,e,s=t,i){if(e===G)return e;let a=void 0!==i?s._$Co?.[i]:s._$Cl;const r=H(e)?void 0:e._$litDirective$;return a?.constructor!==r&&(a?._$AO?.(!1),void 0===r?a=void 0:(a=new r(t),a._$AT(t,s,i)),void 0!==i?(s._$Co??=[])[i]=a:s._$Cl=a),void 0!==a&&(e=J(t,a._$AS(t,e.values),a,i)),e}class Q{constructor(t,e){this._$AV=[],this._$AN=void 0,this._$AD=t,this._$AM=e}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(t){const{el:{content:e},parts:s}=this._$AD,i=(t?.creationScope??T).importNode(e,!0);V.currentNode=i;let a=V.nextNode(),r=0,o=0,n=s[0];for(;void 0!==n;){if(r===n.index){let e;2===n.type?e=new tt(a,a.nextSibling,this,t):1===n.type?e=new n.ctor(a,n.name,n.strings,this,t):6===n.type&&(e=new rt(a,this,t)),this._$AV.push(e),n=s[++o]}r!==n?.index&&(a=V.nextNode(),r++)}return V.currentNode=T,i}p(t){let e=0;for(const s of this._$AV)void 0!==s&&(void 0!==s.strings?(s._$AI(t,s,e),e+=s.strings.length-2):s._$AI(t[e])),e++}}class tt{get _$AU(){return this._$AM?._$AU??this._$Cv}constructor(t,e,s,i){this.type=2,this._$AH=U,this._$AN=void 0,this._$AA=t,this._$AB=e,this._$AM=s,this.options=i,this._$Cv=i?.isConnected??!0}get parentNode(){let t=this._$AA.parentNode;const e=this._$AM;return void 0!==e&&11===t?.nodeType&&(t=e.parentNode),t}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(t,e=this){t=J(this,t,e),H(t)?t===U||null==t||""===t?(this._$AH!==U&&this._$AR(),this._$AH=U):t!==this._$AH&&t!==G&&this._(t):void 0!==t._$litType$?this.$(t):void 0!==t.nodeType?this.T(t):(t=>F(t)||"function"==typeof t?.[Symbol.iterator])(t)?this.k(t):this._(t)}O(t){return this._$AA.parentNode.insertBefore(t,this._$AB)}T(t){this._$AH!==t&&(this._$AR(),this._$AH=this.O(t))}_(t){this._$AH!==U&&H(this._$AH)?this._$AA.nextSibling.data=t:this.T(T.createTextNode(t)),this._$AH=t}$(t){const{values:e,_$litType$:s}=t,i="number"==typeof s?this._$AC(t):(void 0===s.el&&(s.el=K.createElement(q(s.h,s.h[0]),this.options)),s);if(this._$AH?._$AD===i)this._$AH.p(e);else{const t=new Q(i,this),s=t.u(this.options);t.p(e),this.T(s),this._$AH=t}}_$AC(t){let e=j.get(t.strings);return void 0===e&&j.set(t.strings,e=new K(t)),e}k(t){F(this._$AH)||(this._$AH=[],this._$AR());const e=this._$AH;let s,i=0;for(const a of t)i===e.length?e.push(s=new tt(this.O(I()),this.O(I()),this,this.options)):s=e[i],s._$AI(a),i++;i<e.length&&(this._$AR(s&&s._$AB.nextSibling,i),e.length=i)}_$AR(t=this._$AA.nextSibling,e){for(this._$AP?.(!1,!0,e);t!==this._$AB;){const e=S(t).nextSibling;S(t).remove(),t=e}}setConnected(t){void 0===this._$AM&&(this._$Cv=t,this._$AP?.(t))}}class et{get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}constructor(t,e,s,i,a){this.type=1,this._$AH=U,this._$AN=void 0,this.element=t,this.name=e,this._$AM=i,this.options=a,s.length>2||""!==s[0]||""!==s[1]?(this._$AH=Array(s.length-1).fill(new String),this.strings=s):this._$AH=U}_$AI(t,e=this,s,i){const a=this.strings;let r=!1;if(void 0===a)t=J(this,t,e,0),r=!H(t)||t!==this._$AH&&t!==G,r&&(this._$AH=t);else{const i=t;let o,n;for(t=a[0],o=0;o<a.length-1;o++)n=J(this,i[s+o],e,o),n===G&&(n=this._$AH[o]),r||=!H(n)||n!==this._$AH[o],n===U?t=U:t!==U&&(t+=(n??"")+a[o+1]),this._$AH[o]=n}r&&!i&&this.j(t)}j(t){t===U?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,t??"")}}class st extends et{constructor(){super(...arguments),this.type=3}j(t){this.element[this.name]=t===U?void 0:t}}class it extends et{constructor(){super(...arguments),this.type=4}j(t){this.element.toggleAttribute(this.name,!!t&&t!==U)}}class at extends et{constructor(t,e,s,i,a){super(t,e,s,i,a),this.type=5}_$AI(t,e=this){if((t=J(this,t,e,0)??U)===G)return;const s=this._$AH,i=t===U&&s!==U||t.capture!==s.capture||t.once!==s.once||t.passive!==s.passive,a=t!==U&&(s===U||i);i&&this.element.removeEventListener(this.name,this,s),a&&this.element.addEventListener(this.name,this,t),this._$AH=t}handleEvent(t){"function"==typeof this._$AH?this._$AH.call(this.options?.host??this.element,t):this._$AH.handleEvent(t)}}class rt{constructor(t,e,s){this.element=t,this.type=6,this._$AN=void 0,this._$AM=e,this.options=s}get _$AU(){return this._$AM._$AU}_$AI(t){J(this,t)}}const ot=_.litHtmlPolyfillSupport;ot?.(K,tt),(_.litHtmlVersions??=[]).push("3.3.2");const nt=globalThis;
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */let lt=class extends C{constructor(){super(...arguments),this.renderOptions={host:this},this._$Do=void 0}createRenderRoot(){const t=super.createRenderRoot();return this.renderOptions.renderBefore??=t.firstChild,t}update(t){const e=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(t),this._$Do=((t,e,s)=>{const i=s?.renderBefore??e;let a=i._$litPart$;if(void 0===a){const t=s?.renderBefore??null;i._$litPart$=a=new tt(e.insertBefore(I(),t),t,void 0,s??{})}return a._$AI(t),a})(e,this.renderRoot,this.renderOptions)}connectedCallback(){super.connectedCallback(),this._$Do?.setConnected(!0)}disconnectedCallback(){super.disconnectedCallback(),this._$Do?.setConnected(!1)}render(){return G}};lt._$litElement$=!0,lt.finalized=!0,nt.litElementHydrateSupport?.({LitElement:lt});const ht=nt.litElementPolyfillSupport;ht?.({LitElement:lt}),(nt.litElementVersions??=[]).push("4.2.2");
+ */const{is:i$4,defineProperty:e$3,getOwnPropertyDescriptor:h$1,getOwnPropertyNames:r$3,getOwnPropertySymbols:o$4,getPrototypeOf:n$3}=Object,a$1=globalThis,c$1=a$1.trustedTypes,l$1=c$1?c$1.emptyScript:"",p$1=a$1.reactiveElementPolyfillSupport,d$1=(t,s)=>t,u$1={toAttribute(t,s){switch(s){case Boolean:t=t?l$1:null;break;case Object:case Array:t=null==t?t:JSON.stringify(t);}return t},fromAttribute(t,s){let i=t;switch(s){case Boolean:i=null!==t;break;case Number:i=null===t?null:Number(t);break;case Object:case Array:try{i=JSON.parse(t);}catch(t){i=null;}}return i}},f$1=(t,s)=>!i$4(t,s),b$1={attribute:true,type:String,converter:u$1,reflect:false,useDefault:false,hasChanged:f$1};Symbol.metadata??=Symbol("metadata"),a$1.litPropertyMetadata??=new WeakMap;let y$1 = class y extends HTMLElement{static addInitializer(t){this._$Ei(),(this.l??=[]).push(t);}static get observedAttributes(){return this.finalize(),this._$Eh&&[...this._$Eh.keys()]}static createProperty(t,s=b$1){if(s.state&&(s.attribute=false),this._$Ei(),this.prototype.hasOwnProperty(t)&&((s=Object.create(s)).wrapped=true),this.elementProperties.set(t,s),!s.noAccessor){const i=Symbol(),h=this.getPropertyDescriptor(t,i,s);void 0!==h&&e$3(this.prototype,t,h);}}static getPropertyDescriptor(t,s,i){const{get:e,set:r}=h$1(this.prototype,t)??{get(){return this[s]},set(t){this[s]=t;}};return {get:e,set(s){const h=e?.call(this);r?.call(this,s),this.requestUpdate(t,h,i);},configurable:true,enumerable:true}}static getPropertyOptions(t){return this.elementProperties.get(t)??b$1}static _$Ei(){if(this.hasOwnProperty(d$1("elementProperties")))return;const t=n$3(this);t.finalize(),void 0!==t.l&&(this.l=[...t.l]),this.elementProperties=new Map(t.elementProperties);}static finalize(){if(this.hasOwnProperty(d$1("finalized")))return;if(this.finalized=true,this._$Ei(),this.hasOwnProperty(d$1("properties"))){const t=this.properties,s=[...r$3(t),...o$4(t)];for(const i of s)this.createProperty(i,t[i]);}const t=this[Symbol.metadata];if(null!==t){const s=litPropertyMetadata.get(t);if(void 0!==s)for(const[t,i]of s)this.elementProperties.set(t,i);}this._$Eh=new Map;for(const[t,s]of this.elementProperties){const i=this._$Eu(t,s);void 0!==i&&this._$Eh.set(i,t);}this.elementStyles=this.finalizeStyles(this.styles);}static finalizeStyles(s){const i=[];if(Array.isArray(s)){const e=new Set(s.flat(1/0).reverse());for(const s of e)i.unshift(c$2(s));}else void 0!==s&&i.push(c$2(s));return i}static _$Eu(t,s){const i=s.attribute;return  false===i?void 0:"string"==typeof i?i:"string"==typeof t?t.toLowerCase():void 0}constructor(){super(),this._$Ep=void 0,this.isUpdatePending=false,this.hasUpdated=false,this._$Em=null,this._$Ev();}_$Ev(){this._$ES=new Promise(t=>this.enableUpdating=t),this._$AL=new Map,this._$E_(),this.requestUpdate(),this.constructor.l?.forEach(t=>t(this));}addController(t){(this._$EO??=new Set).add(t),void 0!==this.renderRoot&&this.isConnected&&t.hostConnected?.();}removeController(t){this._$EO?.delete(t);}_$E_(){const t=new Map,s=this.constructor.elementProperties;for(const i of s.keys())this.hasOwnProperty(i)&&(t.set(i,this[i]),delete this[i]);t.size>0&&(this._$Ep=t);}createRenderRoot(){const t=this.shadowRoot??this.attachShadow(this.constructor.shadowRootOptions);return S$1(t,this.constructor.elementStyles),t}connectedCallback(){this.renderRoot??=this.createRenderRoot(),this.enableUpdating(true),this._$EO?.forEach(t=>t.hostConnected?.());}enableUpdating(t){}disconnectedCallback(){this._$EO?.forEach(t=>t.hostDisconnected?.());}attributeChangedCallback(t,s,i){this._$AK(t,i);}_$ET(t,s){const i=this.constructor.elementProperties.get(t),e=this.constructor._$Eu(t,i);if(void 0!==e&&true===i.reflect){const h=(void 0!==i.converter?.toAttribute?i.converter:u$1).toAttribute(s,i.type);this._$Em=t,null==h?this.removeAttribute(e):this.setAttribute(e,h),this._$Em=null;}}_$AK(t,s){const i=this.constructor,e=i._$Eh.get(t);if(void 0!==e&&this._$Em!==e){const t=i.getPropertyOptions(e),h="function"==typeof t.converter?{fromAttribute:t.converter}:void 0!==t.converter?.fromAttribute?t.converter:u$1;this._$Em=e;const r=h.fromAttribute(s,t.type);this[e]=r??this._$Ej?.get(e)??r,this._$Em=null;}}requestUpdate(t,s,i,e=false,h){if(void 0!==t){const r=this.constructor;if(false===e&&(h=this[t]),i??=r.getPropertyOptions(t),!((i.hasChanged??f$1)(h,s)||i.useDefault&&i.reflect&&h===this._$Ej?.get(t)&&!this.hasAttribute(r._$Eu(t,i))))return;this.C(t,s,i);} false===this.isUpdatePending&&(this._$ES=this._$EP());}C(t,s,{useDefault:i,reflect:e,wrapped:h},r){i&&!(this._$Ej??=new Map).has(t)&&(this._$Ej.set(t,r??s??this[t]),true!==h||void 0!==r)||(this._$AL.has(t)||(this.hasUpdated||i||(s=void 0),this._$AL.set(t,s)),true===e&&this._$Em!==t&&(this._$Eq??=new Set).add(t));}async _$EP(){this.isUpdatePending=true;try{await this._$ES;}catch(t){Promise.reject(t);}const t=this.scheduleUpdate();return null!=t&&await t,!this.isUpdatePending}scheduleUpdate(){return this.performUpdate()}performUpdate(){if(!this.isUpdatePending)return;if(!this.hasUpdated){if(this.renderRoot??=this.createRenderRoot(),this._$Ep){for(const[t,s]of this._$Ep)this[t]=s;this._$Ep=void 0;}const t=this.constructor.elementProperties;if(t.size>0)for(const[s,i]of t){const{wrapped:t}=i,e=this[s];true!==t||this._$AL.has(s)||void 0===e||this.C(s,void 0,i,e);}}let t=false;const s=this._$AL;try{t=this.shouldUpdate(s),t?(this.willUpdate(s),this._$EO?.forEach(t=>t.hostUpdate?.()),this.update(s)):this._$EM();}catch(s){throw t=false,this._$EM(),s}t&&this._$AE(s);}willUpdate(t){}_$AE(t){this._$EO?.forEach(t=>t.hostUpdated?.()),this.hasUpdated||(this.hasUpdated=true,this.firstUpdated(t)),this.updated(t);}_$EM(){this._$AL=new Map,this.isUpdatePending=false;}get updateComplete(){return this.getUpdateComplete()}getUpdateComplete(){return this._$ES}shouldUpdate(t){return  true}update(t){this._$Eq&&=this._$Eq.forEach(t=>this._$ET(t,this[t])),this._$EM();}updated(t){}firstUpdated(t){}};y$1.elementStyles=[],y$1.shadowRootOptions={mode:"open"},y$1[d$1("elementProperties")]=new Map,y$1[d$1("finalized")]=new Map,p$1?.({ReactiveElement:y$1}),(a$1.reactiveElementVersions??=[]).push("2.1.2");
+
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const ct=t=>(e,s)=>{void 0!==s?s.addInitializer(()=>{customElements.define(t,e)}):customElements.define(t,e)},dt={attribute:!0,type:String,converter:w,reflect:!1,hasChanged:v},gt=(t=dt,e,s)=>{const{kind:i,metadata:a}=s;let r=globalThis.litPropertyMetadata.get(a);if(void 0===r&&globalThis.litPropertyMetadata.set(a,r=new Map),"setter"===i&&((t=Object.create(t)).wrapped=!0),r.set(s.name,t),"accessor"===i){const{name:i}=s;return{set(s){const a=e.get.call(this);e.set.call(this,s),this.requestUpdate(i,a,t,!0,s)},init(e){return void 0!==e&&this.C(i,void 0,t,e),e}}}if("setter"===i){const{name:i}=s;return function(s){const a=this[i];e.call(this,s),this.requestUpdate(i,a,t,!0,s)}}throw Error("Unsupported decorator location: "+i)};
+const t$2=globalThis,i$3=t=>t,s$1=t$2.trustedTypes,e$2=s$1?s$1.createPolicy("lit-html",{createHTML:t=>t}):void 0,h="$lit$",o$3=`lit$${Math.random().toFixed(9).slice(2)}$`,n$2="?"+o$3,r$2=`<${n$2}>`,l=document,c=()=>l.createComment(""),a=t=>null===t||"object"!=typeof t&&"function"!=typeof t,u=Array.isArray,d=t=>u(t)||"function"==typeof t?.[Symbol.iterator],f="[ \t\n\f\r]",v=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,_=/-->/g,m=/>/g,p=RegExp(`>|${f}(?:([^\\s"'>=/]+)(${f}*=${f}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`,"g"),g=/'/g,$=/"/g,y=/^(?:script|style|textarea|title)$/i,x=t=>(i,...s)=>({_$litType$:t,strings:i,values:s}),b=x(1),E=Symbol.for("lit-noChange"),A=Symbol.for("lit-nothing"),C=new WeakMap,P=l.createTreeWalker(l,129);function V(t,i){if(!u(t)||!t.hasOwnProperty("raw"))throw Error("invalid template strings array");return void 0!==e$2?e$2.createHTML(i):i}const N=(t,i)=>{const s=t.length-1,e=[];let n,l=2===i?"<svg>":3===i?"<math>":"",c=v;for(let i=0;i<s;i++){const s=t[i];let a,u,d=-1,f=0;for(;f<s.length&&(c.lastIndex=f,u=c.exec(s),null!==u);)f=c.lastIndex,c===v?"!--"===u[1]?c=_:void 0!==u[1]?c=m:void 0!==u[2]?(y.test(u[2])&&(n=RegExp("</"+u[2],"g")),c=p):void 0!==u[3]&&(c=p):c===p?">"===u[0]?(c=n??v,d=-1):void 0===u[1]?d=-2:(d=c.lastIndex-u[2].length,a=u[1],c=void 0===u[3]?p:'"'===u[3]?$:g):c===$||c===g?c=p:c===_||c===m?c=v:(c=p,n=void 0);const x=c===p&&t[i+1].startsWith("/>")?" ":"";l+=c===v?s+r$2:d>=0?(e.push(a),s.slice(0,d)+h+s.slice(d)+o$3+x):s+o$3+(-2===d?i:x);}return [V(t,l+(t[s]||"<?>")+(2===i?"</svg>":3===i?"</math>":"")),e]};class S{constructor({strings:t,_$litType$:i},e){let r;this.parts=[];let l=0,a=0;const u=t.length-1,d=this.parts,[f,v]=N(t,i);if(this.el=S.createElement(f,e),P.currentNode=this.el.content,2===i||3===i){const t=this.el.content.firstChild;t.replaceWith(...t.childNodes);}for(;null!==(r=P.nextNode())&&d.length<u;){if(1===r.nodeType){if(r.hasAttributes())for(const t of r.getAttributeNames())if(t.endsWith(h)){const i=v[a++],s=r.getAttribute(t).split(o$3),e=/([.?@])?(.*)/.exec(i);d.push({type:1,index:l,name:e[2],strings:s,ctor:"."===e[1]?I:"?"===e[1]?L:"@"===e[1]?z:H}),r.removeAttribute(t);}else t.startsWith(o$3)&&(d.push({type:6,index:l}),r.removeAttribute(t));if(y.test(r.tagName)){const t=r.textContent.split(o$3),i=t.length-1;if(i>0){r.textContent=s$1?s$1.emptyScript:"";for(let s=0;s<i;s++)r.append(t[s],c()),P.nextNode(),d.push({type:2,index:++l});r.append(t[i],c());}}}else if(8===r.nodeType)if(r.data===n$2)d.push({type:2,index:l});else {let t=-1;for(;-1!==(t=r.data.indexOf(o$3,t+1));)d.push({type:7,index:l}),t+=o$3.length-1;}l++;}}static createElement(t,i){const s=l.createElement("template");return s.innerHTML=t,s}}function M(t,i,s=t,e){if(i===E)return i;let h=void 0!==e?s._$Co?.[e]:s._$Cl;const o=a(i)?void 0:i._$litDirective$;return h?.constructor!==o&&(h?._$AO?.(false),void 0===o?h=void 0:(h=new o(t),h._$AT(t,s,e)),void 0!==e?(s._$Co??=[])[e]=h:s._$Cl=h),void 0!==h&&(i=M(t,h._$AS(t,i.values),h,e)),i}class R{constructor(t,i){this._$AV=[],this._$AN=void 0,this._$AD=t,this._$AM=i;}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(t){const{el:{content:i},parts:s}=this._$AD,e=(t?.creationScope??l).importNode(i,true);P.currentNode=e;let h=P.nextNode(),o=0,n=0,r=s[0];for(;void 0!==r;){if(o===r.index){let i;2===r.type?i=new k(h,h.nextSibling,this,t):1===r.type?i=new r.ctor(h,r.name,r.strings,this,t):6===r.type&&(i=new Z(h,this,t)),this._$AV.push(i),r=s[++n];}o!==r?.index&&(h=P.nextNode(),o++);}return P.currentNode=l,e}p(t){let i=0;for(const s of this._$AV) void 0!==s&&(void 0!==s.strings?(s._$AI(t,s,i),i+=s.strings.length-2):s._$AI(t[i])),i++;}}class k{get _$AU(){return this._$AM?._$AU??this._$Cv}constructor(t,i,s,e){this.type=2,this._$AH=A,this._$AN=void 0,this._$AA=t,this._$AB=i,this._$AM=s,this.options=e,this._$Cv=e?.isConnected??true;}get parentNode(){let t=this._$AA.parentNode;const i=this._$AM;return void 0!==i&&11===t?.nodeType&&(t=i.parentNode),t}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(t,i=this){t=M(this,t,i),a(t)?t===A||null==t||""===t?(this._$AH!==A&&this._$AR(),this._$AH=A):t!==this._$AH&&t!==E&&this._(t):void 0!==t._$litType$?this.$(t):void 0!==t.nodeType?this.T(t):d(t)?this.k(t):this._(t);}O(t){return this._$AA.parentNode.insertBefore(t,this._$AB)}T(t){this._$AH!==t&&(this._$AR(),this._$AH=this.O(t));}_(t){this._$AH!==A&&a(this._$AH)?this._$AA.nextSibling.data=t:this.T(l.createTextNode(t)),this._$AH=t;}$(t){const{values:i,_$litType$:s}=t,e="number"==typeof s?this._$AC(t):(void 0===s.el&&(s.el=S.createElement(V(s.h,s.h[0]),this.options)),s);if(this._$AH?._$AD===e)this._$AH.p(i);else {const t=new R(e,this),s=t.u(this.options);t.p(i),this.T(s),this._$AH=t;}}_$AC(t){let i=C.get(t.strings);return void 0===i&&C.set(t.strings,i=new S(t)),i}k(t){u(this._$AH)||(this._$AH=[],this._$AR());const i=this._$AH;let s,e=0;for(const h of t)e===i.length?i.push(s=new k(this.O(c()),this.O(c()),this,this.options)):s=i[e],s._$AI(h),e++;e<i.length&&(this._$AR(s&&s._$AB.nextSibling,e),i.length=e);}_$AR(t=this._$AA.nextSibling,s){for(this._$AP?.(false,true,s);t!==this._$AB;){const s=i$3(t).nextSibling;i$3(t).remove(),t=s;}}setConnected(t){ void 0===this._$AM&&(this._$Cv=t,this._$AP?.(t));}}class H{get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}constructor(t,i,s,e,h){this.type=1,this._$AH=A,this._$AN=void 0,this.element=t,this.name=i,this._$AM=e,this.options=h,s.length>2||""!==s[0]||""!==s[1]?(this._$AH=Array(s.length-1).fill(new String),this.strings=s):this._$AH=A;}_$AI(t,i=this,s,e){const h=this.strings;let o=false;if(void 0===h)t=M(this,t,i,0),o=!a(t)||t!==this._$AH&&t!==E,o&&(this._$AH=t);else {const e=t;let n,r;for(t=h[0],n=0;n<h.length-1;n++)r=M(this,e[s+n],i,n),r===E&&(r=this._$AH[n]),o||=!a(r)||r!==this._$AH[n],r===A?t=A:t!==A&&(t+=(r??"")+h[n+1]),this._$AH[n]=r;}o&&!e&&this.j(t);}j(t){t===A?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,t??"");}}class I extends H{constructor(){super(...arguments),this.type=3;}j(t){this.element[this.name]=t===A?void 0:t;}}class L extends H{constructor(){super(...arguments),this.type=4;}j(t){this.element.toggleAttribute(this.name,!!t&&t!==A);}}class z extends H{constructor(t,i,s,e,h){super(t,i,s,e,h),this.type=5;}_$AI(t,i=this){if((t=M(this,t,i,0)??A)===E)return;const s=this._$AH,e=t===A&&s!==A||t.capture!==s.capture||t.once!==s.once||t.passive!==s.passive,h=t!==A&&(s===A||e);e&&this.element.removeEventListener(this.name,this,s),h&&this.element.addEventListener(this.name,this,t),this._$AH=t;}handleEvent(t){"function"==typeof this._$AH?this._$AH.call(this.options?.host??this.element,t):this._$AH.handleEvent(t);}}class Z{constructor(t,i,s){this.element=t,this.type=6,this._$AN=void 0,this._$AM=i,this.options=s;}get _$AU(){return this._$AM._$AU}_$AI(t){M(this,t);}}const B=t$2.litHtmlPolyfillSupport;B?.(S,k),(t$2.litHtmlVersions??=[]).push("3.3.2");const D=(t,i,s)=>{const e=s?.renderBefore??i;let h=e._$litPart$;if(void 0===h){const t=s?.renderBefore??null;e._$litPart$=h=new k(i.insertBefore(c(),t),t,void 0,s??{});}return h._$AI(t),h};
+
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
- */function pt(t){return(e,s)=>"object"==typeof s?gt(t,e,s):((t,e,s)=>{const i=e.hasOwnProperty(s);return e.constructor.createProperty(s,t),i?Object.getOwnPropertyDescriptor(e,s):void 0})(t,e,s)}
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */function ut(t){return pt({...t,state:!0,attribute:!1})}
+ */const s=globalThis;let i$2 = class i extends y$1{constructor(){super(...arguments),this.renderOptions={host:this},this._$Do=void 0;}createRenderRoot(){const t=super.createRenderRoot();return this.renderOptions.renderBefore??=t.firstChild,t}update(t){const r=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(t),this._$Do=D(r,this.renderRoot,this.renderOptions);}connectedCallback(){super.connectedCallback(),this._$Do?.setConnected(true);}disconnectedCallback(){super.disconnectedCallback(),this._$Do?.setConnected(false);}render(){return E}};i$2._$litElement$=true,i$2["finalized"]=true,s.litElementHydrateSupport?.({LitElement:i$2});const o$2=s.litElementPolyfillSupport;o$2?.({LitElement:i$2});(s.litElementVersions??=[]).push("4.2.2");
+
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
+const t$1=t=>(e,o)=>{ void 0!==o?o.addInitializer(()=>{customElements.define(t,e);}):customElements.define(t,e);};
+
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
- */
-function ft(t,e){return(e,s,i)=>((t,e,s)=>(s.configurable=!0,s.enumerable=!0,Reflect.decorate&&"object"!=typeof e&&Object.defineProperty(t,e,s),s))(e,s,{get(){return(e=>e.renderRoot?.querySelector(t)??null)(this)}})}
+ */const o$1={attribute:true,type:String,converter:u$1,reflect:false,hasChanged:f$1},r$1=(t=o$1,e,r)=>{const{kind:n,metadata:i}=r;let s=globalThis.litPropertyMetadata.get(i);if(void 0===s&&globalThis.litPropertyMetadata.set(i,s=new Map),"setter"===n&&((t=Object.create(t)).wrapped=true),s.set(r.name,t),"accessor"===n){const{name:o}=r;return {set(r){const n=e.get.call(this);e.set.call(this,r),this.requestUpdate(o,n,t,true,r);},init(e){return void 0!==e&&this.C(o,void 0,t,e),e}}}if("setter"===n){const{name:o}=r;return function(r){const n=this[o];e.call(this,r),this.requestUpdate(o,n,t,true,r);}}throw Error("Unsupported decorator location: "+n)};function n$1(t){return (e,o)=>"object"==typeof o?r$1(t,e,o):((t,e,o)=>{const r=e.hasOwnProperty(o);return e.constructor.createProperty(o,t),r?Object.getOwnPropertyDescriptor(e,o):void 0})(t,e,o)}
+
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
- */const xt=1,mt=t=>(...e)=>({_$litDirective$:t,values:e});let bt=class{constructor(t){}get _$AU(){return this._$AM._$AU}_$AT(t,e,s){this._$Ct=t,this._$AM=e,this._$Ci=s}_$AS(t,e){return this.update(t,e)}update(t,e){return this.render(...e)}};
-/**
- * @license
- * Copyright 2018 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */const yt=mt(class extends bt{constructor(t){if(super(t),t.type!==xt||"class"!==t.name||t.strings?.length>2)throw Error("`classMap()` can only be used in the `class` attribute and must be the only part in the attribute.")}render(t){return" "+Object.keys(t).filter(e=>t[e]).join(" ")+" "}update(t,[e]){if(void 0===this.st){this.st=new Set,void 0!==t.strings&&(this.nt=new Set(t.strings.join(" ").split(/\s/).filter(t=>""!==t)));for(const t in e)e[t]&&!this.nt?.has(t)&&this.st.add(t);return this.render(e)}const s=t.element.classList;for(const t of this.st)t in e||(s.remove(t),this.st.delete(t));for(const t in e){const i=!!e[t];i===this.st.has(t)||this.nt?.has(t)||(i?(s.add(t),this.st.add(t)):(s.remove(t),this.st.delete(t)))}return G}}),wt=t=>t.substring(0,t.indexOf(".")),vt={pulse:"@keyframes pulse {\n        0% {\n            opacity: 1;\n        }\n        50% {\n            opacity: 0;\n        }\n        100% {\n            opacity: 1;\n        }\n    }",spin:"@keyframes spin {\n        from {\n            transform: rotate(0deg);\n        }\n        to {\n            transform: rotate(360deg);\n        }\n    }",cleaning:"@keyframes cleaning {\n        0% {\n            transform: rotate(0) translate(0);\n        }\n        5% {\n            transform: rotate(0) translate(0, -3px);\n        }\n        10% {\n            transform: rotate(0) translate(0, 1px);\n        }\n        15% {\n            transform: rotate(0) translate(0);\n        }\n\n        20% {\n            transform: rotate(30deg) translate(0);\n        }\n        25% {\n            transform: rotate(30deg) translate(0, -3px);\n        }\n        30% {\n            transform: rotate(30deg) translate(0, 1px);\n        }\n        35% {\n            transform: rotate(30deg) translate(0);\n        }\n        40% {\n            transform: rotate(0) translate(0);\n        }\n\n        45% {\n            transform: rotate(-30deg) translate(0);\n        }\n        50% {\n            transform: rotate(-30deg) translate(0, -3px);\n        }\n        55% {\n            transform: rotate(-30deg) translate(0, 1px);\n        }\n        60% {\n            transform: rotate(-30deg) translate(0);\n        }\n        70% {\n            transform: rotate(0deg) translate(0);\n        }\n        100% {\n            transform: rotate(0deg);\n        }\n    }",returning:"@keyframes returning {\n        0% {\n            transform: rotate(0);\n        }\n        25% {\n            transform: rotate(20deg);\n        }\n        50% {\n            transform: rotate(0);\n        }\n        75% {\n            transform: rotate(-20deg);\n        }\n        100% {\n            transform: rotate(0);\n        }\n    }"};n`
-    ${o(vt.pulse)}
-  `,n`
-    ${o(vt.spin)}
-  `,n`
-    ${o(vt.cleaning)}
-  `,n`
-    ${o(vt.returning)}
-  `;const At=n`
-  ${o(Object.values(vt).join("\n"))}
-`,Ct=n`
-  /* Climate state colors (RGB triples for badge-info + ApexCharts) */
-  --rgb-state-climate-auto: 146, 107, 199;
-  --rgb-state-climate-cool: 59, 130, 246;
-  --rgb-state-climate-dry: 76, 175, 80;
-  --rgb-state-climate-fan-only: 158, 158, 158;
-  --rgb-state-climate-heat: 249, 115, 22;
-  --rgb-state-climate-heat-cool: 146, 107, 199;
-  --rgb-state-climate-idle: 158, 158, 158;
-  --rgb-state-climate-off: 158, 158, 158;
+ */function r(r){return n$1({...r,state:true,attribute:false})}
+
+const strAnimations = {
+    pulse: `@keyframes pulse {
+        0% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0;
+        }
+        100% {
+            opacity: 1;
+        }
+    }`,
+    spin: `@keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
+    }`,
+    cleaning: `@keyframes cleaning {
+        0% {
+            transform: rotate(0) translate(0);
+        }
+        5% {
+            transform: rotate(0) translate(0, -3px);
+        }
+        10% {
+            transform: rotate(0) translate(0, 1px);
+        }
+        15% {
+            transform: rotate(0) translate(0);
+        }
+
+        20% {
+            transform: rotate(30deg) translate(0);
+        }
+        25% {
+            transform: rotate(30deg) translate(0, -3px);
+        }
+        30% {
+            transform: rotate(30deg) translate(0, 1px);
+        }
+        35% {
+            transform: rotate(30deg) translate(0);
+        }
+        40% {
+            transform: rotate(0) translate(0);
+        }
+
+        45% {
+            transform: rotate(-30deg) translate(0);
+        }
+        50% {
+            transform: rotate(-30deg) translate(0, -3px);
+        }
+        55% {
+            transform: rotate(-30deg) translate(0, 1px);
+        }
+        60% {
+            transform: rotate(-30deg) translate(0);
+        }
+        70% {
+            transform: rotate(0deg) translate(0);
+        }
+        100% {
+            transform: rotate(0deg);
+        }
+    }`,
+    returning: `@keyframes returning {
+        0% {
+            transform: rotate(0);
+        }
+        25% {
+            transform: rotate(20deg);
+        }
+        50% {
+            transform: rotate(0);
+        }
+        75% {
+            transform: rotate(-20deg);
+        }
+        100% {
+            transform: rotate(0);
+        }
+    }`,
+};
+({
+    pulse: i$5 `
+    ${r$4(strAnimations.pulse)}
+  `,
+    spin: i$5 `
+    ${r$4(strAnimations.spin)}
+  `,
+    cleaning: i$5 `
+    ${r$4(strAnimations.cleaning)}
+  `,
+    returning: i$5 `
+    ${r$4(strAnimations.returning)}
+  `,
+});
+const animations = i$5 `
+  ${r$4(Object.values(strAnimations).join("\n"))}
+`;
+
+const defaultColorCss = i$5 `
   --rgb-error-color: 219, 68, 55;
   --default-green: 76, 175, 80;
   --default-orange: 255, 152, 0;
   --default-red: 244, 67, 54;
   --default-disabled: 189, 189, 189;
-`,_t=n`
+`;
+const defaultDarkColorCss = i$5 `
   --default-disabled: 111, 111, 111;
-`,St=n`
+`;
+
+const themeVariables = i$5 `
   /* Equitherm-specific colors (no HA equivalent) */
   --rgb-heating: var(--eq-rgb-heating, 249, 115, 22);
   --rgb-cold: var(--eq-rgb-cold, 59, 130, 246);
@@ -119,14 +223,15 @@ function ft(t,e){return(e,s,i)=>((t,e,s)=>(s.configurable=!0,s.enumerable=!0,Ref
   --subtitle-line-height: var(--eq-subtitle-line-height, 24px);
   --subtitle-color: var(--eq-subtitle-color, var(--secondary-text-color));
   --subtitle-letter-spacing: var(--eq-subtitle-letter-spacing, 0px);
-`,kt=n`
+`;
+const themeColorCss = i$5 `
   /* Equitherm-specific colors */
   --rgb-success: var(--eq-rgb-success, var(--default-green));
   --rgb-warning: var(--eq-rgb-warning, var(--default-orange));
   --rgb-danger: var(--eq-rgb-danger, var(--default-red));
   --rgb-disabled: var(--eq-rgb-disabled, var(--default-disabled));
 
-  /* State climate colors — kept as RGB triples for eq-badge-info and ApexCharts */
+  /* State climate colors — kept as RGB triples for eq-badge-info and ECharts */
   --rgb-state-climate-auto: var(--eq-rgb-state-climate-auto, 146, 107, 199);
   --rgb-state-climate-cool: var(--eq-rgb-state-climate-cool, 59, 130, 246);
   --rgb-state-climate-dry: var(--eq-rgb-state-climate-dry, 76, 175, 80);
@@ -135,24 +240,4706 @@ function ft(t,e){return(e,s,i)=>((t,e,s)=>(s.configurable=!0,s.enumerable=!0,Ref
   --rgb-state-climate-heat-cool: var(--eq-rgb-state-climate-heat-cool, 146, 107, 199);
   --rgb-state-climate-idle: var(--eq-rgb-state-climate-idle, 158, 158, 158);
   --rgb-state-climate-off: var(--eq-rgb-state-climate-off, 158, 158, 158);
-`;function Et(t){return!!t&&t.themes.darkMode}class Dt extends lt{updated(t){if(super.updated(t),t.has("hass")&&this.hass){const e=Et(t.get("hass")),s=Et(this.hass);e!==s&&this.toggleAttribute("dark-mode",s)}}static get styles(){return[At,n`
+`;
+
+/** Temperature unit conversion utilities. */
+const FACTOR = 9 / 5;
+function isImperial(hass) {
+    return hass?.config?.unit_system?.temperature === '°F';
+}
+/** Convert an absolute °C value to the user's display unit (°F: × 9/5 + 32). */
+function celsiusToDisplay(celsius, imperial) {
+    return imperial ? celsius * FACTOR + 32 : celsius;
+}
+/** Convert a display-unit value back to °C. */
+function displayToCelsius(display, imperial) {
+    return imperial ? (display - 32) / FACTOR : display;
+}
+/** Convert a °C delta to the user's display unit (°F: × 9/5, no offset). */
+function celsiusToDisplayDelta(celsius, imperial) {
+    return imperial ? celsius * FACTOR : celsius;
+}
+/** Convert a display-unit delta back to °C. */
+function displayDeltaToCelsius(display, imperial) {
+    return imperial ? display / FACTOR : display;
+}
+
+function computeDarkMode(hass) {
+    if (!hass)
+        return false;
+    return hass.themes.darkMode;
+}
+class EquithermBaseElement extends i$2 {
+    updated(changedProps) {
+        super.updated(changedProps);
+        if (changedProps.has("hass") && this.hass) {
+            const currentDarkMode = computeDarkMode(changedProps.get("hass"));
+            const newDarkMode = computeDarkMode(this.hass);
+            if (currentDarkMode !== newDarkMode) {
+                this.toggleAttribute("dark-mode", newDarkMode);
+            }
+        }
+    }
+    /** Whether HA is configured for °F */
+    get _isImperial() {
+        return isImperial(this.hass);
+    }
+    /** Convert an absolute °C value to the user's display unit */
+    _toDisplayTemp(celsius) {
+        return celsiusToDisplay(celsius, this._isImperial);
+    }
+    /** Convert a display-unit value (°F or °C) back to °C for calculations */
+    _fromDisplayTemp(display) {
+        return displayToCelsius(display, this._isImperial);
+    }
+    /** Convert a °C delta to the user's display unit (scales only, no offset) */
+    _toDisplayDelta(celsius) {
+        return celsiusToDisplayDelta(celsius, this._isImperial);
+    }
+    /** Convert a display-unit delta back to °C */
+    _fromDisplayDelta(display) {
+        return displayDeltaToCelsius(display, this._isImperial);
+    }
+    static get styles() {
+        return [
+            animations,
+            i$5 `
         :host {
-          ${Ct}
+          ${defaultColorCss}
         }
         :host([dark-mode]) {
-          ${_t}
+          ${defaultDarkColorCss}
         }
         :host {
-          ${kt}
-          ${St}
+          ${themeColorCss}
+          ${themeVariables}
         }
-      `]}}t([pt({attribute:!1})],Dt.prototype,"hass",void 0);
+      `,
+        ];
+    }
+}
+__decorate([
+    n$1({ attribute: false })
+], EquithermBaseElement.prototype, "hass", void 0);
+
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+const t={ATTRIBUTE:1},e$1=t=>(...e)=>({_$litDirective$:t,values:e});let i$1 = class i{constructor(t){}get _$AU(){return this._$AM._$AU}_$AT(t,e,i){this._$Ct=t,this._$AM=e,this._$Ci=i;}_$AS(t,e){return this.update(t,e)}update(t,e){return this.render(...e)}};
+
 /**
  * @license
  * Copyright 2018 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
+ */const n="important",i=" !"+n,o=e$1(class extends i$1{constructor(t$1){if(super(t$1),t$1.type!==t.ATTRIBUTE||"style"!==t$1.name||t$1.strings?.length>2)throw Error("The `styleMap` directive must be used in the `style` attribute and must be the only part in the attribute.")}render(t){return Object.keys(t).reduce((e,r)=>{const s=t[r];return null==s?e:e+`${r=r.includes("-")?r:r.replace(/(?:^(webkit|moz|ms|o)|)(?=[A-Z])/g,"-$&").toLowerCase()}:${s};`},"")}update(e,[r]){const{style:s}=e.element;if(void 0===this.ft)return this.ft=new Set(Object.keys(r)),this.render(r);for(const t of this.ft)null==r[t]&&(this.ft.delete(t),t.includes("-")?s.removeProperty(t):s[t]=null);for(const t in r){const e=r[t];if(null!=e){this.ft.add(t);const r="string"==typeof e&&e.endsWith(i);t.includes("-")||r?s.setProperty(t,r?e.slice(0,-11):e,r?n:""):s[t]=e;}}return E}});
+
+// Polymer legacy event helpers used courtesy of the Polymer project.
+//
+// Copyright (c) 2017 The Polymer Authors. All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are
+// met:
+//
+//    * Redistributions of source code must retain the above copyright
+// notice, this list of conditions and the following disclaimer.
+//    * Redistributions in binary form must reproduce the above
+// copyright notice, this list of conditions and the following disclaimer
+// in the documentation and/or other materials provided with the
+// distribution.
+//    * Neither the name of Google Inc. nor the names of its
+// contributors may be used to endorse or promote products derived from
+// this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+/**
+ * Dispatches a custom event with an optional detail value.
+ *
+ * @param {string} type Name of event type.
+ * @param {*=} detail Detail value containing event-specific
+ *   payload.
+ * @param {{ bubbles: (boolean|undefined),
+ *           cancelable: (boolean|undefined),
+ *           composed: (boolean|undefined) }=}
+ *  options Object specifying options.  These may include:
+ *  `bubbles` (boolean, defaults to `true`),
+ *  `cancelable` (boolean, defaults to false), and
+ *  `node` on which to fire the event (HTMLElement, defaults to `this`).
+ * @return {Event} The new event that was fired.
  */
-const Lt="important",Pt=" !"+Lt,Mt=mt(class extends bt{constructor(t){if(super(t),t.type!==xt||"style"!==t.name||t.strings?.length>2)throw Error("The `styleMap` directive must be used in the `style` attribute and must be the only part in the attribute.")}render(t){return Object.keys(t).reduce((e,s)=>{const i=t[s];return null==i?e:e+`${s=s.includes("-")?s:s.replace(/(?:^(webkit|moz|ms|o)|)(?=[A-Z])/g,"-$&").toLowerCase()}:${i};`},"")}update(t,[e]){const{style:s}=t.element;if(void 0===this.ft)return this.ft=new Set(Object.keys(e)),this.render(e);for(const t of this.ft)null==e[t]&&(this.ft.delete(t),t.includes("-")?s.removeProperty(t):s[t]=null);for(const t in e){const i=e[t];if(null!=i){this.ft.add(t);const e="string"==typeof i&&i.endsWith(Pt);t.includes("-")||e?s.setProperty(t,e?i.slice(0,-11):i,e?Lt:""):s[t]=i}}return G}}),Tt=(t,e,s,i)=>{i=i||{},s=null==s?{}:s;const a=new Event(e,{bubbles:void 0===i.bubbles||i.bubbles,cancelable:Boolean(i.cancelable),composed:void 0===i.composed||i.composed});return a.detail=s,t.dispatchEvent(a),a};const It={cooling:"cool",defrosting:"heat",drying:"dry",fan:"fan_only",heating:"heat",idle:"off",off:"off",preheating:"heat"},Ht={heating:"mdi:fire",cooling:"mdi:snowflake",drying:"mdi:water-percent",idle:"mdi:clock-outline",off:null,fan:"mdi:fan",defrosting:"mdi:snowflake-melt",preheating:"mdi:fire"};function Ft(t){return Ht[t??"off"]??null}function Rt(t){switch(t){case"heating":case"heat":return"heating";case"cooling":case"cool":return"cooling";case"drying":case"dry":return"drying";case"fan":case"fan_only":return"fan";case"defrosting":return"defrosting";case"preheating":return"preheating";case"off":return"off";default:return"idle"}}function Bt(t){const e=It[t]??"off";return`var(--rgb-state-climate-${"heat_cool"===e?"heat-cool":e})`}const Nt=new Set(["heating","cooling","drying","defrosting","preheating"]);function zt(t,e){const s=Bt(e),i=s.match(/var\((--[^)]+)\)/);if(!i)return s;const a=getComputedStyle(t).getPropertyValue(i[1]).trim();return a?`rgb(${a})`:s}function Ot(t,e){return!!t.rate_limiting_entity&&"on"===e(t.rate_limiting_entity)?.state}function Xt(t){return t.pid_output_entity??t.curve_output_entity}function Yt(t,e){if(!Ot(t,e))return null;const s=Xt(t);if(!s)return null;const i=e(t.flow_entity),a=e(s);if(!i||!a)return null;const r=parseFloat(i.state),o=parseFloat(a.state);return isNaN(r)||isNaN(o)?null:r<o?"rising":r>o?"falling":null}function $t(t,e){const s=e&&e.cache?e.cache:Zt,i=e&&e.serializer?e.serializer:Vt;return(e&&e.strategy?e.strategy:jt)(t,{cache:s,serializer:i})}function Wt(t,e,s,i){const a=null==(r=i)||"number"==typeof r||"boolean"==typeof r?i:s(i);var r;let o=e.get(a);return void 0===o&&(o=t.call(this,i),e.set(a,o)),o}function Gt(t,e,s){const i=Array.prototype.slice.call(arguments,3),a=s(i);let r=e.get(a);return void 0===r&&(r=t.apply(this,i),e.set(a,r)),r}function Ut(t,e,s,i,a){return s.bind(e,t,i,a)}function jt(t,e){return Ut(t,this,1===t.length?Wt:Gt,e.cache.create(),e.serializer)}const Vt=function(){return JSON.stringify(arguments)};class qt{cache;constructor(){this.cache=Object.create(null)}get(t){return this.cache[t]}set(t,e){this.cache[t]=e}}const Zt={create:function(){return new qt}},Kt={variadic:function(t,e){return Ut(t,this,Gt,e.cache.create(),e.serializer)}},Jt=/(?:[Eec]{1,6}|G{1,5}|[Qq]{1,5}|(?:[yYur]+|U{1,5})|[ML]{1,5}|d{1,2}|D{1,3}|F{1}|[abB]{1,5}|[hkHK]{1,2}|w{1,2}|W{1}|m{1,2}|s{1,2}|[zZOvVxX]{1,4})(?=([^']*'[^']*')*[^']*$)/g;function Qt(t){const e={};return t.replace(Jt,t=>{const s=t.length;switch(t[0]){case"G":e.era=4===s?"long":5===s?"narrow":"short";break;case"y":e.year=2===s?"2-digit":"numeric";break;case"Y":case"u":case"U":case"r":throw new RangeError("`Y/u/U/r` (year) patterns are not supported, use `y` instead");case"q":case"Q":throw new RangeError("`q/Q` (quarter) patterns are not supported");case"M":case"L":e.month=["numeric","2-digit","short","long","narrow"][s-1];break;case"w":case"W":throw new RangeError("`w/W` (week) patterns are not supported");case"d":e.day=["numeric","2-digit"][s-1];break;case"D":case"F":case"g":throw new RangeError("`D/F/g` (day) patterns are not supported, use `d` instead");case"E":e.weekday=4===s?"long":5===s?"narrow":"short";break;case"e":if(s<4)throw new RangeError("`e..eee` (weekday) patterns are not supported");e.weekday=["short","long","narrow","short"][s-4];break;case"c":if(s<4)throw new RangeError("`c..ccc` (weekday) patterns are not supported");e.weekday=["short","long","narrow","short"][s-4];break;case"a":e.hour12=!0;break;case"b":case"B":throw new RangeError("`b/B` (period) patterns are not supported, use `a` instead");case"h":e.hourCycle="h12",e.hour=["numeric","2-digit"][s-1];break;case"H":e.hourCycle="h23",e.hour=["numeric","2-digit"][s-1];break;case"K":e.hourCycle="h11",e.hour=["numeric","2-digit"][s-1];break;case"k":e.hourCycle="h24",e.hour=["numeric","2-digit"][s-1];break;case"j":case"J":case"C":throw new RangeError("`j/J/C` (hour) patterns are not supported, use `h/H/K/k` instead");case"m":e.minute=["numeric","2-digit"][s-1];break;case"s":e.second=["numeric","2-digit"][s-1];break;case"S":case"A":throw new RangeError("`S/A` (second) patterns are not supported, use `s` instead");case"z":e.timeZoneName=s<4?"short":"long";break;case"Z":case"O":case"v":case"V":case"X":case"x":throw new RangeError("`Z/O/v/V/X/x` (timeZone) patterns are not supported, use `z` instead")}return""}),e}const te=/[\t-\r \x85\u200E\u200F\u2028\u2029]/i;function ee(t){return t.replace(/^(.*?)-/,"")}const se=/^\.(?:(0+)(\*)?|(#+)|(0+)(#+))$/g,ie=/^(@+)?(\+|#+)?[rs]?$/g,ae=/(\*)(0+)|(#+)(0+)|(0+)/g,re=/^(0+)$/;function oe(t){const e={};return"r"===t[t.length-1]?e.roundingPriority="morePrecision":"s"===t[t.length-1]&&(e.roundingPriority="lessPrecision"),t.replace(ie,function(t,s,i){return"string"!=typeof i?(e.minimumSignificantDigits=s.length,e.maximumSignificantDigits=s.length):"+"===i?e.minimumSignificantDigits=s.length:"#"===s[0]?e.maximumSignificantDigits=s.length:(e.minimumSignificantDigits=s.length,e.maximumSignificantDigits=s.length+("string"==typeof i?i.length:0)),""}),e}function ne(t){switch(t){case"sign-auto":return{signDisplay:"auto"};case"sign-accounting":case"()":return{currencySign:"accounting"};case"sign-always":case"+!":return{signDisplay:"always"};case"sign-accounting-always":case"()!":return{signDisplay:"always",currencySign:"accounting"};case"sign-except-zero":case"+?":return{signDisplay:"exceptZero"};case"sign-accounting-except-zero":case"()?":return{signDisplay:"exceptZero",currencySign:"accounting"};case"sign-never":case"+_":return{signDisplay:"never"}}}function le(t){let e;if("E"===t[0]&&"E"===t[1]?(e={notation:"engineering"},t=t.slice(2)):"E"===t[0]&&(e={notation:"scientific"},t=t.slice(1)),e){const s=t.slice(0,2);if("+!"===s?(e.signDisplay="always",t=t.slice(2)):"+?"===s&&(e.signDisplay="exceptZero",t=t.slice(2)),!re.test(t))throw new Error("Malformed concise eng/scientific notation");e.minimumIntegerDigits=t.length}return e}function he(t){const e=ne(t);return e||{}}function ce(t){let e={};for(const s of t){switch(s.stem){case"percent":case"%":e.style="percent";continue;case"%x100":e.style="percent",e.scale=100;continue;case"currency":e.style="currency",e.currency=s.options[0];continue;case"group-off":case",_":e.useGrouping=!1;continue;case"precision-integer":case".":e.maximumFractionDigits=0;continue;case"measure-unit":case"unit":e.style="unit",e.unit=ee(s.options[0]);continue;case"compact-short":case"K":e.notation="compact",e.compactDisplay="short";continue;case"compact-long":case"KK":e.notation="compact",e.compactDisplay="long";continue;case"scientific":e={...e,notation:"scientific",...s.options.reduce((t,e)=>({...t,...he(e)}),{})};continue;case"engineering":e={...e,notation:"engineering",...s.options.reduce((t,e)=>({...t,...he(e)}),{})};continue;case"notation-simple":e.notation="standard";continue;case"unit-width-narrow":e.currencyDisplay="narrowSymbol",e.unitDisplay="narrow";continue;case"unit-width-short":e.currencyDisplay="code",e.unitDisplay="short";continue;case"unit-width-full-name":e.currencyDisplay="name",e.unitDisplay="long";continue;case"unit-width-iso-code":e.currencyDisplay="symbol";continue;case"scale":e.scale=parseFloat(s.options[0]);continue;case"rounding-mode-floor":e.roundingMode="floor";continue;case"rounding-mode-ceiling":e.roundingMode="ceil";continue;case"rounding-mode-down":e.roundingMode="trunc";continue;case"rounding-mode-up":e.roundingMode="expand";continue;case"rounding-mode-half-even":e.roundingMode="halfEven";continue;case"rounding-mode-half-down":e.roundingMode="halfTrunc";continue;case"rounding-mode-half-up":e.roundingMode="halfExpand";continue;case"integer-width":if(s.options.length>1)throw new RangeError("integer-width stems only accept a single optional option");s.options[0].replace(ae,function(t,s,i,a,r,o){if(s)e.minimumIntegerDigits=i.length;else{if(a&&r)throw new Error("We currently do not support maximum integer digits");if(o)throw new Error("We currently do not support exact integer digits")}return""});continue}if(re.test(s.stem)){e.minimumIntegerDigits=s.stem.length;continue}if(se.test(s.stem)){if(s.options.length>1)throw new RangeError("Fraction-precision stems only accept a single optional option");s.stem.replace(se,function(t,s,i,a,r,o){return"*"===i?e.minimumFractionDigits=s.length:a&&"#"===a[0]?e.maximumFractionDigits=a.length:r&&o?(e.minimumFractionDigits=r.length,e.maximumFractionDigits=r.length+o.length):(e.minimumFractionDigits=s.length,e.maximumFractionDigits=s.length),""});const t=s.options[0];"w"===t?e={...e,trailingZeroDisplay:"stripIfInteger"}:t&&(e={...e,...oe(t)});continue}if(ie.test(s.stem)){e={...e,...oe(s.stem)};continue}const t=ne(s.stem);t&&(e={...e,...t});const i=le(s.stem);i&&(e={...e,...i})}return e}let de=function(t){return t[t.literal=0]="literal",t[t.argument=1]="argument",t[t.number=2]="number",t[t.date=3]="date",t[t.time=4]="time",t[t.select=5]="select",t[t.plural=6]="plural",t[t.pound=7]="pound",t[t.tag=8]="tag",t}({}),ge=function(t){return t[t.number=0]="number",t[t.dateTime=1]="dateTime",t}({});function pe(t){return t.type===de.literal}function ue(t){return t.type===de.argument}function fe(t){return t.type===de.number}function xe(t){return t.type===de.date}function me(t){return t.type===de.time}function be(t){return t.type===de.select}function ye(t){return t.type===de.plural}function we(t){return t.type===de.pound}function ve(t){return t.type===de.tag}function Ae(t){return!(!t||"object"!=typeof t||t.type!==ge.number)}function Ce(t){return!(!t||"object"!=typeof t||t.type!==ge.dateTime)}let _e=function(t){return t[t.EXPECT_ARGUMENT_CLOSING_BRACE=1]="EXPECT_ARGUMENT_CLOSING_BRACE",t[t.EMPTY_ARGUMENT=2]="EMPTY_ARGUMENT",t[t.MALFORMED_ARGUMENT=3]="MALFORMED_ARGUMENT",t[t.EXPECT_ARGUMENT_TYPE=4]="EXPECT_ARGUMENT_TYPE",t[t.INVALID_ARGUMENT_TYPE=5]="INVALID_ARGUMENT_TYPE",t[t.EXPECT_ARGUMENT_STYLE=6]="EXPECT_ARGUMENT_STYLE",t[t.INVALID_NUMBER_SKELETON=7]="INVALID_NUMBER_SKELETON",t[t.INVALID_DATE_TIME_SKELETON=8]="INVALID_DATE_TIME_SKELETON",t[t.EXPECT_NUMBER_SKELETON=9]="EXPECT_NUMBER_SKELETON",t[t.EXPECT_DATE_TIME_SKELETON=10]="EXPECT_DATE_TIME_SKELETON",t[t.UNCLOSED_QUOTE_IN_ARGUMENT_STYLE=11]="UNCLOSED_QUOTE_IN_ARGUMENT_STYLE",t[t.EXPECT_SELECT_ARGUMENT_OPTIONS=12]="EXPECT_SELECT_ARGUMENT_OPTIONS",t[t.EXPECT_PLURAL_ARGUMENT_OFFSET_VALUE=13]="EXPECT_PLURAL_ARGUMENT_OFFSET_VALUE",t[t.INVALID_PLURAL_ARGUMENT_OFFSET_VALUE=14]="INVALID_PLURAL_ARGUMENT_OFFSET_VALUE",t[t.EXPECT_SELECT_ARGUMENT_SELECTOR=15]="EXPECT_SELECT_ARGUMENT_SELECTOR",t[t.EXPECT_PLURAL_ARGUMENT_SELECTOR=16]="EXPECT_PLURAL_ARGUMENT_SELECTOR",t[t.EXPECT_SELECT_ARGUMENT_SELECTOR_FRAGMENT=17]="EXPECT_SELECT_ARGUMENT_SELECTOR_FRAGMENT",t[t.EXPECT_PLURAL_ARGUMENT_SELECTOR_FRAGMENT=18]="EXPECT_PLURAL_ARGUMENT_SELECTOR_FRAGMENT",t[t.INVALID_PLURAL_ARGUMENT_SELECTOR=19]="INVALID_PLURAL_ARGUMENT_SELECTOR",t[t.DUPLICATE_PLURAL_ARGUMENT_SELECTOR=20]="DUPLICATE_PLURAL_ARGUMENT_SELECTOR",t[t.DUPLICATE_SELECT_ARGUMENT_SELECTOR=21]="DUPLICATE_SELECT_ARGUMENT_SELECTOR",t[t.MISSING_OTHER_CLAUSE=22]="MISSING_OTHER_CLAUSE",t[t.INVALID_TAG=23]="INVALID_TAG",t[t.INVALID_TAG_NAME=25]="INVALID_TAG_NAME",t[t.UNMATCHED_CLOSING_TAG=26]="UNMATCHED_CLOSING_TAG",t[t.UNCLOSED_TAG=27]="UNCLOSED_TAG",t}({});const Se=/[ \xA0\u1680\u2000-\u200A\u202F\u205F\u3000]/,ke={"001":["H","h"],419:["h","H","hB","hb"],AC:["H","h","hb","hB"],AD:["H","hB"],AE:["h","hB","hb","H"],AF:["H","hb","hB","h"],AG:["h","hb","H","hB"],AI:["H","h","hb","hB"],AL:["h","H","hB"],AM:["H","hB"],AO:["H","hB"],AR:["h","H","hB","hb"],AS:["h","H"],AT:["H","hB"],AU:["h","hb","H","hB"],AW:["H","hB"],AX:["H"],AZ:["H","hB","h"],BA:["H","hB","h"],BB:["h","hb","H","hB"],BD:["h","hB","H"],BE:["H","hB"],BF:["H","hB"],BG:["H","hB","h"],BH:["h","hB","hb","H"],BI:["H","h"],BJ:["H","hB"],BL:["H","hB"],BM:["h","hb","H","hB"],BN:["hb","hB","h","H"],BO:["h","H","hB","hb"],BQ:["H"],BR:["H","hB"],BS:["h","hb","H","hB"],BT:["h","H"],BW:["H","h","hb","hB"],BY:["H","h"],BZ:["H","h","hb","hB"],CA:["h","hb","H","hB"],CC:["H","h","hb","hB"],CD:["hB","H"],CF:["H","h","hB"],CG:["H","hB"],CH:["H","hB","h"],CI:["H","hB"],CK:["H","h","hb","hB"],CL:["h","H","hB","hb"],CM:["H","h","hB"],CN:["H","hB","hb","h"],CO:["h","H","hB","hb"],CP:["H"],CR:["h","H","hB","hb"],CU:["h","H","hB","hb"],CV:["H","hB"],CW:["H","hB"],CX:["H","h","hb","hB"],CY:["h","H","hb","hB"],CZ:["H"],DE:["H","hB"],DG:["H","h","hb","hB"],DJ:["h","H"],DK:["H"],DM:["h","hb","H","hB"],DO:["h","H","hB","hb"],DZ:["h","hB","hb","H"],EA:["H","h","hB","hb"],EC:["h","H","hB","hb"],EE:["H","hB"],EG:["h","hB","hb","H"],EH:["h","hB","hb","H"],ER:["h","H"],ES:["H","hB","h","hb"],ET:["hB","hb","h","H"],FI:["H"],FJ:["h","hb","H","hB"],FK:["H","h","hb","hB"],FM:["h","hb","H","hB"],FO:["H","h"],FR:["H","hB"],GA:["H","hB"],GB:["H","h","hb","hB"],GD:["h","hb","H","hB"],GE:["H","hB","h"],GF:["H","hB"],GG:["H","h","hb","hB"],GH:["h","H"],GI:["H","h","hb","hB"],GL:["H","h"],GM:["h","hb","H","hB"],GN:["H","hB"],GP:["H","hB"],GQ:["H","hB","h","hb"],GR:["h","H","hb","hB"],GS:["H","h","hb","hB"],GT:["h","H","hB","hb"],GU:["h","hb","H","hB"],GW:["H","hB"],GY:["h","hb","H","hB"],HK:["h","hB","hb","H"],HN:["h","H","hB","hb"],HR:["H","hB"],HU:["H","h"],IC:["H","h","hB","hb"],ID:["H"],IE:["H","h","hb","hB"],IL:["H","hB"],IM:["H","h","hb","hB"],IN:["h","H"],IO:["H","h","hb","hB"],IQ:["h","hB","hb","H"],IR:["hB","H"],IS:["H"],IT:["H","hB"],JE:["H","h","hb","hB"],JM:["h","hb","H","hB"],JO:["h","hB","hb","H"],JP:["H","K","h"],KE:["hB","hb","H","h"],KG:["H","h","hB","hb"],KH:["hB","h","H","hb"],KI:["h","hb","H","hB"],KM:["H","h","hB","hb"],KN:["h","hb","H","hB"],KP:["h","H","hB","hb"],KR:["h","H","hB","hb"],KW:["h","hB","hb","H"],KY:["h","hb","H","hB"],KZ:["H","hB"],LA:["H","hb","hB","h"],LB:["h","hB","hb","H"],LC:["h","hb","H","hB"],LI:["H","hB","h"],LK:["H","h","hB","hb"],LR:["h","hb","H","hB"],LS:["h","H"],LT:["H","h","hb","hB"],LU:["H","h","hB"],LV:["H","hB","hb","h"],LY:["h","hB","hb","H"],MA:["H","h","hB","hb"],MC:["H","hB"],MD:["H","hB"],ME:["H","hB","h"],MF:["H","hB"],MG:["H","h"],MH:["h","hb","H","hB"],MK:["H","h","hb","hB"],ML:["H"],MM:["hB","hb","H","h"],MN:["H","h","hb","hB"],MO:["h","hB","hb","H"],MP:["h","hb","H","hB"],MQ:["H","hB"],MR:["h","hB","hb","H"],MS:["H","h","hb","hB"],MT:["H","h"],MU:["H","h"],MV:["H","h"],MW:["h","hb","H","hB"],MX:["h","H","hB","hb"],MY:["hb","hB","h","H"],MZ:["H","hB"],NA:["h","H","hB","hb"],NC:["H","hB"],NE:["H"],NF:["H","h","hb","hB"],NG:["H","h","hb","hB"],NI:["h","H","hB","hb"],NL:["H","hB"],NO:["H","h"],NP:["H","h","hB"],NR:["H","h","hb","hB"],NU:["H","h","hb","hB"],NZ:["h","hb","H","hB"],OM:["h","hB","hb","H"],PA:["h","H","hB","hb"],PE:["h","H","hB","hb"],PF:["H","h","hB"],PG:["h","H"],PH:["h","hB","hb","H"],PK:["h","hB","H"],PL:["H","h"],PM:["H","hB"],PN:["H","h","hb","hB"],PR:["h","H","hB","hb"],PS:["h","hB","hb","H"],PT:["H","hB"],PW:["h","H"],PY:["h","H","hB","hb"],QA:["h","hB","hb","H"],RE:["H","hB"],RO:["H","hB"],RS:["H","hB","h"],RU:["H"],RW:["H","h"],SA:["h","hB","hb","H"],SB:["h","hb","H","hB"],SC:["H","h","hB"],SD:["h","hB","hb","H"],SE:["H"],SG:["h","hb","H","hB"],SH:["H","h","hb","hB"],SI:["H","hB"],SJ:["H"],SK:["H"],SL:["h","hb","H","hB"],SM:["H","h","hB"],SN:["H","h","hB"],SO:["h","H"],SR:["H","hB"],SS:["h","hb","H","hB"],ST:["H","hB"],SV:["h","H","hB","hb"],SX:["H","h","hb","hB"],SY:["h","hB","hb","H"],SZ:["h","hb","H","hB"],TA:["H","h","hb","hB"],TC:["h","hb","H","hB"],TD:["h","H","hB"],TF:["H","h","hB"],TG:["H","hB"],TH:["H","h"],TJ:["H","h"],TL:["H","hB","hb","h"],TM:["H","h"],TN:["h","hB","hb","H"],TO:["h","H"],TR:["H","hB"],TT:["h","hb","H","hB"],TW:["hB","hb","h","H"],TZ:["hB","hb","H","h"],UA:["H","hB","h"],UG:["hB","hb","H","h"],UM:["h","hb","H","hB"],US:["h","hb","H","hB"],UY:["h","H","hB","hb"],UZ:["H","hB","h"],VA:["H","h","hB"],VC:["h","hb","H","hB"],VE:["h","H","hB","hb"],VG:["h","hb","H","hB"],VI:["h","hb","H","hB"],VN:["H","h"],VU:["h","H"],WF:["H","hB"],WS:["h","H"],XK:["H","hB","h"],YE:["h","hB","hb","H"],YT:["H","hB"],ZA:["H","h","hb","hB"],ZM:["h","hb","H","hB"],ZW:["H","h"],"af-ZA":["H","h","hB","hb"],"ar-001":["h","hB","hb","H"],"ca-ES":["H","h","hB"],"en-001":["h","hb","H","hB"],"en-HK":["h","hb","H","hB"],"en-IL":["H","h","hb","hB"],"en-MY":["h","hb","H","hB"],"es-BR":["H","h","hB","hb"],"es-ES":["H","h","hB","hb"],"es-GQ":["H","h","hB","hb"],"fr-CA":["H","h","hB"],"gl-ES":["H","h","hB"],"gu-IN":["hB","hb","h","H"],"hi-IN":["hB","h","H"],"it-CH":["H","h","hB"],"it-IT":["H","h","hB"],"kn-IN":["hB","h","H"],"ku-SY":["H","hB"],"ml-IN":["hB","h","H"],"mr-IN":["hB","hb","h","H"],"pa-IN":["hB","hb","h","H"],"ta-IN":["hB","h","hb","H"],"te-IN":["hB","h","H"],"zu-ZA":["H","hB","hb","h"]};function Ee(t){let e=t.hourCycle;if(void 0===e&&t.hourCycles&&t.hourCycles.length&&(e=t.hourCycles[0]),e)switch(e){case"h24":return"k";case"h23":return"H";case"h12":return"h";case"h11":return"K";default:throw new Error("Invalid hourCycle")}const s=t.language;let i;"root"!==s&&(i=t.maximize().region);return(ke[i||""]||ke[s||""]||ke[`${s}-001`]||ke["001"])[0]}const De=new RegExp(`^${Se.source}*`),Le=new RegExp(`${Se.source}*$`);function Pe(t,e){return{start:t,end:e}}const Me=!!Object.fromEntries,Te=!!String.prototype.trimStart,Ie=!!String.prototype.trimEnd,He=Me?Object.fromEntries:function(t){const e={};for(const[s,i]of t)e[s]=i;return e},Fe=Te?function(t){return t.trimStart()}:function(t){return t.replace(De,"")},Re=Ie?function(t){return t.trimEnd()}:function(t){return t.replace(Le,"")},Be=new RegExp("([^\\p{White_Space}\\p{Pattern_Syntax}]*)","yu");class Ne{message;position;locale;ignoreTag;requiresOtherClause;shouldParseSkeletons;constructor(t,e={}){this.message=t,this.position={offset:0,line:1,column:1},this.ignoreTag=!!e.ignoreTag,this.locale=e.locale,this.requiresOtherClause=!!e.requiresOtherClause,this.shouldParseSkeletons=!!e.shouldParseSkeletons}parse(){if(0!==this.offset())throw Error("parser can only be used once");return this.parseMessage(0,"",!1)}parseMessage(t,e,s){let i=[];for(;!this.isEOF();){const a=this.char();if(123===a){const e=this.parseArgument(t,s);if(e.err)return e;i.push(e.val)}else{if(125===a&&t>0)break;if(35!==a||"plural"!==e&&"selectordinal"!==e){if(60===a&&!this.ignoreTag&&47===this.peek()){if(s)break;return this.error(_e.UNMATCHED_CLOSING_TAG,Pe(this.clonePosition(),this.clonePosition()))}if(60===a&&!this.ignoreTag&&ze(this.peek()||0)){const s=this.parseTag(t,e);if(s.err)return s;i.push(s.val)}else{const s=this.parseLiteral(t,e);if(s.err)return s;i.push(s.val)}}else{const t=this.clonePosition();this.bump(),i.push({type:de.pound,location:Pe(t,this.clonePosition())})}}}return{val:i,err:null}}parseTag(t,e){const s=this.clonePosition();this.bump();const i=this.parseTagName();if(this.bumpSpace(),this.bumpIf("/>"))return{val:{type:de.literal,value:`<${i}/>`,location:Pe(s,this.clonePosition())},err:null};if(this.bumpIf(">")){const a=this.parseMessage(t+1,e,!0);if(a.err)return a;const r=a.val,o=this.clonePosition();if(this.bumpIf("</")){if(this.isEOF()||!ze(this.char()))return this.error(_e.INVALID_TAG,Pe(o,this.clonePosition()));const t=this.clonePosition();return i!==this.parseTagName()?this.error(_e.UNMATCHED_CLOSING_TAG,Pe(t,this.clonePosition())):(this.bumpSpace(),this.bumpIf(">")?{val:{type:de.tag,value:i,children:r,location:Pe(s,this.clonePosition())},err:null}:this.error(_e.INVALID_TAG,Pe(o,this.clonePosition())))}return this.error(_e.UNCLOSED_TAG,Pe(s,this.clonePosition()))}return this.error(_e.INVALID_TAG,Pe(s,this.clonePosition()))}parseTagName(){const t=this.offset();for(this.bump();!this.isEOF()&&Oe(this.char());)this.bump();return this.message.slice(t,this.offset())}parseLiteral(t,e){const s=this.clonePosition();let i="";for(;;){const s=this.tryParseQuote(e);if(s){i+=s;continue}const a=this.tryParseUnquoted(t,e);if(a){i+=a;continue}const r=this.tryParseLeftAngleBracket();if(!r)break;i+=r}const a=Pe(s,this.clonePosition());return{val:{type:de.literal,value:i,location:a},err:null}}tryParseLeftAngleBracket(){return this.isEOF()||60!==this.char()||!this.ignoreTag&&(ze(t=this.peek()||0)||47===t)?null:(this.bump(),"<");var t}tryParseQuote(t){if(this.isEOF()||39!==this.char())return null;switch(this.peek()){case 39:return this.bump(),this.bump(),"'";case 123:case 60:case 62:case 125:break;case 35:if("plural"===t||"selectordinal"===t)break;return null;default:return null}this.bump();const e=[this.char()];for(this.bump();!this.isEOF();){const t=this.char();if(39===t){if(39!==this.peek()){this.bump();break}e.push(39),this.bump()}else e.push(t);this.bump()}return String.fromCodePoint(...e)}tryParseUnquoted(t,e){if(this.isEOF())return null;const s=this.char();return 60===s||123===s||35===s&&("plural"===e||"selectordinal"===e)||125===s&&t>0?null:(this.bump(),String.fromCodePoint(s))}parseArgument(t,e){const s=this.clonePosition();if(this.bump(),this.bumpSpace(),this.isEOF())return this.error(_e.EXPECT_ARGUMENT_CLOSING_BRACE,Pe(s,this.clonePosition()));if(125===this.char())return this.bump(),this.error(_e.EMPTY_ARGUMENT,Pe(s,this.clonePosition()));let i=this.parseIdentifierIfPossible().value;if(!i)return this.error(_e.MALFORMED_ARGUMENT,Pe(s,this.clonePosition()));if(this.bumpSpace(),this.isEOF())return this.error(_e.EXPECT_ARGUMENT_CLOSING_BRACE,Pe(s,this.clonePosition()));switch(this.char()){case 125:return this.bump(),{val:{type:de.argument,value:i,location:Pe(s,this.clonePosition())},err:null};case 44:return this.bump(),this.bumpSpace(),this.isEOF()?this.error(_e.EXPECT_ARGUMENT_CLOSING_BRACE,Pe(s,this.clonePosition())):this.parseArgumentOptions(t,e,i,s);default:return this.error(_e.MALFORMED_ARGUMENT,Pe(s,this.clonePosition()))}}parseIdentifierIfPossible(){const t=this.clonePosition(),e=this.offset(),s=function(t,e){return Be.lastIndex=e,Be.exec(t)[1]??""}(this.message,e),i=e+s.length;this.bumpTo(i);return{value:s,location:Pe(t,this.clonePosition())}}parseArgumentOptions(t,e,s,i){let a=this.clonePosition(),r=this.parseIdentifierIfPossible().value,o=this.clonePosition();switch(r){case"":return this.error(_e.EXPECT_ARGUMENT_TYPE,Pe(a,o));case"number":case"date":case"time":{this.bumpSpace();let t=null;if(this.bumpIf(",")){this.bumpSpace();const e=this.clonePosition(),s=this.parseSimpleArgStyleIfPossible();if(s.err)return s;const i=Re(s.val);if(0===i.length)return this.error(_e.EXPECT_ARGUMENT_STYLE,Pe(this.clonePosition(),this.clonePosition()));t={style:i,styleLocation:Pe(e,this.clonePosition())}}const e=this.tryParseArgumentClose(i);if(e.err)return e;const a=Pe(i,this.clonePosition());if(t&&t.style.startsWith("::")){let e=Fe(t.style.slice(2));if("number"===r){const i=this.parseNumberSkeletonFromString(e,t.styleLocation);return i.err?i:{val:{type:de.number,value:s,location:a,style:i.val},err:null}}{if(0===e.length)return this.error(_e.EXPECT_DATE_TIME_SKELETON,a);let i=e;this.locale&&(i=function(t,e){let s="";for(let i=0;i<t.length;i++){const a=t.charAt(i);if("j"===a){let r=0;for(;i+1<t.length&&t.charAt(i+1)===a;)r++,i++;let o=1+(1&r),n=r<2?1:3+(r>>1),l="a",h=Ee(e);for("H"!=h&&"k"!=h||(n=0);n-- >0;)s+=l;for(;o-- >0;)s=h+s}else s+="J"===a?"H":a}return s}(e,this.locale));const o={type:ge.dateTime,pattern:i,location:t.styleLocation,parsedOptions:this.shouldParseSkeletons?Qt(i):{}};return{val:{type:"date"===r?de.date:de.time,value:s,location:a,style:o},err:null}}}return{val:{type:"number"===r?de.number:"date"===r?de.date:de.time,value:s,location:a,style:t?.style??null},err:null}}case"plural":case"selectordinal":case"select":{const a=this.clonePosition();if(this.bumpSpace(),!this.bumpIf(","))return this.error(_e.EXPECT_SELECT_ARGUMENT_OPTIONS,Pe(a,{...a}));this.bumpSpace();let o=this.parseIdentifierIfPossible(),n=0;if("select"!==r&&"offset"===o.value){if(!this.bumpIf(":"))return this.error(_e.EXPECT_PLURAL_ARGUMENT_OFFSET_VALUE,Pe(this.clonePosition(),this.clonePosition()));this.bumpSpace();const t=this.tryParseDecimalInteger(_e.EXPECT_PLURAL_ARGUMENT_OFFSET_VALUE,_e.INVALID_PLURAL_ARGUMENT_OFFSET_VALUE);if(t.err)return t;this.bumpSpace(),o=this.parseIdentifierIfPossible(),n=t.val}const l=this.tryParsePluralOrSelectOptions(t,r,e,o);if(l.err)return l;const h=this.tryParseArgumentClose(i);if(h.err)return h;const c=Pe(i,this.clonePosition());return"select"===r?{val:{type:de.select,value:s,options:He(l.val),location:c},err:null}:{val:{type:de.plural,value:s,options:He(l.val),offset:n,pluralType:"plural"===r?"cardinal":"ordinal",location:c},err:null}}default:return this.error(_e.INVALID_ARGUMENT_TYPE,Pe(a,o))}}tryParseArgumentClose(t){return this.isEOF()||125!==this.char()?this.error(_e.EXPECT_ARGUMENT_CLOSING_BRACE,Pe(t,this.clonePosition())):(this.bump(),{val:!0,err:null})}parseSimpleArgStyleIfPossible(){let t=0;const e=this.clonePosition();for(;!this.isEOF();){switch(this.char()){case 39:{this.bump();let t=this.clonePosition();if(!this.bumpUntil("'"))return this.error(_e.UNCLOSED_QUOTE_IN_ARGUMENT_STYLE,Pe(t,this.clonePosition()));this.bump();break}case 123:t+=1,this.bump();break;case 125:if(!(t>0))return{val:this.message.slice(e.offset,this.offset()),err:null};t-=1;break;default:this.bump()}}return{val:this.message.slice(e.offset,this.offset()),err:null}}parseNumberSkeletonFromString(t,e){let s=[];try{s=function(t){if(0===t.length)throw new Error("Number skeleton cannot be empty");const e=t.split(te).filter(t=>t.length>0),s=[];for(const t of e){let e=t.split("/");if(0===e.length)throw new Error("Invalid number skeleton");const[i,...a]=e;for(const t of a)if(0===t.length)throw new Error("Invalid number skeleton");s.push({stem:i,options:a})}return s}(t)}catch{return this.error(_e.INVALID_NUMBER_SKELETON,e)}return{val:{type:ge.number,tokens:s,location:e,parsedOptions:this.shouldParseSkeletons?ce(s):{}},err:null}}tryParsePluralOrSelectOptions(t,e,s,i){let a=!1;const r=[],o=new Set;let{value:n,location:l}=i;for(;;){if(0===n.length){const t=this.clonePosition();if("select"===e||!this.bumpIf("="))break;{const e=this.tryParseDecimalInteger(_e.EXPECT_PLURAL_ARGUMENT_SELECTOR,_e.INVALID_PLURAL_ARGUMENT_SELECTOR);if(e.err)return e;l=Pe(t,this.clonePosition()),n=this.message.slice(t.offset,this.offset())}}if(o.has(n))return this.error("select"===e?_e.DUPLICATE_SELECT_ARGUMENT_SELECTOR:_e.DUPLICATE_PLURAL_ARGUMENT_SELECTOR,l);"other"===n&&(a=!0),this.bumpSpace();const i=this.clonePosition();if(!this.bumpIf("{"))return this.error("select"===e?_e.EXPECT_SELECT_ARGUMENT_SELECTOR_FRAGMENT:_e.EXPECT_PLURAL_ARGUMENT_SELECTOR_FRAGMENT,Pe(this.clonePosition(),this.clonePosition()));const h=this.parseMessage(t+1,e,s);if(h.err)return h;const c=this.tryParseArgumentClose(i);if(c.err)return c;r.push([n,{value:h.val,location:Pe(i,this.clonePosition())}]),o.add(n),this.bumpSpace(),({value:n,location:l}=this.parseIdentifierIfPossible())}return 0===r.length?this.error("select"===e?_e.EXPECT_SELECT_ARGUMENT_SELECTOR:_e.EXPECT_PLURAL_ARGUMENT_SELECTOR,Pe(this.clonePosition(),this.clonePosition())):this.requiresOtherClause&&!a?this.error(_e.MISSING_OTHER_CLAUSE,Pe(this.clonePosition(),this.clonePosition())):{val:r,err:null}}tryParseDecimalInteger(t,e){let s=1;const i=this.clonePosition();this.bumpIf("+")||this.bumpIf("-")&&(s=-1);let a=!1,r=0;for(;!this.isEOF();){const t=this.char();if(!(t>=48&&t<=57))break;a=!0,r=10*r+(t-48),this.bump()}const o=Pe(i,this.clonePosition());return a?(r*=s,Number.isSafeInteger(r)?{val:r,err:null}:this.error(e,o)):this.error(t,o)}offset(){return this.position.offset}isEOF(){return this.offset()===this.message.length}clonePosition(){return{offset:this.position.offset,line:this.position.line,column:this.position.column}}char(){const t=this.position.offset;if(t>=this.message.length)throw Error("out of bound");const e=this.message.codePointAt(t);if(void 0===e)throw Error(`Offset ${t} is at invalid UTF-16 code unit boundary`);return e}error(t,e){return{val:null,err:{kind:t,message:this.message,location:e}}}bump(){if(this.isEOF())return;const t=this.char();10===t?(this.position.line+=1,this.position.column=1,this.position.offset+=1):(this.position.column+=1,this.position.offset+=t<65536?1:2)}bumpIf(t){if(this.message.startsWith(t,this.offset())){for(let e=0;e<t.length;e++)this.bump();return!0}return!1}bumpUntil(t){const e=this.offset(),s=this.message.indexOf(t,e);return s>=0?(this.bumpTo(s),!0):(this.bumpTo(this.message.length),!1)}bumpTo(t){if(this.offset()>t)throw Error(`targetOffset ${t} must be greater than or equal to the current offset ${this.offset()}`);for(t=Math.min(t,this.message.length);;){const e=this.offset();if(e===t)break;if(e>t)throw Error(`targetOffset ${t} is at invalid UTF-16 code unit boundary`);if(this.bump(),this.isEOF())break}}bumpSpace(){for(;!this.isEOF()&&Xe(this.char());)this.bump()}peek(){if(this.isEOF())return null;const t=this.char(),e=this.offset();return this.message.charCodeAt(e+(t>=65536?2:1))??null}}function ze(t){return t>=97&&t<=122||t>=65&&t<=90}function Oe(t){return 45===t||46===t||t>=48&&t<=57||95===t||t>=97&&t<=122||t>=65&&t<=90||183==t||t>=192&&t<=214||t>=216&&t<=246||t>=248&&t<=893||t>=895&&t<=8191||t>=8204&&t<=8205||t>=8255&&t<=8256||t>=8304&&t<=8591||t>=11264&&t<=12271||t>=12289&&t<=55295||t>=63744&&t<=64975||t>=65008&&t<=65533||t>=65536&&t<=983039}function Xe(t){return t>=9&&t<=13||32===t||133===t||t>=8206&&t<=8207||8232===t||8233===t}function Ye(t){t.forEach(t=>{if(delete t.location,be(t)||ye(t))for(const e in t.options)delete t.options[e].location,Ye(t.options[e].value);else fe(t)&&Ae(t.style)||(xe(t)||me(t))&&Ce(t.style)?delete t.style.location:ve(t)&&Ye(t.children)})}function $e(t,e={}){e={shouldParseSkeletons:!0,requiresOtherClause:!0,...e};const s=new Ne(t,e).parse();if(s.err){const t=SyntaxError(_e[s.err.kind]);throw t.location=s.err.location,t.originalMessage=s.err.message,t}return e?.captureLocation||Ye(s.val),s.val}let We=function(t){return t.MISSING_VALUE="MISSING_VALUE",t.INVALID_VALUE="INVALID_VALUE",t.MISSING_INTL_API="MISSING_INTL_API",t}({});class Ge extends Error{code;originalMessage;constructor(t,e,s){super(t),this.code=e,this.originalMessage=s}toString(){return`[formatjs Error: ${this.code}] ${this.message}`}}class Ue extends Ge{constructor(t,e,s,i){super(`Invalid values for "${t}": "${e}". Options are "${Object.keys(s).join('", "')}"`,We.INVALID_VALUE,i)}}class je extends Ge{constructor(t,e,s){super(`Value for "${t}" must be of type ${e}`,We.INVALID_VALUE,s)}}class Ve extends Ge{constructor(t,e){super(`The intl string context variable "${t}" was not provided to the string "${e}"`,We.MISSING_VALUE,e)}}let qe=function(t){return t[t.literal=0]="literal",t[t.object=1]="object",t}({});function Ze(t){return"function"==typeof t}function Ke(t,e,s,i,a,r,o){if(1===t.length&&pe(t[0]))return[{type:qe.literal,value:t[0].value}];const n=[];for(const l of t){if(pe(l)){n.push({type:qe.literal,value:l.value});continue}if(we(l)){"number"==typeof r&&n.push({type:qe.literal,value:s.getNumberFormat(e).format(r)});continue}const{value:t}=l;if(!a||!(t in a))throw new Ve(t,o);let h=a[t];if(ue(l))h&&"string"!=typeof h&&"number"!=typeof h&&"bigint"!=typeof h||(h="string"==typeof h||"number"==typeof h||"bigint"==typeof h?String(h):""),n.push({type:"string"==typeof h?qe.literal:qe.object,value:h});else{if(xe(l)){const t="string"==typeof l.style?i.date[l.style]:Ce(l.style)?l.style.parsedOptions:void 0;n.push({type:qe.literal,value:s.getDateTimeFormat(e,t).format(h)});continue}if(me(l)){const t="string"==typeof l.style?i.time[l.style]:Ce(l.style)?l.style.parsedOptions:i.time.medium;n.push({type:qe.literal,value:s.getDateTimeFormat(e,t).format(h)});continue}if(fe(l)){const t="string"==typeof l.style?i.number[l.style]:Ae(l.style)?l.style.parsedOptions:void 0;if(t&&t.scale){const e=t.scale||1;if("bigint"==typeof h){if(!Number.isInteger(e))throw new TypeError(`Cannot apply fractional scale ${e} to bigint value. Scale must be an integer when formatting bigint.`);h*=BigInt(e)}else h*=e}n.push({type:qe.literal,value:s.getNumberFormat(e,t).format(h)});continue}if(ve(l)){const{children:t,value:h}=l,c=a[h];if(!Ze(c))throw new je(h,"function",o);let d=c(Ke(t,e,s,i,a,r).map(t=>t.value));Array.isArray(d)||(d=[d]),n.push(...d.map(t=>({type:"string"==typeof t?qe.literal:qe.object,value:t})))}if(be(l)){const t=h,r=(Object.prototype.hasOwnProperty.call(l.options,t)?l.options[t]:void 0)||l.options.other;if(!r)throw new Ue(l.value,h,Object.keys(l.options),o);n.push(...Ke(r.value,e,s,i,a));continue}if(ye(l)){const t=`=${h}`;let r=Object.prototype.hasOwnProperty.call(l.options,t)?l.options[t]:void 0;if(!r){if(!Intl.PluralRules)throw new Ge('Intl.PluralRules is not available in this environment.\nTry polyfilling it using "@formatjs/intl-pluralrules"\n',We.MISSING_INTL_API,o);const t="bigint"==typeof h?Number(h):h,i=s.getPluralRules(e,{type:l.pluralType}).select(t-(l.offset||0));r=(Object.prototype.hasOwnProperty.call(l.options,i)?l.options[i]:void 0)||l.options.other}if(!r)throw new Ue(l.value,h,Object.keys(l.options),o);const c="bigint"==typeof h?Number(h):h;n.push(...Ke(r.value,e,s,i,a,c-(l.offset||0)));continue}}}return(l=n).length<2?l:l.reduce((t,e)=>{const s=t[t.length-1];return s&&s.type===qe.literal&&e.type===qe.literal?s.value+=e.value:t.push(e),t},[]);var l}function Je(t,e){return e?Object.keys(t).reduce((s,i)=>{var a,r;return s[i]=(a=t[i],(r=e[i])?{...a,...r,...Object.keys(a).reduce((t,e)=>(t[e]={...a[e],...r[e]},t),{})}:a),s},{...t}):t}function Qe(t){return{create:()=>({get:e=>t[e],set(e,s){t[e]=s}})}}class ts{ast;locales;resolvedLocale;formatters;formats;message;formatterCache={number:{},dateTime:{},pluralRules:{}};constructor(t,e=ts.defaultLocale,s,i){if(this.locales=e,this.resolvedLocale=ts.resolveLocale(e),"string"==typeof t){if(this.message=t,!ts.__parse)throw new TypeError("IntlMessageFormat.__parse must be set to process `message` of type `string`");const{...e}=i||{};this.ast=ts.__parse(t,{...e,locale:this.resolvedLocale})}else this.ast=t;if(!Array.isArray(this.ast))throw new TypeError("A message must be provided as a String or AST.");this.formats=Je(ts.formats,s),this.formatters=i&&i.formatters||function(t={number:{},dateTime:{},pluralRules:{}}){return{getNumberFormat:$t((...t)=>new Intl.NumberFormat(...t),{cache:Qe(t.number),strategy:Kt.variadic}),getDateTimeFormat:$t((...t)=>new Intl.DateTimeFormat(...t),{cache:Qe(t.dateTime),strategy:Kt.variadic}),getPluralRules:$t((...t)=>new Intl.PluralRules(...t),{cache:Qe(t.pluralRules),strategy:Kt.variadic})}}(this.formatterCache)}format=t=>{const e=this.formatToParts(t);if(1===e.length)return e[0].value;const s=e.reduce((t,e)=>(t.length&&e.type===qe.literal&&"string"==typeof t[t.length-1]?t[t.length-1]+=e.value:t.push(e.value),t),[]);return s.length<=1?s[0]||"":s};formatToParts=t=>Ke(this.ast,this.locales,this.formatters,this.formats,t,void 0,this.message);resolvedOptions=()=>({locale:this.resolvedLocale?.toString()||Intl.NumberFormat.supportedLocalesOf(this.locales)[0]});getAst=()=>this.ast;static memoizedDefaultLocale=null;static get defaultLocale(){return ts.memoizedDefaultLocale||(ts.memoizedDefaultLocale=(new Intl.NumberFormat).resolvedOptions().locale),ts.memoizedDefaultLocale}static resolveLocale=t=>{if(void 0===Intl.Locale)return;const e=Intl.NumberFormat.supportedLocalesOf(t);return e.length>0?new Intl.Locale(e[0]):new Intl.Locale("string"==typeof t?t:t[0])};static __parse=$e;static formats={number:{integer:{maximumFractionDigits:0},currency:{style:"currency"},percent:{style:"percent"}},date:{short:{month:"numeric",day:"numeric",year:"2-digit"},medium:{month:"short",day:"numeric",year:"numeric"},long:{month:"long",day:"numeric",year:"numeric"},full:{weekday:"long",month:"long",day:"numeric",year:"numeric"}},time:{short:{hour:"numeric",minute:"numeric"},medium:{hour:"numeric",minute:"numeric",second:"numeric"},long:{hour:"numeric",minute:"numeric",second:"numeric",timeZoneName:"short"},full:{hour:"numeric",minute:"numeric",second:"numeric",timeZoneName:"short"}}}}var es={outdoor:"Outdoor",flow:"Flow",room:"Room",adjusting:"Adjusting",heating:"Heating",cooling:"Cooling",drying:"Drying",idle:"Idle",off:"Off",fan:"Fan",defrosting:"Defrosting",preheating:"Preheating",not_found:"{entity} not found",wwsd:"Standby",wwsd_label:"Outdoor temperature meets room setpoint",manual:"Manual",manual_override:"Manual override"},ss={name:"Equitherm Status Card",description:"Display heating status with temperature readings",default_title:"Heating Status"},is={name:"Equitherm Curve Card",description:"Interactive heating curve visualization",default_title:"Heating Curve",flow_temp:"Flow Temp",outdoor_axis:"°C outdoor",flow_axis:"°C flow",outdoor_tooltip:"{temp}°C outdoor",flow_tooltip:"{temp}°C flow"},as={name:"Equitherm Forecast Card",description:"Heating forecast based on weather predictions",default_title:"Heating Forecast",flow_temp:"Flow Temp",outdoor_temp:"Outdoor",peak:"Peak"},rs={name:"Equitherm Tuning Card",description:"Interactive curve tuning with hc/shift sliders",default_title:"Curve Tuning",current:"Current",proposed:"Proposed",apply:"Apply Changes",applying:"Applying...",reset:"Reset",outdoor_axis:"°C outdoor",flow_axis:"°C flow"},os={required:"Required",optional:"Optional",appearance:"Appearance",layout:"Layout",content_layout:"Layout",layout_options:{horizontal:"Horizontal",vertical:"Vertical"},climate_entity:"Climate Entity",outdoor_entity:"Outdoor Temperature",flow_entity:"Flow Setpoint",curve_output_entity:"Curve Output",pid_output_entity:"PID Output",rate_limiting_entity:"Rate Limiting",pid_active_entity:"PID Active",title:"Title (optional)",name:"Name",entities:"Entities",curve_parameters:"Curve Parameters",display_range:"Display Range",curve_from_entities:"Live parameters from device",hc_entity:"Heat Curve Entity",n_entity:"Exponent Entity",shift_entity:"Shift Entity",hc:"Heat Curve (hc)",n:"Exponent (n)",shift:"Shift",min_flow:"Min Flow",max_flow:"Max Flow",min_flow_entity:"Min Flow Entity",max_flow_entity:"Max Flow Entity",t_out_min:"Min Outdoor",t_out_max:"Max Outdoor",weather_entity:"Weather Entity",hours:"Forecast Hours",forecast_settings:"Forecast",recalculate_service:"Recalculate Service",advanced:"Advanced",show_last_updated:"Show last updated",pid_correction_entity:"PID Correction",pid_proportional_entity:"PID Proportional",pid_integral_entity:"PID Integral",pid_derivative_entity:"PID Derivative",helper:{curve_from_entities:"Read from ESPHome runtime-tunable numbers instead of static values",hc:"How aggressively heating responds to cold — increase if room is too cold in winter",n:"Radiator type — 1.0 underfloor, 1.25 panel (default), 1.3 cast iron",shift:"Move the whole curve up or down — increase if too cold in mild weather",min_flow:"Minimum boiler output, prevents condensation and protects heat exchanger",max_flow:"Maximum boiler output, protects system and limits energy use",t_out_min:"Left edge of chart (coldest outdoor temperature displayed)",t_out_max:"Right edge of chart (warmest outdoor temperature displayed)",hours:"Hours of weather forecast data to display",hc_entity:"Runtime-adjustable heat curve coefficient number",n_entity:"Runtime-adjustable radiator exponent number",shift_entity:"Runtime-adjustable curve shift number",curve_output_entity:"Pure heating curve output before PID and rate limiting",pid_output_entity:"Curve output after PID correction (before rate limiting)",rate_limiting_entity:"ON when output is ramping to prevent thermal shock",pid_active_entity:"ON when at least one PID gain (kp, ki, kd) is non-zero",outdoor_entity:"Overrides the weather entity's current temperature for footer display",min_flow_entity:"Runtime-adjustable minimum flow temperature number",max_flow_entity:"Runtime-adjustable maximum flow temperature number",recalculate_service:"Service to call after applying a value, e.g. climate.equitherm_force_recalculate. Only called if the service exists.",show_last_updated:"Display when sensor data was last received",pid_correction_entity:"Total PID correction applied to the curve output",pid_proportional_entity:"Proportional term output (response to current error)",pid_integral_entity:"Integral term output (response to accumulated error)",pid_derivative_entity:"Derivative term output (response to error rate of change)"}},ns={common:es,status_card:ss,curve_card:is,forecast_card:as,tuning_card:rs,editor:os},ls={outdoor:"Extérieur",flow:"Départ",room:"Pièce",adjusting:"Ajustement",heating:"Chauffage",cooling:"Refroidissement",drying:"Déshumidification",idle:"Inactif",off:"Éteint",fan:"Ventilation",defrosting:"Dégivrage",preheating:"Préchauffage",not_found:"{entity} introuvable",wwsd:"Veille",wwsd_label:"Température extérieure ≥ consigne"},hs={name:"Carte Status Equitherm",description:"Affiche le statut du chauffage avec les températures",default_title:"Statut Chauffage"},cs={name:"Carte Courbe Equitherm",description:"Visualisation interactive de la courbe de chauffage",default_title:"Courbe de Chauffage",flow_temp:"Temp. Départ",outdoor_axis:"°C extérieur",flow_axis:"°C départ",outdoor_tooltip:"{temp}°C extérieur",flow_tooltip:"{temp}°C départ"},ds={name:"Carte Prévision Equitherm",description:"Prévision de chauffage basée sur les prévisions météo",default_title:"Prévision Chauffage",flow_temp:"Temp. Départ",outdoor_temp:"Extérieur",peak:"Pic"},gs={name:"Carte Réglage Equitherm",description:"Réglage interactif de la courbe avec curseurs hc/shift",default_title:"Réglage Courbe",current:"Actuelle",proposed:"Proposée",apply:"Appliquer",applying:"Application...",reset:"Réinitialiser",outdoor_axis:"°C extérieur",flow_axis:"°C départ"},ps={required:"Requis",optional:"Optionnel",appearance:"Apparence",layout:"Disposition",content_layout:"Disposition",layout_options:{horizontal:"Horizontal",vertical:"Verticale"},climate_entity:"Entité Climat",outdoor_entity:"Température Extérieure",flow_entity:"Consigne Départ",curve_output_entity:"Sortie Courbe",pid_output_entity:"Sortie PID",rate_limiting_entity:"Limitation",pid_active_entity:"PID Actif",title:"Titre (optionnel)",name:"Nom",entities:"Entités",curve_parameters:"Paramètres Courbe",display_range:"Plage d'Affichage",curve_from_entities:"Paramètres live depuis l'appareil",hc_entity:"Entité Coeff. Courbe",n_entity:"Entité Exposant",shift_entity:"Entité Décalage",hc:"Coeff. Courbe (hc)",n:"Exposant (n)",shift:"Décalage",min_flow:"Départ Min",max_flow:"Départ Max",min_flow_entity:"Entité Départ Min",max_flow_entity:"Entité Départ Max",t_out_min:"Extérieur Min",t_out_max:"Extérieur Max",weather_entity:"Entité Météo",hours:"Heures de Prévision",forecast_settings:"Prévision",recalculate_service:"Service de Recalcul",advanced:"Avancé",show_last_updated:"Afficher dernière mise à jour",pid_correction_entity:"Correction PID",pid_proportional_entity:"PID Proportionnel",pid_integral_entity:"PID Intégral",pid_derivative_entity:"PID Dérivé",helper:{curve_from_entities:"Lire depuis les nombres ESPHome ajustables au lieu de valeurs statiques",hc:"Agressivité du chauffage par temps froid — augmenter si la pièce est trop froide en hiver",n:"Type de radiateur — 1.0 plancher chauffant, 1.25 panneau (défaut), 1.3 fonte",shift:"Décaler toute la courbe vers le haut ou le bas — augmenter si trop froid par temps doux",min_flow:"Sortie minimale de la chaudière, évite la condensation et protège l'échangeur",max_flow:"Sortie maximale de la chaudière, protège le système et limite la consommation",t_out_min:"Bord gauche du graphique (température extérieure la plus froide affichée)",t_out_max:"Bord droit du graphique (température extérieure la plus chaude affichée)",hours:"Heures de données météo prévisionnelles à afficher",hc_entity:"Nombre ajustable du coefficient de courbe de chauffage",n_entity:"Nombre ajustable de l'exposant de radiateur",shift_entity:"Nombre ajustable du décalage de courbe",curve_output_entity:"Sortie pure de la courbe de chauffage avant PID et limitation",pid_output_entity:"Sortie de courbe après correction PID (avant limitation)",rate_limiting_entity:"ON quand la sortie est en rampe pour éviter le choc thermique",pid_active_entity:"ON quand au moins un gain PID (kp, ki, kd) est non nul",outdoor_entity:"Remplace la température actuelle de l'entité météo pour l'affichage",min_flow_entity:"Nombre ajustable de la température de départ minimale",max_flow_entity:"Nombre ajustable de la température de départ maximale",recalculate_service:"Service à appeler après l'application d'une valeur, ex. climate.equitherm_force_recalculate. Appelé uniquement si le service existe.",show_last_updated:"Afficher l'heure de la dernière réception des données du capteur",pid_correction_entity:"Correction totale du PID appliquée à la sortie de courbe",pid_proportional_entity:"Terme proportionnel (réponse à l'erreur actuelle)",pid_integral_entity:"Terme intégral (réponse à l'erreur accumulée)",pid_derivative_entity:"Terme dérivé (réponse à la vitesse de changement de l'erreur)"}},us={common:ls,status_card:hs,curve_card:cs,forecast_card:ds,tuning_card:gs,editor:ps};const fs={en:Object.freeze({__proto__:null,common:es,curve_card:is,default:ns,editor:os,forecast_card:as,status_card:ss,tuning_card:rs}),fr:Object.freeze({__proto__:null,common:ls,curve_card:cs,default:us,editor:ps,forecast_card:ds,status_card:hs,tuning_card:gs})};function xs(t,e){try{return t.split(".").reduce((t,e)=>t[e],fs[e])}catch(t){return}}function ms(t){return function(e,s={}){const i=t?.locale.language??"en";let a=xs(e,i);if(a||(a=xs(e,"en")),!a)return e;try{return new ts(a,i).format(s)}catch(t){return console.error(`Error formatting message for key "${e}" with lang "${i}":`,t),a}}}const bs=n`
+const fireEvent = (node, type, detail, options) => {
+    options = options || {};
+    // @ts-ignore
+    detail = detail === null || detail === undefined ? {} : detail;
+    const event = new Event(type, {
+        bubbles: options.bubbles === undefined ? true : options.bubbles,
+        cancelable: Boolean(options.cancelable),
+        composed: options.composed === undefined ? true : options.composed,
+    });
+    event.detail = detail;
+    node.dispatchEvent(event);
+    return event;
+};
+
+const computeDomain = (entityId) => entityId.substring(0, entityId.indexOf("."));
+
+function ensureArray(value) {
+    if (value === undefined || value === null || Array.isArray(value)) {
+        return value;
+    }
+    return [value];
+}
+
+const computeAreaName = (area) => area.name?.trim();
+
+const computeDeviceName = (device) => (device.name_by_user || device.name)?.trim();
+
+/** Compute the object ID of a state. */
+const computeObjectId = (entityId) => entityId.slice(entityId.indexOf(".") + 1);
+
+const computeStateNameFromEntityAttributes = (entityId, attributes) => attributes.friendly_name === undefined
+    ? computeObjectId(entityId).replace(/_/g, " ")
+    : (attributes.friendly_name ?? "").toString();
+const computeStateName = (stateObj) => computeStateNameFromEntityAttributes(stateObj.entity_id, stateObj.attributes);
+
+const SUFFIXES = [" ", ": ", " - "];
+/**
+ * Strips a device name from an entity name.
+ */
+const stripPrefixFromEntityName = (entityName, prefix) => {
+    const lowerCasedEntityName = entityName.toLowerCase();
+    const lowerCasedPrefix = prefix.toLowerCase();
+    for (const suffix of SUFFIXES) {
+        const lowerCasedPrefixWithSuffix = `${lowerCasedPrefix}${suffix}`;
+        if (lowerCasedEntityName.startsWith(lowerCasedPrefixWithSuffix)) {
+            const newName = entityName.substring(lowerCasedPrefixWithSuffix.length);
+            if (newName.length) {
+                return hasUpperCase(newName.substring(0, newName.indexOf(" ")))
+                    ? newName
+                    : newName[0].toUpperCase() + newName.slice(1);
+            }
+        }
+    }
+    return undefined;
+};
+const hasUpperCase = (str) => str.toLowerCase() !== str;
+
+const computeEntityName = (stateObj, entities, devices) => {
+    const entry = entities[stateObj.entity_id];
+    if (!entry) {
+        return computeStateName(stateObj);
+    }
+    return computeEntityEntryName(entry, devices);
+};
+const computeEntityEntryName = (entry, devices) => {
+    const name = entry.name ||
+        ("original_name" in entry && entry.original_name != null
+            ? String(entry.original_name)
+            : undefined);
+    const device = entry.device_id ? devices[entry.device_id] : undefined;
+    if (!device) {
+        return name;
+    }
+    const deviceName = computeDeviceName(device);
+    // If the device name is the same as the entity name, consider empty entity name
+    if (deviceName === name) {
+        return undefined;
+    }
+    // Remove the device name from the entity name if it starts with it
+    if (deviceName && name) {
+        return stripPrefixFromEntityName(name, deviceName) || name;
+    }
+    return name;
+};
+const entityUseDeviceName = (stateObj, entities, devices) => !computeEntityName(stateObj, entities, devices);
+
+const computeFloorName = (floor) => floor.name?.trim();
+
+const getEntityContext = (stateObj, entities, devices, areas, floors) => {
+    const entry = entities[stateObj.entity_id];
+    if (!entry) {
+        return {
+            entity: null,
+            device: null,
+            area: null,
+            floor: null,
+        };
+    }
+    const entity = entities[entry.entity_id];
+    const deviceId = entry.device_id;
+    const device = deviceId ? devices[deviceId] : undefined;
+    const areaId = entry.area_id || device?.area_id;
+    const area = areaId ? areas[areaId] : undefined;
+    const floorId = area?.floor_id;
+    const floor = floorId ? floors[floorId] : undefined;
+    return {
+        entity: entity || null,
+        device: device || null,
+        area: area || null,
+        floor: floor || null,
+    };
+};
+
+const DEFAULT_SEPARATOR = " ";
+const computeEntityNameDisplay = (stateObj, name, hass, options) => {
+    const { entities, devices, areas, floors } = hass;
+    if (typeof name === "string") {
+        return name;
+    }
+    // If no name config is provided, fall back to the friendly name
+    if (!name) {
+        return computeStateName(stateObj);
+    }
+    let items = ensureArray(name);
+    const separator = DEFAULT_SEPARATOR;
+    // If all items are text, just join them
+    if (items.every((n) => n.type === "text")) {
+        return items.map((item) => ("text" in item ? item.text : "")).join(separator);
+    }
+    const useDeviceName = entityUseDeviceName(stateObj, entities, devices);
+    // If entity uses device name, and device is not already included, replace it with device name
+    if (useDeviceName) {
+        const hasDevice = items.some((n) => n.type === "device");
+        if (!hasDevice) {
+            items = items.map((n) => (n.type === "entity" ? { type: "device" } : n));
+        }
+    }
+    const names = computeEntityNameList(stateObj, items, entities, devices, areas, floors);
+    // If after processing there is only one name, return that
+    if (names.length === 1) {
+        return names[0] || "";
+    }
+    return names.filter((n) => n).join(separator);
+};
+const computeEntityNameList = (stateObj, name, entities, devices, areas, floors) => {
+    const { device, area, floor } = getEntityContext(stateObj, entities, devices, areas, floors);
+    return name.map((item) => {
+        switch (item.type) {
+            case "entity":
+                return computeEntityName(stateObj, entities, devices);
+            case "device":
+                return device ? computeDeviceName(device) : undefined;
+            case "area":
+                return area ? computeAreaName(area) : undefined;
+            case "floor":
+                return floor ? computeFloorName(floor) : undefined;
+            case "text":
+                return item.text;
+            default:
+                return "";
+        }
+    });
+};
+
+var safeIsNaN = Number.isNaN ||
+    function ponyfill(value) {
+        return typeof value === 'number' && value !== value;
+    };
+function isEqual(first, second) {
+    if (first === second) {
+        return true;
+    }
+    if (safeIsNaN(first) && safeIsNaN(second)) {
+        return true;
+    }
+    return false;
+}
+function areInputsEqual(newInputs, lastInputs) {
+    if (newInputs.length !== lastInputs.length) {
+        return false;
+    }
+    for (var i = 0; i < newInputs.length; i++) {
+        if (!isEqual(newInputs[i], lastInputs[i])) {
+            return false;
+        }
+    }
+    return true;
+}
+
+function memoizeOne(resultFn, isEqual) {
+    if (isEqual === void 0) { isEqual = areInputsEqual; }
+    var cache = null;
+    function memoized() {
+        var newArgs = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            newArgs[_i] = arguments[_i];
+        }
+        if (cache && cache.lastThis === this && isEqual(newArgs, cache.lastArgs)) {
+            return cache.lastResult;
+        }
+        var lastResult = resultFn.apply(this, newArgs);
+        cache = {
+            lastResult: lastResult,
+            lastArgs: newArgs,
+            lastThis: this,
+        };
+        return lastResult;
+    }
+    memoized.clear = function clear() {
+        cache = null;
+    };
+    return memoized;
+}
+
+const useAmPm = memoizeOne((locale) => {
+    if (locale.time_format === "language" || locale.time_format === "system") {
+        const testLanguage = locale.time_format === "language" ? locale.language : undefined;
+        const test = new Date("January 1, 2023 22:00:00").toLocaleString(testLanguage);
+        return test.includes("10");
+    }
+    return locale.time_format === "12";
+});
+
+// 9:15 PM || 21:15
+const formatTime = (dateObj, locale) => formatTimeMem(locale).format(dateObj);
+const formatTimeMem = memoizeOne((locale) => new Intl.DateTimeFormat(locale.language, {
+    hour: "numeric",
+    minute: "2-digit",
+    hourCycle: useAmPm(locale) ? "h12" : "h23",
+}));
+
+var NumberFormat;
+(function (NumberFormat) {
+    NumberFormat["language"] = "language";
+    NumberFormat["system"] = "system";
+    NumberFormat["comma_decimal"] = "comma_decimal";
+    NumberFormat["decimal_comma"] = "decimal_comma";
+    NumberFormat["quote_decimal"] = "quote_decimal";
+    NumberFormat["space_comma"] = "space_comma";
+    NumberFormat["none"] = "none";
+})(NumberFormat || (NumberFormat = {}));
+const numberFormatToLocale = (localeOptions) => {
+    switch (localeOptions.number_format) {
+        case NumberFormat.comma_decimal:
+            return ["en-US", "en"];
+        case NumberFormat.decimal_comma:
+            return ["de", "es", "it"];
+        case NumberFormat.space_comma:
+            return ["fr", "sv", "cs"];
+        case NumberFormat.quote_decimal:
+            return ["de-CH"];
+        case NumberFormat.system:
+            return undefined;
+        default:
+            return localeOptions.language;
+    }
+};
+const formatNumber = (num, localeOptions, options) => formatNumberToParts(num, localeOptions, options)
+    .map((part) => part.value)
+    .join("");
+const formatNumberToParts = (num, localeOptions, options) => {
+    const locale = localeOptions
+        ? numberFormatToLocale(localeOptions)
+        : undefined;
+    if (localeOptions?.number_format !== NumberFormat.none &&
+        !Number.isNaN(Number(num))) {
+        return new Intl.NumberFormat(locale, getDefaultFormatOptions(num, options)).formatToParts(Number(num));
+    }
+    if (!Number.isNaN(Number(num)) &&
+        num !== "" &&
+        localeOptions?.number_format === NumberFormat.none) {
+        return new Intl.NumberFormat("en-US", getDefaultFormatOptions(num, {
+            ...options,
+            useGrouping: false,
+        })).formatToParts(Number(num));
+    }
+    return [{ type: "literal", value: num }];
+};
+const getDefaultFormatOptions = (num, options) => {
+    const defaultOptions = {
+        maximumFractionDigits: 2,
+        ...options,
+    };
+    if (typeof num !== "string") {
+        return defaultOptions;
+    }
+    if (!options ||
+        (options.minimumFractionDigits === undefined &&
+            options.maximumFractionDigits === undefined)) {
+        const digits = num.indexOf(".") > -1 ? num.split(".")[1].length : 0;
+        defaultOptions.minimumFractionDigits = digits;
+        defaultOptions.maximumFractionDigits = digits;
+    }
+    return defaultOptions;
+};
+
+// Climate icon/color mappings - backported from HA frontend src/data/climate.ts
+const CLIMATE_HVAC_ACTION_TO_MODE = {
+    cooling: "cool",
+    defrosting: "heat",
+    drying: "dry",
+    fan: "fan_only",
+    heating: "heat",
+    idle: "off",
+    off: "off",
+    preheating: "heat",
+};
+
+function memoize(fn, options) {
+	const cache = options && options.cache ? options.cache : cacheDefault;
+	const serializer = options && options.serializer ? options.serializer : serializerDefault;
+	const strategy = options && options.strategy ? options.strategy : strategyDefault;
+	return strategy(fn, {
+		cache,
+		serializer
+	});
+}
+//
+// Strategy
+//
+function isPrimitive(value) {
+	return value == null || typeof value === "number" || typeof value === "boolean";
+}
+function monadic(fn, cache, serializer, arg) {
+	const cacheKey = isPrimitive(arg) ? arg : serializer(arg);
+	let computedValue = cache.get(cacheKey);
+	if (typeof computedValue === "undefined") {
+		computedValue = fn.call(this, arg);
+		cache.set(cacheKey, computedValue);
+	}
+	return computedValue;
+}
+function variadic(fn, cache, serializer) {
+	const args = Array.prototype.slice.call(arguments, 3);
+	const cacheKey = serializer(args);
+	let computedValue = cache.get(cacheKey);
+	if (typeof computedValue === "undefined") {
+		computedValue = fn.apply(this, args);
+		cache.set(cacheKey, computedValue);
+	}
+	return computedValue;
+}
+function assemble(fn, context, strategy, cache, serialize) {
+	return strategy.bind(context, fn, cache, serialize);
+}
+function strategyDefault(fn, options) {
+	const strategy = fn.length === 1 ? monadic : variadic;
+	return assemble(fn, this, strategy, options.cache.create(), options.serializer);
+}
+function strategyVariadic(fn, options) {
+	return assemble(fn, this, variadic, options.cache.create(), options.serializer);
+}
+//
+// Serializer
+//
+const serializerDefault = function() {
+	return JSON.stringify(arguments);
+};
+//
+// Cache
+//
+class ObjectWithoutPrototypeCache {
+	cache;
+	constructor() {
+		this.cache = Object.create(null);
+	}
+	get(key) {
+		return this.cache[key];
+	}
+	set(key, value) {
+		this.cache[key] = value;
+	}
+}
+const cacheDefault = { create: function create() {
+	return new ObjectWithoutPrototypeCache();
+} };
+const strategies = {
+	variadic: strategyVariadic};
+
+/**
+* https://unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table
+* Credit: https://github.com/caridy/intl-datetimeformat-pattern/blob/master/index.js
+* with some tweaks
+*/
+const DATE_TIME_REGEX = /(?:[Eec]{1,6}|G{1,5}|[Qq]{1,5}|(?:[yYur]+|U{1,5})|[ML]{1,5}|d{1,2}|D{1,3}|F{1}|[abB]{1,5}|[hkHK]{1,2}|w{1,2}|W{1}|m{1,2}|s{1,2}|[zZOvVxX]{1,4})(?=([^']*'[^']*')*[^']*$)/g;
+/**
+* Parse Date time skeleton into Intl.DateTimeFormatOptions
+* Ref: https://unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table
+* @public
+* @param skeleton skeleton string
+*/
+function parseDateTimeSkeleton(skeleton) {
+	const result = {};
+	skeleton.replace(DATE_TIME_REGEX, (match) => {
+		const len = match.length;
+		switch (match[0]) {
+			case "G":
+				result.era = len === 4 ? "long" : len === 5 ? "narrow" : "short";
+				break;
+			case "y":
+				result.year = len === 2 ? "2-digit" : "numeric";
+				break;
+			case "Y":
+			case "u":
+			case "U":
+			case "r": throw new RangeError("`Y/u/U/r` (year) patterns are not supported, use `y` instead");
+			case "q":
+			case "Q": throw new RangeError("`q/Q` (quarter) patterns are not supported");
+			case "M":
+			case "L":
+				result.month = [
+					"numeric",
+					"2-digit",
+					"short",
+					"long",
+					"narrow"
+				][len - 1];
+				break;
+			case "w":
+			case "W": throw new RangeError("`w/W` (week) patterns are not supported");
+			case "d":
+				result.day = ["numeric", "2-digit"][len - 1];
+				break;
+			case "D":
+			case "F":
+			case "g": throw new RangeError("`D/F/g` (day) patterns are not supported, use `d` instead");
+			case "E":
+				result.weekday = len === 4 ? "long" : len === 5 ? "narrow" : "short";
+				break;
+			case "e":
+				if (len < 4) {
+					throw new RangeError("`e..eee` (weekday) patterns are not supported");
+				}
+				result.weekday = [
+					"short",
+					"long",
+					"narrow",
+					"short"
+				][len - 4];
+				break;
+			case "c":
+				if (len < 4) {
+					throw new RangeError("`c..ccc` (weekday) patterns are not supported");
+				}
+				result.weekday = [
+					"short",
+					"long",
+					"narrow",
+					"short"
+				][len - 4];
+				break;
+			case "a":
+				result.hour12 = true;
+				break;
+			case "b":
+			case "B": throw new RangeError("`b/B` (period) patterns are not supported, use `a` instead");
+			case "h":
+				result.hourCycle = "h12";
+				result.hour = ["numeric", "2-digit"][len - 1];
+				break;
+			case "H":
+				result.hourCycle = "h23";
+				result.hour = ["numeric", "2-digit"][len - 1];
+				break;
+			case "K":
+				result.hourCycle = "h11";
+				result.hour = ["numeric", "2-digit"][len - 1];
+				break;
+			case "k":
+				result.hourCycle = "h24";
+				result.hour = ["numeric", "2-digit"][len - 1];
+				break;
+			case "j":
+			case "J":
+			case "C": throw new RangeError("`j/J/C` (hour) patterns are not supported, use `h/H/K/k` instead");
+			case "m":
+				result.minute = ["numeric", "2-digit"][len - 1];
+				break;
+			case "s":
+				result.second = ["numeric", "2-digit"][len - 1];
+				break;
+			case "S":
+			case "A": throw new RangeError("`S/A` (second) patterns are not supported, use `s` instead");
+			case "z":
+				result.timeZoneName = len < 4 ? "short" : "long";
+				break;
+			case "Z":
+			case "O":
+			case "v":
+			case "V":
+			case "X":
+			case "x": throw new RangeError("`Z/O/v/V/X/x` (timeZone) patterns are not supported, use `z` instead");
+		}
+		return "";
+	});
+	return result;
+}
+
+// @generated from regex-gen.ts
+const WHITE_SPACE_REGEX = /[\t-\r \x85\u200E\u200F\u2028\u2029]/i;
+
+function parseNumberSkeletonFromString(skeleton) {
+	if (skeleton.length === 0) {
+		throw new Error("Number skeleton cannot be empty");
+	}
+	// Parse the skeleton
+	const stringTokens = skeleton.split(WHITE_SPACE_REGEX).filter((x) => x.length > 0);
+	const tokens = [];
+	for (const stringToken of stringTokens) {
+		let stemAndOptions = stringToken.split("/");
+		if (stemAndOptions.length === 0) {
+			throw new Error("Invalid number skeleton");
+		}
+		const [stem, ...options] = stemAndOptions;
+		for (const option of options) {
+			if (option.length === 0) {
+				throw new Error("Invalid number skeleton");
+			}
+		}
+		tokens.push({
+			stem,
+			options
+		});
+	}
+	return tokens;
+}
+function icuUnitToEcma(unit) {
+	return unit.replace(/^(.*?)-/, "");
+}
+const FRACTION_PRECISION_REGEX = /^\.(?:(0+)(\*)?|(#+)|(0+)(#+))$/g;
+const SIGNIFICANT_PRECISION_REGEX = /^(@+)?(\+|#+)?[rs]?$/g;
+const INTEGER_WIDTH_REGEX = /(\*)(0+)|(#+)(0+)|(0+)/g;
+const CONCISE_INTEGER_WIDTH_REGEX = /^(0+)$/;
+function parseSignificantPrecision(str) {
+	const result = {};
+	if (str[str.length - 1] === "r") {
+		result.roundingPriority = "morePrecision";
+	} else if (str[str.length - 1] === "s") {
+		result.roundingPriority = "lessPrecision";
+	}
+	str.replace(SIGNIFICANT_PRECISION_REGEX, function(_, g1, g2) {
+		// @@@ case
+		if (typeof g2 !== "string") {
+			result.minimumSignificantDigits = g1.length;
+			result.maximumSignificantDigits = g1.length;
+		} else if (g2 === "+") {
+			result.minimumSignificantDigits = g1.length;
+		} else if (g1[0] === "#") {
+			result.maximumSignificantDigits = g1.length;
+		} else {
+			result.minimumSignificantDigits = g1.length;
+			result.maximumSignificantDigits = g1.length + (typeof g2 === "string" ? g2.length : 0);
+		}
+		return "";
+	});
+	return result;
+}
+function parseSign(str) {
+	switch (str) {
+		case "sign-auto": return { signDisplay: "auto" };
+		case "sign-accounting":
+		case "()": return { currencySign: "accounting" };
+		case "sign-always":
+		case "+!": return { signDisplay: "always" };
+		case "sign-accounting-always":
+		case "()!": return {
+			signDisplay: "always",
+			currencySign: "accounting"
+		};
+		case "sign-except-zero":
+		case "+?": return { signDisplay: "exceptZero" };
+		case "sign-accounting-except-zero":
+		case "()?": return {
+			signDisplay: "exceptZero",
+			currencySign: "accounting"
+		};
+		case "sign-never":
+		case "+_": return { signDisplay: "never" };
+	}
+}
+function parseConciseScientificAndEngineeringStem(stem) {
+	// Engineering
+	let result;
+	if (stem[0] === "E" && stem[1] === "E") {
+		result = { notation: "engineering" };
+		stem = stem.slice(2);
+	} else if (stem[0] === "E") {
+		result = { notation: "scientific" };
+		stem = stem.slice(1);
+	}
+	if (result) {
+		const signDisplay = stem.slice(0, 2);
+		if (signDisplay === "+!") {
+			result.signDisplay = "always";
+			stem = stem.slice(2);
+		} else if (signDisplay === "+?") {
+			result.signDisplay = "exceptZero";
+			stem = stem.slice(2);
+		}
+		if (!CONCISE_INTEGER_WIDTH_REGEX.test(stem)) {
+			throw new Error("Malformed concise eng/scientific notation");
+		}
+		result.minimumIntegerDigits = stem.length;
+	}
+	return result;
+}
+function parseNotationOptions(opt) {
+	const result = {};
+	const signOpts = parseSign(opt);
+	if (signOpts) {
+		return signOpts;
+	}
+	return result;
+}
+/**
+* https://github.com/unicode-org/icu/blob/master/docs/userguide/format_parse/numbers/skeletons.md#skeleton-stems-and-options
+*/
+function parseNumberSkeleton(tokens) {
+	let result = {};
+	for (const token of tokens) {
+		switch (token.stem) {
+			case "percent":
+			case "%":
+				result.style = "percent";
+				continue;
+			case "%x100":
+				result.style = "percent";
+				result.scale = 100;
+				continue;
+			case "currency":
+				result.style = "currency";
+				result.currency = token.options[0];
+				continue;
+			case "group-off":
+			case ",_":
+				result.useGrouping = false;
+				continue;
+			case "precision-integer":
+			case ".":
+				result.maximumFractionDigits = 0;
+				continue;
+			case "measure-unit":
+			case "unit":
+				result.style = "unit";
+				result.unit = icuUnitToEcma(token.options[0]);
+				continue;
+			case "compact-short":
+			case "K":
+				result.notation = "compact";
+				result.compactDisplay = "short";
+				continue;
+			case "compact-long":
+			case "KK":
+				result.notation = "compact";
+				result.compactDisplay = "long";
+				continue;
+			case "scientific":
+				result = {
+					...result,
+					notation: "scientific",
+					...token.options.reduce((all, opt) => ({
+						...all,
+						...parseNotationOptions(opt)
+					}), {})
+				};
+				continue;
+			case "engineering":
+				result = {
+					...result,
+					notation: "engineering",
+					...token.options.reduce((all, opt) => ({
+						...all,
+						...parseNotationOptions(opt)
+					}), {})
+				};
+				continue;
+			case "notation-simple":
+				result.notation = "standard";
+				continue;
+			case "unit-width-narrow":
+				result.currencyDisplay = "narrowSymbol";
+				result.unitDisplay = "narrow";
+				continue;
+			case "unit-width-short":
+				result.currencyDisplay = "code";
+				result.unitDisplay = "short";
+				continue;
+			case "unit-width-full-name":
+				result.currencyDisplay = "name";
+				result.unitDisplay = "long";
+				continue;
+			case "unit-width-iso-code":
+				result.currencyDisplay = "symbol";
+				continue;
+			case "scale":
+				result.scale = parseFloat(token.options[0]);
+				continue;
+			case "rounding-mode-floor":
+				result.roundingMode = "floor";
+				continue;
+			case "rounding-mode-ceiling":
+				result.roundingMode = "ceil";
+				continue;
+			case "rounding-mode-down":
+				result.roundingMode = "trunc";
+				continue;
+			case "rounding-mode-up":
+				result.roundingMode = "expand";
+				continue;
+			case "rounding-mode-half-even":
+				result.roundingMode = "halfEven";
+				continue;
+			case "rounding-mode-half-down":
+				result.roundingMode = "halfTrunc";
+				continue;
+			case "rounding-mode-half-up":
+				result.roundingMode = "halfExpand";
+				continue;
+			case "integer-width":
+				if (token.options.length > 1) {
+					throw new RangeError("integer-width stems only accept a single optional option");
+				}
+				token.options[0].replace(INTEGER_WIDTH_REGEX, function(_, g1, g2, g3, g4, g5) {
+					if (g1) {
+						result.minimumIntegerDigits = g2.length;
+					} else if (g3 && g4) {
+						throw new Error("We currently do not support maximum integer digits");
+					} else if (g5) {
+						throw new Error("We currently do not support exact integer digits");
+					}
+					return "";
+				});
+				continue;
+		}
+		// https://unicode-org.github.io/icu/userguide/format_parse/numbers/skeletons.html#integer-width
+		if (CONCISE_INTEGER_WIDTH_REGEX.test(token.stem)) {
+			result.minimumIntegerDigits = token.stem.length;
+			continue;
+		}
+		if (FRACTION_PRECISION_REGEX.test(token.stem)) {
+			// Precision
+			// https://unicode-org.github.io/icu/userguide/format_parse/numbers/skeletons.html#fraction-precision
+			// precision-integer case
+			if (token.options.length > 1) {
+				throw new RangeError("Fraction-precision stems only accept a single optional option");
+			}
+			token.stem.replace(FRACTION_PRECISION_REGEX, function(_, g1, g2, g3, g4, g5) {
+				// .000* case (before ICU67 it was .000+)
+				if (g2 === "*") {
+					result.minimumFractionDigits = g1.length;
+				} else if (g3 && g3[0] === "#") {
+					result.maximumFractionDigits = g3.length;
+				} else if (g4 && g5) {
+					result.minimumFractionDigits = g4.length;
+					result.maximumFractionDigits = g4.length + g5.length;
+				} else {
+					result.minimumFractionDigits = g1.length;
+					result.maximumFractionDigits = g1.length;
+				}
+				return "";
+			});
+			const opt = token.options[0];
+			// https://unicode-org.github.io/icu/userguide/format_parse/numbers/skeletons.html#trailing-zero-display
+			if (opt === "w") {
+				result = {
+					...result,
+					trailingZeroDisplay: "stripIfInteger"
+				};
+			} else if (opt) {
+				result = {
+					...result,
+					...parseSignificantPrecision(opt)
+				};
+			}
+			continue;
+		}
+		// https://unicode-org.github.io/icu/userguide/format_parse/numbers/skeletons.html#significant-digits-precision
+		if (SIGNIFICANT_PRECISION_REGEX.test(token.stem)) {
+			result = {
+				...result,
+				...parseSignificantPrecision(token.stem)
+			};
+			continue;
+		}
+		const signOpts = parseSign(token.stem);
+		if (signOpts) {
+			result = {
+				...result,
+				...signOpts
+			};
+		}
+		const conciseScientificAndEngineeringOpts = parseConciseScientificAndEngineeringStem(token.stem);
+		if (conciseScientificAndEngineeringOpts) {
+			result = {
+				...result,
+				...conciseScientificAndEngineeringOpts
+			};
+		}
+	}
+	return result;
+}
+
+let TYPE = /* @__PURE__ */ function(TYPE) {
+	/**
+	* Raw text
+	*/
+	TYPE[TYPE["literal"] = 0] = "literal";
+	/**
+	* Variable w/o any format, e.g `var` in `this is a {var}`
+	*/
+	TYPE[TYPE["argument"] = 1] = "argument";
+	/**
+	* Variable w/ number format
+	*/
+	TYPE[TYPE["number"] = 2] = "number";
+	/**
+	* Variable w/ date format
+	*/
+	TYPE[TYPE["date"] = 3] = "date";
+	/**
+	* Variable w/ time format
+	*/
+	TYPE[TYPE["time"] = 4] = "time";
+	/**
+	* Variable w/ select format
+	*/
+	TYPE[TYPE["select"] = 5] = "select";
+	/**
+	* Variable w/ plural format
+	*/
+	TYPE[TYPE["plural"] = 6] = "plural";
+	/**
+	* Only possible within plural argument.
+	* This is the `#` symbol that will be substituted with the count.
+	*/
+	TYPE[TYPE["pound"] = 7] = "pound";
+	/**
+	* XML-like tag
+	*/
+	TYPE[TYPE["tag"] = 8] = "tag";
+	return TYPE;
+}({});
+let SKELETON_TYPE = /* @__PURE__ */ function(SKELETON_TYPE) {
+	SKELETON_TYPE[SKELETON_TYPE["number"] = 0] = "number";
+	SKELETON_TYPE[SKELETON_TYPE["dateTime"] = 1] = "dateTime";
+	return SKELETON_TYPE;
+}({});
+/**
+* Type Guards
+*/
+function isLiteralElement(el) {
+	return el.type === TYPE.literal;
+}
+function isArgumentElement(el) {
+	return el.type === TYPE.argument;
+}
+function isNumberElement(el) {
+	return el.type === TYPE.number;
+}
+function isDateElement(el) {
+	return el.type === TYPE.date;
+}
+function isTimeElement(el) {
+	return el.type === TYPE.time;
+}
+function isSelectElement(el) {
+	return el.type === TYPE.select;
+}
+function isPluralElement(el) {
+	return el.type === TYPE.plural;
+}
+function isPoundElement(el) {
+	return el.type === TYPE.pound;
+}
+function isTagElement(el) {
+	return el.type === TYPE.tag;
+}
+function isNumberSkeleton(el) {
+	return !!(el && typeof el === "object" && el.type === SKELETON_TYPE.number);
+}
+function isDateTimeSkeleton(el) {
+	return !!(el && typeof el === "object" && el.type === SKELETON_TYPE.dateTime);
+}
+
+let ErrorKind = /* @__PURE__ */ function(ErrorKind) {
+	/** Argument is unclosed (e.g. `{0`) */
+	ErrorKind[ErrorKind["EXPECT_ARGUMENT_CLOSING_BRACE"] = 1] = "EXPECT_ARGUMENT_CLOSING_BRACE";
+	/** Argument is empty (e.g. `{}`). */
+	ErrorKind[ErrorKind["EMPTY_ARGUMENT"] = 2] = "EMPTY_ARGUMENT";
+	/** Argument is malformed (e.g. `{foo!}``) */
+	ErrorKind[ErrorKind["MALFORMED_ARGUMENT"] = 3] = "MALFORMED_ARGUMENT";
+	/** Expect an argument type (e.g. `{foo,}`) */
+	ErrorKind[ErrorKind["EXPECT_ARGUMENT_TYPE"] = 4] = "EXPECT_ARGUMENT_TYPE";
+	/** Unsupported argument type (e.g. `{foo,foo}`) */
+	ErrorKind[ErrorKind["INVALID_ARGUMENT_TYPE"] = 5] = "INVALID_ARGUMENT_TYPE";
+	/** Expect an argument style (e.g. `{foo, number, }`) */
+	ErrorKind[ErrorKind["EXPECT_ARGUMENT_STYLE"] = 6] = "EXPECT_ARGUMENT_STYLE";
+	/** The number skeleton is invalid. */
+	ErrorKind[ErrorKind["INVALID_NUMBER_SKELETON"] = 7] = "INVALID_NUMBER_SKELETON";
+	/** The date time skeleton is invalid. */
+	ErrorKind[ErrorKind["INVALID_DATE_TIME_SKELETON"] = 8] = "INVALID_DATE_TIME_SKELETON";
+	/** Exepct a number skeleton following the `::` (e.g. `{foo, number, ::}`) */
+	ErrorKind[ErrorKind["EXPECT_NUMBER_SKELETON"] = 9] = "EXPECT_NUMBER_SKELETON";
+	/** Exepct a date time skeleton following the `::` (e.g. `{foo, date, ::}`) */
+	ErrorKind[ErrorKind["EXPECT_DATE_TIME_SKELETON"] = 10] = "EXPECT_DATE_TIME_SKELETON";
+	/** Unmatched apostrophes in the argument style (e.g. `{foo, number, 'test`) */
+	ErrorKind[ErrorKind["UNCLOSED_QUOTE_IN_ARGUMENT_STYLE"] = 11] = "UNCLOSED_QUOTE_IN_ARGUMENT_STYLE";
+	/** Missing select argument options (e.g. `{foo, select}`) */
+	ErrorKind[ErrorKind["EXPECT_SELECT_ARGUMENT_OPTIONS"] = 12] = "EXPECT_SELECT_ARGUMENT_OPTIONS";
+	/** Expecting an offset value in `plural` or `selectordinal` argument (e.g `{foo, plural, offset}`) */
+	ErrorKind[ErrorKind["EXPECT_PLURAL_ARGUMENT_OFFSET_VALUE"] = 13] = "EXPECT_PLURAL_ARGUMENT_OFFSET_VALUE";
+	/** Offset value in `plural` or `selectordinal` is invalid (e.g. `{foo, plural, offset: x}`) */
+	ErrorKind[ErrorKind["INVALID_PLURAL_ARGUMENT_OFFSET_VALUE"] = 14] = "INVALID_PLURAL_ARGUMENT_OFFSET_VALUE";
+	/** Expecting a selector in `select` argument (e.g `{foo, select}`) */
+	ErrorKind[ErrorKind["EXPECT_SELECT_ARGUMENT_SELECTOR"] = 15] = "EXPECT_SELECT_ARGUMENT_SELECTOR";
+	/** Expecting a selector in `plural` or `selectordinal` argument (e.g `{foo, plural}`) */
+	ErrorKind[ErrorKind["EXPECT_PLURAL_ARGUMENT_SELECTOR"] = 16] = "EXPECT_PLURAL_ARGUMENT_SELECTOR";
+	/** Expecting a message fragment after the `select` selector (e.g. `{foo, select, apple}`) */
+	ErrorKind[ErrorKind["EXPECT_SELECT_ARGUMENT_SELECTOR_FRAGMENT"] = 17] = "EXPECT_SELECT_ARGUMENT_SELECTOR_FRAGMENT";
+	/**
+	* Expecting a message fragment after the `plural` or `selectordinal` selector
+	* (e.g. `{foo, plural, one}`)
+	*/
+	ErrorKind[ErrorKind["EXPECT_PLURAL_ARGUMENT_SELECTOR_FRAGMENT"] = 18] = "EXPECT_PLURAL_ARGUMENT_SELECTOR_FRAGMENT";
+	/** Selector in `plural` or `selectordinal` is malformed (e.g. `{foo, plural, =x {#}}`) */
+	ErrorKind[ErrorKind["INVALID_PLURAL_ARGUMENT_SELECTOR"] = 19] = "INVALID_PLURAL_ARGUMENT_SELECTOR";
+	/**
+	* Duplicate selectors in `plural` or `selectordinal` argument.
+	* (e.g. {foo, plural, one {#} one {#}})
+	*/
+	ErrorKind[ErrorKind["DUPLICATE_PLURAL_ARGUMENT_SELECTOR"] = 20] = "DUPLICATE_PLURAL_ARGUMENT_SELECTOR";
+	/** Duplicate selectors in `select` argument.
+	* (e.g. {foo, select, apple {apple} apple {apple}})
+	*/
+	ErrorKind[ErrorKind["DUPLICATE_SELECT_ARGUMENT_SELECTOR"] = 21] = "DUPLICATE_SELECT_ARGUMENT_SELECTOR";
+	/** Plural or select argument option must have `other` clause. */
+	ErrorKind[ErrorKind["MISSING_OTHER_CLAUSE"] = 22] = "MISSING_OTHER_CLAUSE";
+	/** The tag is malformed. (e.g. `<bold!>foo</bold!>) */
+	ErrorKind[ErrorKind["INVALID_TAG"] = 23] = "INVALID_TAG";
+	/** The tag name is invalid. (e.g. `<123>foo</123>`) */
+	ErrorKind[ErrorKind["INVALID_TAG_NAME"] = 25] = "INVALID_TAG_NAME";
+	/** The closing tag does not match the opening tag. (e.g. `<bold>foo</italic>`) */
+	ErrorKind[ErrorKind["UNMATCHED_CLOSING_TAG"] = 26] = "UNMATCHED_CLOSING_TAG";
+	/** The opening tag has unmatched closing tag. (e.g. `<bold>foo`) */
+	ErrorKind[ErrorKind["UNCLOSED_TAG"] = 27] = "UNCLOSED_TAG";
+	return ErrorKind;
+}({});
+
+// @generated from regex-gen.ts
+const SPACE_SEPARATOR_REGEX = /[ \xA0\u1680\u2000-\u200A\u202F\u205F\u3000]/;
+
+// @generated from time-data-gen.ts
+// prettier-ignore
+const timeData = {
+	"001": ["H", "h"],
+	"419": [
+		"h",
+		"H",
+		"hB",
+		"hb"
+	],
+	"AC": [
+		"H",
+		"h",
+		"hb",
+		"hB"
+	],
+	"AD": ["H", "hB"],
+	"AE": [
+		"h",
+		"hB",
+		"hb",
+		"H"
+	],
+	"AF": [
+		"H",
+		"hb",
+		"hB",
+		"h"
+	],
+	"AG": [
+		"h",
+		"hb",
+		"H",
+		"hB"
+	],
+	"AI": [
+		"H",
+		"h",
+		"hb",
+		"hB"
+	],
+	"AL": [
+		"h",
+		"H",
+		"hB"
+	],
+	"AM": ["H", "hB"],
+	"AO": ["H", "hB"],
+	"AR": [
+		"h",
+		"H",
+		"hB",
+		"hb"
+	],
+	"AS": ["h", "H"],
+	"AT": ["H", "hB"],
+	"AU": [
+		"h",
+		"hb",
+		"H",
+		"hB"
+	],
+	"AW": ["H", "hB"],
+	"AX": ["H"],
+	"AZ": [
+		"H",
+		"hB",
+		"h"
+	],
+	"BA": [
+		"H",
+		"hB",
+		"h"
+	],
+	"BB": [
+		"h",
+		"hb",
+		"H",
+		"hB"
+	],
+	"BD": [
+		"h",
+		"hB",
+		"H"
+	],
+	"BE": ["H", "hB"],
+	"BF": ["H", "hB"],
+	"BG": [
+		"H",
+		"hB",
+		"h"
+	],
+	"BH": [
+		"h",
+		"hB",
+		"hb",
+		"H"
+	],
+	"BI": ["H", "h"],
+	"BJ": ["H", "hB"],
+	"BL": ["H", "hB"],
+	"BM": [
+		"h",
+		"hb",
+		"H",
+		"hB"
+	],
+	"BN": [
+		"hb",
+		"hB",
+		"h",
+		"H"
+	],
+	"BO": [
+		"h",
+		"H",
+		"hB",
+		"hb"
+	],
+	"BQ": ["H"],
+	"BR": ["H", "hB"],
+	"BS": [
+		"h",
+		"hb",
+		"H",
+		"hB"
+	],
+	"BT": ["h", "H"],
+	"BW": [
+		"H",
+		"h",
+		"hb",
+		"hB"
+	],
+	"BY": ["H", "h"],
+	"BZ": [
+		"H",
+		"h",
+		"hb",
+		"hB"
+	],
+	"CA": [
+		"h",
+		"hb",
+		"H",
+		"hB"
+	],
+	"CC": [
+		"H",
+		"h",
+		"hb",
+		"hB"
+	],
+	"CD": ["hB", "H"],
+	"CF": [
+		"H",
+		"h",
+		"hB"
+	],
+	"CG": ["H", "hB"],
+	"CH": [
+		"H",
+		"hB",
+		"h"
+	],
+	"CI": ["H", "hB"],
+	"CK": [
+		"H",
+		"h",
+		"hb",
+		"hB"
+	],
+	"CL": [
+		"h",
+		"H",
+		"hB",
+		"hb"
+	],
+	"CM": [
+		"H",
+		"h",
+		"hB"
+	],
+	"CN": [
+		"H",
+		"hB",
+		"hb",
+		"h"
+	],
+	"CO": [
+		"h",
+		"H",
+		"hB",
+		"hb"
+	],
+	"CP": ["H"],
+	"CR": [
+		"h",
+		"H",
+		"hB",
+		"hb"
+	],
+	"CU": [
+		"h",
+		"H",
+		"hB",
+		"hb"
+	],
+	"CV": ["H", "hB"],
+	"CW": ["H", "hB"],
+	"CX": [
+		"H",
+		"h",
+		"hb",
+		"hB"
+	],
+	"CY": [
+		"h",
+		"H",
+		"hb",
+		"hB"
+	],
+	"CZ": ["H"],
+	"DE": ["H", "hB"],
+	"DG": [
+		"H",
+		"h",
+		"hb",
+		"hB"
+	],
+	"DJ": ["h", "H"],
+	"DK": ["H"],
+	"DM": [
+		"h",
+		"hb",
+		"H",
+		"hB"
+	],
+	"DO": [
+		"h",
+		"H",
+		"hB",
+		"hb"
+	],
+	"DZ": [
+		"h",
+		"hB",
+		"hb",
+		"H"
+	],
+	"EA": [
+		"H",
+		"h",
+		"hB",
+		"hb"
+	],
+	"EC": [
+		"h",
+		"H",
+		"hB",
+		"hb"
+	],
+	"EE": ["H", "hB"],
+	"EG": [
+		"h",
+		"hB",
+		"hb",
+		"H"
+	],
+	"EH": [
+		"h",
+		"hB",
+		"hb",
+		"H"
+	],
+	"ER": ["h", "H"],
+	"ES": [
+		"H",
+		"hB",
+		"h",
+		"hb"
+	],
+	"ET": [
+		"hB",
+		"hb",
+		"h",
+		"H"
+	],
+	"FI": ["H"],
+	"FJ": [
+		"h",
+		"hb",
+		"H",
+		"hB"
+	],
+	"FK": [
+		"H",
+		"h",
+		"hb",
+		"hB"
+	],
+	"FM": [
+		"h",
+		"hb",
+		"H",
+		"hB"
+	],
+	"FO": ["H", "h"],
+	"FR": ["H", "hB"],
+	"GA": ["H", "hB"],
+	"GB": [
+		"H",
+		"h",
+		"hb",
+		"hB"
+	],
+	"GD": [
+		"h",
+		"hb",
+		"H",
+		"hB"
+	],
+	"GE": [
+		"H",
+		"hB",
+		"h"
+	],
+	"GF": ["H", "hB"],
+	"GG": [
+		"H",
+		"h",
+		"hb",
+		"hB"
+	],
+	"GH": ["h", "H"],
+	"GI": [
+		"H",
+		"h",
+		"hb",
+		"hB"
+	],
+	"GL": ["H", "h"],
+	"GM": [
+		"h",
+		"hb",
+		"H",
+		"hB"
+	],
+	"GN": ["H", "hB"],
+	"GP": ["H", "hB"],
+	"GQ": [
+		"H",
+		"hB",
+		"h",
+		"hb"
+	],
+	"GR": [
+		"h",
+		"H",
+		"hb",
+		"hB"
+	],
+	"GS": [
+		"H",
+		"h",
+		"hb",
+		"hB"
+	],
+	"GT": [
+		"h",
+		"H",
+		"hB",
+		"hb"
+	],
+	"GU": [
+		"h",
+		"hb",
+		"H",
+		"hB"
+	],
+	"GW": ["H", "hB"],
+	"GY": [
+		"h",
+		"hb",
+		"H",
+		"hB"
+	],
+	"HK": [
+		"h",
+		"hB",
+		"hb",
+		"H"
+	],
+	"HN": [
+		"h",
+		"H",
+		"hB",
+		"hb"
+	],
+	"HR": ["H", "hB"],
+	"HU": ["H", "h"],
+	"IC": [
+		"H",
+		"h",
+		"hB",
+		"hb"
+	],
+	"ID": ["H"],
+	"IE": [
+		"H",
+		"h",
+		"hb",
+		"hB"
+	],
+	"IL": ["H", "hB"],
+	"IM": [
+		"H",
+		"h",
+		"hb",
+		"hB"
+	],
+	"IN": ["h", "H"],
+	"IO": [
+		"H",
+		"h",
+		"hb",
+		"hB"
+	],
+	"IQ": [
+		"h",
+		"hB",
+		"hb",
+		"H"
+	],
+	"IR": ["hB", "H"],
+	"IS": ["H"],
+	"IT": ["H", "hB"],
+	"JE": [
+		"H",
+		"h",
+		"hb",
+		"hB"
+	],
+	"JM": [
+		"h",
+		"hb",
+		"H",
+		"hB"
+	],
+	"JO": [
+		"h",
+		"hB",
+		"hb",
+		"H"
+	],
+	"JP": [
+		"H",
+		"K",
+		"h"
+	],
+	"KE": [
+		"hB",
+		"hb",
+		"H",
+		"h"
+	],
+	"KG": [
+		"H",
+		"h",
+		"hB",
+		"hb"
+	],
+	"KH": [
+		"hB",
+		"h",
+		"H",
+		"hb"
+	],
+	"KI": [
+		"h",
+		"hb",
+		"H",
+		"hB"
+	],
+	"KM": [
+		"H",
+		"h",
+		"hB",
+		"hb"
+	],
+	"KN": [
+		"h",
+		"hb",
+		"H",
+		"hB"
+	],
+	"KP": [
+		"h",
+		"H",
+		"hB",
+		"hb"
+	],
+	"KR": [
+		"h",
+		"H",
+		"hB",
+		"hb"
+	],
+	"KW": [
+		"h",
+		"hB",
+		"hb",
+		"H"
+	],
+	"KY": [
+		"h",
+		"hb",
+		"H",
+		"hB"
+	],
+	"KZ": ["H", "hB"],
+	"LA": [
+		"H",
+		"hb",
+		"hB",
+		"h"
+	],
+	"LB": [
+		"h",
+		"hB",
+		"hb",
+		"H"
+	],
+	"LC": [
+		"h",
+		"hb",
+		"H",
+		"hB"
+	],
+	"LI": [
+		"H",
+		"hB",
+		"h"
+	],
+	"LK": [
+		"H",
+		"h",
+		"hB",
+		"hb"
+	],
+	"LR": [
+		"h",
+		"hb",
+		"H",
+		"hB"
+	],
+	"LS": ["h", "H"],
+	"LT": [
+		"H",
+		"h",
+		"hb",
+		"hB"
+	],
+	"LU": [
+		"H",
+		"h",
+		"hB"
+	],
+	"LV": [
+		"H",
+		"hB",
+		"hb",
+		"h"
+	],
+	"LY": [
+		"h",
+		"hB",
+		"hb",
+		"H"
+	],
+	"MA": [
+		"H",
+		"h",
+		"hB",
+		"hb"
+	],
+	"MC": ["H", "hB"],
+	"MD": ["H", "hB"],
+	"ME": [
+		"H",
+		"hB",
+		"h"
+	],
+	"MF": ["H", "hB"],
+	"MG": ["H", "h"],
+	"MH": [
+		"h",
+		"hb",
+		"H",
+		"hB"
+	],
+	"MK": [
+		"H",
+		"h",
+		"hb",
+		"hB"
+	],
+	"ML": ["H"],
+	"MM": [
+		"hB",
+		"hb",
+		"H",
+		"h"
+	],
+	"MN": [
+		"H",
+		"h",
+		"hb",
+		"hB"
+	],
+	"MO": [
+		"h",
+		"hB",
+		"hb",
+		"H"
+	],
+	"MP": [
+		"h",
+		"hb",
+		"H",
+		"hB"
+	],
+	"MQ": ["H", "hB"],
+	"MR": [
+		"h",
+		"hB",
+		"hb",
+		"H"
+	],
+	"MS": [
+		"H",
+		"h",
+		"hb",
+		"hB"
+	],
+	"MT": ["H", "h"],
+	"MU": ["H", "h"],
+	"MV": ["H", "h"],
+	"MW": [
+		"h",
+		"hb",
+		"H",
+		"hB"
+	],
+	"MX": [
+		"h",
+		"H",
+		"hB",
+		"hb"
+	],
+	"MY": [
+		"hb",
+		"hB",
+		"h",
+		"H"
+	],
+	"MZ": ["H", "hB"],
+	"NA": [
+		"h",
+		"H",
+		"hB",
+		"hb"
+	],
+	"NC": ["H", "hB"],
+	"NE": ["H"],
+	"NF": [
+		"H",
+		"h",
+		"hb",
+		"hB"
+	],
+	"NG": [
+		"H",
+		"h",
+		"hb",
+		"hB"
+	],
+	"NI": [
+		"h",
+		"H",
+		"hB",
+		"hb"
+	],
+	"NL": ["H", "hB"],
+	"NO": ["H", "h"],
+	"NP": [
+		"H",
+		"h",
+		"hB"
+	],
+	"NR": [
+		"H",
+		"h",
+		"hb",
+		"hB"
+	],
+	"NU": [
+		"H",
+		"h",
+		"hb",
+		"hB"
+	],
+	"NZ": [
+		"h",
+		"hb",
+		"H",
+		"hB"
+	],
+	"OM": [
+		"h",
+		"hB",
+		"hb",
+		"H"
+	],
+	"PA": [
+		"h",
+		"H",
+		"hB",
+		"hb"
+	],
+	"PE": [
+		"h",
+		"H",
+		"hB",
+		"hb"
+	],
+	"PF": [
+		"H",
+		"h",
+		"hB"
+	],
+	"PG": ["h", "H"],
+	"PH": [
+		"h",
+		"hB",
+		"hb",
+		"H"
+	],
+	"PK": [
+		"h",
+		"hB",
+		"H"
+	],
+	"PL": ["H", "h"],
+	"PM": ["H", "hB"],
+	"PN": [
+		"H",
+		"h",
+		"hb",
+		"hB"
+	],
+	"PR": [
+		"h",
+		"H",
+		"hB",
+		"hb"
+	],
+	"PS": [
+		"h",
+		"hB",
+		"hb",
+		"H"
+	],
+	"PT": ["H", "hB"],
+	"PW": ["h", "H"],
+	"PY": [
+		"h",
+		"H",
+		"hB",
+		"hb"
+	],
+	"QA": [
+		"h",
+		"hB",
+		"hb",
+		"H"
+	],
+	"RE": ["H", "hB"],
+	"RO": ["H", "hB"],
+	"RS": [
+		"H",
+		"hB",
+		"h"
+	],
+	"RU": ["H"],
+	"RW": ["H", "h"],
+	"SA": [
+		"h",
+		"hB",
+		"hb",
+		"H"
+	],
+	"SB": [
+		"h",
+		"hb",
+		"H",
+		"hB"
+	],
+	"SC": [
+		"H",
+		"h",
+		"hB"
+	],
+	"SD": [
+		"h",
+		"hB",
+		"hb",
+		"H"
+	],
+	"SE": ["H"],
+	"SG": [
+		"h",
+		"hb",
+		"H",
+		"hB"
+	],
+	"SH": [
+		"H",
+		"h",
+		"hb",
+		"hB"
+	],
+	"SI": ["H", "hB"],
+	"SJ": ["H"],
+	"SK": ["H"],
+	"SL": [
+		"h",
+		"hb",
+		"H",
+		"hB"
+	],
+	"SM": [
+		"H",
+		"h",
+		"hB"
+	],
+	"SN": [
+		"H",
+		"h",
+		"hB"
+	],
+	"SO": ["h", "H"],
+	"SR": ["H", "hB"],
+	"SS": [
+		"h",
+		"hb",
+		"H",
+		"hB"
+	],
+	"ST": ["H", "hB"],
+	"SV": [
+		"h",
+		"H",
+		"hB",
+		"hb"
+	],
+	"SX": [
+		"H",
+		"h",
+		"hb",
+		"hB"
+	],
+	"SY": [
+		"h",
+		"hB",
+		"hb",
+		"H"
+	],
+	"SZ": [
+		"h",
+		"hb",
+		"H",
+		"hB"
+	],
+	"TA": [
+		"H",
+		"h",
+		"hb",
+		"hB"
+	],
+	"TC": [
+		"h",
+		"hb",
+		"H",
+		"hB"
+	],
+	"TD": [
+		"h",
+		"H",
+		"hB"
+	],
+	"TF": [
+		"H",
+		"h",
+		"hB"
+	],
+	"TG": ["H", "hB"],
+	"TH": ["H", "h"],
+	"TJ": ["H", "h"],
+	"TL": [
+		"H",
+		"hB",
+		"hb",
+		"h"
+	],
+	"TM": ["H", "h"],
+	"TN": [
+		"h",
+		"hB",
+		"hb",
+		"H"
+	],
+	"TO": ["h", "H"],
+	"TR": ["H", "hB"],
+	"TT": [
+		"h",
+		"hb",
+		"H",
+		"hB"
+	],
+	"TW": [
+		"hB",
+		"hb",
+		"h",
+		"H"
+	],
+	"TZ": [
+		"hB",
+		"hb",
+		"H",
+		"h"
+	],
+	"UA": [
+		"H",
+		"hB",
+		"h"
+	],
+	"UG": [
+		"hB",
+		"hb",
+		"H",
+		"h"
+	],
+	"UM": [
+		"h",
+		"hb",
+		"H",
+		"hB"
+	],
+	"US": [
+		"h",
+		"hb",
+		"H",
+		"hB"
+	],
+	"UY": [
+		"h",
+		"H",
+		"hB",
+		"hb"
+	],
+	"UZ": [
+		"H",
+		"hB",
+		"h"
+	],
+	"VA": [
+		"H",
+		"h",
+		"hB"
+	],
+	"VC": [
+		"h",
+		"hb",
+		"H",
+		"hB"
+	],
+	"VE": [
+		"h",
+		"H",
+		"hB",
+		"hb"
+	],
+	"VG": [
+		"h",
+		"hb",
+		"H",
+		"hB"
+	],
+	"VI": [
+		"h",
+		"hb",
+		"H",
+		"hB"
+	],
+	"VN": ["H", "h"],
+	"VU": ["h", "H"],
+	"WF": ["H", "hB"],
+	"WS": ["h", "H"],
+	"XK": [
+		"H",
+		"hB",
+		"h"
+	],
+	"YE": [
+		"h",
+		"hB",
+		"hb",
+		"H"
+	],
+	"YT": ["H", "hB"],
+	"ZA": [
+		"H",
+		"h",
+		"hb",
+		"hB"
+	],
+	"ZM": [
+		"h",
+		"hb",
+		"H",
+		"hB"
+	],
+	"ZW": ["H", "h"],
+	"af-ZA": [
+		"H",
+		"h",
+		"hB",
+		"hb"
+	],
+	"ar-001": [
+		"h",
+		"hB",
+		"hb",
+		"H"
+	],
+	"ca-ES": [
+		"H",
+		"h",
+		"hB"
+	],
+	"en-001": [
+		"h",
+		"hb",
+		"H",
+		"hB"
+	],
+	"en-HK": [
+		"h",
+		"hb",
+		"H",
+		"hB"
+	],
+	"en-IL": [
+		"H",
+		"h",
+		"hb",
+		"hB"
+	],
+	"en-MY": [
+		"h",
+		"hb",
+		"H",
+		"hB"
+	],
+	"es-BR": [
+		"H",
+		"h",
+		"hB",
+		"hb"
+	],
+	"es-ES": [
+		"H",
+		"h",
+		"hB",
+		"hb"
+	],
+	"es-GQ": [
+		"H",
+		"h",
+		"hB",
+		"hb"
+	],
+	"fr-CA": [
+		"H",
+		"h",
+		"hB"
+	],
+	"gl-ES": [
+		"H",
+		"h",
+		"hB"
+	],
+	"gu-IN": [
+		"hB",
+		"hb",
+		"h",
+		"H"
+	],
+	"hi-IN": [
+		"hB",
+		"h",
+		"H"
+	],
+	"it-CH": [
+		"H",
+		"h",
+		"hB"
+	],
+	"it-IT": [
+		"H",
+		"h",
+		"hB"
+	],
+	"kn-IN": [
+		"hB",
+		"h",
+		"H"
+	],
+	"ku-SY": ["H", "hB"],
+	"ml-IN": [
+		"hB",
+		"h",
+		"H"
+	],
+	"mr-IN": [
+		"hB",
+		"hb",
+		"h",
+		"H"
+	],
+	"pa-IN": [
+		"hB",
+		"hb",
+		"h",
+		"H"
+	],
+	"ta-IN": [
+		"hB",
+		"h",
+		"hb",
+		"H"
+	],
+	"te-IN": [
+		"hB",
+		"h",
+		"H"
+	],
+	"zu-ZA": [
+		"H",
+		"hB",
+		"hb",
+		"h"
+	]
+};
+
+/**
+* Returns the best matching date time pattern if a date time skeleton
+* pattern is provided with a locale. Follows the Unicode specification:
+* https://www.unicode.org/reports/tr35/tr35-dates.html#table-mapping-requested-time-skeletons-to-patterns
+* @param skeleton date time skeleton pattern that possibly includes j, J or C
+* @param locale
+*/
+function getBestPattern(skeleton, locale) {
+	let skeletonCopy = "";
+	for (let patternPos = 0; patternPos < skeleton.length; patternPos++) {
+		const patternChar = skeleton.charAt(patternPos);
+		if (patternChar === "j") {
+			let extraLength = 0;
+			while (patternPos + 1 < skeleton.length && skeleton.charAt(patternPos + 1) === patternChar) {
+				extraLength++;
+				patternPos++;
+			}
+			let hourLen = 1 + (extraLength & 1);
+			let dayPeriodLen = extraLength < 2 ? 1 : 3 + (extraLength >> 1);
+			let dayPeriodChar = "a";
+			let hourChar = getDefaultHourSymbolFromLocale(locale);
+			if (hourChar == "H" || hourChar == "k") {
+				dayPeriodLen = 0;
+			}
+			while (dayPeriodLen-- > 0) {
+				skeletonCopy += dayPeriodChar;
+			}
+			while (hourLen-- > 0) {
+				skeletonCopy = hourChar + skeletonCopy;
+			}
+		} else if (patternChar === "J") {
+			skeletonCopy += "H";
+		} else {
+			skeletonCopy += patternChar;
+		}
+	}
+	return skeletonCopy;
+}
+/**
+* Maps the [hour cycle type](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Locale/hourCycle)
+* of the given `locale` to the corresponding time pattern.
+* @param locale
+*/
+function getDefaultHourSymbolFromLocale(locale) {
+	let hourCycle = locale.hourCycle;
+	if (hourCycle === undefined && locale.hourCycles && locale.hourCycles.length) {
+		// @ts-ignore
+		hourCycle = locale.hourCycles[0];
+	}
+	if (hourCycle) {
+		switch (hourCycle) {
+			case "h24": return "k";
+			case "h23": return "H";
+			case "h12": return "h";
+			case "h11": return "K";
+			default: throw new Error("Invalid hourCycle");
+		}
+	}
+	// TODO: Once hourCycle is fully supported remove the following with data generation
+	const languageTag = locale.language;
+	let regionTag;
+	if (languageTag !== "root") {
+		regionTag = locale.maximize().region;
+	}
+	const hourCycles = timeData[regionTag || ""] || timeData[languageTag || ""] || timeData[`${languageTag}-001`] || timeData["001"];
+	return hourCycles[0];
+}
+
+const SPACE_SEPARATOR_START_REGEX = new RegExp(`^${SPACE_SEPARATOR_REGEX.source}*`);
+const SPACE_SEPARATOR_END_REGEX = new RegExp(`${SPACE_SEPARATOR_REGEX.source}*$`);
+function createLocation(start, end) {
+	return {
+		start,
+		end
+	};
+}
+// #region Ponyfills
+// Consolidate these variables up top for easier toggling during debugging
+const hasNativeFromEntries = !!Object.fromEntries;
+const hasTrimStart = !!String.prototype.trimStart;
+const hasTrimEnd = !!String.prototype.trimEnd;
+const fromEntries = hasNativeFromEntries ? Object.fromEntries : function fromEntries(entries) {
+	const obj = {};
+	for (const [k, v] of entries) {
+		obj[k] = v;
+	}
+	return obj;
+};
+const trimStart = hasTrimStart ? function trimStart(s) {
+	return s.trimStart();
+} : function trimStart(s) {
+	return s.replace(SPACE_SEPARATOR_START_REGEX, "");
+};
+const trimEnd = hasTrimEnd ? function trimEnd(s) {
+	return s.trimEnd();
+} : function trimEnd(s) {
+	return s.replace(SPACE_SEPARATOR_END_REGEX, "");
+};
+// #endregion
+const IDENTIFIER_PREFIX_RE = new RegExp("([^\\p{White_Space}\\p{Pattern_Syntax}]*)", "yu");
+function matchIdentifierAtIndex(s, index) {
+	IDENTIFIER_PREFIX_RE.lastIndex = index;
+	const match = IDENTIFIER_PREFIX_RE.exec(s);
+	return match[1] ?? "";
+}
+class Parser {
+	message;
+	position;
+	locale;
+	ignoreTag;
+	requiresOtherClause;
+	shouldParseSkeletons;
+	constructor(message, options = {}) {
+		this.message = message;
+		this.position = {
+			offset: 0,
+			line: 1,
+			column: 1
+		};
+		this.ignoreTag = !!options.ignoreTag;
+		this.locale = options.locale;
+		this.requiresOtherClause = !!options.requiresOtherClause;
+		this.shouldParseSkeletons = !!options.shouldParseSkeletons;
+	}
+	parse() {
+		if (this.offset() !== 0) {
+			throw Error("parser can only be used once");
+		}
+		return this.parseMessage(0, "", false);
+	}
+	parseMessage(nestingLevel, parentArgType, expectingCloseTag) {
+		let elements = [];
+		while (!this.isEOF()) {
+			const char = this.char();
+			if (char === 123) {
+				const result = this.parseArgument(nestingLevel, expectingCloseTag);
+				if (result.err) {
+					return result;
+				}
+				elements.push(result.val);
+			} else if (char === 125 && nestingLevel > 0) {
+				break;
+			} else if (char === 35 && (parentArgType === "plural" || parentArgType === "selectordinal")) {
+				const position = this.clonePosition();
+				this.bump();
+				elements.push({
+					type: TYPE.pound,
+					location: createLocation(position, this.clonePosition())
+				});
+			} else if (char === 60 && !this.ignoreTag && this.peek() === 47) {
+				if (expectingCloseTag) {
+					break;
+				} else {
+					return this.error(ErrorKind.UNMATCHED_CLOSING_TAG, createLocation(this.clonePosition(), this.clonePosition()));
+				}
+			} else if (char === 60 && !this.ignoreTag && _isAlpha(this.peek() || 0)) {
+				const result = this.parseTag(nestingLevel, parentArgType);
+				if (result.err) {
+					return result;
+				}
+				elements.push(result.val);
+			} else {
+				const result = this.parseLiteral(nestingLevel, parentArgType);
+				if (result.err) {
+					return result;
+				}
+				elements.push(result.val);
+			}
+		}
+		return {
+			val: elements,
+			err: null
+		};
+	}
+	/**
+	* A tag name must start with an ASCII lower/upper case letter. The grammar is based on the
+	* [custom element name][] except that a dash is NOT always mandatory and uppercase letters
+	* are accepted:
+	*
+	* ```
+	* tag ::= "<" tagName (whitespace)* "/>" | "<" tagName (whitespace)* ">" message "</" tagName (whitespace)* ">"
+	* tagName ::= [a-z] (PENChar)*
+	* PENChar ::=
+	*     "-" | "." | [0-9] | "_" | [a-z] | [A-Z] | #xB7 | [#xC0-#xD6] | [#xD8-#xF6] | [#xF8-#x37D] |
+	*     [#x37F-#x1FFF] | [#x200C-#x200D] | [#x203F-#x2040] | [#x2070-#x218F] | [#x2C00-#x2FEF] |
+	*     [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
+	* ```
+	*
+	* [custom element name]: https://html.spec.whatwg.org/multipage/custom-elements.html#valid-custom-element-name
+	* NOTE: We're a bit more lax here since HTML technically does not allow uppercase HTML element but we do
+	* since other tag-based engines like React allow it
+	*/
+	parseTag(nestingLevel, parentArgType) {
+		const startPosition = this.clonePosition();
+		this.bump();
+		const tagName = this.parseTagName();
+		this.bumpSpace();
+		if (this.bumpIf("/>")) {
+			// Self closing tag
+			return {
+				val: {
+					type: TYPE.literal,
+					value: `<${tagName}/>`,
+					location: createLocation(startPosition, this.clonePosition())
+				},
+				err: null
+			};
+		} else if (this.bumpIf(">")) {
+			const childrenResult = this.parseMessage(nestingLevel + 1, parentArgType, true);
+			if (childrenResult.err) {
+				return childrenResult;
+			}
+			const children = childrenResult.val;
+			// Expecting a close tag
+			const endTagStartPosition = this.clonePosition();
+			if (this.bumpIf("</")) {
+				if (this.isEOF() || !_isAlpha(this.char())) {
+					return this.error(ErrorKind.INVALID_TAG, createLocation(endTagStartPosition, this.clonePosition()));
+				}
+				const closingTagNameStartPosition = this.clonePosition();
+				const closingTagName = this.parseTagName();
+				if (tagName !== closingTagName) {
+					return this.error(ErrorKind.UNMATCHED_CLOSING_TAG, createLocation(closingTagNameStartPosition, this.clonePosition()));
+				}
+				this.bumpSpace();
+				if (!this.bumpIf(">")) {
+					return this.error(ErrorKind.INVALID_TAG, createLocation(endTagStartPosition, this.clonePosition()));
+				}
+				return {
+					val: {
+						type: TYPE.tag,
+						value: tagName,
+						children,
+						location: createLocation(startPosition, this.clonePosition())
+					},
+					err: null
+				};
+			} else {
+				return this.error(ErrorKind.UNCLOSED_TAG, createLocation(startPosition, this.clonePosition()));
+			}
+		} else {
+			return this.error(ErrorKind.INVALID_TAG, createLocation(startPosition, this.clonePosition()));
+		}
+	}
+	/**
+	* This method assumes that the caller has peeked ahead for the first tag character.
+	*/
+	parseTagName() {
+		const startOffset = this.offset();
+		this.bump();
+		while (!this.isEOF() && _isPotentialElementNameChar(this.char())) {
+			this.bump();
+		}
+		return this.message.slice(startOffset, this.offset());
+	}
+	parseLiteral(nestingLevel, parentArgType) {
+		const start = this.clonePosition();
+		let value = "";
+		while (true) {
+			const parseQuoteResult = this.tryParseQuote(parentArgType);
+			if (parseQuoteResult) {
+				value += parseQuoteResult;
+				continue;
+			}
+			const parseUnquotedResult = this.tryParseUnquoted(nestingLevel, parentArgType);
+			if (parseUnquotedResult) {
+				value += parseUnquotedResult;
+				continue;
+			}
+			const parseLeftAngleResult = this.tryParseLeftAngleBracket();
+			if (parseLeftAngleResult) {
+				value += parseLeftAngleResult;
+				continue;
+			}
+			break;
+		}
+		const location = createLocation(start, this.clonePosition());
+		return {
+			val: {
+				type: TYPE.literal,
+				value,
+				location
+			},
+			err: null
+		};
+	}
+	tryParseLeftAngleBracket() {
+		if (!this.isEOF() && this.char() === 60 && (this.ignoreTag || !_isAlphaOrSlash(this.peek() || 0))) {
+			this.bump();
+			return "<";
+		}
+		return null;
+	}
+	/**
+	* Starting with ICU 4.8, an ASCII apostrophe only starts quoted text if it immediately precedes
+	* a character that requires quoting (that is, "only where needed"), and works the same in
+	* nested messages as on the top level of the pattern. The new behavior is otherwise compatible.
+	*/
+	tryParseQuote(parentArgType) {
+		if (this.isEOF() || this.char() !== 39) {
+			return null;
+		}
+		// Parse escaped char following the apostrophe, or early return if there is no escaped char.
+		// Check if is valid escaped character
+		switch (this.peek()) {
+			case 39:
+				// double quote, should return as a single quote.
+				this.bump();
+				this.bump();
+				return "'";
+			case 123:
+			case 60:
+			case 62:
+			case 125: break;
+			case 35:
+				if (parentArgType === "plural" || parentArgType === "selectordinal") {
+					break;
+				}
+				return null;
+			default: return null;
+		}
+		this.bump();
+		const codePoints = [this.char()];
+		this.bump();
+		// read chars until the optional closing apostrophe is found
+		while (!this.isEOF()) {
+			const ch = this.char();
+			if (ch === 39) {
+				if (this.peek() === 39) {
+					codePoints.push(39);
+					// Bump one more time because we need to skip 2 characters.
+					this.bump();
+				} else {
+					// Optional closing apostrophe.
+					this.bump();
+					break;
+				}
+			} else {
+				codePoints.push(ch);
+			}
+			this.bump();
+		}
+		return String.fromCodePoint(...codePoints);
+	}
+	tryParseUnquoted(nestingLevel, parentArgType) {
+		if (this.isEOF()) {
+			return null;
+		}
+		const ch = this.char();
+		if (ch === 60 || ch === 123 || ch === 35 && (parentArgType === "plural" || parentArgType === "selectordinal") || ch === 125 && nestingLevel > 0) {
+			return null;
+		} else {
+			this.bump();
+			return String.fromCodePoint(ch);
+		}
+	}
+	parseArgument(nestingLevel, expectingCloseTag) {
+		const openingBracePosition = this.clonePosition();
+		this.bump();
+		this.bumpSpace();
+		if (this.isEOF()) {
+			return this.error(ErrorKind.EXPECT_ARGUMENT_CLOSING_BRACE, createLocation(openingBracePosition, this.clonePosition()));
+		}
+		if (this.char() === 125) {
+			this.bump();
+			return this.error(ErrorKind.EMPTY_ARGUMENT, createLocation(openingBracePosition, this.clonePosition()));
+		}
+		// argument name
+		let value = this.parseIdentifierIfPossible().value;
+		if (!value) {
+			return this.error(ErrorKind.MALFORMED_ARGUMENT, createLocation(openingBracePosition, this.clonePosition()));
+		}
+		this.bumpSpace();
+		if (this.isEOF()) {
+			return this.error(ErrorKind.EXPECT_ARGUMENT_CLOSING_BRACE, createLocation(openingBracePosition, this.clonePosition()));
+		}
+		switch (this.char()) {
+			case 125: {
+				this.bump();
+				return {
+					val: {
+						type: TYPE.argument,
+						value,
+						location: createLocation(openingBracePosition, this.clonePosition())
+					},
+					err: null
+				};
+			}
+			case 44: {
+				this.bump();
+				this.bumpSpace();
+				if (this.isEOF()) {
+					return this.error(ErrorKind.EXPECT_ARGUMENT_CLOSING_BRACE, createLocation(openingBracePosition, this.clonePosition()));
+				}
+				return this.parseArgumentOptions(nestingLevel, expectingCloseTag, value, openingBracePosition);
+			}
+			default: return this.error(ErrorKind.MALFORMED_ARGUMENT, createLocation(openingBracePosition, this.clonePosition()));
+		}
+	}
+	/**
+	* Advance the parser until the end of the identifier, if it is currently on
+	* an identifier character. Return an empty string otherwise.
+	*/
+	parseIdentifierIfPossible() {
+		const startingPosition = this.clonePosition();
+		const startOffset = this.offset();
+		const value = matchIdentifierAtIndex(this.message, startOffset);
+		const endOffset = startOffset + value.length;
+		this.bumpTo(endOffset);
+		const endPosition = this.clonePosition();
+		const location = createLocation(startingPosition, endPosition);
+		return {
+			value,
+			location
+		};
+	}
+	parseArgumentOptions(nestingLevel, expectingCloseTag, value, openingBracePosition) {
+		// Parse this range:
+		// {name, type, style}
+		//        ^---^
+		let typeStartPosition = this.clonePosition();
+		let argType = this.parseIdentifierIfPossible().value;
+		let typeEndPosition = this.clonePosition();
+		switch (argType) {
+			case "":
+ // Expecting a style string number, date, time, plural, selectordinal, or select.
+			return this.error(ErrorKind.EXPECT_ARGUMENT_TYPE, createLocation(typeStartPosition, typeEndPosition));
+			case "number":
+			case "date":
+			case "time": {
+				// Parse this range:
+				// {name, number, style}
+				//              ^-------^
+				this.bumpSpace();
+				let styleAndLocation = null;
+				if (this.bumpIf(",")) {
+					this.bumpSpace();
+					const styleStartPosition = this.clonePosition();
+					const result = this.parseSimpleArgStyleIfPossible();
+					if (result.err) {
+						return result;
+					}
+					const style = trimEnd(result.val);
+					if (style.length === 0) {
+						return this.error(ErrorKind.EXPECT_ARGUMENT_STYLE, createLocation(this.clonePosition(), this.clonePosition()));
+					}
+					const styleLocation = createLocation(styleStartPosition, this.clonePosition());
+					styleAndLocation = {
+						style,
+						styleLocation
+					};
+				}
+				const argCloseResult = this.tryParseArgumentClose(openingBracePosition);
+				if (argCloseResult.err) {
+					return argCloseResult;
+				}
+				const location = createLocation(openingBracePosition, this.clonePosition());
+				// Extract style or skeleton
+				if (styleAndLocation && styleAndLocation.style.startsWith("::")) {
+					// Skeleton starts with `::`.
+					let skeleton = trimStart(styleAndLocation.style.slice(2));
+					if (argType === "number") {
+						const result = this.parseNumberSkeletonFromString(skeleton, styleAndLocation.styleLocation);
+						if (result.err) {
+							return result;
+						}
+						return {
+							val: {
+								type: TYPE.number,
+								value,
+								location,
+								style: result.val
+							},
+							err: null
+						};
+					} else {
+						if (skeleton.length === 0) {
+							return this.error(ErrorKind.EXPECT_DATE_TIME_SKELETON, location);
+						}
+						let dateTimePattern = skeleton;
+						// Get "best match" pattern only if locale is passed, if not, let it
+						// pass as-is where `parseDateTimeSkeleton()` will throw an error
+						// for unsupported patterns.
+						if (this.locale) {
+							dateTimePattern = getBestPattern(skeleton, this.locale);
+						}
+						const style = {
+							type: SKELETON_TYPE.dateTime,
+							pattern: dateTimePattern,
+							location: styleAndLocation.styleLocation,
+							parsedOptions: this.shouldParseSkeletons ? parseDateTimeSkeleton(dateTimePattern) : {}
+						};
+						const type = argType === "date" ? TYPE.date : TYPE.time;
+						return {
+							val: {
+								type,
+								value,
+								location,
+								style
+							},
+							err: null
+						};
+					}
+				}
+				// Regular style or no style.
+				return {
+					val: {
+						type: argType === "number" ? TYPE.number : argType === "date" ? TYPE.date : TYPE.time,
+						value,
+						location,
+						style: styleAndLocation?.style ?? null
+					},
+					err: null
+				};
+			}
+			case "plural":
+			case "selectordinal":
+			case "select": {
+				// Parse this range:
+				// {name, plural, options}
+				//              ^---------^
+				const typeEndPosition = this.clonePosition();
+				this.bumpSpace();
+				if (!this.bumpIf(",")) {
+					return this.error(ErrorKind.EXPECT_SELECT_ARGUMENT_OPTIONS, createLocation(typeEndPosition, { ...typeEndPosition }));
+				}
+				this.bumpSpace();
+				// Parse offset:
+				// {name, plural, offset:1, options}
+				//                ^-----^
+				//
+				// or the first option:
+				//
+				// {name, plural, one {...} other {...}}
+				//                ^--^
+				let identifierAndLocation = this.parseIdentifierIfPossible();
+				let pluralOffset = 0;
+				if (argType !== "select" && identifierAndLocation.value === "offset") {
+					if (!this.bumpIf(":")) {
+						return this.error(ErrorKind.EXPECT_PLURAL_ARGUMENT_OFFSET_VALUE, createLocation(this.clonePosition(), this.clonePosition()));
+					}
+					this.bumpSpace();
+					const result = this.tryParseDecimalInteger(ErrorKind.EXPECT_PLURAL_ARGUMENT_OFFSET_VALUE, ErrorKind.INVALID_PLURAL_ARGUMENT_OFFSET_VALUE);
+					if (result.err) {
+						return result;
+					}
+					// Parse another identifier for option parsing
+					this.bumpSpace();
+					identifierAndLocation = this.parseIdentifierIfPossible();
+					pluralOffset = result.val;
+				}
+				const optionsResult = this.tryParsePluralOrSelectOptions(nestingLevel, argType, expectingCloseTag, identifierAndLocation);
+				if (optionsResult.err) {
+					return optionsResult;
+				}
+				const argCloseResult = this.tryParseArgumentClose(openingBracePosition);
+				if (argCloseResult.err) {
+					return argCloseResult;
+				}
+				const location = createLocation(openingBracePosition, this.clonePosition());
+				if (argType === "select") {
+					return {
+						val: {
+							type: TYPE.select,
+							value,
+							options: fromEntries(optionsResult.val),
+							location
+						},
+						err: null
+					};
+				} else {
+					return {
+						val: {
+							type: TYPE.plural,
+							value,
+							options: fromEntries(optionsResult.val),
+							offset: pluralOffset,
+							pluralType: argType === "plural" ? "cardinal" : "ordinal",
+							location
+						},
+						err: null
+					};
+				}
+			}
+			default: return this.error(ErrorKind.INVALID_ARGUMENT_TYPE, createLocation(typeStartPosition, typeEndPosition));
+		}
+	}
+	tryParseArgumentClose(openingBracePosition) {
+		// Parse: {value, number, ::currency/GBP }
+		//
+		if (this.isEOF() || this.char() !== 125) {
+			return this.error(ErrorKind.EXPECT_ARGUMENT_CLOSING_BRACE, createLocation(openingBracePosition, this.clonePosition()));
+		}
+		this.bump();
+		return {
+			val: true,
+			err: null
+		};
+	}
+	/**
+	* See: https://github.com/unicode-org/icu/blob/af7ed1f6d2298013dc303628438ec4abe1f16479/icu4c/source/common/messagepattern.cpp#L659
+	*/
+	parseSimpleArgStyleIfPossible() {
+		let nestedBraces = 0;
+		const startPosition = this.clonePosition();
+		while (!this.isEOF()) {
+			const ch = this.char();
+			switch (ch) {
+				case 39: {
+					// Treat apostrophe as quoting but include it in the style part.
+					// Find the end of the quoted literal text.
+					this.bump();
+					let apostrophePosition = this.clonePosition();
+					if (!this.bumpUntil("'")) {
+						return this.error(ErrorKind.UNCLOSED_QUOTE_IN_ARGUMENT_STYLE, createLocation(apostrophePosition, this.clonePosition()));
+					}
+					this.bump();
+					break;
+				}
+				case 123: {
+					nestedBraces += 1;
+					this.bump();
+					break;
+				}
+				case 125: {
+					if (nestedBraces > 0) {
+						nestedBraces -= 1;
+					} else {
+						return {
+							val: this.message.slice(startPosition.offset, this.offset()),
+							err: null
+						};
+					}
+					break;
+				}
+				default:
+					this.bump();
+					break;
+			}
+		}
+		return {
+			val: this.message.slice(startPosition.offset, this.offset()),
+			err: null
+		};
+	}
+	parseNumberSkeletonFromString(skeleton, location) {
+		let tokens = [];
+		try {
+			tokens = parseNumberSkeletonFromString(skeleton);
+		} catch {
+			return this.error(ErrorKind.INVALID_NUMBER_SKELETON, location);
+		}
+		return {
+			val: {
+				type: SKELETON_TYPE.number,
+				tokens,
+				location,
+				parsedOptions: this.shouldParseSkeletons ? parseNumberSkeleton(tokens) : {}
+			},
+			err: null
+		};
+	}
+	/**
+	* @param nesting_level The current nesting level of messages.
+	*     This can be positive when parsing message fragment in select or plural argument options.
+	* @param parent_arg_type The parent argument's type.
+	* @param parsed_first_identifier If provided, this is the first identifier-like selector of
+	*     the argument. It is a by-product of a previous parsing attempt.
+	* @param expecting_close_tag If true, this message is directly or indirectly nested inside
+	*     between a pair of opening and closing tags. The nested message will not parse beyond
+	*     the closing tag boundary.
+	*/
+	tryParsePluralOrSelectOptions(nestingLevel, parentArgType, expectCloseTag, parsedFirstIdentifier) {
+		let hasOtherClause = false;
+		const options = [];
+		const parsedSelectors = new Set();
+		let { value: selector, location: selectorLocation } = parsedFirstIdentifier;
+		// Parse:
+		// one {one apple}
+		// ^--^
+		while (true) {
+			if (selector.length === 0) {
+				const startPosition = this.clonePosition();
+				if (parentArgType !== "select" && this.bumpIf("=")) {
+					// Try parse `={number}` selector
+					const result = this.tryParseDecimalInteger(ErrorKind.EXPECT_PLURAL_ARGUMENT_SELECTOR, ErrorKind.INVALID_PLURAL_ARGUMENT_SELECTOR);
+					if (result.err) {
+						return result;
+					}
+					selectorLocation = createLocation(startPosition, this.clonePosition());
+					selector = this.message.slice(startPosition.offset, this.offset());
+				} else {
+					break;
+				}
+			}
+			// Duplicate selector clauses
+			if (parsedSelectors.has(selector)) {
+				return this.error(parentArgType === "select" ? ErrorKind.DUPLICATE_SELECT_ARGUMENT_SELECTOR : ErrorKind.DUPLICATE_PLURAL_ARGUMENT_SELECTOR, selectorLocation);
+			}
+			if (selector === "other") {
+				hasOtherClause = true;
+			}
+			// Parse:
+			// one {one apple}
+			//     ^----------^
+			this.bumpSpace();
+			const openingBracePosition = this.clonePosition();
+			if (!this.bumpIf("{")) {
+				return this.error(parentArgType === "select" ? ErrorKind.EXPECT_SELECT_ARGUMENT_SELECTOR_FRAGMENT : ErrorKind.EXPECT_PLURAL_ARGUMENT_SELECTOR_FRAGMENT, createLocation(this.clonePosition(), this.clonePosition()));
+			}
+			const fragmentResult = this.parseMessage(nestingLevel + 1, parentArgType, expectCloseTag);
+			if (fragmentResult.err) {
+				return fragmentResult;
+			}
+			const argCloseResult = this.tryParseArgumentClose(openingBracePosition);
+			if (argCloseResult.err) {
+				return argCloseResult;
+			}
+			options.push([selector, {
+				value: fragmentResult.val,
+				location: createLocation(openingBracePosition, this.clonePosition())
+			}]);
+			// Keep track of the existing selectors
+			parsedSelectors.add(selector);
+			// Prep next selector clause.
+			this.bumpSpace();
+			({value: selector, location: selectorLocation} = this.parseIdentifierIfPossible());
+		}
+		if (options.length === 0) {
+			return this.error(parentArgType === "select" ? ErrorKind.EXPECT_SELECT_ARGUMENT_SELECTOR : ErrorKind.EXPECT_PLURAL_ARGUMENT_SELECTOR, createLocation(this.clonePosition(), this.clonePosition()));
+		}
+		if (this.requiresOtherClause && !hasOtherClause) {
+			return this.error(ErrorKind.MISSING_OTHER_CLAUSE, createLocation(this.clonePosition(), this.clonePosition()));
+		}
+		return {
+			val: options,
+			err: null
+		};
+	}
+	tryParseDecimalInteger(expectNumberError, invalidNumberError) {
+		let sign = 1;
+		const startingPosition = this.clonePosition();
+		if (this.bumpIf("+")) ; else if (this.bumpIf("-")) {
+			sign = -1;
+		}
+		let hasDigits = false;
+		let decimal = 0;
+		while (!this.isEOF()) {
+			const ch = this.char();
+			if (ch >= 48 && ch <= 57) {
+				hasDigits = true;
+				decimal = decimal * 10 + (ch - 48);
+				this.bump();
+			} else {
+				break;
+			}
+		}
+		const location = createLocation(startingPosition, this.clonePosition());
+		if (!hasDigits) {
+			return this.error(expectNumberError, location);
+		}
+		decimal *= sign;
+		if (!Number.isSafeInteger(decimal)) {
+			return this.error(invalidNumberError, location);
+		}
+		return {
+			val: decimal,
+			err: null
+		};
+	}
+	offset() {
+		return this.position.offset;
+	}
+	isEOF() {
+		return this.offset() === this.message.length;
+	}
+	clonePosition() {
+		// This is much faster than `Object.assign` or spread.
+		return {
+			offset: this.position.offset,
+			line: this.position.line,
+			column: this.position.column
+		};
+	}
+	/**
+	* Return the code point at the current position of the parser.
+	* Throws if the index is out of bound.
+	*/
+	char() {
+		const offset = this.position.offset;
+		if (offset >= this.message.length) {
+			throw Error("out of bound");
+		}
+		const code = this.message.codePointAt(offset);
+		if (code === undefined) {
+			throw Error(`Offset ${offset} is at invalid UTF-16 code unit boundary`);
+		}
+		return code;
+	}
+	error(kind, location) {
+		return {
+			val: null,
+			err: {
+				kind,
+				message: this.message,
+				location
+			}
+		};
+	}
+	/** Bump the parser to the next UTF-16 code unit. */
+	bump() {
+		if (this.isEOF()) {
+			return;
+		}
+		const code = this.char();
+		if (code === 10) {
+			this.position.line += 1;
+			this.position.column = 1;
+			this.position.offset += 1;
+		} else {
+			this.position.column += 1;
+			// 0 ~ 0x10000 -> unicode BMP, otherwise skip the surrogate pair.
+			this.position.offset += code < 65536 ? 1 : 2;
+		}
+	}
+	/**
+	* If the substring starting at the current position of the parser has
+	* the given prefix, then bump the parser to the character immediately
+	* following the prefix and return true. Otherwise, don't bump the parser
+	* and return false.
+	*/
+	bumpIf(prefix) {
+		if (this.message.startsWith(prefix, this.offset())) {
+			for (let i = 0; i < prefix.length; i++) {
+				this.bump();
+			}
+			return true;
+		}
+		return false;
+	}
+	/**
+	* Bump the parser until the pattern character is found and return `true`.
+	* Otherwise bump to the end of the file and return `false`.
+	*/
+	bumpUntil(pattern) {
+		const currentOffset = this.offset();
+		const index = this.message.indexOf(pattern, currentOffset);
+		if (index >= 0) {
+			this.bumpTo(index);
+			return true;
+		} else {
+			this.bumpTo(this.message.length);
+			return false;
+		}
+	}
+	/**
+	* Bump the parser to the target offset.
+	* If target offset is beyond the end of the input, bump the parser to the end of the input.
+	*/
+	bumpTo(targetOffset) {
+		if (this.offset() > targetOffset) {
+			throw Error(`targetOffset ${targetOffset} must be greater than or equal to the current offset ${this.offset()}`);
+		}
+		targetOffset = Math.min(targetOffset, this.message.length);
+		while (true) {
+			const offset = this.offset();
+			if (offset === targetOffset) {
+				break;
+			}
+			if (offset > targetOffset) {
+				throw Error(`targetOffset ${targetOffset} is at invalid UTF-16 code unit boundary`);
+			}
+			this.bump();
+			if (this.isEOF()) {
+				break;
+			}
+		}
+	}
+	/** advance the parser through all whitespace to the next non-whitespace code unit. */
+	bumpSpace() {
+		while (!this.isEOF() && _isWhiteSpace(this.char())) {
+			this.bump();
+		}
+	}
+	/**
+	* Peek at the *next* Unicode codepoint in the input without advancing the parser.
+	* If the input has been exhausted, then this returns null.
+	*/
+	peek() {
+		if (this.isEOF()) {
+			return null;
+		}
+		const code = this.char();
+		const offset = this.offset();
+		const nextCode = this.message.charCodeAt(offset + (code >= 65536 ? 2 : 1));
+		return nextCode ?? null;
+	}
+}
+/**
+* This check if codepoint is alphabet (lower & uppercase)
+* @param codepoint
+* @returns
+*/
+function _isAlpha(codepoint) {
+	return codepoint >= 97 && codepoint <= 122 || codepoint >= 65 && codepoint <= 90;
+}
+function _isAlphaOrSlash(codepoint) {
+	return _isAlpha(codepoint) || codepoint === 47;
+}
+/** See `parseTag` function docs. */
+function _isPotentialElementNameChar(c) {
+	return c === 45 || c === 46 || c >= 48 && c <= 57 || c === 95 || c >= 97 && c <= 122 || c >= 65 && c <= 90 || c == 183 || c >= 192 && c <= 214 || c >= 216 && c <= 246 || c >= 248 && c <= 893 || c >= 895 && c <= 8191 || c >= 8204 && c <= 8205 || c >= 8255 && c <= 8256 || c >= 8304 && c <= 8591 || c >= 11264 && c <= 12271 || c >= 12289 && c <= 55295 || c >= 63744 && c <= 64975 || c >= 65008 && c <= 65533 || c >= 65536 && c <= 983039;
+}
+/**
+* Code point equivalent of regex `\p{White_Space}`.
+* From: https://www.unicode.org/Public/UCD/latest/ucd/PropList.txt
+*/
+function _isWhiteSpace(c) {
+	return c >= 9 && c <= 13 || c === 32 || c === 133 || c >= 8206 && c <= 8207 || c === 8232 || c === 8233;
+}
+
+function pruneLocation(els) {
+	els.forEach((el) => {
+		delete el.location;
+		if (isSelectElement(el) || isPluralElement(el)) {
+			for (const k in el.options) {
+				delete el.options[k].location;
+				pruneLocation(el.options[k].value);
+			}
+		} else if (isNumberElement(el) && isNumberSkeleton(el.style)) {
+			delete el.style.location;
+		} else if ((isDateElement(el) || isTimeElement(el)) && isDateTimeSkeleton(el.style)) {
+			delete el.style.location;
+		} else if (isTagElement(el)) {
+			pruneLocation(el.children);
+		}
+	});
+}
+function parse(message, opts = {}) {
+	opts = {
+		shouldParseSkeletons: true,
+		requiresOtherClause: true,
+		...opts
+	};
+	const result = new Parser(message, opts).parse();
+	if (result.err) {
+		const error = SyntaxError(ErrorKind[result.err.kind]);
+		// @ts-expect-error Assign to error object
+		error.location = result.err.location;
+		// @ts-expect-error Assign to error object
+		error.originalMessage = result.err.message;
+		throw error;
+	}
+	if (!opts?.captureLocation) {
+		pruneLocation(result.val);
+	}
+	return result.val;
+}
+
+let ErrorCode = /* @__PURE__ */ function(ErrorCode) {
+	// When we have a placeholder but no value to format
+	ErrorCode["MISSING_VALUE"] = "MISSING_VALUE";
+	// When value supplied is invalid
+	ErrorCode["INVALID_VALUE"] = "INVALID_VALUE";
+	// When we need specific Intl API but it's not available
+	ErrorCode["MISSING_INTL_API"] = "MISSING_INTL_API";
+	return ErrorCode;
+}({});
+class FormatError extends Error {
+	code;
+	/**
+	* Original message we're trying to format
+	* `undefined` if we're only dealing w/ AST
+	*
+	* @type {(string | undefined)}
+	* @memberof FormatError
+	*/
+	originalMessage;
+	constructor(msg, code, originalMessage) {
+		super(msg);
+		this.code = code;
+		this.originalMessage = originalMessage;
+	}
+	toString() {
+		return `[formatjs Error: ${this.code}] ${this.message}`;
+	}
+}
+class InvalidValueError extends FormatError {
+	constructor(variableId, value, options, originalMessage) {
+		super(`Invalid values for "${variableId}": "${value}". Options are "${Object.keys(options).join("\", \"")}"`, ErrorCode.INVALID_VALUE, originalMessage);
+	}
+}
+class InvalidValueTypeError extends FormatError {
+	constructor(value, type, originalMessage) {
+		super(`Value for "${value}" must be of type ${type}`, ErrorCode.INVALID_VALUE, originalMessage);
+	}
+}
+class MissingValueError extends FormatError {
+	constructor(variableId, originalMessage) {
+		super(`The intl string context variable "${variableId}" was not provided to the string "${originalMessage}"`, ErrorCode.MISSING_VALUE, originalMessage);
+	}
+}
+
+let PART_TYPE = /* @__PURE__ */ function(PART_TYPE) {
+	PART_TYPE[PART_TYPE["literal"] = 0] = "literal";
+	PART_TYPE[PART_TYPE["object"] = 1] = "object";
+	return PART_TYPE;
+}({});
+function mergeLiteral(parts) {
+	if (parts.length < 2) {
+		return parts;
+	}
+	return parts.reduce((all, part) => {
+		const lastPart = all[all.length - 1];
+		if (!lastPart || lastPart.type !== PART_TYPE.literal || part.type !== PART_TYPE.literal) {
+			all.push(part);
+		} else {
+			lastPart.value += part.value;
+		}
+		return all;
+	}, []);
+}
+function isFormatXMLElementFn(el) {
+	return typeof el === "function";
+}
+// TODO(skeleton): add skeleton support
+function formatToParts(els, locales, formatters, formats, values, currentPluralValue, originalMessage) {
+	// Hot path for straight simple msg translations
+	if (els.length === 1 && isLiteralElement(els[0])) {
+		return [{
+			type: PART_TYPE.literal,
+			value: els[0].value
+		}];
+	}
+	const result = [];
+	for (const el of els) {
+		// Exit early for string parts.
+		if (isLiteralElement(el)) {
+			result.push({
+				type: PART_TYPE.literal,
+				value: el.value
+			});
+			continue;
+		}
+		// TODO: should this part be literal type?
+		// Replace `#` in plural rules with the actual numeric value.
+		if (isPoundElement(el)) {
+			if (typeof currentPluralValue === "number") {
+				result.push({
+					type: PART_TYPE.literal,
+					value: formatters.getNumberFormat(locales).format(currentPluralValue)
+				});
+			}
+			continue;
+		}
+		const { value: varName } = el;
+		// Enforce that all required values are provided by the caller.
+		if (!(values && varName in values)) {
+			throw new MissingValueError(varName, originalMessage);
+		}
+		let value = values[varName];
+		if (isArgumentElement(el)) {
+			if (!value || typeof value === "string" || typeof value === "number" || typeof value === "bigint") {
+				value = typeof value === "string" || typeof value === "number" || typeof value === "bigint" ? String(value) : "";
+			}
+			result.push({
+				type: typeof value === "string" ? PART_TYPE.literal : PART_TYPE.object,
+				value
+			});
+			continue;
+		}
+		// Recursively format plural and select parts' option — which can be a
+		// nested pattern structure. The choosing of the option to use is
+		// abstracted-by and delegated-to the part helper object.
+		if (isDateElement(el)) {
+			const style = typeof el.style === "string" ? formats.date[el.style] : isDateTimeSkeleton(el.style) ? el.style.parsedOptions : undefined;
+			result.push({
+				type: PART_TYPE.literal,
+				value: formatters.getDateTimeFormat(locales, style).format(value)
+			});
+			continue;
+		}
+		if (isTimeElement(el)) {
+			const style = typeof el.style === "string" ? formats.time[el.style] : isDateTimeSkeleton(el.style) ? el.style.parsedOptions : formats.time.medium;
+			result.push({
+				type: PART_TYPE.literal,
+				value: formatters.getDateTimeFormat(locales, style).format(value)
+			});
+			continue;
+		}
+		if (isNumberElement(el)) {
+			const style = typeof el.style === "string" ? formats.number[el.style] : isNumberSkeleton(el.style) ? el.style.parsedOptions : undefined;
+			if (style && style.scale) {
+				const scale = style.scale || 1;
+				// Handle bigint scale multiplication
+				// BigInt can only be multiplied by BigInt
+				if (typeof value === "bigint") {
+					// Check if scale is a safe integer that can be converted to BigInt
+					if (!Number.isInteger(scale)) {
+						throw new TypeError(`Cannot apply fractional scale ${scale} to bigint value. Scale must be an integer when formatting bigint.`);
+					}
+					value = value * BigInt(scale);
+				} else {
+					value = value * scale;
+				}
+			}
+			result.push({
+				type: PART_TYPE.literal,
+				value: formatters.getNumberFormat(locales, style).format(value)
+			});
+			continue;
+		}
+		if (isTagElement(el)) {
+			const { children, value } = el;
+			const formatFn = values[value];
+			if (!isFormatXMLElementFn(formatFn)) {
+				throw new InvalidValueTypeError(value, "function", originalMessage);
+			}
+			const parts = formatToParts(children, locales, formatters, formats, values, currentPluralValue);
+			let chunks = formatFn(parts.map((p) => p.value));
+			if (!Array.isArray(chunks)) {
+				chunks = [chunks];
+			}
+			result.push(...chunks.map((c) => {
+				return {
+					type: typeof c === "string" ? PART_TYPE.literal : PART_TYPE.object,
+					value: c
+				};
+			}));
+		}
+		if (isSelectElement(el)) {
+			// GH #4490: Use hasOwnProperty to avoid prototype chain issues with keys like "constructor"
+			const key = value;
+			const opt = (Object.prototype.hasOwnProperty.call(el.options, key) ? el.options[key] : undefined) || el.options.other;
+			if (!opt) {
+				throw new InvalidValueError(el.value, value, Object.keys(el.options), originalMessage);
+			}
+			result.push(...formatToParts(opt.value, locales, formatters, formats, values));
+			continue;
+		}
+		if (isPluralElement(el)) {
+			// GH #4490: Use hasOwnProperty to avoid prototype chain issues
+			const exactKey = `=${value}`;
+			let opt = Object.prototype.hasOwnProperty.call(el.options, exactKey) ? el.options[exactKey] : undefined;
+			if (!opt) {
+				if (!Intl.PluralRules) {
+					throw new FormatError(`Intl.PluralRules is not available in this environment.
+Try polyfilling it using "@formatjs/intl-pluralrules"
+`, ErrorCode.MISSING_INTL_API, originalMessage);
+				}
+				// Convert bigint to number for PluralRules (which only accepts number)
+				const numericValue = typeof value === "bigint" ? Number(value) : value;
+				const rule = formatters.getPluralRules(locales, { type: el.pluralType }).select(numericValue - (el.offset || 0));
+				opt = (Object.prototype.hasOwnProperty.call(el.options, rule) ? el.options[rule] : undefined) || el.options.other;
+			}
+			if (!opt) {
+				throw new InvalidValueError(el.value, value, Object.keys(el.options), originalMessage);
+			}
+			// Convert bigint to number for currentPluralValue
+			const numericValue = typeof value === "bigint" ? Number(value) : value;
+			result.push(...formatToParts(opt.value, locales, formatters, formats, values, numericValue - (el.offset || 0)));
+			continue;
+		}
+	}
+	return mergeLiteral(result);
+}
+
+/*
+Copyright (c) 2014, Yahoo! Inc. All rights reserved.
+Copyrights licensed under the New BSD License.
+See the accompanying LICENSE file for terms.
+*/
+// -- MessageFormat --------------------------------------------------------
+function mergeConfig(c1, c2) {
+	if (!c2) {
+		return c1;
+	}
+	return {
+		...c1,
+		...c2,
+		...Object.keys(c1).reduce((all, k) => {
+			all[k] = {
+				...c1[k],
+				...c2[k]
+			};
+			return all;
+		}, {})
+	};
+}
+function mergeConfigs(defaultConfig, configs) {
+	if (!configs) {
+		return defaultConfig;
+	}
+	return Object.keys(defaultConfig).reduce((all, k) => {
+		all[k] = mergeConfig(defaultConfig[k], configs[k]);
+		return all;
+	}, { ...defaultConfig });
+}
+function createFastMemoizeCache(store) {
+	return { create() {
+		return {
+			get(key) {
+				return store[key];
+			},
+			set(key, value) {
+				store[key] = value;
+			}
+		};
+	} };
+}
+function createDefaultFormatters(cache = {
+	number: {},
+	dateTime: {},
+	pluralRules: {}
+}) {
+	return {
+		getNumberFormat: memoize((...args) => new Intl.NumberFormat(...args), {
+			cache: createFastMemoizeCache(cache.number),
+			strategy: strategies.variadic
+		}),
+		getDateTimeFormat: memoize((...args) => new Intl.DateTimeFormat(...args), {
+			cache: createFastMemoizeCache(cache.dateTime),
+			strategy: strategies.variadic
+		}),
+		getPluralRules: memoize((...args) => new Intl.PluralRules(...args), {
+			cache: createFastMemoizeCache(cache.pluralRules),
+			strategy: strategies.variadic
+		})
+	};
+}
+class IntlMessageFormat {
+	ast;
+	locales;
+	resolvedLocale;
+	formatters;
+	formats;
+	message;
+	formatterCache = {
+		number: {},
+		dateTime: {},
+		pluralRules: {}
+	};
+	constructor(message, locales = IntlMessageFormat.defaultLocale, overrideFormats, opts) {
+		// Defined first because it's used to build the format pattern.
+		this.locales = locales;
+		this.resolvedLocale = IntlMessageFormat.resolveLocale(locales);
+		if (typeof message === "string") {
+			this.message = message;
+			if (!IntlMessageFormat.__parse) {
+				throw new TypeError("IntlMessageFormat.__parse must be set to process `message` of type `string`");
+			}
+			const { ...parseOpts } = opts || {};
+			// Parse string messages into an AST.
+			this.ast = IntlMessageFormat.__parse(message, {
+				...parseOpts,
+				locale: this.resolvedLocale
+			});
+		} else {
+			this.ast = message;
+		}
+		if (!Array.isArray(this.ast)) {
+			throw new TypeError("A message must be provided as a String or AST.");
+		}
+		// Creates a new object with the specified `formats` merged with the default
+		// formats.
+		this.formats = mergeConfigs(IntlMessageFormat.formats, overrideFormats);
+		this.formatters = opts && opts.formatters || createDefaultFormatters(this.formatterCache);
+	}
+	format = (values) => {
+		const parts = this.formatToParts(values);
+		// Hot path for straight simple msg translations
+		if (parts.length === 1) {
+			return parts[0].value;
+		}
+		const result = parts.reduce((all, part) => {
+			if (!all.length || part.type !== PART_TYPE.literal || typeof all[all.length - 1] !== "string") {
+				all.push(part.value);
+			} else {
+				all[all.length - 1] += part.value;
+			}
+			return all;
+		}, []);
+		if (result.length <= 1) {
+			return result[0] || "";
+		}
+		return result;
+	};
+	formatToParts = (values) => formatToParts(this.ast, this.locales, this.formatters, this.formats, values, undefined, this.message);
+	resolvedOptions = () => ({ locale: this.resolvedLocale?.toString() || Intl.NumberFormat.supportedLocalesOf(this.locales)[0] });
+	getAst = () => this.ast;
+	static memoizedDefaultLocale = null;
+	static get defaultLocale() {
+		if (!IntlMessageFormat.memoizedDefaultLocale) {
+			IntlMessageFormat.memoizedDefaultLocale = new Intl.NumberFormat().resolvedOptions().locale;
+		}
+		return IntlMessageFormat.memoizedDefaultLocale;
+	}
+	static resolveLocale = (locales) => {
+		if (typeof Intl.Locale === "undefined") {
+			return;
+		}
+		const supportedLocales = Intl.NumberFormat.supportedLocalesOf(locales);
+		if (supportedLocales.length > 0) {
+			return new Intl.Locale(supportedLocales[0]);
+		}
+		return new Intl.Locale(typeof locales === "string" ? locales : locales[0]);
+	};
+	static __parse = parse;
+	// Default format options used as the prototype of the `formats` provided to the
+	// constructor. These are used when constructing the internal Intl.NumberFormat
+	// and Intl.DateTimeFormat instances.
+	static formats = {
+		number: {
+			integer: { maximumFractionDigits: 0 },
+			currency: { style: "currency" },
+			percent: { style: "percent" }
+		},
+		date: {
+			short: {
+				month: "numeric",
+				day: "numeric",
+				year: "2-digit"
+			},
+			medium: {
+				month: "short",
+				day: "numeric",
+				year: "numeric"
+			},
+			long: {
+				month: "long",
+				day: "numeric",
+				year: "numeric"
+			},
+			full: {
+				weekday: "long",
+				month: "long",
+				day: "numeric",
+				year: "numeric"
+			}
+		},
+		time: {
+			short: {
+				hour: "numeric",
+				minute: "numeric"
+			},
+			medium: {
+				hour: "numeric",
+				minute: "numeric",
+				second: "numeric"
+			},
+			long: {
+				hour: "numeric",
+				minute: "numeric",
+				second: "numeric",
+				timeZoneName: "short"
+			},
+			full: {
+				hour: "numeric",
+				minute: "numeric",
+				second: "numeric",
+				timeZoneName: "short"
+			}
+		}
+	};
+}
+
+var common$1 = {
+	outdoor: "Outdoor",
+	flow: "Flow",
+	room: "Room",
+	adjusting: "Adjusting",
+	heating: "Heating",
+	cooling: "Cooling",
+	drying: "Drying",
+	idle: "Idle",
+	off: "Off",
+	fan: "Fan",
+	defrosting: "Defrosting",
+	preheating: "Preheating",
+	not_found: "{entity} not found",
+	wwsd: "Standby",
+	wwsd_label: "Outdoor temperature meets room setpoint",
+	manual: "Manual",
+	manual_override: "Manual override"
+};
+var status_card$1 = {
+	name: "Equitherm Status Card",
+	description: "Display heating status with temperature readings",
+	default_title: "Heating Status"
+};
+var curve_card$1 = {
+	name: "Equitherm Curve Card",
+	description: "Interactive heating curve visualization",
+	default_title: "Heating Curve",
+	flow_temp: "Flow Temp",
+	outdoor_axis_suffix: "outdoor",
+	flow_axis_suffix: "flow"
+};
+var tuning_dialog$1 = {
+	default_title: "Curve Tuning",
+	current: "Current",
+	proposed: "Proposed",
+	apply: "Apply",
+	applying: "Applying...",
+	applied: "Applied",
+	reset: "Reset",
+	outdoor_axis_suffix: "outdoor",
+	flow_axis_suffix: "flow",
+	edit: "Edit",
+	hc_short: "HC",
+	shift_short: "Shift",
+	tune: "Tune"
+};
+var forecast_card$1 = {
+	name: "Equitherm Forecast Card",
+	description: "Heating forecast based on weather predictions",
+	default_title: "Heating Forecast",
+	flow_temp: "Flow Temp",
+	outdoor_temp: "Outdoor",
+	peak: "Peak"
+};
+var editor$1 = {
+	required: "Required",
+	optional: "Optional",
+	appearance: "Appearance",
+	climate_entity: "Climate Entity",
+	outdoor_entity: "Outdoor Temperature",
+	flow_entity: "Flow Setpoint",
+	curve_output_entity: "Curve Output",
+	pid_output_entity: "PID Output",
+	rate_limiting_entity: "Rate Limiting",
+	pid_active_entity: "PID Active",
+	wws_entity: "WWS Active",
+	title: "Title (optional)",
+	name: "Name",
+	entities: "Entities",
+	curve_parameters: "Curve Parameters",
+	display_range: "Display Range",
+	curve_from_entities: "Live parameters from device",
+	hc_entity: "Heat Curve Entity",
+	n_entity: "Exponent Entity",
+	shift_entity: "Shift Entity",
+	hc: "Heat Curve (hc)",
+	n: "Exponent (n)",
+	shift: "Shift",
+	min_flow: "Min Flow",
+	max_flow: "Max Flow",
+	min_flow_entity: "Min Flow Entity",
+	max_flow_entity: "Max Flow Entity",
+	t_out_min: "Min Outdoor",
+	t_out_max: "Max Outdoor",
+	weather_entity: "Weather Entity",
+	hours: "Hours",
+	forecast_settings: "Forecast",
+	recalculate_service: "Recalculate Service",
+	tunable: "Enable Tuning",
+	tuning: "Tuning",
+	advanced: "Advanced",
+	show_last_updated: "Show last updated",
+	show_kpi_footer: "Show temperatures",
+	show_params_footer: "Show curve parameters",
+	pid_correction_entity: "PID Correction",
+	pid_proportional_entity: "PID Proportional",
+	pid_integral_entity: "PID Integral",
+	pid_derivative_entity: "PID Derivative",
+	boiler_temp_entity: "Boiler Flow Temperature",
+	return_temp_entity: "Return Temperature",
+	flame_entity: "Flame Status",
+	setpoint_entity: "Flow Setpoint",
+	modulation_entity: "Modulation Level",
+	max_modulation_entity: "Max Modulation Entity",
+	ch_active_entity: "Central Heating Active",
+	dhw_active_entity: "DHW Active",
+	dhw_enable_entity: "DHW Enable",
+	dhw_setpoint_entity: "DHW Setpoint",
+	dhw_temp_entity: "DHW Temperature",
+	condensing_threshold: "Condensing Threshold",
+	display: "Display",
+	helper: {
+		curve_from_entities: "Read from ESPHome runtime-tunable numbers instead of static values",
+		hc: "How aggressively heating responds to cold — increase if room is too cold in winter",
+		n: "Radiator type — 1.0 underfloor, 1.25 panel (default), 1.3 cast iron",
+		shift: "Move the whole curve up or down — increase if too cold in mild weather",
+		min_flow: "Minimum boiler output, prevents condensation and protects heat exchanger",
+		max_flow: "Maximum boiler output, protects system and limits energy use",
+		t_out_min: "Left edge of chart (coldest outdoor temperature displayed)",
+		t_out_max: "Right edge of chart (warmest outdoor temperature displayed)",
+		hours: "Number of hours of data to display",
+		hc_entity: "Runtime-adjustable heat curve coefficient number",
+		n_entity: "Runtime-adjustable radiator exponent number",
+		shift_entity: "Runtime-adjustable curve shift number",
+		curve_output_entity: "Pure heating curve output before PID and rate limiting",
+		pid_output_entity: "Curve output after PID correction (before rate limiting)",
+		rate_limiting_entity: "ON when output is ramping to prevent thermal shock",
+		pid_active_entity: "ON when at least one PID gain (kp, ki, kd) is non-zero",
+		outdoor_entity: "Overrides the weather entity's current temperature for footer display",
+		min_flow_entity: "Runtime-adjustable minimum flow temperature number",
+		max_flow_entity: "Runtime-adjustable maximum flow temperature number",
+		recalculate_service: "Service to call after applying a value, e.g. climate.equitherm_force_recalculate. Only called if the service exists.",
+		tunable: "Show tuning controls to adjust hc and shift values interactively",
+		show_last_updated: "Display when sensor data was last received",
+		show_kpi_footer: "Display outdoor, flow, and room temperature readings",
+		show_params_footer: "Display HC, n, and Shift curve parameters",
+		pid_correction_entity: "Total PID correction applied to the curve output",
+		pid_proportional_entity: "Proportional term output (response to current error)",
+		pid_integral_entity: "Integral term output (response to accumulated error)",
+		pid_derivative_entity: "Derivative term output (response to error rate of change)",
+		boiler_temp_entity: "Boiler flow (supply) water temperature sensor",
+		return_temp_entity: "Return water temperature sensor",
+		flame_entity: "Binary sensor indicating boiler flame is on",
+		setpoint_entity: "Target flow temperature setpoint",
+		modulation_entity: "Current boiler modulation level (%)",
+		ch_active_entity: "Recommended to avoid false positives during DHW cycles. If absent, flame is used as proxy.",
+		dhw_active_entity: "Binary sensor indicating domestic hot water is actively heating",
+		dhw_temp_entity: "DHW temperature sensor showing current hot water temperature"
+	}
+};
+var opentherm$1 = {
+	status_card: {
+		name: "OpenTherm Status",
+		description: "Boiler status at a glance",
+		default_title: "Boiler",
+		flow: "Flow",
+		"return": "Return",
+		modulation: "Modulation",
+		flame: "Flame",
+		ch: "CH",
+		dhw: "DHW"
+	},
+	dhw_card: {
+		name: "OpenTherm DHW",
+		description: "Domestic hot water control",
+		default_title: "Hot Water",
+		enable: "Enable",
+		setpoint: "Setpoint",
+		dhw: "DHW"
+	},
+	efficiency_card: {
+		name: "OpenTherm Efficiency",
+		description: "Boiler condensing efficiency chart",
+		default_title: "Efficiency",
+		temp_axis: "Temperature",
+		condensing: "Condensing",
+		non_condensing: "Non-condensing",
+		too_hot: "Return too hot"
+	},
+	modulation_card: {
+		name: "OpenTherm Modulation",
+		description: "Boiler modulation and short-cycle diagnostics",
+		default_title: "Modulation",
+		current: "Current",
+		max: "Max",
+		cycles_per_hour: "cycles/h"
+	}
+};
+var en = {
+	common: common$1,
+	status_card: status_card$1,
+	curve_card: curve_card$1,
+	tuning_dialog: tuning_dialog$1,
+	forecast_card: forecast_card$1,
+	editor: editor$1,
+	opentherm: opentherm$1
+};
+
+var en$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    common: common$1,
+    curve_card: curve_card$1,
+    default: en,
+    editor: editor$1,
+    forecast_card: forecast_card$1,
+    opentherm: opentherm$1,
+    status_card: status_card$1,
+    tuning_dialog: tuning_dialog$1
+});
+
+var common = {
+	outdoor: "Extérieur",
+	flow: "Départ",
+	room: "Pièce",
+	adjusting: "Ajustement",
+	heating: "Chauffage",
+	cooling: "Refroidissement",
+	drying: "Déshumidification",
+	idle: "Inactif",
+	off: "Éteint",
+	fan: "Ventilation",
+	defrosting: "Dégivrage",
+	preheating: "Préchauffage",
+	not_found: "{entity} introuvable",
+	wwsd: "Veille",
+	wwsd_label: "Température extérieure ≥ consigne"
+};
+var status_card = {
+	name: "Carte Status Equitherm",
+	description: "Affiche le statut du chauffage avec les températures",
+	default_title: "Statut Chauffage"
+};
+var curve_card = {
+	name: "Carte Courbe Equitherm",
+	description: "Visualisation interactive de la courbe de chauffage",
+	default_title: "Courbe de Chauffage",
+	flow_temp: "Temp. Départ",
+	outdoor_axis_suffix: "extérieur",
+	flow_axis_suffix: "départ"
+};
+var tuning_dialog = {
+	default_title: "Réglage Courbe",
+	current: "Actuelle",
+	proposed: "Proposée",
+	apply: "Appliquer",
+	applying: "Application...",
+	applied: "Appliqué",
+	reset: "Réinitialiser",
+	outdoor_axis_suffix: "extérieur",
+	flow_axis_suffix: "départ",
+	edit: "Régler",
+	hc_short: "HC",
+	shift_short: "Décalage",
+	tune: "Régler"
+};
+var forecast_card = {
+	name: "Carte Prévision Equitherm",
+	description: "Prévision de chauffage basée sur les prévisions météo",
+	default_title: "Prévision Chauffage",
+	flow_temp: "Temp. Départ",
+	outdoor_temp: "Extérieur",
+	peak: "Pic"
+};
+var editor = {
+	required: "Requis",
+	optional: "Optionnel",
+	appearance: "Apparence",
+	climate_entity: "Entité Climat",
+	outdoor_entity: "Température Extérieure",
+	flow_entity: "Consigne Départ",
+	curve_output_entity: "Sortie Courbe",
+	pid_output_entity: "Sortie PID",
+	rate_limiting_entity: "Limitation",
+	pid_active_entity: "PID Actif",
+	wws_entity: "WWS Actif",
+	title: "Titre (optionnel)",
+	name: "Nom",
+	entities: "Entités",
+	curve_parameters: "Paramètres Courbe",
+	display_range: "Plage d'Affichage",
+	curve_from_entities: "Paramètres live depuis l'appareil",
+	hc_entity: "Entité Coeff. Courbe",
+	n_entity: "Entité Exposant",
+	shift_entity: "Entité Décalage",
+	hc: "Coeff. Courbe (hc)",
+	n: "Exposant (n)",
+	shift: "Décalage",
+	min_flow: "Départ Min",
+	max_flow: "Départ Max",
+	min_flow_entity: "Entité Départ Min",
+	max_flow_entity: "Entité Départ Max",
+	t_out_min: "Extérieur Min",
+	t_out_max: "Extérieur Max",
+	weather_entity: "Entité Météo",
+	hours: "Heures",
+	forecast_settings: "Prévision",
+	recalculate_service: "Service de Recalcul",
+	tunable: "Activer le Réglage",
+	tuning: "Réglage",
+	advanced: "Avancé",
+	show_last_updated: "Afficher dernière mise à jour",
+	show_kpi_footer: "Afficher les températures",
+	show_params_footer: "Afficher les paramètres de courbe",
+	pid_correction_entity: "Correction PID",
+	pid_proportional_entity: "PID Proportionnel",
+	pid_integral_entity: "PID Intégral",
+	pid_derivative_entity: "PID Dérivé",
+	boiler_temp_entity: "Température Départ Chaudière",
+	return_temp_entity: "Température Retour",
+	flame_entity: "Statut Flamme",
+	setpoint_entity: "Consigne Départ",
+	modulation_entity: "Niveau Modulation",
+	max_modulation_entity: "Entité modulation max",
+	ch_active_entity: "Chauffage Central Actif",
+	dhw_active_entity: "ECS Actif",
+	dhw_enable_entity: "ECS Activé",
+	dhw_setpoint_entity: "Consigne ECS",
+	dhw_temp_entity: "Température ECS",
+	condensing_threshold: "Seuil de Condensation",
+	display: "Affichage",
+	helper: {
+		curve_from_entities: "Lire depuis les nombres ESPHome ajustables au lieu de valeurs statiques",
+		hc: "Agressivité du chauffage par temps froid — augmenter si la pièce est trop froide en hiver",
+		n: "Type de radiateur — 1.0 plancher chauffant, 1.25 panneau (défaut), 1.3 fonte",
+		shift: "Décaler toute la courbe vers le haut ou le bas — augmenter si trop froid par temps doux",
+		min_flow: "Sortie minimale de la chaudière, évite la condensation et protège l'échangeur",
+		max_flow: "Sortie maximale de la chaudière, protège le système et limite la consommation",
+		t_out_min: "Bord gauche du graphique (température extérieure la plus froide affichée)",
+		t_out_max: "Bord droit du graphique (température extérieure la plus chaude affichée)",
+		hours: "Nombre d'heures de données à afficher",
+		hc_entity: "Nombre ajustable du coefficient de courbe de chauffage",
+		n_entity: "Nombre ajustable de l'exposant de radiateur",
+		shift_entity: "Nombre ajustable du décalage de courbe",
+		curve_output_entity: "Sortie pure de la courbe de chauffage avant PID et limitation",
+		pid_output_entity: "Sortie de courbe après correction PID (avant limitation)",
+		rate_limiting_entity: "ON quand la sortie est en rampe pour éviter le choc thermique",
+		pid_active_entity: "ON quand au moins un gain PID (kp, ki, kd) est non nul",
+		outdoor_entity: "Remplace la température actuelle de l'entité météo pour l'affichage",
+		min_flow_entity: "Nombre ajustable de la température de départ minimale",
+		max_flow_entity: "Nombre ajustable de la température de départ maximale",
+		recalculate_service: "Service à appeler après l'application d'une valeur, ex. climate.equitherm_force_recalculate. Appelé uniquement si le service existe.",
+		tunable: "Afficher les commandes de réglage pour ajuster hc et shift interactivement",
+		show_last_updated: "Afficher l'heure de la dernière réception des données du capteur",
+		show_kpi_footer: "Afficher les températures extérieure, départ et pièce",
+		show_params_footer: "Afficher les paramètres HC, n et Shift de la courbe",
+		pid_correction_entity: "Correction totale du PID appliquée à la sortie de courbe",
+		pid_proportional_entity: "Terme proportionnel (réponse à l'erreur actuelle)",
+		pid_integral_entity: "Terme intégral (réponse à l'erreur accumulée)",
+		pid_derivative_entity: "Terme dérivé (réponse à la vitesse de changement de l'erreur)",
+		boiler_temp_entity: "Capteur de température d'eau de départ (supply) chaudière",
+		return_temp_entity: "Capteur de température de retour d'eau",
+		flame_entity: "Capteur binaire indiquant que la flamme chaudière est allumée",
+		setpoint_entity: "Consigne de température de départ cible",
+		modulation_entity: "Niveau actuel de modulation chaudière (%)",
+		ch_active_entity: "Recommandé pour éviter les faux positifs lors des cycles ECS. Si absent, la flamme est utilisée comme proxy.",
+		dhw_active_entity: "Capteur binaire indiquant que l'eau chaude sanitaire chauffe activement",
+		dhw_temp_entity: "Capteur de température ECS affichant la température actuelle de l'eau chaude"
+	}
+};
+var opentherm = {
+	status_card: {
+		name: "Statut OpenTherm",
+		description: "Statut chaudière en un coup d'œil",
+		default_title: "Chaudière",
+		flow: "Départ",
+		"return": "Retour",
+		modulation: "Modulation",
+		flamme: "Flamme",
+		ch: "CH",
+		dhw: "ECS"
+	},
+	dhw_card: {
+		name: "OpenTherm ECS",
+		description: "Contrôle de l'eau chaude sanitaire",
+		default_title: "Eau Chaude",
+		enable: "Activer",
+		setpoint: "Consigne",
+		dhw: "ECS"
+	},
+	efficiency_card: {
+		name: "Efficacité OpenTherm",
+		description: "Graphique d'efficacité de condensation chaudière",
+		default_title: "Efficacité",
+		temp_axis: "Température",
+		condensing: "Condensation",
+		non_condensing: "Sans condensation",
+		too_hot: "Retour trop chaud"
+	},
+	modulation_card: {
+		name: "Modulation OpenTherm",
+		description: "Diagnostics modulation et court-cycles chaudière",
+		default_title: "Modulation",
+		current: "Actuelle",
+		max: "Max",
+		cycles_per_hour: "cycles/h"
+	}
+};
+var fr = {
+	common: common,
+	status_card: status_card,
+	curve_card: curve_card,
+	tuning_dialog: tuning_dialog,
+	forecast_card: forecast_card,
+	editor: editor,
+	opentherm: opentherm
+};
+
+var fr$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    common: common,
+    curve_card: curve_card,
+    default: fr,
+    editor: editor,
+    forecast_card: forecast_card,
+    opentherm: opentherm,
+    status_card: status_card,
+    tuning_dialog: tuning_dialog
+});
+
+const languages = {
+    en: en$1,
+    fr: fr$1,
+};
+const DEFAULT_LANG = "en";
+function getTranslatedString(key, lang) {
+    try {
+        return key
+            .split(".")
+            .reduce((o, i) => o[i], languages[lang]);
+    }
+    catch (_) {
+        return undefined;
+    }
+}
+const localizeCache = new Map();
+function setupCustomlocalize(hass) {
+    const lang = hass?.locale.language ?? DEFAULT_LANG;
+    let cached = localizeCache.get(lang);
+    if (cached)
+        return cached;
+    cached = function localize(key, argObject = {}) {
+        let translated = getTranslatedString(key, lang);
+        if (!translated)
+            translated = getTranslatedString(key, DEFAULT_LANG);
+        if (!translated)
+            return key;
+        try {
+            const translatedMessage = new IntlMessageFormat(translated, lang);
+            return translatedMessage.format(argObject);
+        }
+        catch (e) {
+            console.error(`Error formatting message for key "${key}" with lang "${lang}":`, e);
+            return translated;
+        }
+    };
+    localizeCache.set(lang, cached);
+    return cached;
+}
+
+// src/utils/actions.ts
+/**
+ * Action handling utilities for Lovelace cards.
+ * Based on Mushroom's action patterns.
+ */
+/** Execute a Lovelace action (more-info, navigate, call-service, url) */
+function executeAction(element, hass, action, entityId) {
+    if (!action || action.action === 'none')
+        return;
+    switch (action.action) {
+        case 'more-info':
+            fireEvent(element, 'hass-more-info', {
+                entityId,
+            });
+            break;
+        case 'navigate':
+            if (action.navigation_path) {
+                // Use History API directly for navigation (Mushroom pattern)
+                window.history.pushState(null, '', action.navigation_path);
+                window.dispatchEvent(new Event('location-changed'));
+            }
+            break;
+        case 'call-service':
+            if (action.service) {
+                const [domain, service] = action.service.split('.', 2);
+                hass.callService(domain, service, action.service_data ?? {});
+            }
+            break;
+        case 'url':
+            if (action.url_path) {
+                window.open(action.url_path, '_blank');
+            }
+            break;
+        case 'assist':
+            // HA 2024.x+ assist action - use custom event
+            element.dispatchEvent(new CustomEvent('hass-assist', { bubbles: true, composed: true }));
+            break;
+    }
+}
+
+class BaseCard extends EquithermBaseElement {
+    _entityState(entityId) {
+        if (!entityId || !this.hass)
+            return undefined;
+        return this.hass.states[entityId];
+    }
+    _entityAttr(entityId, key) {
+        return this._entityState(entityId)?.attributes?.[key];
+    }
+    _resolveEntityNumber(entityId, fallback) {
+        const s = this._entityState(entityId);
+        if (!s)
+            return fallback;
+        const val = parseFloat(s.state);
+        return isNaN(val) ? fallback : val;
+    }
+    /** Resolve an entity's numeric state, converting from display unit to °C. */
+    _resolveEntityTemp(entityId, fallback) {
+        const s = this._entityState(entityId);
+        if (!s)
+            return fallback;
+        const val = parseFloat(s.state);
+        return isNaN(val) ? fallback : this._fromDisplayTemp(val);
+    }
+    _entityExists(entityId) {
+        return !!this._entityState(entityId);
+    }
+    /** Format a temperature from an entity's state using HA's native formatter. */
+    _formatEntityTemp(entityId) {
+        const stateObj = this._entityState(entityId);
+        if (!stateObj)
+            return '—';
+        return this.hass.formatEntityState(stateObj);
+    }
+    /** Format a computed temperature value (always °C) for display. Converts to the user's unit via _toDisplayTemp. */
+    _formatCalcTemp(value) {
+        if (value == null || isNaN(value))
+            return '—';
+        const display = this._toDisplayTemp(value);
+        const unit = this.hass?.config?.unit_system?.temperature ?? '°C';
+        return `${formatNumber(display, this.hass?.locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })} ${unit}`;
+    }
+    _openMoreInfo(entityId) {
+        if (entityId && this.hass) {
+            executeAction(this, this.hass, { action: 'more-info' }, entityId);
+        }
+    }
+    /** Hook — override to return the primary entity used for the card title. */
+    _titleEntity() {
+        return undefined;
+    }
+    /** Resolve card title: entity name → config.name → fallback i18n key. */
+    _computeCardTitle(fallbackKey) {
+        const localize = setupCustomlocalize(this.hass);
+        const fallback = localize(fallbackKey);
+        const stateObj = this._entityState(this._titleEntity());
+        const configName = this._config.name;
+        if (!stateObj)
+            return configName ?? fallback;
+        return computeEntityNameDisplay(stateObj, configName, this.hass) || configName || fallback;
+    }
+    /** Override to control footer visibility. Defaults to checking config.show_last_updated. */
+    _showFooterMeta() {
+        return !!this._config?.show_last_updated;
+    }
+    /** Override to specify which entity's freshness the footer should track. */
+    _lastUpdatedEntity() {
+        return undefined;
+    }
+    /** Whether the tracked entity is stale (>5 min) or unavailable. */
+    _isFooterVisible() {
+        const entityId = this._lastUpdatedEntity();
+        const state = this._entityState(entityId);
+        if (!entityId || !state || !this.hass)
+            return false;
+        const isUnavailable = state.state === 'unavailable' || state.state === 'unknown';
+        const age = Date.now() - new Date(state.last_updated).getTime();
+        return isUnavailable || age > 5 * 60 * 1000;
+    }
+    /** Render the footer meta line — only visible when entity is stale (>5 min) or unavailable. */
+    _renderFooterMeta() {
+        if (!this._showFooterMeta() || !this._isFooterVisible())
+            return A;
+        const state = this._entityState(this._lastUpdatedEntity());
+        const isUnavailable = state.state === 'unavailable' || state.state === 'unknown';
+        return b `
+      <div class="footer-meta${isUnavailable ? ' footer-meta--warn' : ''}">
+        <ha-relative-time .hass=${this.hass} .datetime=${state.last_updated} capitalize></ha-relative-time>
+      </div>
+    `;
+    }
+    // === Shared Header ===
+    /** Hook to customize header icon color. Return a CSS rgb() value or var() reference. */
+    _headerIconColor() {
+        return 'var(--rgb-disabled, 158,158,158)';
+    }
+    /** Render the header icon tile with customizable color via _headerIconColor(). */
+    _renderHeaderIcon(iconName, clickEntity) {
+        return b `
+      <ha-tile-icon
+        .interactive=${true}
+        style=${o({ '--tile-icon-color': `rgb(${this._headerIconColor()})`, '--tile-icon-size': '42px' })}
+        @click=${() => this._openMoreInfo(clickEntity)}
+      >
+        <ha-icon slot="icon" .icon=${iconName}></ha-icon>
+      </ha-tile-icon>
+    `;
+    }
+    /** Render the title and optional subtitle. */
+    _renderHeaderInfo(title, subtitle) {
+        const stateLine = subtitle !== undefined && subtitle !== A
+            ? b `<span class="state">${subtitle}</span>` : A;
+        return b `
+      <div class="header-info">
+        <span class="title">${title}</span>
+        ${stateLine}
+      </div>
+    `;
+    }
+    /** Override to add badges to the header. */
+    _renderHeaderBadges() {
+        return A;
+    }
+    /** Shared header renderer for all cards. */
+    _renderHeader(opts) {
+        if (!this._config || !this.hass)
+            return A;
+        return b `
+      <div class="header">
+        ${this._renderHeaderIcon(opts.iconName, opts.clickEntity)}
+        ${this._renderHeaderInfo(opts.title, opts.subtitle)}
+        ${this._renderHeaderBadges()}
+      </div>
+    `;
+    }
+    getGridOptions() {
+        return { columns: 6, rows: 2, min_rows: 1 };
+    }
+    getCardSize() {
+        return 2;
+    }
+}
+__decorate([
+    r()
+], BaseCard.prototype, "_config", void 0);
+
+// ============================================================================
+// HVAC Action Icons (no HA equivalent — HA uses async attribute-icon lookup)
+// ============================================================================
+const HVAC_ACTION_ICONS = {
+    heating: 'mdi:fire',
+    cooling: 'mdi:snowflake',
+    drying: 'mdi:water-percent',
+    idle: 'mdi:clock-outline',
+    off: null,
+    fan: 'mdi:fan',
+    defrosting: 'mdi:snowflake-melt',
+    preheating: 'mdi:fire',
+};
+function getHvacActionIcon(action) {
+    return HVAC_ACTION_ICONS[action ?? 'off'] ?? null;
+}
+// ============================================================================
+// Action Normalization (equitherm-specific)
+// ============================================================================
+function normalizeHvacAction(action) {
+    switch (action) {
+        case 'heating':
+        case 'heat':
+            return 'heating';
+        case 'cooling':
+        case 'cool':
+            return 'cooling';
+        case 'drying':
+        case 'dry':
+            return 'drying';
+        case 'fan':
+        case 'fan_only':
+            return 'fan';
+        case 'defrosting':
+            return 'defrosting';
+        case 'preheating':
+            return 'preheating';
+        case 'off':
+            return 'off';
+        case 'idle':
+        default:
+            return 'idle';
+    }
+}
+// ============================================================================
+// Color Helpers (bridge between stateColorCss and RGB triple consumers)
+// ============================================================================
+/**
+ * Get RGB triple CSS var for an HVAC action.
+ * Maps action → mode → --rgb-state-climate-{mode} CSS variable.
+ * Used by eq-badge-info and ECharts which need RGB triples.
+ */
+function getHvacActionColor(action) {
+    const mode = CLIMATE_HVAC_ACTION_TO_MODE[action] ?? 'off';
+    return `var(--rgb-state-climate-${mode === 'heat_cool' ? 'heat-cool' : mode})`;
+}
+// ============================================================================
+// HVAC Badge Builder (shared by all 3 cards)
+// ============================================================================
+const ACTIVE_ACTIONS = new Set(['heating', 'cooling', 'drying', 'defrosting', 'preheating']);
+/**
+ * Build eq-badge-info props for an HVAC action state.
+ * Handles adjusting mode (shows trend icon + "Adjusting" label).
+ */
+function getHvacBadgeProps(localize, action, adjusting = false, direction = null) {
+    if (adjusting) {
+        const trendIcon = direction === 'rising' ? 'mdi:trending-up'
+            : direction === 'falling' ? 'mdi:trending-down'
+                : 'mdi:trending-neutral';
+        return {
+            label: localize('common.adjusting'),
+            color: getHvacActionColor('heating'),
+            icon: trendIcon,
+            active: true,
+        };
+    }
+    const actionLabels = {
+        heating: 'common.heating',
+        cooling: 'common.cooling',
+        drying: 'common.drying',
+        idle: 'common.idle',
+        off: 'common.off',
+        fan: 'common.fan',
+        defrosting: 'common.defrosting',
+        preheating: 'common.preheating',
+    };
+    return {
+        label: localize(actionLabels[action]),
+        color: getHvacActionColor(action),
+        icon: getHvacActionIcon(action) ?? undefined,
+        active: ACTIVE_ACTIONS.has(action),
+    };
+}
+// ============================================================================
+// Runtime Color Resolution (for ECharts)
+// ============================================================================
+/**
+ * Resolve a CSS variable to its actual RGB value at runtime.
+ * Used for ECharts which can't parse CSS variables.
+ */
+function resolveRgbColor(element, action) {
+    const cssVar = getHvacActionColor(action);
+    const varMatch = cssVar.match(/var\((--[^)]+)\)/);
+    if (!varMatch)
+        return cssVar;
+    const value = getComputedStyle(element).getPropertyValue(varMatch[1]).trim();
+    return value ? `rgb(${value})` : cssVar;
+}
+
+function isRateLimitingActive(config, lookup) {
+    if (!config.rate_limiting_entity)
+        return false;
+    return lookup(config.rate_limiting_entity)?.state === 'on';
+}
+function isPidActive(config, lookup) {
+    if (!config.pid_active_entity)
+        return false;
+    return lookup(config.pid_active_entity)?.state === 'on';
+}
+function getRateTargetEntity(config) {
+    return config.pid_output_entity ?? config.curve_output_entity;
+}
+function getAdjustingDirection(config, lookup) {
+    if (!isRateLimitingActive(config, lookup))
+        return null;
+    const target = getRateTargetEntity(config);
+    if (!target)
+        return null;
+    const flowState = lookup(config.flow_entity);
+    const targetState = lookup(target);
+    if (!flowState || !targetState)
+        return null;
+    const flow = parseFloat(flowState.state);
+    const t = parseFloat(targetState.state);
+    if (isNaN(flow) || isNaN(t))
+        return null;
+    if (flow < t)
+        return 'rising';
+    if (flow > t)
+        return 'falling';
+    return null;
+}
+
+let EqParamBar = class EqParamBar extends i$2 {
+    constructor() {
+        super(...arguments);
+        this.min = 0;
+        this.max = 100;
+        this.value = null;
+        this.centered = false;
+        this.indicator = false;
+        this.minFill = 4;
+        this.step = 1;
+        this.interactive = false;
+        this.hideDragTip = false;
+        this._pressed = false;
+        /** Cached track element reference from pointerdown, avoids null issues during drag */
+        this._trackEl = null;
+    }
+    _pct(v) {
+        const range = this.max - this.min;
+        if (range === 0)
+            return 0;
+        return Math.max(0, Math.min(100, ((v - this.min) / range) * 100));
+    }
+    _onRangeInput(e) {
+        const value = parseFloat(e.target.value);
+        if (value === this.value)
+            return;
+        this.value = value;
+        this.dispatchEvent(new CustomEvent('value-changed', {
+            detail: { value },
+            bubbles: true,
+            composed: true,
+        }));
+    }
+    _onPointerDown(e) {
+        if (!this.interactive)
+            return;
+        this._pressed = true;
+        this._trackEl = e.currentTarget;
+        this._trackEl.setPointerCapture(e.pointerId);
+        this._updateFromPointer(e, false);
+    }
+    _onPointerMove(e) {
+        if (!this.interactive || !(e.buttons & 1))
+            return;
+        this._updateFromPointer(e, false);
+    }
+    _onPointerUp(e) {
+        if (!this.interactive)
+            return;
+        this._pressed = false;
+        this._updateFromPointer(e, true);
+        this._trackEl = null;
+        this.renderRoot.querySelector('input.sr-only')?.focus();
+    }
+    _onClick(e) {
+        // When interactive, the bar IS the control — consume the click
+        // so it doesn't bubble to parent .param-item or .params-footer-tunable
+        if (this.interactive)
+            e.stopPropagation();
+    }
+    _onPointerCancel() {
+        this._pressed = false;
+        this._trackEl = null;
+    }
+    _updateFromPointer(e, final) {
+        const track = this._trackEl ?? this.renderRoot.querySelector('.track');
+        if (!track)
+            return;
+        const rect = track.getBoundingClientRect();
+        const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+        const raw = this.min + pct * (this.max - this.min);
+        const effectiveStep = this.step || 1;
+        const snapped = Math.round(raw / effectiveStep) * effectiveStep;
+        const clamped = parseFloat(Math.max(this.min, Math.min(this.max, snapped)).toFixed(10));
+        if (!final && clamped === this.value)
+            return;
+        this.value = clamped;
+        this.dispatchEvent(new CustomEvent(final ? 'value-changed' : 'slider-moved', {
+            detail: { value: clamped },
+            bubbles: true,
+            composed: true,
+        }));
+    }
+    render() {
+        if (this.value === null)
+            return b `<div class="track"></div>`;
+        const fillColor = this.color ?? 'var(--eq-bar-fill-color)';
+        const dotColor = fillColor;
+        const hiddenRange = this.interactive
+            ? b `<input
+          type="range"
+          class="sr-only"
+          min=${this.min}
+          max=${this.max}
+          step=${this.step}
+          value=${this.value ?? 0}
+          aria-valuetext="${this.value} ${this.ariaUnit ?? ''}"
+          @input=${this._onRangeInput}
+        />`
+            : A;
+        if (this.centered) {
+            const centerPct = this._pct(0);
+            const valPct = this._pct(this.value);
+            const barLeft = Math.min(centerPct, valPct);
+            const rawWidth = Math.abs(valPct - centerPct);
+            return b `
+        <div class="track${this._pressed ? ' pressed' : ''}"
+          @pointerdown=${this._onPointerDown}
+          @pointermove=${this._onPointerMove}
+          @pointerup=${this._onPointerUp}
+          @pointercancel=${this._onPointerCancel}
+          @click=${this._onClick}
+        >
+          <div class="center-mark"></div>
+          ${rawWidth > 0 ? b `
+            <div class="fill" style=${o({
+                left: `${barLeft}%`,
+                width: `${rawWidth}%`,
+                background: fillColor,
+                minWidth: `${this.minFill}px`,
+            })}></div>
+          ` : A}
+          ${this.indicator ? b `
+            <div class="dot" style=${o({
+                left: `${valPct}%`,
+                background: dotColor,
+            })}></div>
+          ` : A}
+          ${this._pressed && !this.hideDragTip ? b `
+            <span class="drag-tip" style=${o({ '--tip-left': `${valPct}%` })}>${this.value}${this.ariaUnit ? ` ${this.ariaUnit}` : ''}</span>
+          ` : A}
+          ${hiddenRange}
+        </div>
+      `;
+        }
+        const pct = this._pct(this.value);
+        return b `
+      <div class="track${this._pressed ? ' pressed' : ''}"
+        @pointerdown=${this._onPointerDown}
+        @pointermove=${this._onPointerMove}
+        @pointerup=${this._onPointerUp}
+        @pointercancel=${this._onPointerCancel}
+        @click=${this._onClick}
+      >
+        <div class="fill" style=${o({
+            width: `${pct}%`,
+            left: '0',
+            background: fillColor,
+        })}></div>
+        ${this.indicator ? b `
+          <div class="dot" style=${o({
+            left: `${pct}%`,
+            background: fillColor,
+        })}></div>
+        ` : A}
+        ${this._pressed && !this.hideDragTip ? b `
+          <span class="drag-tip" style=${o({ '--tip-left': `${pct}%` })}>${this.value}${this.ariaUnit ? ` ${this.ariaUnit}` : ''}</span>
+        ` : A}
+        ${hiddenRange}
+      </div>
+    `;
+    }
+};
+EqParamBar.styles = i$5 `
+    :host {
+      display: block;
+      width: 100%;
+      --eq-bar-height: 4px;
+      --eq-bar-track-color: var(--secondary-background-color, rgba(0,0,0,0.08));
+      --eq-bar-fill-color: var(--primary-color);
+      --eq-bar-radius: 2px;
+    }
+    .track {
+      width: 100%;
+      height: var(--eq-bar-height);
+      border-radius: var(--eq-bar-radius);
+      background: var(--eq-bar-track-color);
+      position: relative;
+    }
+    :host([interactive]) .track {
+      cursor: pointer;
+      touch-action: none;
+    }
+    .fill {
+      height: 100%;
+      border-radius: var(--eq-bar-radius);
+      background: var(--eq-bar-fill-color);
+      transition: width 0.3s ease, left 0.3s ease;
+      position: absolute;
+      top: 0;
+    }
+    .center-mark {
+      position: absolute;
+      top: -1px;
+      left: 50%;
+      width: 2px;
+      height: calc(100% + 2px);
+      border-radius: 1px;
+      background: var(--divider-color, rgba(0,0,0,0.2));
+      transform: translateX(-1px);
+    }
+    .dot {
+      position: absolute;
+      top: 50%;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--eq-bar-fill-color);
+      border: 2px solid var(--card-background-color, #fff);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+      transform: translate(-50%, -50%);
+      transition: left 0.3s ease;
+      z-index: 1;
+    }
+    .pressed .fill,
+    .pressed .dot {
+      transition: none;
+    }
+    .drag-tip {
+      position: absolute;
+      bottom: calc(100% + 6px);
+      left: var(--tip-left, 50%);
+      transform: translateX(-50%);
+      font-size: var(--ha-font-size-xs, 0.75rem);
+      font-weight: var(--ha-font-weight-medium, 500);
+      font-variant-numeric: tabular-nums;
+      color: var(--primary-text-color);
+      background: var(--card-background-color, #fff);
+      border: 1px solid var(--divider-color, rgba(0,0,0,0.12));
+      border-radius: 4px;
+      padding: 1px 5px;
+      white-space: nowrap;
+      pointer-events: none;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    }
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+  `;
+__decorate([
+    n$1({ type: Number })
+], EqParamBar.prototype, "min", void 0);
+__decorate([
+    n$1({ type: Number })
+], EqParamBar.prototype, "max", void 0);
+__decorate([
+    n$1({ type: Number, reflect: true })
+], EqParamBar.prototype, "value", void 0);
+__decorate([
+    n$1({ type: Boolean })
+], EqParamBar.prototype, "centered", void 0);
+__decorate([
+    n$1({ type: Boolean })
+], EqParamBar.prototype, "indicator", void 0);
+__decorate([
+    n$1({ type: String })
+], EqParamBar.prototype, "color", void 0);
+__decorate([
+    n$1({ type: Number })
+], EqParamBar.prototype, "minFill", void 0);
+__decorate([
+    n$1({ type: Number })
+], EqParamBar.prototype, "step", void 0);
+__decorate([
+    n$1({ type: Boolean, reflect: true })
+], EqParamBar.prototype, "interactive", void 0);
+__decorate([
+    n$1({ type: String })
+], EqParamBar.prototype, "ariaUnit", void 0);
+__decorate([
+    n$1({ type: Boolean })
+], EqParamBar.prototype, "hideDragTip", void 0);
+__decorate([
+    r()
+], EqParamBar.prototype, "_pressed", void 0);
+EqParamBar = __decorate([
+    t$1('eq-param-bar')
+], EqParamBar);
+
+/** Shared CSS for card headers (used by all equitherm and opentherm cards) */
+const headerStyles = i$5 `
   .header {
     display: flex;
     align-items: center;
@@ -197,126 +4984,583 @@ const Lt="important",Pt=" !"+Lt,Mt=mt(class extends bt{constructor(t){if(super(t
     gap: 6px;
     flex-shrink: 0;
   }
-`;class ys extends Dt{get _climate(){return this._entityState(this._config.climate_entity)}get _isManualPreset(){return"Manual"===this._climate?.attributes.preset_mode}updated(t){super.updated(t),t.has("hass")&&this.hass&&this.toggleAttribute("manual-override",this._isManualPreset)}_resolveEntityNumber(t,e){const s=this._entityState(t);if(!s)return e;const i=parseFloat(s.state);return isNaN(i)?e:i}get _roomTemp(){const t=this._climate?.attributes.current_temperature;return this._formatTemp(t,this.hass?.config?.unit_system?.temperature)}_entityState(t){if(t&&this.hass)return this.hass.states[t]}_entityAttr(t,e){return this._entityState(t)?.attributes?.[e]}_formatTemp(t,e){if(null==t||isNaN(t))return"—";const s=this.hass?.config?.unit_system?.temperature??"°C",i=e??"°C";let a=t;"°C"===i&&"°F"===s?a=9*t/5+32:"°F"===i&&"°C"===s&&(a=5*(t-32)/9);const r=this.hass?.locale?.language;return`${r?a.toLocaleString(r,{minimumFractionDigits:1,maximumFractionDigits:1}):a.toFixed(1)}${s}`}_openMoreInfo(t){t&&this.hass&&function(t,e,s,i){if(s&&"none"!==s.action)switch(s.action){case"more-info":Tt(t,"hass-more-info",{entityId:i});break;case"navigate":s.navigation_path&&(window.history.pushState(null,"",s.navigation_path),window.dispatchEvent(new Event("location-changed")));break;case"call-service":if(s.service){const[t,i]=s.service.split(".",2);e.callService(t,i,s.service_data??{})}break;case"url":s.url_path&&window.open(s.url_path,"_blank");break;case"assist":t.dispatchEvent(new CustomEvent("hass-assist",{bubbles:!0,composed:!0}))}}(this,this.hass,{action:"more-info"},t)}_entityExists(t){return!!this._entityState(t)}get _isWWSD(){if(!this._config?.climate_entity)return!1;const t=this._climate?.attributes.temperature;if(null==t)return!1;const e=this._config.outdoor_entity;if(!e)return!1;const s=this._entityState(e);if(!s)return!1;const i=parseFloat(s.state);return!isNaN(i)&&i>=t}_wwsdDescription(){const t=ms(this.hass),e=this._climate?.attributes.temperature,s=this._config.outdoor_entity,i=s?this._entityState(s):void 0,a=i?parseFloat(i.state):NaN;return isNaN(a)||null==e?t("common.wwsd_label"):`${t("common.outdoor")} ${this._formatTemp(a)} ≥ ${this._formatTemp(e)}`}_renderLastUpdated(t){if(!t||!this.hass)return U;const e=this._entityState(t);return e?W`
-      <span class="last-updated">
-        <ha-relative-time .hass=${this.hass} .datetime=${e.last_updated} capitalize></ha-relative-time>
-      </span>
-    `:U}_renderNotFound(t,e){if(!t||this._entityExists(t))return U;const s=ms(this.hass);return W`
+`;
+
+/**
+ * Base class for equitherm cards.
+ * Extends BaseCard with equitherm-specific helpers.
+ */
+class EquithermBaseCard extends BaseCard {
+    constructor() {
+        super(...arguments);
+        this._showTuningDialog = false;
+        this._openTuningDialog = () => {
+            this._showTuningDialog = true;
+        };
+        this._onDeltaParamChanged = (e) => {
+            const entityId = e.target.dataset.entityId;
+            if (!entityId || !this.hass)
+                return;
+            const celsiusValue = this._fromDisplayDelta(e.detail.value);
+            this.hass.callService(computeDomain(entityId), 'set_value', {
+                entity_id: entityId,
+                value: celsiusValue,
+            });
+        };
+        this._onParamChanged = (e) => {
+            const entityId = e.target.dataset.entityId;
+            if (!entityId || !this.hass)
+                return;
+            this.hass.callService(computeDomain(entityId), 'set_value', {
+                entity_id: entityId,
+                value: e.detail.value,
+            });
+        };
+    }
+    /** Get the climate entity state */
+    get _climate() {
+        return this._entityState(this._config.climate_entity);
+    }
+    /** Whether climate preset_mode is "Manual" (curve bypassed) */
+    get _isManualPreset() {
+        return this._climate?.attributes.preset_mode === 'Manual';
+    }
+    updated(changedProps) {
+        super.updated(changedProps);
+        if (changedProps.has('hass') && this.hass) {
+            this.toggleAttribute('manual-override', this._isManualPreset);
+        }
+    }
+    /** Formatted room temperature from climate entity */
+    get _roomTemp() {
+        const temp = this._climate?.attributes.current_temperature;
+        return this._formatCalcTemp(temp);
+    }
+    /** Formatted outdoor temperature from outdoor_entity */
+    get _outdoorTempFormatted() {
+        return this._formatEntityTemp(this._config.outdoor_entity);
+    }
+    /** Formatted flow temperature from flow_entity */
+    get _flowTempFormatted() {
+        return this._formatEntityTemp(this._config.flow_entity);
+    }
+    /** Formatted curve output temp from rate target entity (for adjusting indicator) */
+    get _curveOutputTempFormatted() {
+        const entity = getRateTargetEntity(this._config);
+        if (!entity)
+            return '';
+        return this._formatEntityTemp(entity);
+    }
+    /** Whether Warm Weather Shutdown is active.
+     *  When wws_entity is configured, uses its state directly (authoritative).
+     *  Otherwise falls back to inferring from outdoor >= target. */
+    get _isWWSD() {
+        if (this._config?.wws_entity) {
+            const s = this._entityState(this._config.wws_entity);
+            return s?.state === 'on';
+        }
+        if (!this._config?.climate_entity)
+            return false;
+        const tTarget = this._climate?.attributes.temperature;
+        if (tTarget == null)
+            return false;
+        if (!this._config.outdoor_entity)
+            return false;
+        const s = this._entityState(this._config.outdoor_entity);
+        if (!s)
+            return false;
+        const val = parseFloat(s.state);
+        const tOutdoor = isNaN(val) ? NaN : this._fromDisplayTemp(val);
+        return !isNaN(tOutdoor) && tOutdoor >= tTarget;
+    }
+    /** Formatted WWSD explanation with actual temperatures, e.g. "Outdoor 22.0°C ≥ 21.0°C" */
+    _wwsdDescription() {
+        const localize = setupCustomlocalize(this.hass);
+        const tTarget = this._climate?.attributes.temperature;
+        const outdoorEntity = this._config.outdoor_entity;
+        const s = outdoorEntity ? this._entityState(outdoorEntity) : undefined;
+        const tOutdoor = s ? this._fromDisplayTemp(parseFloat(s.state)) : NaN;
+        if (!isNaN(tOutdoor) && tTarget != null) {
+            return `${localize('common.outdoor')} ${this._formatEntityTemp(outdoorEntity)} ≥ ${this._formatCalcTemp(tTarget)}`;
+        }
+        return localize('common.wwsd_label');
+    }
+    // === Render Helpers ===
+    /** Render a not-found state for missing entity */
+    _renderNotFound(entityId, label) {
+        if (!entityId || this._entityExists(entityId))
+            return A;
+        const localize = setupCustomlocalize(this.hass);
+        const display = label ?? entityId;
+        return b `
       <div class="not-found">
         <ha-icon icon="mdi:alert-circle-outline"></ha-icon>
-        <span>${s("common.not_found",{entity:e??t})}</span>
+        <span>${localize('common.not_found', { entity: display })}</span>
       </div>
-    `}getGridOptions(){return{columns:6,rows:2,min_rows:1}}getCardSize(){return 2}_renderHeaderIcon(t,e){const s=Bt(Rt(this._climate?.attributes.hvac_action??"off"));return W`
-      <ha-tile-icon
-        .interactive=${!0}
-        style=${Mt({"--tile-icon-color":`rgb(${s})`,"--tile-icon-size":"42px"})}
-        @click=${()=>this._openMoreInfo(e)}
-      >
-        <ha-icon slot="icon" .icon=${t}></ha-icon>
-      </ha-tile-icon>
-    `}_renderHeaderInfo(t){const e=null!=this._climate?.attributes.temperature?W`<span class="state">· ${this._formatTemp(this._climate.attributes.temperature,this.hass?.config?.unit_system?.temperature)}</span>`:U;return W`
+    `;
+    }
+    _titleEntity() {
+        return this._config.climate_entity;
+    }
+    // === Header ===
+    /** HVAC action color for header icon. */
+    _headerIconColor() {
+        const rawAction = this._climate?.attributes.hvac_action ?? 'off';
+        return getHvacActionColor(normalizeHvacAction(rawAction));
+    }
+    /** Render the title and optional climate target temp state line. */
+    _renderHeaderInfo(title, subtitle) {
+        const stateLine = subtitle !== undefined
+            ? (subtitle === A ? A : b `<span class="state">${subtitle}</span>`)
+            : (this._climate?.attributes.temperature != null
+                ? b `<span class="state">· ${this._formatCalcTemp(this._climate.attributes.temperature)}</span>`
+                : A);
+        return b `
       <div class="header-info">
-        <span class="title">${t}</span>
-        ${e}
+        <span class="title">${title}</span>
+        ${stateLine}
       </div>
-    `}_renderPidBadge(){const t=this._config;if(!t.pid_active_entity)return U;const e=function(t,e){return!!t.pid_active_entity&&"on"===e(t.pid_active_entity)?.state}(t,t=>this._entityState(t));return W`
+    `;
+    }
+    /** Render PID status chip. */
+    _renderPidBadge() {
+        const cfg = this._config;
+        if (!cfg.pid_active_entity)
+            return A;
+        const lookup = (id) => this._entityState(id);
+        const active = isPidActive(cfg, lookup);
+        return b `
       <eq-badge-info
-        .label=${"PID"}
-        style=${"--badge-info-color: "+(e?"var(--rgb-success)":"var(--rgb-disabled)")}
-        .icon=${e?void 0:"mdi:alert-circle-outline"}
+        .label=${'PID'}
+        style=${`--badge-info-color: ${active ? 'var(--rgb-success)' : 'var(--rgb-disabled)'}`}
+        .icon=${active ? undefined : 'mdi:alert-circle-outline'}
       ></eq-badge-info>
-    `}_renderWwsdBadge(){if(!this._isWWSD)return U;const t=ms(this.hass);return W`
+    `;
+    }
+    /** Render WWSD warning badge. */
+    _renderWwsdBadge() {
+        if (!this._isWWSD)
+            return A;
+        const localize = setupCustomlocalize(this.hass);
+        return b `
       <eq-badge-info
         id="wwsd-badge"
-        .label=${t("common.wwsd")}
-        style=${"--badge-info-color: var(--rgb-warning, 255, 167, 38)"}
-        .icon=${"mdi:weather-sunny-alert"}
-        .active=${!0}
+        .label=${localize('common.wwsd')}
+        style=${`--badge-info-color: var(--rgb-warning, 255, 167, 38)`}
+        .icon=${'mdi:weather-sunny-alert'}
+        .active=${true}
       ></eq-badge-info>
-      <ha-tooltip for="wwsd-badge" placement="top"><span style="white-space: nowrap">${this._wwsdDescription()}</span></ha-tooltip>
-    `}_renderManualBadge(){if(!this._isManualPreset)return U;const t=ms(this.hass);return W`
+      <ha-tooltip for="wwsd-badge" placement="top" without-arrow>
+        <span style="white-space: nowrap">${this._wwsdDescription()}</span>
+      </ha-tooltip>
+    `;
+    }
+    /** Render Manual preset badge when curve is bypassed. */
+    _renderManualBadge() {
+        if (!this._isManualPreset)
+            return A;
+        const localize = setupCustomlocalize(this.hass);
+        return b `
       <eq-badge-info
-        .label=${t("common.manual")}
-        style=${"--badge-info-color: var(--rgb-warning, 255, 167, 38)"}
-        .icon=${"mdi:hand-back-right"}
+        .label=${localize('common.manual')}
+        style=${`--badge-info-color: var(--rgb-warning, 255, 167, 38)`}
+        .icon=${'mdi:hand-back-right'}
       ></eq-badge-info>
-    `}_renderHvacBadge(){const t=ms(this.hass),e=Rt(this._climate?.attributes.hvac_action??"off"),s=t=>this._entityState(t),i=this._config,a=function(t,e,s=!1,i=null){if(s){const e="rising"===i?"mdi:trending-up":"falling"===i?"mdi:trending-down":"mdi:trending-neutral";return{label:t("common.adjusting"),color:Bt("heating"),icon:e,active:!0}}return{label:t({heating:"common.heating",cooling:"common.cooling",drying:"common.drying",idle:"common.idle",off:"common.off",fan:"common.fan",defrosting:"common.defrosting",preheating:"common.preheating"}[e]),color:Bt(e),icon:Ft(e)??void 0,active:Nt.has(e)}}(t,e,Ot(i,s),Yt(i,s));return W`
+    `;
+    }
+    /** Render HVAC action badge with optional rate-limiting indicator. */
+    _renderHvacBadge() {
+        const localize = setupCustomlocalize(this.hass);
+        const rawAction = this._climate?.attributes.hvac_action ?? 'off';
+        const hvacAction = normalizeHvacAction(rawAction);
+        const lookup = (id) => this._entityState(id);
+        const cfg = this._config;
+        const badge = getHvacBadgeProps(localize, hvacAction, isRateLimitingActive(cfg, lookup), getAdjustingDirection(cfg, lookup));
+        return b `
       <eq-badge-info
-        .label=${a.label}
-        style=${`--badge-info-color: ${a.color}`}
-        .icon=${a.icon}
-        .active=${a.active}
+        .label=${badge.label}
+        style=${`--badge-info-color: ${badge.color}`}
+        .icon=${badge.icon}
+        .active=${badge.active}
       ></eq-badge-info>
-    `}_renderExtraBadges(){return U}_renderHeaderBadges(){const t=this._isManualPreset;return W`
+    `;
+    }
+    /** Override to inject extra badges into the header. */
+    _renderExtraBadges() {
+        return A;
+    }
+    /** Render the tune button when tunable mode is active. */
+    _renderTuneButton() {
+        if (!this._config.tunable)
+            return A;
+        return b `
+      <ha-icon-button
+        @click=${this._openTuningDialog}
+        style="--mdc-icon-button-size: 28px; --mdc-icon-size: 16px; color: var(--secondary-text-color)"
+      ><ha-icon icon="mdi:tune-variant"></ha-icon></ha-icon-button>
+    `;
+    }
+    /** Render the full badges row. */
+    _renderHeaderBadges() {
+        const manual = this._isManualPreset;
+        return b `
       <div class="badges">
-        ${t?U:this._renderPidBadge()}
-        ${t?U:this._renderWwsdBadge()}
+        ${manual ? A : this._renderPidBadge()}
+        ${manual ? A : this._renderWwsdBadge()}
         ${this._renderManualBadge()}
-        ${t?U:this._renderExtraBadges()}
+        ${this._renderExtraBadges()}
         ${this._renderHvacBadge()}
+        ${this._renderTuneButton()}
       </div>
-    `}_renderHeader(t){return this._config&&this.hass?W`
-      <div class="header">
-        ${this._renderHeaderIcon(t.iconName,t.clickEntity)}
-        ${this._renderHeaderInfo(t.title)}
-        ${this._renderHeaderBadges()}
-      </div>
-    `:U}}t([ut()],ys.prototype,"_config",void 0);var ws=Object.defineProperty,vs=Object.defineProperties,As=Object.getOwnPropertyDescriptors,Cs=Object.getOwnPropertySymbols,_s=Object.prototype.hasOwnProperty,Ss=Object.prototype.propertyIsEnumerable,ks=(t,e,s)=>e in t?ws(t,e,{enumerable:!0,configurable:!0,writable:!0,value:s}):t[e]=s,Es=(t,e)=>{for(var s in e||(e={}))_s.call(e,s)&&ks(t,s,e[s]);if(Cs)for(var s of Cs(e))Ss.call(e,s)&&ks(t,s,e[s]);return t},Ds=(t,e)=>vs(t,As(e)),Ls=(t,e,s)=>ks(t,"symbol"!=typeof e?e+"":e,s);
-/*!
- * ApexCharts v5.10.6
- * (c) 2018-2026 ApexCharts
- */
-class Ps{static isSSR(){return"undefined"==typeof window||"undefined"==typeof document}static isBrowser(){return!this.isSSR()}static hasAPI(t){return!this.isSSR()&&void 0!==window[t]}static getApex(){return"undefined"!=typeof window&&window.Apex?window.Apex:"undefined"!=typeof global&&global.Apex?global.Apex:{}}}class Ms{constructor(t,e=null){this.nodeName=t,this.namespaceURI=e,this.attributes=new Map,this.children=[],this.textContent="",this.style={},this.classList=new Ts,this.parentNode=null,this._ssrWidth=void 0,this._ssrHeight=void 0,this._ssrMode=void 0}setAttribute(t,e){this.attributes.set(t,e)}getAttribute(t){return this.attributes.get(t)}removeAttribute(t){this.attributes.delete(t)}hasAttribute(t){return this.attributes.has(t)}appendChild(t){if(t&&t!==this){if(t.parentNode&&t.parentNode!==this)t.parentNode.removeChild(t);else if(t.parentNode===this){const e=this.children.indexOf(t);-1!==e&&this.children.splice(e,1)}t.parentNode=this,this.children.push(t)}return t}removeChild(t){const e=this.children.indexOf(t);return-1!==e&&(this.children.splice(e,1),t.parentNode=null),t}insertBefore(t,e){if(!e)return this.appendChild(t);if(t.parentNode&&t.parentNode!==this)t.parentNode.removeChild(t);else if(t.parentNode===this){const e=this.children.indexOf(t);-1!==e&&this.children.splice(e,1)}const s=this.children.indexOf(e);return-1!==s&&(t.parentNode=this,this.children.splice(s,0,t)),t}cloneNode(t=!1){const e=new Ms(this.nodeName,this.namespaceURI);return e.textContent=this.textContent,this.attributes.forEach((t,s)=>{e.attributes.set(s,t)}),Object.assign(e.style,this.style),t&&this.children.forEach(t=>{t.cloneNode&&e.appendChild(t.cloneNode(!0))}),e}getBoundingClientRect(){return{width:this._ssrWidth||0,height:this._ssrHeight||0,top:0,left:0,right:this._ssrWidth||0,bottom:this._ssrHeight||0,x:0,y:0}}getRootNode(){let t=this;for(;t.parentNode;)t=t.parentNode;return t}querySelector(){return null}querySelectorAll(){return[]}getElementsByClassName(){return[]}addEventListener(){}removeEventListener(){}get childNodes(){return this.children}toString(){let t="";if(this.attributes.forEach((e,s)=>{t+=` ${s}="${e}"`}),0===this.children.length&&!this.textContent)return`<${this.nodeName}${t}/>`;const e=this.children.map(t=>t.toString()).join("");return`<${this.nodeName}${t}>${this.textContent}${e}</${this.nodeName}>`}get innerHTML(){return this.children.map(t=>t.toString()).join("")}set innerHTML(t){this.children=[],this.textContent=t}get outerHTML(){return this.toString()}get isConnected(){return!0}}class Ts{constructor(){this.classes=new Set}add(...t){t.forEach(t=>this.classes.add(t))}remove(...t){t.forEach(t=>this.classes.delete(t))}contains(t){return this.classes.has(t)}toggle(t,e){return!0===e?(this.classes.add(t),!0):!1===e||this.classes.has(t)?(this.classes.delete(t),!1):(this.classes.add(t),!0)}toString(){return Array.from(this.classes).join(" ")}}class Is{constructor(){this.SVGNS="http://www.w3.org/2000/svg",this.XLINKNS="http://www.w3.org/1999/xlink"}createElementNS(t,e){return new Ms(e,t)}createTextNode(t){const e={nodeName:"#text",nodeType:3,textContent:t,toString:()=>e.textContent};return e}querySelector(){return null}querySelectorAll(){return[]}getComputedStyle(){return{}}getBoundingClientRect(t){return t&&t.getBoundingClientRect?t.getBoundingClientRect():{width:0,height:0,top:0,left:0,right:0,bottom:0,x:0,y:0}}createXMLSerializer(){return{serializeToString:t=>t.toString?t.toString():""}}createDOMParser(){return{parseFromString(t,e){const s=new Ms("root");return s.innerHTML=t,{documentElement:s}}}}}let Hs=null,Fs=null,Rs=null;class Bs{static init(){Ps.isSSR()&&!Hs&&(Hs=new Is)}static createElement(t){return Ps.isSSR()?(Hs||this.init(),Hs.createElementNS(null,t)):document.createElement(t)}static createElementNS(t,e){return Ps.isSSR()?(Hs||this.init(),Hs.createElementNS(t,e)):document.createElementNS(t,e)}static createTextNode(t){return Ps.isSSR()?(Hs||this.init(),Hs.createTextNode(t)):document.createTextNode(t)}static querySelector(t){return Ps.isSSR()?null:document.querySelector(t)}static querySelectorAll(t){return Ps.isSSR()?[]:document.querySelectorAll(t)}static getComputedStyle(t){return Ps.isSSR()?{}:window.getComputedStyle(t)}static getBoundingClientRect(t){return Ps.isSSR()?(Hs||this.init(),Hs.getBoundingClientRect(t)):t?t.getBoundingClientRect():{width:0,height:0,top:0,left:0,right:0,bottom:0,x:0,y:0}}static getXMLSerializer(){return Ps.isSSR()?(Hs||this.init(),Fs||(Fs=Hs.createXMLSerializer()),Fs):(Fs||(Fs=new XMLSerializer),Fs)}static getDOMParser(){return Ps.isSSR()?(Hs||this.init(),Rs||(Rs=Hs.createDOMParser()),Rs):(Rs||(Rs=new DOMParser),Rs)}static addWindowEventListener(t,e,s){Ps.isBrowser()&&window.addEventListener(t,e,s)}static removeWindowEventListener(t,e,s){Ps.isBrowser()&&window.removeEventListener(t,e,s)}static requestAnimationFrame(t){return Ps.isBrowser()?window.requestAnimationFrame(t):(t(0),null)}static cancelAnimationFrame(t){Ps.isBrowser()&&t&&window.cancelAnimationFrame(t)}static elementExists(t){return!!t&&(Ps.isSSR()?!0===t._ssrMode||void 0!==t.nodeName:!!t.getRootNode&&(t.getRootNode({composed:!0})===document||t.isConnected))}static getWindow(){return Ps.isBrowser()?window:null}static getDocument(){return Ps.isBrowser()?document:null}static _getShim(){return Hs}static _resetShim(){Hs=null,Fs=null,Rs=null}}let Ns=class t{static isObject(t){return t&&"object"==typeof t&&!Array.isArray(t)}static is(t,e){return Object.prototype.toString.call(e)==="[object "+t+"]"}static isSafari(){return Ps.isBrowser()&&/^((?!chrome|android).)*safari/i.test(navigator.userAgent)}static extend(t,e){const s=Object.assign({},t);return this.isObject(t)&&this.isObject(e)&&Object.keys(e).forEach(i=>{this.isObject(e[i])?i in t?s[i]=this.extend(t[i],e[i]):Object.assign(s,{[i]:e[i]}):Object.assign(s,{[i]:e[i]})}),s}static extendArray(e,s){const i=[];return e.map(e=>{i.push(t.extend(s,e))}),e=i}static monthMod(t){return t%12}static clone(t,e=new WeakMap,s=!1){if(null===t||"object"!=typeof t)return t;if(e.has(t))return e.get(t);let i;if(Array.isArray(t))if(s)i=t.slice();else{i=[],e.set(t,i);for(let s=0;s<t.length;s++)i[s]=this.clone(t[s],e,!1)}else if(t instanceof Date)i=new Date(t.getTime());else if(s)i=Object.assign({},t);else{i={},e.set(t,i);for(const s in t)Object.prototype.hasOwnProperty.call(t,s)&&(i[s]=this.clone(t[s],e,!1))}return i}static shallowClone(t){return null===t||"object"!=typeof t?t:Array.isArray(t)?t.slice():Object.assign({},t)}static shallowEqual(t,e){if(t===e)return!0;if(!t||!e)return!1;if("object"!=typeof t||"object"!=typeof e)return t===e;const s=Object.keys(t),i=Object.keys(e);if(s.length!==i.length)return!1;for(const i of s)if(t[i]!==e[i])return!1;return!0}static log10(t){return Math.log(t)/Math.LN10}static roundToBase10(t){return Math.pow(10,Math.floor(Math.log10(t)))}static roundToBase(t,e){return Math.pow(e,Math.floor(Math.log(t)/Math.log(e)))}static parseNumber(t){return"number"==typeof t||null===t?t:parseFloat(t)}static stripNumber(t,e=2){return Number.isInteger(t)?t:parseFloat(t.toPrecision(e))}static randomId(){return(Math.random()+1).toString(36).substring(4)}static noExponents(t){return t.toString().includes("e")?Math.round(t):t}static elementExists(t){return!(!t||!t.isConnected)}static isInShadowDOM(e){if(!e||!e.getRootNode)return!1;const s=e.getRootNode();return s&&s!==document&&t.is("ShadowRoot",s)}static getShadowRootHost(e){if(!t.isInShadowDOM(e))return null;return e.getRootNode().host||null}static getDimensions(t){if(!t)return[0,0];if(Ps.isSSR())return[t._ssrWidth||400,t._ssrHeight||300];let e;try{e=getComputedStyle(t,null)}catch(e){return[t.clientWidth||0,t.clientHeight||0]}let s=t.clientWidth,i=t.clientHeight;if(!s||!i){const e=t.getBoundingClientRect();s=s||e.width,i=i||e.height}return i-=parseFloat(e.paddingTop)+parseFloat(e.paddingBottom),s-=parseFloat(e.paddingLeft)+parseFloat(e.paddingRight),[s,i]}static getBoundingClientRect(t){if(!t)return{top:0,right:0,bottom:0,left:0,width:0,height:0,x:0,y:0};if(Ps.isSSR())return Bs.getBoundingClientRect(t);const e=t.getBoundingClientRect();return{top:e.top,right:e.right,bottom:e.bottom,left:e.left,width:t.clientWidth,height:t.clientHeight,x:e.left,y:e.top}}static getLargestStringFromArr(t){return t.reduce((t,e)=>(Array.isArray(e)&&(e=e.reduce((t,e)=>t.length>e.length?t:e)),t.length>e.length?t:e),0)}static hexToRgba(t="#999999",e=.6){"#"!==t.substring(0,1)&&(t="#999999");const s=t.replace("#",""),i=s.match(new RegExp("(.{"+s.length/3+"})","g"))||[];for(let t=0;t<i.length;t++)i[t]=parseInt(1===i[t].length?i[t]+i[t]:i[t],16);return void 0!==e&&i.push(e),"rgba("+i.join(",")+")"}static getOpacityFromRGBA(t){return parseFloat(t.replace(/^.*,(.+)\)/,"$1"))}static rgb2hex(t){return(t=t.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i))&&4===t.length?"#"+("0"+parseInt(t[1],10).toString(16)).slice(-2)+("0"+parseInt(t[2],10).toString(16)).slice(-2)+("0"+parseInt(t[3],10).toString(16)).slice(-2):""}shadeRGBColor(t,e){const s=e.split(","),i=t<0?0:255,a=t<0?-1*t:t,r=parseInt(s[0].slice(4),10),o=parseInt(s[1],10),n=parseInt(s[2],10);return"rgb("+(Math.round((i-r)*a)+r)+","+(Math.round((i-o)*a)+o)+","+(Math.round((i-n)*a)+n)+")"}shadeHexColor(t,e){const s=parseInt(e.slice(1),16),i=t<0?0:255,a=t<0?-1*t:t,r=s>>16,o=s>>8&255,n=255&s;return"#"+(16777216+65536*(Math.round((i-r)*a)+r)+256*(Math.round((i-o)*a)+o)+(Math.round((i-n)*a)+n)).toString(16).slice(1)}shadeColor(e,s){return t.isColorHex(s)?this.shadeHexColor(e,s):this.shadeRGBColor(e,s)}static isColorHex(t){return/(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)|(^#[0-9A-F]{8}$)/i.test(t)}static isCSSVariable(t){if("string"!=typeof t)return!1;const e=t.trim();return e.startsWith("var(")&&e.endsWith(")")}static getThemeColor(e){if(!t.isCSSVariable(e))return e;if(Ps.isSSR())return e;const s=document.createElement("div");let i;s.style.cssText="position:fixed; left: -9999px; visibility:hidden;",s.style.color=e,document.body.appendChild(s);try{i=window.getComputedStyle(s).color}finally{s.parentNode&&s.parentNode.removeChild(s)}return i}static applyOpacityToColor(t,e){const s=Number(e);if(!Number.isFinite(s))return t;if(s<=0)return"transparent";if(s>=1)return t;return`color-mix(in srgb, ${t} ${Math.round(100*s)}%, transparent)`}static getPolygonPos(t,e){const s=[],i=2*Math.PI/e;for(let a=0;a<e;a++){const e={};e.x=t*Math.sin(a*i),e.y=-t*Math.cos(a*i),s.push(e)}return s}static polarToCartesian(t,e,s,i){const a=(i-90)*Math.PI/180;return{x:t+s*Math.cos(a),y:e+s*Math.sin(a)}}static escapeString(t,e="x"){let s=t.toString().slice();return s=s.replace(/[` ~!@#$%^&*()|+=?;:'",.<>{}[\]\\/]/gi,e),s}static negToZero(t){return t<0?0:t}static moveIndexInArray(t,e,s){if(s>=t.length){let e=s-t.length+1;for(;e--;)t.push(void 0)}return t.splice(s,0,t.splice(e,1)[0]),t}static extractNumber(t){return parseFloat(t.replace(/[^\d.]*/g,""))}static findAncestor(t,e){for(;(t=t.parentElement)&&!t.classList.contains(e););return t}static setELstyles(t,e){for(const s in e)Object.prototype.hasOwnProperty.call(e,s)&&(t.style.key=e[s])}static preciseAddition(t,e){const s=(String(t).split(".")[1]||"").length,i=(String(e).split(".")[1]||"").length,a=Math.pow(10,Math.max(s,i));return(Math.round(t*a)+Math.round(e*a))/a}static isNumber(t){return!isNaN(t)&&parseFloat(String(Number(t)))===t&&!isNaN(parseInt(t,10))}static isFloat(t){return Number(t)===t&&t%1!=0}static isMsEdge(){if(Ps.isSSR())return!1;const t=window.navigator.userAgent,e=t.indexOf("Edge/");return e>0&&parseInt(t.substring(e+5,t.indexOf(".",e)),10)}static getGCD(t,e,s=7){let i=Math.pow(10,s-Math.floor(Math.log10(Math.max(t,e))));for(i>1?(t=Math.round(Math.abs(t)*i),e=Math.round(Math.abs(e)*i)):i=1;e;){const s=e;e=t%e,t=s}return t/i}static getPrimeFactors(t){const e=[];let s=2;for(;t>=2;)t%s==0?(e.push(s),t/=s):s++;return e}static mod(t,e,s=7){const i=Math.pow(10,s-Math.floor(Math.log10(Math.max(t,e))));return(t=Math.round(Math.abs(t)*i))%(e=Math.round(Math.abs(e)*i))/i}};class zs{constructor(t){this.w=t,this.months31=[1,3,5,7,8,10,12],this.months30=[2,4,6,9,11],this.daysCntOfYear=[0,31,59,90,120,151,181,212,243,273,304,334]}isValidDate(t){return"number"!=typeof t&&!isNaN(this.parseDate(t))}getTimeStamp(t){if(!Date.parse(t))return t;return this.w.config.xaxis.labels.datetimeUTC?new Date(new Date(t).toISOString().substr(0,25)).getTime():new Date(t).getTime()}getDate(t){return this.w.config.xaxis.labels.datetimeUTC?new Date(new Date(t).toUTCString()):new Date(t)}parseDate(t){const e=Date.parse(t);if(!isNaN(e))return this.getTimeStamp(t);let s=Date.parse(t.replace(/-/g,"/").replace(/[a-z]+/gi," "));return s=this.getTimeStamp(s),s}parseDateWithTimezone(t){return Date.parse(t.replace(/-/g,"/").replace(/[a-z]+/gi," "))}formatDate(t,e){const s=this.w.globals.locale,i=this.w.config.xaxis.labels.datetimeUTC,a=["\0",...s.months],r=["",...s.shortMonths],o=["",...s.days],n=["",...s.shortDays];function l(t,e=2){let s=t+"";for(;s.length<e;)s="0"+s;return s}const h=i?t.getUTCFullYear():t.getFullYear();e=(e=(e=e.replace(/(^|[^\\])yyyy+/g,"$1"+h)).replace(/(^|[^\\])yy/g,"$1"+h.toString().substr(2,2))).replace(/(^|[^\\])y/g,"$1"+h);const c=(i?t.getUTCMonth():t.getMonth())+1;e=(e=(e=(e=e.replace(/(^|[^\\])MMMM+/g,"$1"+a[0])).replace(/(^|[^\\])MMM/g,"$1"+r[0])).replace(/(^|[^\\])MM/g,"$1"+l(c))).replace(/(^|[^\\])M/g,"$1"+c);const d=i?t.getUTCDate():t.getDate();e=(e=(e=(e=e.replace(/(^|[^\\])dddd+/g,"$1"+o[0])).replace(/(^|[^\\])ddd/g,"$1"+n[0])).replace(/(^|[^\\])dd/g,"$1"+l(d))).replace(/(^|[^\\])d/g,"$1"+d);const g=i?t.getUTCHours():t.getHours(),p=g>12?g-12:0===g?12:g;e=(e=(e=(e=e.replace(/(^|[^\\])HH+/g,"$1"+l(g))).replace(/(^|[^\\])H/g,"$1"+g)).replace(/(^|[^\\])hh+/g,"$1"+l(p))).replace(/(^|[^\\])h/g,"$1"+p);const u=i?t.getUTCMinutes():t.getMinutes();e=(e=e.replace(/(^|[^\\])mm+/g,"$1"+l(u))).replace(/(^|[^\\])m/g,"$1"+u);const f=i?t.getUTCSeconds():t.getSeconds();e=(e=e.replace(/(^|[^\\])ss+/g,"$1"+l(f))).replace(/(^|[^\\])s/g,"$1"+f);let x=i?t.getUTCMilliseconds():t.getMilliseconds();e=e.replace(/(^|[^\\])fff+/g,"$1"+l(x,3)),x=Math.round(x/10),e=e.replace(/(^|[^\\])ff/g,"$1"+l(x)),x=Math.round(x/10);const m=g<12?"AM":"PM";e=(e=(e=e.replace(/(^|[^\\])f/g,"$1"+x)).replace(/(^|[^\\])TT+/g,"$1"+m)).replace(/(^|[^\\])T/g,"$1"+m.charAt(0));const b=m.toLowerCase();e=(e=e.replace(/(^|[^\\])tt+/g,"$1"+b)).replace(/(^|[^\\])t/g,"$1"+b.charAt(0));let y=-t.getTimezoneOffset(),w=i||!y?"Z":y>0?"+":"-";if(!i){y=Math.abs(y);const t=y%60;w+=l(Math.floor(y/60))+":"+l(t)}e=e.replace(/(^|[^\\])K/g,"$1"+w);const v=(i?t.getUTCDay():t.getDay())+1;return e=(e=(e=(e=(e=e.replace(new RegExp(o[0],"g"),o[v])).replace(new RegExp(n[0],"g"),n[v])).replace(new RegExp(a[0],"g"),a[c])).replace(new RegExp(r[0],"g"),r[c])).replace(/\\(.)/g,"$1")}getTimeUnitsfromTimestamp(t,e){const s=this.w;void 0!==s.config.xaxis.min&&(t=s.config.xaxis.min),void 0!==s.config.xaxis.max&&(e=s.config.xaxis.max);const i=this.getDate(t),a=this.getDate(e),r=this.formatDate(i,"yyyy MM dd HH mm ss fff").split(" "),o=this.formatDate(a,"yyyy MM dd HH mm ss fff").split(" ");return{minMillisecond:parseInt(r[6],10),maxMillisecond:parseInt(o[6],10),minSecond:parseInt(r[5],10),maxSecond:parseInt(o[5],10),minMinute:parseInt(r[4],10),maxMinute:parseInt(o[4],10),minHour:parseInt(r[3],10),maxHour:parseInt(o[3],10),minDate:parseInt(r[2],10),maxDate:parseInt(o[2],10),minMonth:parseInt(r[1],10)-1,maxMonth:parseInt(o[1],10)-1,minYear:parseInt(r[0],10),maxYear:parseInt(o[0],10)}}isLeapYear(t){return t%4==0&&t%100!=0||t%400==0}calculcateLastDaysOfMonth(t,e,s){return this.determineDaysOfMonths(t,e)-s}determineDaysOfYear(t){let e=365;return this.isLeapYear(t)&&(e=366),e}determineRemainingDaysOfYear(t,e,s){let i=this.daysCntOfYear[e]+s;return e>1&&this.isLeapYear(t)&&i++,i}determineDaysOfMonths(t,e){let s=30;switch(t=Ns.monthMod(t),!0){case this.months30.indexOf(t)>-1:2===t&&(s=this.isLeapYear(e)?29:28);break;case this.months31.indexOf(t)>-1:default:s=31}return s}}class Os{constructor(t){this.w=t,this.tooltipKeyFormat="dd MMM"}xLabelFormat(t,e,s,i){const a=this.w;if("datetime"===a.config.xaxis.type&&void 0===a.config.xaxis.labels.formatter&&void 0===a.config.tooltip.x.formatter){const t=new zs(this.w);return t.formatDate(t.getDate(e),a.config.tooltip.x.format)}return t(e,s,i)}defaultGeneralFormatter(t){return Array.isArray(t)?t.map(t=>t):t}defaultYFormatter(t,e){const s=this.w;if(Ns.isNumber(t))if(0!==s.globals.yValueDecimal)t=t.toFixed(void 0!==e.decimalsInFloat?e.decimalsInFloat:s.globals.yValueDecimal);else{const e=t.toFixed(0);t=Number(e)===t?e:t.toFixed(1)}return t}setLabelFormatters(){const t=this.w,e=t.formatters;return e.xaxisTooltipFormatter=t=>this.defaultGeneralFormatter(t),e.ttKeyFormatter=t=>this.defaultGeneralFormatter(t),e.ttZFormatter=t=>t,e.legendFormatter=t=>this.defaultGeneralFormatter(t),void 0!==t.config.xaxis.labels.formatter?e.xLabelFormatter=t.config.xaxis.labels.formatter:e.xLabelFormatter=e=>{if(Ns.isNumber(e)){if(!t.config.xaxis.convertedCatToNumeric&&"numeric"===t.config.xaxis.type){if(Ns.isNumber(t.config.xaxis.decimalsInFloat))return e.toFixed(t.config.xaxis.decimalsInFloat);{const s=t.globals.maxX-t.globals.minX;return s>0&&s<100?e.toFixed(1):e.toFixed(0)}}if(t.globals.isBarHorizontal){if(t.globals.maxY-t.globals.minYArr<4)return e.toFixed(1)}return e.toFixed(0)}return e},"function"==typeof t.config.tooltip.x.formatter?e.ttKeyFormatter=t.config.tooltip.x.formatter:e.ttKeyFormatter=e.xLabelFormatter,"function"==typeof t.config.xaxis.tooltip.formatter&&(e.xaxisTooltipFormatter=t.config.xaxis.tooltip.formatter),(Array.isArray(t.config.tooltip.y)||void 0!==t.config.tooltip.y.formatter)&&(e.ttVal=t.config.tooltip.y),void 0!==t.config.tooltip.z.formatter&&(e.ttZFormatter=t.config.tooltip.z.formatter),void 0!==t.config.legend.formatter&&(e.legendFormatter=t.config.legend.formatter),e.yLabelFormatters=[],t.config.yaxis.forEach((s,i)=>{void 0!==s.labels.formatter?e.yLabelFormatters[i]=s.labels.formatter:e.yLabelFormatters[i]=e=>t.globals.xyCharts?Array.isArray(e)?e.map(t=>this.defaultYFormatter(t,s)):this.defaultYFormatter(e,s):e}),t.globals}heatmapLabelFormatters(){const t=this.w;if("heatmap"===t.config.chart.type){t.globals.yAxisScale[0].result=t.seriesData.seriesNames.slice();const e=t.seriesData.seriesNames.reduce((t,e)=>t.length>e.length?t:e,0);t.globals.yAxisScale[0].niceMax=e,t.globals.yAxisScale[0].niceMin=e}}}const Xs=({isTimeline:t,seriesIndex:e,dataPointIndex:s,y1:i,y2:a,w:r})=>{var o;let n=r.rangeData.seriesRangeStart[e][s],l=r.rangeData.seriesRangeEnd[e][s],h=r.labelData.labels[s],c=r.config.series[e].name?r.config.series[e].name:"";const d=r.formatters.ttKeyFormatter,g=r.config.tooltip.y.title.formatter,p={w:r,seriesIndex:e,dataPointIndex:s,start:n,end:l};if("function"==typeof g&&(c=g(c,p)),(null==(o=r.config.series[e].data[s])?void 0:o.x)&&(h=r.config.series[e].data[s].x),!t&&"datetime"===r.config.xaxis.type){h=new Os(r).xLabelFormat(r.formatters.ttKeyFormatter,h,h,{i:void 0,dateFormatter:new zs(r).formatDate,w:r})}"function"==typeof d&&(h=d(h,p)),Number.isFinite(i)&&Number.isFinite(a)&&(n=i,l=a);let u="",f="";const x=r.globals.colors[e];if(void 0===r.config.tooltip.x.formatter)if("datetime"===r.config.xaxis.type){const t=new zs(r);u=t.formatDate(t.getDate(n),r.config.tooltip.x.format),f=t.formatDate(t.getDate(l),r.config.tooltip.x.format)}else u=n,f=l;else u=r.config.tooltip.x.formatter(n),f=r.config.tooltip.x.formatter(l);return{start:n,end:l,startVal:u,endVal:f,ylabel:h,color:x,seriesName:c}},Ys=t=>{let{color:e,seriesName:s,ylabel:i,start:a,end:r,seriesIndex:o,dataPointIndex:n}=t;const l=t.w.globals.tooltip.tooltipLabels.getFormatters(o);a=l.yLbFormatter(a),r=l.yLbFormatter(r);const h=l.yLbFormatter(t.w.seriesData.series[o][n]);let c="";const d=`<span class="value start-value">\n  ${a}\n  </span> <span class="separator">-</span> <span class="value end-value">\n  ${r}\n  </span>`;return c=t.w.globals.comboCharts?"rangeArea"===t.w.config.series[o].type||"rangeBar"===t.w.config.series[o].type?d:`<span>${h}</span>`:d,'<div class="apexcharts-tooltip-rangebar"><div> <span class="series-name" style="color: '+e+'">'+(s||"")+'</span></div><div> <span class="category">'+i+": </span> "+c+" </div></div>"};class $s{constructor(t){this.opts=t}hideYAxis(){this.opts.yaxis[0].show=!1,this.opts.yaxis[0].title.text="",this.opts.yaxis[0].axisBorder.show=!1,this.opts.yaxis[0].axisTicks.show=!1,this.opts.yaxis[0].floating=!0}line(){return{dataLabels:{enabled:!1},stroke:{width:5,curve:"straight"},markers:{size:0,hover:{sizeOffset:6}},xaxis:{crosshairs:{width:1}}}}sparkline(t){this.hideYAxis();return Ns.extend(t,{grid:{show:!1,padding:{left:0,right:0,top:0,bottom:0}},legend:{show:!1},xaxis:{labels:{show:!1},tooltip:{enabled:!1},axisBorder:{show:!1},axisTicks:{show:!1}},chart:{toolbar:{show:!1},zoom:{enabled:!1}},dataLabels:{enabled:!1}})}slope(){return this.hideYAxis(),{chart:{toolbar:{show:!1},zoom:{enabled:!1}},dataLabels:{enabled:!0,formatter(t,e){const s=e.w.config.series[e.seriesIndex].name;return null!==t?s+": "+t:""},background:{enabled:!1},offsetX:-5},grid:{xaxis:{lines:{show:!0}},yaxis:{lines:{show:!1}}},xaxis:{position:"top",labels:{style:{fontSize:14,fontWeight:900}},tooltip:{enabled:!1},crosshairs:{show:!1}},markers:{size:8,hover:{sizeOffset:1}},legend:{show:!1},tooltip:{shared:!1,intersect:!0,followCursor:!0},stroke:{width:5,curve:"straight"}}}bar(){return{chart:{stacked:!1},plotOptions:{bar:{dataLabels:{position:"center"}}},dataLabels:{style:{colors:["#fff"]},background:{enabled:!1}},stroke:{width:0,lineCap:"square"},fill:{opacity:.85},legend:{markers:{shape:"square"}},tooltip:{shared:!1,intersect:!0},xaxis:{tooltip:{enabled:!1},tickPlacement:"between",crosshairs:{width:"barWidth",position:"back",fill:{type:"gradient"},dropShadow:{enabled:!1},stroke:{width:0}}}}}funnel(){return this.hideYAxis(),Ds(Es({},this.bar()),{chart:{animations:{speed:800,animateGradually:{enabled:!1}}},plotOptions:{bar:{horizontal:!0,borderRadiusApplication:"around",borderRadius:0,dataLabels:{position:"center"}}},grid:{show:!1,padding:{left:0,right:0}},xaxis:{labels:{show:!1},tooltip:{enabled:!1},axisBorder:{show:!1},axisTicks:{show:!1}}})}candlestick(){return{stroke:{width:1},fill:{opacity:1},dataLabels:{enabled:!1},tooltip:{shared:!0,custom:({seriesIndex:t,dataPointIndex:e,w:s})=>this._getBoxTooltip(s,t,e,["Open","High","","Low","Close"],"candlestick")},states:{active:{filter:{type:"none"}}},xaxis:{crosshairs:{width:1}}}}boxPlot(){return{chart:{animations:{dynamicAnimation:{enabled:!1}}},stroke:{width:1,colors:["#24292e"]},dataLabels:{enabled:!1},tooltip:{shared:!0,custom:({seriesIndex:t,dataPointIndex:e,w:s})=>this._getBoxTooltip(s,t,e,["Minimum","Q1","Median","Q3","Maximum"],"boxPlot")},markers:{size:7,strokeWidth:1,strokeColors:"#111"},xaxis:{crosshairs:{width:1}}}}rangeBar(){return{chart:{animations:{animateGradually:!1}},stroke:{width:0,lineCap:"square"},plotOptions:{bar:{borderRadius:0,dataLabels:{position:"center"}}},dataLabels:{enabled:!1,formatter(t,{seriesIndex:e,dataPointIndex:s,w:i}){const a=()=>{const t=i.rangeData.seriesRangeStart[e][s];return i.rangeData.seriesRangeEnd[e][s]-t};return i.globals.comboCharts?"rangeBar"===i.config.series[e].type||"rangeArea"===i.config.series[e].type?a():t:a()},background:{enabled:!1},style:{colors:["#fff"]}},markers:{size:10},tooltip:{shared:!1,followCursor:!0,custom:t=>t.w.config.plotOptions&&t.w.config.plotOptions.bar&&t.w.config.plotOptions.bar.horizontal?(t=>{const{color:e,seriesName:s,ylabel:i,startVal:a,endVal:r}=Xs(Ds(Es({},t),{isTimeline:!0}));return Ys(Ds(Es({},t),{color:e,seriesName:s,ylabel:i,start:a,end:r}))})(t):(t=>{const{color:e,seriesName:s,ylabel:i,start:a,end:r}=Xs(t);return Ys(Ds(Es({},t),{color:e,seriesName:s,ylabel:i,start:a,end:r}))})(t)},xaxis:{tickPlacement:"between",tooltip:{enabled:!1},crosshairs:{stroke:{width:0}}}}}dumbbell(t){var e,s;return(null==(e=t.plotOptions.bar)?void 0:e.barHeight)||(t.plotOptions.bar.barHeight=2),(null==(s=t.plotOptions.bar)?void 0:s.columnWidth)||(t.plotOptions.bar.columnWidth=2),t}area(){return{stroke:{width:4,fill:{type:"solid",gradient:{inverseColors:!1,shade:"light",type:"vertical",opacityFrom:.65,opacityTo:.5,stops:[0,100,100]}}},fill:{type:"gradient",gradient:{inverseColors:!1,shade:"light",type:"vertical",opacityFrom:.65,opacityTo:.5,stops:[0,100,100]}},markers:{size:0,hover:{sizeOffset:6}},tooltip:{followCursor:!1}}}rangeArea(){return{stroke:{curve:"straight",width:0},fill:{type:"solid",opacity:.6},markers:{size:0},states:{hover:{filter:{type:"none"}},active:{filter:{type:"none"}}},tooltip:{intersect:!1,shared:!0,followCursor:!0,custom:t=>(t=>{const{color:e,seriesName:s,ylabel:i,start:a,end:r}=Xs(t);return Ys(Ds(Es({},t),{color:e,seriesName:s,ylabel:i,start:a,end:r}))})(t)}}}brush(t){return Ns.extend(t,{chart:{toolbar:{autoSelected:"selection",show:!1},zoom:{enabled:!1}},dataLabels:{enabled:!1},stroke:{width:1},tooltip:{enabled:!1},xaxis:{tooltip:{enabled:!1}}})}stacked100(t){t.dataLabels=t.dataLabels||{},t.dataLabels.formatter=t.dataLabels.formatter||void 0;const e=t.dataLabels.formatter;t.yaxis.forEach((e,s)=>{t.yaxis[s].min=0,t.yaxis[s].max=100});return"bar"===t.chart.type&&(t.dataLabels.formatter=e||function(t){return"number"==typeof t&&t?t.toFixed(0)+"%":t}),t}stackedBars(){const t=this.bar();return Ds(Es({},t),{plotOptions:Ds(Es({},t.plotOptions),{bar:Ds(Es({},t.plotOptions.bar),{borderRadiusApplication:"end",borderRadiusWhenStacked:"last"})})})}convertCatToNumeric(t){return t.xaxis.convertedCatToNumeric=!0,t}convertCatToNumericXaxis(t,e){t.xaxis.type="numeric",t.xaxis.labels=t.xaxis.labels||{},t.xaxis.labels.formatter=t.xaxis.labels.formatter||function(t){return Ns.isNumber(t)?Math.floor(t):t};const s=t.xaxis.labels.formatter;let i=t.xaxis.categories&&t.xaxis.categories.length?t.xaxis.categories:t.labels;return e&&e.length&&(i=e.map(t=>Array.isArray(t)?t:String(t))),i&&i.length&&(t.xaxis.labels.formatter=function(t){return Ns.isNumber(t)?s(i[Math.floor(t)-1]):s(t)}),t.xaxis.categories=[],t.labels=[],t.xaxis.tickAmount=t.xaxis.tickAmount||"dataPoints",t}bubble(){return{dataLabels:{style:{colors:["#fff"]}},tooltip:{shared:!1,intersect:!0},xaxis:{crosshairs:{width:0}},fill:{type:"solid",gradient:{shade:"light",inverse:!0,shadeIntensity:.55,opacityFrom:.4,opacityTo:.8}}}}scatter(){return{dataLabels:{enabled:!1},tooltip:{shared:!1,intersect:!0},markers:{size:6,strokeWidth:1,hover:{sizeOffset:2}}}}heatmap(){return{chart:{stacked:!1},fill:{opacity:1},dataLabels:{style:{colors:["#fff"]}},stroke:{colors:["#fff"]},tooltip:{followCursor:!0,marker:{show:!1},x:{show:!1}},legend:{position:"top",markers:{shape:"square"}},grid:{padding:{right:20}}}}treemap(){return{chart:{zoom:{enabled:!1}},dataLabels:{style:{fontSize:14,fontWeight:600,colors:["#fff"]}},stroke:{show:!0,width:2,colors:["#fff"]},legend:{show:!1},fill:{opacity:1,gradient:{stops:[0,100]}},tooltip:{followCursor:!0,x:{show:!1}},grid:{padding:{left:0,right:0}},xaxis:{crosshairs:{show:!1},tooltip:{enabled:!1}}}}pie(){return{chart:{toolbar:{show:!1}},plotOptions:{pie:{donut:{labels:{show:!1}}}},dataLabels:{formatter:t=>t.toFixed(1)+"%",style:{colors:["#fff"]},background:{enabled:!1},dropShadow:{enabled:!0}},stroke:{colors:["#fff"]},fill:{opacity:1,gradient:{shade:"light",stops:[0,100]}},tooltip:{theme:"dark",fillSeriesColor:!0},legend:{position:"right"},grid:{padding:{left:0,right:0,top:0,bottom:0}}}}donut(){return{chart:{toolbar:{show:!1}},dataLabels:{formatter:t=>t.toFixed(1)+"%",style:{colors:["#fff"]},background:{enabled:!1},dropShadow:{enabled:!0}},stroke:{colors:["#fff"]},fill:{opacity:1,gradient:{shade:"light",shadeIntensity:.35,stops:[80,100],opacityFrom:1,opacityTo:1}},tooltip:{theme:"dark",fillSeriesColor:!0},legend:{position:"right"},grid:{padding:{left:0,right:0,top:0,bottom:0}}}}polarArea(){return{chart:{toolbar:{show:!1}},dataLabels:{formatter:t=>t.toFixed(1)+"%",enabled:!1},stroke:{show:!0,width:2},fill:{opacity:.7},tooltip:{theme:"dark",fillSeriesColor:!0},legend:{position:"right"},grid:{padding:{left:0,right:0,top:0,bottom:0}}}}radar(){return this.opts.yaxis[0].labels.offsetY=this.opts.yaxis[0].labels.offsetY?this.opts.yaxis[0].labels.offsetY:6,{dataLabels:{enabled:!1,style:{fontSize:"11px"}},stroke:{width:2},markers:{size:5,strokeWidth:1,strokeOpacity:1},fill:{opacity:.2},tooltip:{shared:!1,intersect:!0,followCursor:!0},grid:{show:!1,padding:{left:0,right:0,top:0,bottom:0}},xaxis:{labels:{formatter:t=>t,style:{colors:["#a8a8a8"],fontSize:"11px"}},tooltip:{enabled:!1},crosshairs:{show:!1}}}}radialBar(){return{chart:{animations:{dynamicAnimation:{enabled:!0,speed:800}},toolbar:{show:!1}},fill:{gradient:{shade:"dark",shadeIntensity:.4,inverseColors:!1,type:"diagonal2",opacityFrom:1,opacityTo:1,stops:[70,98,100]}},legend:{show:!1,position:"right"},tooltip:{enabled:!1,fillSeriesColor:!0},grid:{padding:{left:0,right:0,top:0,bottom:0}}}}_getBoxTooltip(t,e,s,i,a){const r=t.candleData.seriesCandleO[e][s],o=t.candleData.seriesCandleH[e][s],n=t.candleData.seriesCandleM[e][s],l=t.candleData.seriesCandleL[e][s],h=t.candleData.seriesCandleC[e][s],c=t.config.series[e];return c.type&&c.type!==a?`<div class="apexcharts-custom-tooltip">\n          ${c.name?c.name:"series-"+(e+1)}: <strong>${t.seriesData.series[e][s]}</strong>\n        </div>`:`<div class="apexcharts-tooltip-box apexcharts-tooltip-${t.config.chart.type}"><div>${i[0]}: <span class="value">`+r+`</span></div><div>${i[1]}: <span class="value">`+o+"</span></div>"+(n?`<div>${i[2]}: <span class="value">`+n+"</span></div>":"")+`<div>${i[3]}: <span class="value">`+l+`</span></div><div>${i[4]}: <span class="value">`+h+"</span></div></div>"}}const Ws={name:"en",options:{months:["January","February","March","April","May","June","July","August","September","October","November","December"],shortMonths:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],days:["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],shortDays:["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],toolbar:{exportToSVG:"Download SVG",exportToPNG:"Download PNG",exportToCSV:"Download CSV",menu:"Menu",selection:"Selection",selectionZoom:"Selection Zoom",zoomIn:"Zoom In",zoomOut:"Zoom Out",pan:"Panning",reset:"Reset Zoom"}}};class Gs{constructor(){this.yAxis={show:!0,showAlways:!1,showForNullSeries:!0,seriesName:void 0,opposite:!1,reversed:!1,logarithmic:!1,logBase:10,tickAmount:void 0,stepSize:void 0,forceNiceScale:!1,max:void 0,min:void 0,floating:!1,decimalsInFloat:void 0,labels:{show:!0,showDuplicates:!1,minWidth:0,maxWidth:160,offsetX:0,offsetY:0,align:void 0,rotate:0,padding:20,style:{colors:[],fontSize:"11px",fontWeight:400,fontFamily:void 0,cssClass:""},formatter:void 0},axisBorder:{show:!1,color:"#e0e0e0",width:1,offsetX:0,offsetY:0},axisTicks:{show:!1,color:"#e0e0e0",width:6,offsetX:0,offsetY:0},title:{text:void 0,rotate:-90,offsetY:0,offsetX:0,style:{color:void 0,fontSize:"11px",fontWeight:900,fontFamily:void 0,cssClass:""}},tooltip:{enabled:!1,offsetX:0},crosshairs:{show:!0,position:"front",stroke:{color:"#b6b6b6",width:1,dashArray:0}}},this.pointAnnotation={id:void 0,x:0,y:null,yAxisIndex:0,seriesIndex:void 0,mouseEnter:void 0,mouseLeave:void 0,click:void 0,marker:{size:4,fillColor:"#fff",strokeWidth:2,strokeColor:"#333",shape:"circle",offsetX:0,offsetY:0,cssClass:""},label:{borderColor:"#c2c2c2",borderWidth:1,borderRadius:2,text:void 0,textAnchor:"middle",offsetX:0,offsetY:0,mouseEnter:void 0,mouseLeave:void 0,click:void 0,style:{background:"#fff",color:void 0,fontSize:"11px",fontFamily:void 0,fontWeight:400,cssClass:"",padding:{left:5,right:5,top:2,bottom:2}}},customSVG:{SVG:void 0,cssClass:void 0,offsetX:0,offsetY:0},image:{path:void 0,width:20,height:20,offsetX:0,offsetY:0}},this.yAxisAnnotation={id:void 0,y:0,y2:null,strokeDashArray:1,fillColor:"#c2c2c2",borderColor:"#c2c2c2",borderWidth:1,opacity:.3,offsetX:0,offsetY:0,width:"100%",yAxisIndex:0,label:{borderColor:"#c2c2c2",borderWidth:1,borderRadius:2,text:void 0,textAnchor:"end",position:"right",offsetX:0,offsetY:-3,mouseEnter:void 0,mouseLeave:void 0,click:void 0,style:{background:"#fff",color:void 0,fontSize:"11px",fontFamily:void 0,fontWeight:400,cssClass:"",padding:{left:5,right:5,top:2,bottom:2}}}},this.xAxisAnnotation={id:void 0,x:0,x2:null,strokeDashArray:1,fillColor:"#c2c2c2",borderColor:"#c2c2c2",borderWidth:1,opacity:.3,offsetX:0,offsetY:0,label:{borderColor:"#c2c2c2",borderWidth:1,borderRadius:2,text:void 0,textAnchor:"middle",orientation:"vertical",position:"top",offsetX:0,offsetY:0,mouseEnter:void 0,mouseLeave:void 0,click:void 0,style:{background:"#fff",color:void 0,fontSize:"11px",fontFamily:void 0,fontWeight:400,cssClass:"",padding:{left:5,right:5,top:2,bottom:2}}}},this.text={x:0,y:0,text:"",textAnchor:"start",foreColor:void 0,fontSize:"13px",fontFamily:void 0,fontWeight:400,appendTo:".apexcharts-annotations",backgroundColor:"transparent",borderColor:"#c2c2c2",borderRadius:0,borderWidth:0,paddingLeft:4,paddingRight:4,paddingTop:2,paddingBottom:2}}init(){return{annotations:{yaxis:[this.yAxisAnnotation],xaxis:[this.xAxisAnnotation],points:[this.pointAnnotation],texts:[],images:[],shapes:[]},chart:{animations:{enabled:!0,speed:800,animateGradually:{delay:150,enabled:!0},dynamicAnimation:{enabled:!0,speed:350}},background:"",locales:[Ws],defaultLocale:"en",dropShadow:{enabled:!1,enabledOnSeries:void 0,top:2,left:2,blur:4,color:"#000",opacity:.7},events:{animationEnd:void 0,beforeMount:void 0,mounted:void 0,updated:void 0,click:void 0,mouseMove:void 0,mouseLeave:void 0,xAxisLabelClick:void 0,legendClick:void 0,markerClick:void 0,selection:void 0,dataPointSelection:void 0,dataPointMouseEnter:void 0,dataPointMouseLeave:void 0,beforeZoom:void 0,beforeResetZoom:void 0,zoomed:void 0,scrolled:void 0,brushScrolled:void 0,keyDown:void 0,keyUp:void 0},foreColor:"#373d3f",fontFamily:"Helvetica, Arial, sans-serif",height:"auto",parentHeightOffset:15,redrawOnParentResize:!0,redrawOnWindowResize:!0,id:void 0,group:void 0,nonce:void 0,offsetX:0,offsetY:0,injectStyleSheet:!0,selection:{enabled:!1,type:"x",fill:{color:"#24292e",opacity:.1},stroke:{width:1,color:"#24292e",opacity:.4,dashArray:3},xaxis:{min:void 0,max:void 0},yaxis:{min:void 0,max:void 0}},sparkline:{enabled:!1},brush:{enabled:!1,autoScaleYaxis:!0,target:void 0,targets:void 0},stacked:!1,stackOnlyBar:!0,stackType:"normal",toolbar:{show:!0,offsetX:0,offsetY:0,tools:{download:!0,selection:!0,zoom:!0,zoomin:!0,zoomout:!0,pan:!0,reset:!0,customIcons:[]},export:{csv:{filename:void 0,columnDelimiter:",",headerCategory:"category",headerValue:"value",categoryFormatter:void 0,valueFormatter:void 0},png:{filename:void 0},svg:{filename:void 0},scale:void 0,width:void 0},autoSelected:"zoom"},type:"line",width:"100%",zoom:{enabled:!0,type:"x",autoScaleYaxis:!1,allowMouseWheelZoom:!0,zoomedArea:{fill:{color:"#90CAF9",opacity:.4},stroke:{color:"#0D47A1",opacity:.4,width:1}}},accessibility:{enabled:!0,description:void 0,announcements:{enabled:!0},keyboard:{enabled:!0,navigation:{enabled:!0,wrapAround:!1}}},dataReducer:{enabled:!1,algorithm:"lttb",targetPoints:250,threshold:500}},parsing:{x:void 0,y:void 0},plotOptions:{line:{isSlopeChart:!1,colors:{threshold:0,colorAboveThreshold:void 0,colorBelowThreshold:void 0}},area:{fillTo:"origin"},bar:{horizontal:!1,columnWidth:"70%",barHeight:"70%",distributed:!1,borderRadius:0,borderRadiusApplication:"around",borderRadiusWhenStacked:"last",rangeBarOverlap:!0,rangeBarGroupRows:!1,hideZeroBarsWhenGrouped:!1,isDumbbell:!1,dumbbellColors:void 0,isFunnel:!1,isFunnel3d:!0,colors:{ranges:[],backgroundBarColors:[],backgroundBarOpacity:1,backgroundBarRadius:0},dataLabels:{position:"top",maxItems:100,hideOverflowingLabels:!0,orientation:"horizontal",total:{enabled:!1,formatter:void 0,offsetX:0,offsetY:0,style:{color:"#373d3f",fontSize:"12px",fontFamily:void 0,fontWeight:600}}}},bubble:{zScaling:!0,minBubbleRadius:void 0,maxBubbleRadius:void 0},candlestick:{colors:{upward:"#00B746",downward:"#EF403C"},wick:{useFillColor:!0}},boxPlot:{colors:{upper:"#00E396",lower:"#008FFB"}},heatmap:{radius:2,enableShades:!0,shadeIntensity:.5,reverseNegativeShade:!1,distributed:!1,useFillColorAsStroke:!1,colorScale:{inverse:!1,ranges:[],min:void 0,max:void 0}},treemap:{enableShades:!0,shadeIntensity:.5,distributed:!1,reverseNegativeShade:!1,useFillColorAsStroke:!1,borderRadius:4,dataLabels:{format:"scale"},colorScale:{inverse:!1,ranges:[],min:void 0,max:void 0},seriesTitle:{show:!0,offsetY:1,offsetX:1,borderColor:"#000",borderWidth:1,borderRadius:2,style:{background:"rgba(0, 0, 0, 0.6)",color:"#fff",fontSize:"12px",fontFamily:void 0,fontWeight:400,cssClass:"",padding:{left:6,right:6,top:2,bottom:2}}}},radialBar:{inverseOrder:!1,startAngle:0,endAngle:360,offsetX:0,offsetY:0,hollow:{margin:5,size:"50%",background:"transparent",image:void 0,imageWidth:150,imageHeight:150,imageOffsetX:0,imageOffsetY:0,imageClipped:!0,position:"front",dropShadow:{enabled:!1,top:0,left:0,blur:3,color:"#000",opacity:.5}},track:{show:!0,startAngle:void 0,endAngle:void 0,background:"#f2f2f2",strokeWidth:"97%",opacity:1,margin:5,dropShadow:{enabled:!1,top:0,left:0,blur:3,color:"#000",opacity:.5}},dataLabels:{show:!0,name:{show:!0,fontSize:"16px",fontFamily:void 0,fontWeight:600,color:void 0,offsetY:0,formatter:t=>t},value:{show:!0,fontSize:"14px",fontFamily:void 0,fontWeight:400,color:void 0,offsetY:16,formatter:t=>t+"%"},total:{show:!1,label:"Total",fontSize:"16px",fontWeight:600,fontFamily:void 0,color:void 0,formatter:t=>t.globals.seriesTotals.reduce((t,e)=>t+e,0)/t.seriesData.series.length+"%"}},barLabels:{enabled:!1,offsetX:0,offsetY:0,useSeriesColors:!0,fontFamily:void 0,fontWeight:600,fontSize:"16px",formatter:t=>t,onClick:void 0}},pie:{customScale:1,offsetX:0,offsetY:0,startAngle:0,endAngle:360,expandOnClick:!0,dataLabels:{offset:0,minAngleToShowLabel:10},donut:{size:"65%",background:"transparent",labels:{show:!1,name:{show:!0,fontSize:"16px",fontFamily:void 0,fontWeight:600,color:void 0,offsetY:-10,formatter:t=>t},value:{show:!0,fontSize:"20px",fontFamily:void 0,fontWeight:400,color:void 0,offsetY:10,formatter:t=>t},total:{show:!1,showAlways:!1,label:"Total",fontSize:"16px",fontWeight:400,fontFamily:void 0,color:void 0,formatter:t=>t.globals.seriesTotals.reduce((t,e)=>t+e,0)}}}},polarArea:{rings:{strokeWidth:1,strokeColor:"#e8e8e8"},spokes:{strokeWidth:1,connectorColors:"#e8e8e8"}},radar:{size:void 0,offsetX:0,offsetY:0,polygons:{strokeWidth:1,strokeColors:"#e8e8e8",connectorColors:"#e8e8e8",fill:{colors:void 0}}}},colors:void 0,dataLabels:{enabled:!0,enabledOnSeries:void 0,formatter:t=>null!==t?t:"",textAnchor:"middle",distributed:!1,offsetX:0,offsetY:0,style:{fontSize:"12px",fontFamily:void 0,fontWeight:600,colors:void 0},background:{enabled:!0,foreColor:"#fff",backgroundColor:void 0,borderRadius:2,padding:4,opacity:.9,borderWidth:1,borderColor:"#fff",dropShadow:{enabled:!1,top:1,left:1,blur:1,color:"#000",opacity:.8}},dropShadow:{enabled:!1,top:1,left:1,blur:1,color:"#000",opacity:.8}},fill:{type:"solid",colors:void 0,opacity:.85,gradient:{shade:"dark",type:"horizontal",shadeIntensity:.5,gradientToColors:void 0,inverseColors:!0,opacityFrom:1,opacityTo:1,stops:[0,50,100],colorStops:[]},image:{src:[],width:void 0,height:void 0},pattern:{style:"squares",width:6,height:6,strokeWidth:2}},forecastDataPoints:{count:0,fillOpacity:.5,strokeWidth:void 0,dashArray:4},grid:{show:!0,borderColor:"#e0e0e0",strokeDashArray:0,position:"back",xaxis:{lines:{show:!1}},yaxis:{lines:{show:!0}},row:{colors:void 0,opacity:.5},column:{colors:void 0,opacity:.5},padding:{top:0,right:10,bottom:0,left:12}},labels:[],legend:{show:!0,showForSingleSeries:!1,showForNullSeries:!0,showForZeroSeries:!0,floating:!1,position:"bottom",horizontalAlign:"center",inverseOrder:!1,fontSize:"12px",fontFamily:void 0,fontWeight:400,width:void 0,height:void 0,formatter:void 0,tooltipHoverFormatter:void 0,offsetX:-20,offsetY:4,customLegendItems:[],clusterGroupedSeries:!0,clusterGroupedSeriesOrientation:"vertical",labels:{colors:void 0,useSeriesColors:!1},markers:{size:7,fillColors:void 0,strokeWidth:1,shape:void 0,offsetX:0,offsetY:0,customHTML:void 0,onClick:void 0},itemMargin:{horizontal:5,vertical:4},onItemClick:{toggleDataSeries:!0},onItemHover:{highlightDataSeries:!0}},markers:{discrete:[],size:0,colors:void 0,strokeColors:"#fff",strokeWidth:2,strokeOpacity:.9,strokeDashArray:0,fillOpacity:1,shape:"circle",offsetX:0,offsetY:0,showNullDataPoints:!0,onClick:void 0,onDblClick:void 0,hover:{size:void 0,sizeOffset:3}},noData:{text:void 0,align:"center",verticalAlign:"middle",offsetX:0,offsetY:0,style:{color:void 0,fontSize:"14px",fontFamily:void 0}},responsive:[],series:void 0,states:{hover:{filter:{type:"lighten"}},active:{allowMultipleDataPointsSelection:!1,filter:{type:"darken"}}},title:{text:void 0,align:"left",margin:5,offsetX:0,offsetY:0,floating:!1,style:{fontSize:"14px",fontWeight:900,fontFamily:void 0,color:void 0}},subtitle:{text:void 0,align:"left",margin:5,offsetX:0,offsetY:30,floating:!1,style:{fontSize:"12px",fontWeight:400,fontFamily:void 0,color:void 0}},stroke:{show:!0,curve:"smooth",lineCap:"butt",width:2,colors:void 0,dashArray:0,fill:{type:"solid",colors:void 0,opacity:.85,gradient:{shade:"dark",type:"horizontal",shadeIntensity:.5,gradientToColors:void 0,inverseColors:!0,opacityFrom:1,opacityTo:1,stops:[0,50,100],colorStops:[]}}},tooltip:{enabled:!0,enabledOnSeries:void 0,shared:!0,hideEmptySeries:!1,followCursor:!1,intersect:!1,inverseOrder:!1,custom:void 0,fillSeriesColor:!1,theme:"light",cssClass:"",style:{fontSize:"12px",fontFamily:void 0},onDatasetHover:{highlightDataSeries:!1},x:{show:!0,format:"dd MMM",formatter:void 0},y:{formatter:void 0,title:{formatter:t=>t?t+": ":""}},z:{formatter:void 0,title:"Size: "},marker:{show:!0,fillColors:void 0},items:{display:"flex"},fixed:{enabled:!1,position:"topRight",offsetX:0,offsetY:0}},xaxis:{type:"category",categories:[],convertedCatToNumeric:!1,offsetX:0,offsetY:0,overwriteCategories:void 0,labels:{show:!0,rotate:-45,rotateAlways:!1,hideOverlappingLabels:!0,trim:!1,minHeight:void 0,maxHeight:120,showDuplicates:!0,style:{colors:[],fontSize:"12px",fontWeight:400,fontFamily:void 0,cssClass:""},offsetX:0,offsetY:0,format:void 0,formatter:void 0,datetimeUTC:!0,datetimeFormatter:{year:"yyyy",month:"MMM 'yy",day:"dd MMM",hour:"HH:mm",minute:"HH:mm:ss",second:"HH:mm:ss"}},group:{groups:[],style:{colors:[],fontSize:"12px",fontWeight:400,fontFamily:void 0,cssClass:""}},axisBorder:{show:!0,color:"#e0e0e0",width:"100%",height:1,offsetX:0,offsetY:0},axisTicks:{show:!0,color:"#e0e0e0",height:6,offsetX:0,offsetY:0},stepSize:void 0,tickAmount:void 0,tickPlacement:"on",min:void 0,max:void 0,range:void 0,floating:!1,decimalsInFloat:void 0,position:"bottom",title:{text:void 0,offsetX:0,offsetY:0,style:{color:void 0,fontSize:"12px",fontWeight:900,fontFamily:void 0,cssClass:""}},crosshairs:{show:!0,width:1,position:"back",opacity:.9,stroke:{color:"#b6b6b6",width:1,dashArray:3},fill:{type:"solid",color:"#B1B9C4",gradient:{colorFrom:"#D8E3F0",colorTo:"#BED1E6",stops:[0,100],opacityFrom:.4,opacityTo:.5}},dropShadow:{enabled:!1,left:0,top:0,blur:1,opacity:.8}},tooltip:{enabled:!0,offsetY:0,formatter:void 0,style:{fontSize:"12px",fontFamily:void 0}}},yaxis:this.yAxis,theme:{mode:"",palette:"palette1",monochrome:{enabled:!1,color:"#008FFB",shadeTo:"light",shadeIntensity:.65},accessibility:{colorBlindMode:""}}}}}class Us{constructor(t){this.opts=t}init({responsiveOverride:t}){var e,s,i,a,r,o,n,l,h,c;let d=this.opts;const g=new Gs,p=new $s(d);this.chartType=d.chart.type,d=this.extendYAxis(d),d=this.extendAnnotations(d);let u=g.init(),f={};if(d&&"object"==typeof d){let g={};g=-1!==["line","area","bar","candlestick","boxPlot","rangeBar","rangeArea","bubble","scatter","heatmap","treemap","pie","polarArea","donut","radar","radialBar"].indexOf(d.chart.type)?p[d.chart.type]():p.line(),(null==(s=null==(e=d.plotOptions)?void 0:e.bar)?void 0:s.isFunnel)&&(g=p.funnel()),d.chart.stacked&&"bar"===d.chart.type&&(g=p.stackedBars()),(null==(i=d.chart.brush)?void 0:i.enabled)&&(g=p.brush(g)),(null==(r=null==(a=d.plotOptions)?void 0:a.line)?void 0:r.isSlopeChart)&&(g=p.slope()),d.chart.stacked&&"100%"===d.chart.stackType&&(d=p.stacked100(d)),(null==(n=null==(o=d.plotOptions)?void 0:o.bar)?void 0:n.isDumbbell)&&(d=p.dumbbell(d)),this.checkForDarkTheme(Ps.getApex()),this.checkForDarkTheme(d),d.xaxis=d.xaxis||Ps.getApex().xaxis||{},t||(d.xaxis.convertedCatToNumeric=!1),d=this.checkForCatToNumericXAxis(this.chartType,g,d),((null==(l=d.chart.sparkline)?void 0:l.enabled)||(null==(c=null==(h=Ps.getApex().chart)?void 0:h.sparkline)?void 0:c.enabled))&&(g=p.sparkline(g)),f=Ns.extend(u,g)}const x=Ns.extend(f,Ps.getApex());return u=Ns.extend(x,d),u=this.handleUserInputErrors(u),u}checkForCatToNumericXAxis(t,e,s){var i,a;const r=new $s(s),o=("bar"===t||"boxPlot"===t)&&(null==(a=null==(i=s.plotOptions)?void 0:i.bar)?void 0:a.horizontal),n="pie"===t||"polarArea"===t||"donut"===t||"radar"===t||"radialBar"===t||"heatmap"===t,l="datetime"!==s.xaxis.type&&"numeric"!==s.xaxis.type,h=s.xaxis.tickPlacement?s.xaxis.tickPlacement:e.xaxis&&e.xaxis.tickPlacement;return o||n||!l||"between"===h||(s=r.convertCatToNumeric(s)),s}extendYAxis(t,e){const s=new Gs;(void 0===t.yaxis||!t.yaxis||Array.isArray(t.yaxis)&&0===t.yaxis.length)&&(t.yaxis={});const i=Ps.getApex();t.yaxis.constructor!==Array&&i.yaxis&&i.yaxis.constructor!==Array&&(t.yaxis=Ns.extend(t.yaxis,i.yaxis)),t.yaxis.constructor!==Array?t.yaxis=[Ns.extend(s.yAxis,t.yaxis)]:t.yaxis=Ns.extendArray(t.yaxis,s.yAxis);let a=!1;t.yaxis.forEach(t=>{t.logarithmic&&(a=!0)});let r=t.series;return e&&!r&&(r=e.config.series),a&&r.length!==t.yaxis.length&&r.length&&(t.yaxis=r.map((e,i)=>{if(e.name||(r[i].name=`series-${i+1}`),t.yaxis[i])return t.yaxis[i].seriesName=r[i].name,t.yaxis[i];{const e=Ns.extend(s.yAxis,t.yaxis[0]);return e.show=!1,e}})),a&&r.length>1&&r.length!==t.yaxis.length&&console.warn("A multi-series logarithmic chart should have equal number of series and y-axes"),t}extendAnnotations(t){return void 0===t.annotations&&(t.annotations={},t.annotations.yaxis=[],t.annotations.xaxis=[],t.annotations.points=[]),t=this.extendYAxisAnnotations(t),t=this.extendXAxisAnnotations(t),t=this.extendPointAnnotations(t)}extendYAxisAnnotations(t){const e=new Gs;return t.annotations.yaxis=Ns.extendArray(void 0!==t.annotations.yaxis?t.annotations.yaxis:[],e.yAxisAnnotation),t}extendXAxisAnnotations(t){const e=new Gs;return t.annotations.xaxis=Ns.extendArray(void 0!==t.annotations.xaxis?t.annotations.xaxis:[],e.xAxisAnnotation),t}extendPointAnnotations(t){const e=new Gs;return t.annotations.points=Ns.extendArray(void 0!==t.annotations.points?t.annotations.points:[],e.pointAnnotation),t}checkForDarkTheme(t){t.theme&&"dark"===t.theme.mode&&(t.tooltip||(t.tooltip={}),"light"!==t.tooltip.theme&&(t.tooltip.theme="dark"),t.chart.foreColor||(t.chart.foreColor="#f6f7f8"),t.theme.palette||(t.theme.palette="palette4"))}handleUserInputErrors(t){const e=t;if(e.tooltip.shared&&e.tooltip.intersect)throw new Error("tooltip.shared cannot be enabled when tooltip.intersect is true. Turn off any other option by setting it to false.");if("bar"===e.chart.type&&e.plotOptions.bar.horizontal){if(e.yaxis.length>1)throw new Error("Multiple Y Axis for bars are not supported. Switch to column chart by setting plotOptions.bar.horizontal=false");e.yaxis[0].reversed&&(e.yaxis[0].opposite=!0),e.xaxis.tooltip.enabled=!1,e.yaxis[0].tooltip.enabled=!1,e.chart.zoom.enabled=!1}return"bar"!==e.chart.type&&"rangeBar"!==e.chart.type||e.tooltip.shared&&"barWidth"===e.xaxis.crosshairs.width&&e.series.length>1&&(e.xaxis.crosshairs.width="tickWidth"),"candlestick"!==e.chart.type&&"boxPlot"!==e.chart.type||e.yaxis[0].reversed&&(console.warn(`Reversed y-axis in ${e.chart.type} chart is not supported.`),e.yaxis[0].reversed=!1),e}}const js=[[1,1,2,5,5,5,10,10,10,10,10],[1,1,2,5,5,5,10,10,10,10,10]],Vs=[1,2,4,4,6,6,6,6,6,6,6,6,6,6,6,6,6,6,12,12,12,12,12,12,12,12,12,24];class qs{initGlobalVars(t){t.series=[],t.seriesCandleO=[],t.seriesCandleH=[],t.seriesCandleM=[],t.seriesCandleL=[],t.seriesCandleC=[],t.seriesRangeStart=[],t.seriesRangeEnd=[],t.seriesRange=[],t.seriesPercent=[],t.seriesGoals=[],t.seriesX=[],t.seriesZ=[],t.seriesNames=[],t.seriesTotals=[],t.seriesLog=[],t.seriesColors=[],t.stackedSeriesTotals=[],t.seriesXvalues=[],t.seriesYvalues=[],t.dataWasParsed=!1,t.originalSeries=null,t.maxValsInArrayIndex=0,t.yValueDecimal=0,t.allSeriesHasEqualX=!0,t.labels=[],t.hasXaxisGroups=!1,t.groups=[],t.barGroups=[],t.lineGroups=[],t.areaGroups=[],t.hasSeriesGroups=!1,t.seriesGroups=[],t.categoryLabels=[],t.timescaleLabels=[],t.noLabelsProvided=!1,t.isXNumeric=!1,t.skipLastTimelinelabel=!1,t.skipFirstTimelinelabel=!1,t.isDataXYZ=!1,t.isMultiLineX=!1,t.isMultipleYAxis=!1,t.maxY=-Number.MAX_VALUE,t.minY=Number.MIN_VALUE,t.minYArr=[],t.maxYArr=[],t.maxX=-Number.MAX_VALUE,t.minX=Number.MAX_VALUE,t.initialMaxX=-Number.MAX_VALUE,t.initialMinX=Number.MAX_VALUE,t.maxDate=0,t.minDate=Number.MAX_VALUE,t.minZ=Number.MAX_VALUE,t.maxZ=-Number.MAX_VALUE,t.minXDiff=Number.MAX_VALUE,t.yAxisScale=[],t.xAxisScale=null,t.xAxisTicksPositions=[],t.xRange=0,t.yRange=[],t.zRange=0,t.dataPoints=0,t.xTickAmount=0,t.multiAxisTickAmount=0,t.disableZoomIn=!1,t.disableZoomOut=!1,t.yLabelsCoords=[],t.yTitleCoords=[],t.barPadForNumericAxis=0,t.padHorizontal=0,t.rotateXLabels=!1,t.overlappingXLabels=!1,t.radialSize=0,t.barHeight=0,t.barWidth=0,t.animationEnded=!1,t.resizeTimer=null,t.selectionResizeTimer=null,t.lastWheelExecution=0,t.delayedElements=[],t.pointsArray=[],t.dataLabelsRects=[],t.lastDrawnDataLabelsIndexes=[],t.textRectsCache=new Map,t.domCache=new Map,t.dimensionCache={},t.cachedSelectors={},t.seriesNS||this._attachNamespaces(t)}_attachNamespaces(t){const e=(e,s,i=s)=>{Object.defineProperty(e,i,{get:()=>t[s],set(e){t[s]=e},enumerable:!0,configurable:!0})},s={};e(s,"series","data");for(const t of["seriesNames","seriesX","seriesZ","seriesXvalues","seriesYvalues","seriesGoals","seriesLog","seriesColors","seriesPercent","seriesTotals","stackedSeriesTotals","seriesCandleO","seriesCandleH","seriesCandleM","seriesCandleL","seriesCandleC","seriesRangeStart","seriesRangeEnd","seriesRange","seriesYAxisMap","seriesYAxisReverseMap","seriesGroups","barGroups","lineGroups","areaGroups","originalSeries","collapsedSeries","collapsedSeriesIndices","ancillaryCollapsedSeries","ancillaryCollapsedSeriesIndices","allSeriesCollapsed","risingSeries","previousPaths","ignoreYAxisIndexes","labels","categoryLabels","timescaleLabels","groups"])e(s,t);Object.defineProperty(t,"seriesNS",{value:s,writable:!1,enumerable:!1,configurable:!0});const i={};for(const t of["minX","maxX","initialMinX","initialMaxX","minY","maxY","minYArr","maxYArr","minZ","maxZ","minDate","maxDate","minXDiff","xRange","yRange","zRange","xAxisScale","yAxisScale","xAxisTicksPositions","xTickAmount","multiAxisTickAmount","dataPoints","maxValsInArrayIndex","isXNumeric","isMultipleYAxis","isMultiLineX","isDataXYZ","dataFormatXNumeric","allSeriesHasEqualX","hasNullValues","dataWasParsed","hasXaxisGroups","hasSeriesGroups","skipFirstTimelinelabel","skipLastTimelinelabel","yValueDecimal","invalidLogScale","noLabelsProvided"])e(i,t);Object.defineProperty(t,"axes",{value:i,writable:!1,enumerable:!1,configurable:!0});const a={};for(const t of["svgWidth","svgHeight","gridWidth","gridHeight","translateX","translateY","translateXAxisX","translateXAxisY","translateYAxisX","xAxisLabelsHeight","xAxisGroupLabelsHeight","xAxisLabelsWidth","yAxisLabelsWidth","yAxisWidths","yLabelsCoords","yTitleCoords","padHorizontal","barPadForNumericAxis","rotateXLabels","scaleX","scaleY","radialSize","defaultLabels","overlappingXLabels"])e(a,t);Object.defineProperty(t,"layout",{value:a,writable:!1,enumerable:!1,configurable:!0});const r={};for(const t of["domCache","dimensionCache","cachedSelectors","textRectsCache","pointsArray","dataLabelsRects","lastDrawnDataLabelsIndexes","delayedElements","resizeTimer","selectionResizeTimer","resizeObserver"])e(r,t);Object.defineProperty(t,"cache",{value:r,writable:!1,enumerable:!1,configurable:!0})}globalVars(t){return{chartID:null,cuid:null,events:{beforeMount:[],mounted:[],updated:[],clicked:[],selection:[],dataPointSelection:[],zoomed:[],scrolled:[]},colors:[],fill:{colors:[]},stroke:{colors:[]},dataLabels:{style:{colors:[]}},radarPolygons:{fill:{colors:[]}},markers:{colors:[],size:t.markers.size,largestSize:0},LINE_HEIGHT_RATIO:1.618,axisCharts:!0,isSlopeChart:t.plotOptions.line.isSlopeChart,comboCharts:!1,initialConfig:null,initialSeries:[],lastXAxis:[],lastYAxis:[],allSeriesCollapsed:!1,collapsedSeries:[],collapsedSeriesIndices:[],ancillaryCollapsedSeries:[],ancillaryCollapsedSeriesIndices:[],risingSeries:[],ignoreYAxisIndexes:[],isDirty:!1,isExecCalled:!1,dataChanged:!1,resized:!1,invalidLogScale:!1,hasNullValues:!1,columnSeries:null,yaxis:null,total:0,shouldAnimate:!0,previousPaths:[],svgWidth:0,svgHeight:0,defaultLabels:!1,yAxisLabelsWidth:0,scaleX:1,scaleY:1,translateYAxisX:[],yAxisWidths:[],tooltip:null,resizeObserver:null,locale:{},memory:{methodsToExec:[]},niceScaleAllowedMagMsd:js,niceScaleDefaultTicks:Vs,seriesYAxisMap:[],seriesYAxisReverseMap:[],noData:!1}}init(t){const e=this.globalVars(t);return this.initGlobalVars(e),e.initialConfig=Ns.extend({},t),e.initialSeries=Ns.clone(t.series),e.lastXAxis=Ns.clone(e.initialConfig.xaxis),e.lastYAxis=Ns.clone(e.initialConfig.yaxis),e}}class Zs{constructor(t){this.opts=t}init(){const t=new Us(this.opts).init({responsiveOverride:!1}),e=(new qs).init(t),s={config:t,globals:e,dom:{},interact:{zoomEnabled:"zoom"===t.chart.toolbar.autoSelected&&t.chart.toolbar.tools.zoom&&t.chart.zoom.enabled,panEnabled:"pan"===t.chart.toolbar.autoSelected&&t.chart.toolbar.tools.pan,selectionEnabled:"selection"===t.chart.toolbar.autoSelected&&t.chart.toolbar.tools.selection,zoomed:!1,selection:void 0,visibleXRange:void 0,selectedDataPoints:[],mousedown:!1,clientX:null,clientY:null,lastClientPosition:{},lastWheelExecution:0,capturedSeriesIndex:-1,capturedDataPointIndex:-1,disableZoomIn:!1,disableZoomOut:!1,isTouchDevice:!!Ps.isBrowser()&&("ontouchstart"in window||navigator.maxTouchPoints>0)},formatters:{xLabelFormatter:void 0,yLabelFormatters:[],xaxisTooltipFormatter:void 0,ttKeyFormatter:void 0,ttVal:void 0,ttZFormatter:void 0,legendFormatter:void 0},candleData:{seriesCandleO:[],seriesCandleH:[],seriesCandleM:[],seriesCandleL:[],seriesCandleC:[]},rangeData:{seriesRangeStart:[],seriesRangeEnd:[],seriesRange:[]},labelData:{labels:[],categoryLabels:[],timescaleLabels:[],hasXaxisGroups:!1,groups:[],seriesGroups:[]},axisFlags:{isXNumeric:!1,dataFormatXNumeric:!1,isDataXYZ:!1,isRangeData:!1,isRangeBar:!1,isMultiLineX:!1,noLabelsProvided:!1,dataWasParsed:!1},seriesData:{series:[],seriesNames:[],seriesX:[],seriesZ:[],seriesColors:[],seriesGoals:[],stackedSeriesTotals:[],stackedSeriesTotalsByGroups:[]},layout:{gridHeight:0,gridWidth:0,translateX:0,translateY:0,translateXAxisX:0,translateXAxisY:0,rotateXLabels:!1,xAxisHeight:0,xAxisLabelsHeight:0,xAxisGroupLabelsHeight:0,xAxisLabelsWidth:0,yLabelsCoords:[],yTitleCoords:[]}};Object.defineProperty(e,"dom",{get:()=>s.dom,set(t){s.dom=t},enumerable:!1,configurable:!0});for(const t of["xLabelFormatter","yLabelFormatters","xaxisTooltipFormatter","ttKeyFormatter","ttVal","ttZFormatter","legendFormatter"])Object.defineProperty(e,t,{get:()=>s.formatters[t],set(e){s.formatters[t]=e},enumerable:!1,configurable:!0});for(const t of["zoomEnabled","panEnabled","selectionEnabled","zoomed","selection","visibleXRange","selectedDataPoints","mousedown","clientX","clientY","lastClientPosition","lastWheelExecution","capturedSeriesIndex","capturedDataPointIndex","disableZoomIn","disableZoomOut","isTouchDevice"])Object.defineProperty(e,t,{get:()=>s.interact[t],set(e){s.interact[t]=e},enumerable:!1,configurable:!0});for(const t of["gridHeight","gridWidth","translateX","translateY","translateXAxisX","translateXAxisY","rotateXLabels","xAxisHeight","xAxisLabelsHeight","xAxisGroupLabelsHeight","xAxisLabelsWidth","yLabelsCoords","yTitleCoords"])Object.defineProperty(e,t,{get:()=>s.layout[t],set(e){s.layout[t]=e},enumerable:!1,configurable:!0});for(const t of["series","seriesNames","seriesX","seriesZ","seriesColors","seriesGoals","stackedSeriesTotals","stackedSeriesTotalsByGroups"])Object.defineProperty(e,t,{get:()=>s.seriesData[t],set(e){s.seriesData[t]=e},enumerable:!1,configurable:!0});for(const t of["isXNumeric","dataFormatXNumeric","isDataXYZ","isRangeData","isRangeBar","isMultiLineX","noLabelsProvided","dataWasParsed"])Object.defineProperty(e,t,{get:()=>s.axisFlags[t],set(e){s.axisFlags[t]=e},enumerable:!1,configurable:!0});for(const t of["labels","categoryLabels","timescaleLabels","hasXaxisGroups","groups","seriesGroups"])Object.defineProperty(e,t,{get:()=>s.labelData[t],set(e){s.labelData[t]=e},enumerable:!1,configurable:!0});for(const t of["seriesRangeStart","seriesRangeEnd","seriesRange"])Object.defineProperty(e,t,{get:()=>s.rangeData[t],set(e){s.rangeData[t]=e},enumerable:!1,configurable:!0});for(const t of["seriesCandleO","seriesCandleH","seriesCandleM","seriesCandleL","seriesCandleC"])Object.defineProperty(e,t,{get:()=>s.candleData[t],set(e){s.candleData[t]=e},enumerable:!1,configurable:!0});return s}}class Ks{constructor(t){this.w=t}static checkComboSeries(t,e){let s=!1,i=0,a=0;return void 0===e&&(e="line"),t.length&&void 0!==t[0].type&&t.forEach(t=>{"bar"!==t.type&&"column"!==t.type&&"candlestick"!==t.type&&"boxPlot"!==t.type||i++,void 0!==t.type&&t.type!==e&&a++}),a>0&&(s=!0),{comboBarCount:i,comboCharts:s}}getStackedSeriesTotals(t=[]){const e=this.w,s=[];if(0===e.seriesData.series.length)return s;for(let i=0;i<e.seriesData.series[e.globals.maxValsInArrayIndex].length;i++){let a=0;for(let s=0;s<e.seriesData.series.length;s++)void 0!==e.seriesData.series[s][i]&&-1===t.indexOf(s)&&(a+=e.seriesData.series[s][i]);s.push(a)}return s}getSeriesTotalByIndex(t=null){return null===t?this.w.config.series.reduce((t,e)=>t+e,0):this.w.seriesData.series[t].reduce((t,e)=>t+e,0)}getStackedSeriesTotalsByGroups(){const t=this.w,e=[];return t.labelData.seriesGroups.forEach(s=>{const i=[];t.config.series.forEach((e,a)=>{s.indexOf(t.seriesData.seriesNames[a])>-1&&i.push(a)});const a=t.seriesData.series.map((t,e)=>-1===i.indexOf(e)?e:-1).filter(t=>-1!==t);e.push(this.getStackedSeriesTotals(a))}),e}setSeriesYAxisMappings(){const t=this.w.globals,e=this.w.config;let s=[];const i=[],a=[],r=this.w.seriesData.series.length>e.yaxis.length||e.yaxis.some(t=>Array.isArray(t.seriesName));e.series.forEach((t,e)=>{a.push(e),i.push(null)}),e.yaxis.forEach((t,e)=>{s[e]=[]});const o=[];e.yaxis.forEach((t,i)=>{let n=!1;if(t.seriesName){let o=[];Array.isArray(t.seriesName)?o=t.seriesName:o.push(t.seriesName),o.forEach(t=>{e.series.forEach((e,o)=>{if(e.name===t){let t=o;i===o||r?!r||a.indexOf(o)>-1?s[i].push([i,o]):console.warn("Series '"+e.name+"' referenced more than once in what looks like the new style. That is, when using either seriesName: [], or when there are more series than yaxes."):(s[o].push([o,i]),t=i),n=!0,t=a.indexOf(t),-1!==t&&a.splice(t,1)}})})}n||o.push(i)}),s=s.map(t=>{const e=[];return t.forEach(t=>{i[t[1]]=t[0],e.push(t[1])}),e});let n=e.yaxis.length-1;for(let t=0;t<o.length&&(n=o[t],s[n]=[],a);t++){const t=a[0];a.shift(),s[n].push(t),i[t]=n}a.forEach(t=>{s[n].push(t),i[t]=n}),t.seriesYAxisMap=s.map(t=>t),t.seriesYAxisReverseMap=i.map(t=>t),t.seriesYAxisMap.forEach((t,s)=>{t.forEach(t=>{if(e.series[t]&&void 0===e.series[t].group){e.series[t].group="apexcharts-axis-".concat(s.toString())}})})}isSeriesNull(t=null){let e=[];return e=null===t?this.w.config.series.filter(t=>null!==t):this.w.config.series[t].data.filter(t=>null!==t),0===e.length}seriesHaveSameValues(t){return this.w.seriesData.series[t].every((t,e,s)=>t===s[0])}getCategoryLabels(t){const e=this.w;let s=t.slice();return e.config.xaxis.convertedCatToNumeric&&(s=t.map(t=>e.config.xaxis.labels.formatter(t-e.globals.minX+1))),s}getLargestSeries(){const t=this.w;t.globals.maxValsInArrayIndex=t.seriesData.series.map(t=>t.length).indexOf(Math.max.apply(Math,t.seriesData.series.map(t=>t.length)))}getLargestMarkerSize(){const t=this.w;let e=0;return t.globals.markers.size.forEach(t=>{e=Math.max(e,t)}),t.config.markers.discrete&&t.config.markers.discrete.length&&t.config.markers.discrete.forEach(t=>{e=Math.max(e,t.size)}),e>0&&(t.config.markers.hover.size>0?e=t.config.markers.hover.size:e+=t.config.markers.hover.sizeOffset),t.globals.markers.largestSize=e,e}getSeriesTotals(){const t=this.w;t.globals.seriesTotals=t.seriesData.series.map(t=>{let e=0;if(Array.isArray(t))for(let s=0;s<t.length;s++)e+=t[s];else e+=t;return e})}getSeriesTotalsXRange(t,e){const s=this.w;return s.seriesData.series.map((i,a)=>{let r=0;for(let o=0;o<i.length;o++)s.seriesData.seriesX[a][o]>t&&s.seriesData.seriesX[a][o]<e&&(r+=i[o]);return r})}getPercentSeries(){const t=this.w;t.globals.seriesPercent=t.seriesData.series.map(e=>{const s=[];if(Array.isArray(e))for(let i=0;i<e.length;i++){const a=t.seriesData.stackedSeriesTotals[i];let r=0;a&&(r=100*e[i]/a),s.push(r)}else{const i=100*e/t.globals.seriesTotals.reduce((t,e)=>t+e,0);s.push(i)}return s})}getCalculatedRatios(){const t=this.w,e=t.globals,s=[];let i=0,a=0,r=0,o=0,n=[],l=.1,h=0;if(e.yRange=[],e.isMultipleYAxis)for(let t=0;t<e.minYArr.length;t++)e.yRange.push(Math.abs(e.minYArr[t]-e.maxYArr[t])),n.push(0);else e.yRange.push(Math.abs(e.minY-e.maxY));e.xRange=Math.abs(e.maxX-e.minX),e.zRange=Math.abs(e.maxZ-e.minZ);for(let t=0;t<e.yRange.length;t++)s.push(e.yRange[t]/this.w.layout.gridHeight);if(a=e.xRange/this.w.layout.gridWidth,i=e.yRange/this.w.layout.gridWidth,r=e.xRange/this.w.layout.gridHeight,o=e.zRange/this.w.layout.gridHeight*16,o||(o=1),e.minY!==Number.MIN_VALUE&&0!==Math.abs(e.minY)){e.hasNegs=!0}if(t.globals.seriesYAxisReverseMap.length>0){const r=(e,i)=>{const a=t.config.yaxis[t.globals.seriesYAxisReverseMap[i]],r=e<0?-1:1;return e=Math.abs(e),a.logarithmic&&(e=this.getBaseLog(a.logBase,e)),-r*e/s[i]};if(e.isMultipleYAxis){n=[];for(let t=0;t<s.length;t++)n.push(r(e.minYArr[t],t))}else n=[],n.push(r(e.minY,0)),e.minY!==Number.MIN_VALUE&&0!==Math.abs(e.minY)&&(l=-e.minY/i,h=e.minX/a)}else n=[],n.push(0),l=0,h=0;return{yRatio:s,invertedYRatio:i,zRatio:o,xRatio:a,invertedXRatio:r,baseLineInvertedY:l,baseLineY:n,baseLineX:h}}getLogSeries(t){const e=this.w;return e.globals.seriesLog=t.map((t,s)=>{const i=e.globals.seriesYAxisReverseMap[s];return e.config.yaxis[i]&&e.config.yaxis[i].logarithmic?t.map(t=>null===t?null:this.getLogVal(e.config.yaxis[i].logBase,t,s)):t}),e.globals.invalidLogScale?t:e.globals.seriesLog}getLogValAtSeriesIndex(t,e){if(null===t)return null;const s=this.w,i=s.globals.seriesYAxisReverseMap[e];return s.config.yaxis[i]&&s.config.yaxis[i].logarithmic?this.getLogVal(s.config.yaxis[i].logBase,t,e):t}getBaseLog(t,e){return Math.log(e)/Math.log(t)}getLogVal(t,e,s){if(e<=0)return 0;const i=this.w,a=0===i.globals.minYArr[s]?-1:this.getBaseLog(t,i.globals.minYArr[s]),r=(0===i.globals.maxYArr[s]?0:this.getBaseLog(t,i.globals.maxYArr[s]))-a;if(e<1)return e/r;return(this.getBaseLog(t,e)-a)/r}getLogYRatios(t){const e=this.w,s=this.w.globals,i=s;return i.yLogRatio=t.slice(),i.logYRange=s.yRange.map((t,a)=>{const r=e.globals.seriesYAxisReverseMap[a];if(e.config.yaxis[r]&&this.w.config.yaxis[r].logarithmic){let t=-Number.MAX_VALUE,r=Number.MIN_VALUE,o=1;return s.seriesLog.forEach((s,i)=>{s.forEach(s=>{e.config.yaxis[i]&&e.config.yaxis[i].logarithmic&&(t=Math.max(s,t),r=Math.min(s,r))})}),o=Math.pow(s.yRange[a],Math.abs(r-t)/s.yRange[a]),i.yLogRatio[a]=o/this.w.layout.gridHeight,o}}),i.invalidLogScale?t.slice():i.yLogRatio}static extendArrayProps(t,e,s){var i,a;return(null==e?void 0:e.yaxis)&&(e=t.extendYAxis(e,s)),(null==e?void 0:e.annotations)&&(e.annotations.yaxis&&(e=t.extendYAxisAnnotations(e)),(null==(i=null==e?void 0:e.annotations)?void 0:i.xaxis)&&(e=t.extendXAxisAnnotations(e)),(null==(a=null==e?void 0:e.annotations)?void 0:a.points)&&(e=t.extendPointAnnotations(e))),e}drawSeriesByGroup(t,e,s,i){const a=this.w,r=[];return t.series.length>0&&e.forEach(e=>{const o=[],n=[];t.i.forEach((s,i)=>{a.config.series[s].group===e&&(o.push(t.series[i]),n.push(s))}),o.length>0&&r.push(i.draw(o,s,n))}),r}}class Js{constructor(t,e){this.w=t,this.ctx=e}animateLine(t,e,s,i){t.attr(e).animate(i).attr(s)}animateMarker(t,e,s,i){t.attr({opacity:0}).animate(e).attr({opacity:1}).after(()=>{i()})}animateRect(t,e,s,i,a){t.attr(e).animate(i).attr(s).after(()=>a())}animatePathsGradually(t){const{el:e,realIndex:s,j:i,fill:a,pathFrom:r,pathTo:o,speed:n,delay:l}=t,h=this.w;let c=0;h.config.chart.animations.animateGradually.enabled&&(c=h.config.chart.animations.animateGradually.delay),h.config.chart.animations.dynamicAnimation.enabled&&h.globals.dataChanged&&"bar"!==h.config.chart.type&&(c=0),this.morphSVG(e,s,i,"line"!==h.config.chart.type||h.globals.comboCharts?a:"stroke",r,o,n,l*c)}showDelayedElements(){this.w.globals.delayedElements.forEach(t=>{const e=t.el;e.classList.remove("apexcharts-element-hidden"),e.classList.add("apexcharts-hidden-element-shown")})}animationCompleted(t){const e=this.w;e.globals.animationEnded||(e.globals.animationEnded=!0,this.showDelayedElements(),"function"==typeof e.config.chart.events.animationEnd&&e.config.chart.events.animationEnd(this.ctx,{el:t,w:e}))}morphSVG(t,e,s,i,a,r,o,n){const l=this.w;a||(a=t.attr("pathFrom")),r||(r=t.attr("pathTo"));const h=()=>("radar"===l.config.chart.type&&(o=1),`M 0 ${l.layout.gridHeight}`);(!a||a.indexOf("undefined")>-1||a.indexOf("NaN")>-1)&&(a=h()),(!r.trim()||r.indexOf("undefined")>-1||r.indexOf("NaN")>-1)&&(r=h()),l.globals.shouldAnimate||(o=1),t.plot(a).animate(1,n).plot(a).animate(o,n).plot(r).after(()=>{Ns.isNumber(s)?s===l.seriesData.series[l.globals.maxValsInArrayIndex].length-2&&l.globals.shouldAnimate&&this.animationCompleted(t):"none"!==i&&l.globals.shouldAnimate&&(!l.globals.comboCharts&&e===l.seriesData.series.length-1||l.globals.comboCharts)&&this.animationCompleted(t),this.showDelayedElements()})}}class Qs{constructor(t){this.w=t}getDefaultFilter(t,e){const s=this.w;t.unfilter&&t.unfilter(!0),s.config.chart.dropShadow.enabled&&this.dropShadow(t,s.config.chart.dropShadow,e)}applyFilter(t,e,s){var i,a,r;const o=this.w;if(t.unfilter&&t.unfilter(!0),"none"===s)return void this.getDefaultFilter(t,e);const n=o.config.chart.dropShadow,l="lighten"===s?2:.3;t.filterWith&&(t.filterWith(t=>{t.colorMatrix({type:"matrix",values:`\n            ${l} 0 0 0 0\n            0 ${l} 0 0 0\n            0 0 ${l} 0 0\n            0 0 0 1 0\n          `,in:"SourceGraphic",result:"brightness"}),n.enabled&&this.addShadow(t,e,n,"brightness")}),n.noUserSpaceOnUse||null==(a=null==(i=t.filterer())?void 0:i.node)||a.setAttribute("filterUnits","userSpaceOnUse"),this._scaleFilterSize(null==(r=t.filterer())?void 0:r.node))}addShadow(t,e,s,i){var a;const r=this.w;let{blur:o,top:n,left:l,color:h,opacity:c}=s;if(h=Array.isArray(h)?h[e]:h,(null==(a=r.config.chart.dropShadow.enabledOnSeries)?void 0:a.length)>0&&-1===r.config.chart.dropShadow.enabledOnSeries.indexOf(e))return t;t.offset({in:i,dx:l,dy:n,result:"offset"}),t.gaussianBlur({in:"offset",stdDeviation:o,result:"blur"}),t.flood({"flood-color":h,"flood-opacity":c,result:"flood"}),t.composite({in:"flood",in2:"blur",operator:"in",result:"shadow"}),t.merge(["shadow",i])}dropShadow(t,e,s=0){var i,a,r,o,n;const l=this.w;return t.unfilter&&t.unfilter(!0),Ns.isMsEdge()&&"radialBar"===l.config.chart.type||(null==(i=l.config.chart.dropShadow.enabledOnSeries)?void 0:i.length)>0&&-1===(null==(a=l.config.chart.dropShadow.enabledOnSeries)?void 0:a.indexOf(s))||t.filterWith&&(t.filterWith(t=>{this.addShadow(t,s,e,"SourceGraphic")}),e.noUserSpaceOnUse||null==(o=null==(r=t.filterer())?void 0:r.node)||o.setAttribute("filterUnits","userSpaceOnUse"),this._scaleFilterSize(null==(n=t.filterer())?void 0:n.node)),t}setSelectionFilter(t,e,s){const i=this.w;if(void 0!==i.interact.selectedDataPoints[e]&&i.interact.selectedDataPoints[e].indexOf(s)>-1){t.node.setAttribute("selected",!0);const s=i.config.states.active.filter;"none"!==s&&this.applyFilter(t,e,s.type)}}_scaleFilterSize(t){if(!t)return;(e=>{for(const s in e)Object.prototype.hasOwnProperty.call(e,s)&&t.setAttribute(s,e[s])})({width:"200%",height:"200%",x:"-50%",y:"-50%"})}}class ti{constructor(t,e=null){this.w=t,this.ctx=e}roundPathCorners(t,e){function s(t,e,s){var a=e.x-t.x,r=e.y-t.y,o=Math.sqrt(a*a+r*r);return i(t,e,Math.min(1,s/o))}function i(t,e,s){return{x:t.x+(e.x-t.x)*s,y:t.y+(e.y-t.y)*s}}function a(t,e){t.length>2&&(t[t.length-2]=e.x,t[t.length-1]=e.y)}function r(t){return{x:parseFloat(t[t.length-2]),y:parseFloat(t[t.length-1])}}t.indexOf("NaN")>-1&&(t="");var o=t.split(/[,\s]/).reduce(function(t,e){var s=e.match(/^([a-zA-Z])(.+)/);return s?(t.push(s[1]),t.push(s[2])):t.push(e),t},[]).reduce(function(t,e){return parseFloat(e)==e&&t.length?t[t.length-1].push(e):t.push([e]),t},[]),n=[];if(o.length>1){var l=r(o[0]),h=null;"Z"==o[o.length-1][0]&&o[0].length>2&&(h=["L",l.x,l.y],o[o.length-1]=h),n.push(o[0]);for(var c=1;c<o.length;c++){var d=n[n.length-1],g=o[c],p=g==h?o[1]:o[c+1];if(p&&d&&d.length>2&&"L"==g[0]&&p.length>2&&"L"==p[0]){var u,f,x=r(d),m=r(g),b=r(p);u=s(m,x,e),f=s(m,b,e),a(g,u),g.origPoint=m,n.push(g);var y=i(u,m,.5),w=i(m,f,.5),v=["C",y.x,y.y,w.x,w.y,f.x,f.y];v.origPoint=m,n.push(v)}else n.push(g)}if(h){var A=r(n[n.length-1]);n.push(["Z"]),a(n[0],A)}}else n=o;return n.reduce(function(t,e){return t+e.join(" ")+" "},"")}drawLine(t,e,s,i,a="#a8a8a8",r=0,o=null,n="butt"){return this.w.dom.Paper.line().attr({x1:t,y1:e,x2:s,y2:i,stroke:a,"stroke-dasharray":r,"stroke-width":o,"stroke-linecap":n})}drawRect(t=0,e=0,s=0,i=0,a=0,r="#fefefe",o=1,n=null,l=null,h=0){const c=this.w.dom.Paper.rect();return c.attr({x:t,y:e,width:s>0?s:0,height:i>0?i:0,rx:a,ry:a,opacity:o,"stroke-width":null!==n?n:0,stroke:null!==l?l:"none","stroke-dasharray":h}),c.node.setAttribute("fill",r),c}drawPolygon(t,e="#e1e1e1",s=1,i="none"){return this.w.dom.Paper.polygon(t).attr({fill:i,stroke:e,"stroke-width":s})}drawCircle(t,e=null){t<0&&(t=0);const s=this.w.dom.Paper.circle(2*t);return null!==e&&s.attr(e),s}drawPath({d:t="",stroke:e="#a8a8a8",strokeWidth:s=1,fill:i,fillOpacity:a=1,strokeOpacity:r=1,classes:o,strokeLinecap:n=null,strokeDashArray:l=0}){const h=this.w;null===n&&(n=h.config.stroke.lineCap),(t.indexOf("undefined")>-1||t.indexOf("NaN")>-1)&&(t=`M 0 ${h.layout.gridHeight}`);return h.dom.Paper.path(t).attr({fill:i,"fill-opacity":a,stroke:e,"stroke-opacity":r,"stroke-linecap":n,"stroke-width":s,"stroke-dasharray":l,class:o})}group(t=null){const e=this.w.dom.Paper.group();return null!==t&&e.attr(t),e}move(t,e){return["M",t,e].join(" ")}line(t,e,s=null){return"H"===s?[" H",t].join(" "):"V"===s?[" V",e].join(" "):[" L",t,e].join(" ")}curve(t,e,s,i,a,r){return["C",t,e,s,i,a,r].join(" ")}quadraticCurve(t,e,s,i){return["Q",t,e,s,i].join(" ")}arc(t,e,s,i,a,r,o,n=!1){let l="A";n&&(l="a");return[l,t,e,s,i,a,r,o].join(" ")}renderPaths({j:t,realIndex:e,pathFrom:s,pathTo:i,stroke:a,strokeWidth:r,strokeLinecap:o,fill:n,animationDelay:l,initialSpeed:h,dataChangeSpeed:c,className:d,chartType:g,shouldClipToGrid:p=!0,bindEventsOnPaths:u=!0,drawShadow:f=!0}){const x=this.w,m=new Qs(this.w),b=new Js(this.w,void 0),y=this.w.config.chart.animations.enabled,w=y&&this.w.config.chart.animations.dynamicAnimation.enabled;if(s&&s.startsWith("M 0 0")&&i){const t=i.match(/^M\s+[\d.-]+\s+[\d.-]+/);t&&(s=s.replace(/^M\s+0\s+0/,t[0]))}let v;const A=!!(y&&!x.globals.resized||w&&x.globals.dataChanged&&x.globals.shouldAnimate);A?v=s:(v=i,x.globals.animationEnded=!0);const C=x.config.stroke.dashArray;let _=0;_=Array.isArray(C)?C[e]:x.config.stroke.dashArray;const S=this.drawPath({d:v,stroke:a,strokeWidth:r,fill:n,fillOpacity:1,classes:d,strokeLinecap:o,strokeDashArray:_});S.attr("index",e),p&&("bar"===g&&!x.globals.isBarHorizontal||x.globals.comboCharts?S.attr({"clip-path":`url(#gridRectBarMask${x.globals.cuid})`}):S.attr({"clip-path":`url(#gridRectMask${x.globals.cuid})`})),x.config.chart.dropShadow.enabled&&f&&m.dropShadow(S,x.config.chart.dropShadow,e),u&&(S.node.addEventListener("mouseenter",this.pathMouseEnter.bind(this,S)),S.node.addEventListener("mouseleave",this.pathMouseLeave.bind(this,S)),S.node.addEventListener("mousedown",this.pathMouseDown.bind(this,S))),S.attr({pathTo:i,pathFrom:s});const k={el:S,j:t,realIndex:e,pathFrom:s,pathTo:i,fill:n,strokeWidth:r,delay:l};return!y||x.globals.resized||x.globals.dataChanged?!x.globals.resized&&x.globals.dataChanged||b.showDelayedElements():b.animatePathsGradually(Ds(Es({},k),{speed:h})),x.globals.dataChanged&&w&&A&&b.animatePathsGradually(Ds(Es({},k),{speed:c})),S}drawPattern(t,e,s,i="#a8a8a8",a=0){return this.w.dom.Paper.pattern(e,s,r=>{"horizontalLines"===t?r.line(0,0,s,0).stroke({color:i,width:a+1}):"verticalLines"===t?r.line(0,0,0,e).stroke({color:i,width:a+1}):"slantedLines"===t?r.line(0,0,e,s).stroke({color:i,width:a}):"squares"===t?r.rect(e,s).fill("none").stroke({color:i,width:a}):"circles"===t&&r.circle(e).fill("none").stroke({color:i,width:a})})}drawGradient(t,e,s,i,a,r=null,o=null,n=[],l=0){const h=this.w;let c;e.length<9&&0===e.indexOf("#")&&(e=Ns.hexToRgba(e,i)),s.length<9&&0===s.indexOf("#")&&(s=Ns.hexToRgba(s,a));let d=0,g=1,p=1,u=null;null!==o&&(d=void 0!==o[0]?o[0]/100:0,g=void 0!==o[1]?o[1]/100:1,p=void 0!==o[2]?o[2]/100:1,u=void 0!==o[3]?o[3]/100:null);const f=!("donut"!==h.config.chart.type&&"pie"!==h.config.chart.type&&"polarArea"!==h.config.chart.type&&"bubble"!==h.config.chart.type);if(c=n&&0!==n.length?h.dom.Paper.gradient(f?"radial":"linear",t=>{(Array.isArray(n[l])?n[l]:n).forEach(e=>{t.stop(e.offset/100,e.color,e.opacity)})}):h.dom.Paper.gradient(f?"radial":"linear",t=>{t.stop(d,e,i),t.stop(g,s,a),t.stop(p,s,a),null!==u&&t.stop(u,e,i)}),f){const t=h.layout.gridWidth/2,e=h.layout.gridHeight/2;"bubble"!==h.config.chart.type?c.attr({gradientUnits:"userSpaceOnUse",cx:t,cy:e,r:r}):c.attr({cx:.5,cy:.5,r:.8,fx:.2,fy:.2})}else"vertical"===t?c.from(0,0).to(0,1):"diagonal"===t?c.from(0,0).to(1,1):"horizontal"===t?c.from(0,1).to(1,1):"diagonal2"===t&&c.from(1,0).to(0,1);return c}getTextBasedOnMaxWidth({text:t,maxWidth:e,fontSize:s,fontFamily:i}){const a=this.getTextRects(t,s,i,""),r=a.width/t.length,o=Math.floor(e/r);return e<a.width?t.slice(0,o-3)+"...":t}drawText({x:t,y:e,text:s,textAnchor:i,fontSize:a,fontFamily:r,fontWeight:o,foreColor:n,opacity:l,maxWidth:h,cssClass:c="",isPlainText:d=!0,dominantBaseline:g="auto"}){const p=this.w;void 0===s&&(s="");let u=s;i||(i="start"),n&&n.length||(n=p.config.chart.foreColor),r=r||p.config.chart.fontFamily,o=o||"regular";const f={maxWidth:h,fontSize:a=a||"11px",fontFamily:r};let x;return Array.isArray(s)?x=p.dom.Paper.text(t=>{for(let e=0;e<s.length;e++)u=s[e],h&&(u=this.getTextBasedOnMaxWidth(Es({text:s[e]},f))),0===e?t.tspan(u):t.tspan(u).newLine()}):(h&&(u=this.getTextBasedOnMaxWidth(Es({text:s},f))),x=d?p.dom.Paper.plain(s):p.dom.Paper.text(t=>t.tspan(u))),x.attr({x:t,y:e,"text-anchor":i,"dominant-baseline":g,"font-size":a,"font-family":r,"font-weight":o,fill:n,class:"apexcharts-text "+c}),x.node.style.fontFamily=r,x.node.style.opacity=l,x}getMarkerPath(t,e,s,i){let a="";switch(s){case"cross":a=`M ${t-(i/=1.4)} ${e-i} L ${t+i} ${e+i}  M ${t-i} ${e+i} L ${t+i} ${e-i}`;break;case"plus":a=`M ${t-(i/=1.12)} ${e} L ${t+i} ${e}  M ${t} ${e-i} L ${t} ${e+i}`;break;case"star":case"sparkle":{let r=5;i*=1.15,"sparkle"===s&&(i/=1.1,r=4);const o=Math.PI/r;for(let s=0;s<=2*r;s++){const r=s*o,n=s%2==0?i:i/2;a+=(0===s?"M":"L")+(t+n*Math.sin(r))+","+(e-n*Math.cos(r))}a+="Z";break}case"triangle":a=`M ${t} ${e-i} \n             L ${t+i} ${e+i} \n             L ${t-i} ${e+i} \n             Z`;break;case"square":case"rect":a=`M ${t-(i/=1.125)} ${e-i} \n           L ${t+i} ${e-i} \n           L ${t+i} ${e+i} \n           L ${t-i} ${e+i} \n           Z`;break;case"diamond":a=`M ${t} ${e-(i*=1.05)} \n             L ${t+i} ${e} \n             L ${t} ${e+i} \n             L ${t-i} ${e} \n            Z`;break;case"line":a=`M ${t-(i/=1.1)} ${e} \n           L ${t+i} ${e}`;break;default:a=`M ${t}, ${e} \n           m -${(i*=2)/2}, 0 \n           a ${i/2},${i/2} 0 1,0 ${i},0 \n           a ${i/2},${i/2} 0 1,0 -${i},0`}return a}drawMarkerShape(t,e,s,i,a){const r=this.drawPath({d:this.getMarkerPath(t,e,s,i),stroke:a.pointStrokeColor,strokeDashArray:a.pointStrokeDashArray,strokeWidth:a.pointStrokeWidth,fill:a.pointFillColor,fillOpacity:a.pointFillOpacity,strokeOpacity:a.pointStrokeOpacity});return r.attr({cx:t,cy:e,shape:a.shape,class:a.class?a.class:""}),r}drawMarker(t,e,s){t=t||0;let i=s.pSize||0;return Ns.isNumber(e)||(i=0,e=0),this.drawMarkerShape(t,e,null==s?void 0:s.shape,i,Es(Es({},s),"line"===s.shape||"plus"===s.shape||"cross"===s.shape?{pointStrokeColor:s.pointFillColor,pointStrokeOpacity:s.pointFillOpacity}:{}))}pathMouseEnter(t,e){var s,i;const a=this.w,r=new Qs(this.w),o=parseInt(null!=(s=t.node.getAttribute("index"))?s:"",10),n=parseInt(null!=(i=t.node.getAttribute("j"))?i:"",10);if(!(isNaN(o)||isNaN(n)||("function"==typeof a.config.chart.events.dataPointMouseEnter&&a.config.chart.events.dataPointMouseEnter(e,this.ctx,{seriesIndex:o,dataPointIndex:n,w:a}),ti._fireEvent(a,"dataPointMouseEnter",[e,this.ctx,{seriesIndex:o,dataPointIndex:n,w:a}]),"none"!==a.config.states.active.filter.type&&"true"===t.node.getAttribute("selected")||"none"===a.config.states.hover.filter.type||a.interact.isTouchDevice))){const e=a.config.states.hover.filter;r.applyFilter(t,o,e.type)}}pathMouseLeave(t,e){var s,i;const a=this.w,r=new Qs(this.w),o=parseInt(null!=(s=t.node.getAttribute("index"))?s:"",10),n=parseInt(null!=(i=t.node.getAttribute("j"))?i:"",10);isNaN(o)||isNaN(n)||("function"==typeof a.config.chart.events.dataPointMouseLeave&&a.config.chart.events.dataPointMouseLeave(e,this.ctx,{seriesIndex:o,dataPointIndex:n,w:a}),ti._fireEvent(a,"dataPointMouseLeave",[e,this.ctx,{seriesIndex:o,dataPointIndex:n,w:a}]),"none"!==a.config.states.active.filter.type&&"true"===t.node.getAttribute("selected")||"none"!==a.config.states.hover.filter.type&&r.getDefaultFilter(t,o))}pathMouseDown(t,e){var s,i;const a=this.w,r=new Qs(this.w),o=parseInt(null!=(s=t.node.getAttribute("index"))?s:"",10),n=parseInt(null!=(i=t.node.getAttribute("j"))?i:"",10);if(isNaN(o)||isNaN(n))return;let l="false";if("true"===t.node.getAttribute("selected")){t.node.setAttribute("selected","false");const e=a.interact.selectedDataPoints[o].indexOf(n);e>-1&&a.interact.selectedDataPoints[o].splice(e,1)}else{if(!a.config.states.active.allowMultipleDataPointsSelection&&a.interact.selectedDataPoints.length>0){a.interact.selectedDataPoints=[];const t=a.dom.Paper.find(".apexcharts-series path:not(.apexcharts-decoration-element)"),e=a.dom.Paper.find(".apexcharts-series circle:not(.apexcharts-decoration-element), .apexcharts-series rect:not(.apexcharts-decoration-element)"),s=t=>{Array.prototype.forEach.call(t,t=>{t.node.setAttribute("selected","false"),r.getDefaultFilter(t,o)})};s(t),s(e)}t.node.setAttribute("selected","true"),l="true",void 0===a.interact.selectedDataPoints[o]&&(a.interact.selectedDataPoints[o]=[]),a.interact.selectedDataPoints[o].push(n)}if("true"===l){const e=a.config.states.active.filter;if("none"!==e)r.applyFilter(t,o,e.type);else if("none"!==a.config.states.hover.filter&&!a.interact.isTouchDevice){const e=a.config.states.hover.filter;r.applyFilter(t,o,e.type)}}else if("none"!==a.config.states.active.filter.type)if("none"===a.config.states.hover.filter.type||a.interact.isTouchDevice)r.getDefaultFilter(t,o);else{const e=a.config.states.hover.filter;r.applyFilter(t,o,e.type)}"function"==typeof a.config.chart.events.dataPointSelection&&a.config.chart.events.dataPointSelection(e,this.ctx,{selectedDataPoints:a.interact.selectedDataPoints,seriesIndex:o,dataPointIndex:n,w:a}),e&&ti._fireEvent(a,"dataPointSelection",[e,this.ctx,{selectedDataPoints:a.interact.selectedDataPoints,seriesIndex:o,dataPointIndex:n,w:a}])}rotateAroundCenter(t){let e={};t&&"function"==typeof t.getBBox&&(e=t.getBBox());return{x:e.x+e.width/2,y:e.y+e.height/2}}setupEventDelegation(t,e){let s=null;t.node.addEventListener("mouseover",i=>{const a=ti._findDelegateTarget(i.target,t.node,e);a&&a!==s&&(s&&s.instance&&this.pathMouseLeave(s.instance,i),s=a,a.instance&&this.pathMouseEnter(a.instance,i))}),t.node.addEventListener("mouseout",i=>{if(!s)return;(i.relatedTarget?ti._findDelegateTarget(i.relatedTarget,t.node,e):null)!==s&&(s&&s.instance&&this.pathMouseLeave(s.instance,i),s=null)}),t.node.addEventListener("mousedown",s=>{const i=ti._findDelegateTarget(s.target,t.node,e);i&&i.instance&&this.pathMouseDown(i.instance,s)})}static _fireEvent(t,e,s){const i=t.globals.events;if(!i||!Object.prototype.hasOwnProperty.call(i,e))return;const a=i[e];for(let t=0;t<a.length;t++)a[t].apply(null,s)}static _findDelegateTarget(t,e,s){for(;t&&t!==e&&t!==document;){if(t.matches&&t.matches(s))return t;t=t.parentNode}return null}static setAttrs(t,e){for(const s in e)Object.prototype.hasOwnProperty.call(e,s)&&t.setAttribute(s,e[s])}getTextRects(t,e,s,i,a=!0){const r=this.w,o=[t,e,s,i,a].join("\0"),n=r.globals.textRectsCache;if(n&&n.has(o))return n.get(o);const l=this.drawText({x:-200,y:-200,text:t,textAnchor:"start",fontSize:e,fontFamily:s,foreColor:"#fff",opacity:0});i&&l.attr("transform",i),r.dom.Paper.add(l);let h=l.bbox();a||(h=l.node.getBoundingClientRect()),l.remove();const c={width:h.width,height:h.height};return n&&n.set(o,c),c}placeTextWithEllipsis(t,e,s){if("function"==typeof t.getComputedTextLength&&(t.textContent=e,e.length>0&&t.getComputedTextLength()>=s/1.1)){for(let i=e.length-3;i>0;i-=3)if(t.getSubStringLength(0,i)<=s/1.1)return void(t.textContent=e.substring(0,i)+"...");t.textContent="."}}}const ei="http://www.w3.org/2000/svg";class si{constructor(t,e){"object"==typeof t?(this.x=t.x,this.y=t.y):(this.x=t||0,this.y=e||0)}transform(t){return t.apply(this)}clone(){return new si(this.x,this.y)}}class ii{constructor(t,e,s,i,a,r){this.a=null!=t?t:1,this.b=null!=e?e:0,this.c=null!=s?s:0,this.d=null!=i?i:1,this.e=null!=a?a:0,this.f=null!=r?r:0}rotate(t){const e=t*Math.PI/180,s=Math.cos(e),i=Math.sin(e);return this.multiply(new ii(s,i,-i,s,0,0))}scale(t,e){return this.multiply(new ii(t,0,0,null!=e?e:t,0,0))}multiply(t){return new ii(this.a*t.a+this.c*t.b,this.b*t.a+this.d*t.b,this.a*t.c+this.c*t.d,this.b*t.c+this.d*t.d,this.a*t.e+this.c*t.f+this.e,this.b*t.e+this.d*t.f+this.f)}apply(t){return new si(this.a*t.x+this.c*t.y+this.e,this.b*t.x+this.d*t.y+this.f)}}class ai{constructor(t,e,s,i){this.x=t,this.y=e,this.w=s,this.h=i,this.width=s,this.height=i,this.x2=t+s,this.y2=e+i}}class ri{constructor(t){this.w=t,this.opts=null,this.seriesIndex=0,this.patternIDs=[]}clippedImgArea(t){const e=this.w,s=e.config,i=parseInt(String(e.layout.gridWidth),10),a=parseInt(String(e.layout.gridHeight),10),r=i>a?i:a,o=t.image;let n=0,l=0;void 0===t.width&&void 0===t.height?void 0!==s.fill.image.width&&void 0!==s.fill.image.height?(n=s.fill.image.width+1,l=s.fill.image.height):(n=r+1,l=r):(n=t.width,l=t.height);const h=Bs.createElementNS(ei,"pattern");ti.setAttrs(h,{id:t.patternID,patternUnits:t.patternUnits?t.patternUnits:"userSpaceOnUse",width:n+"px",height:l+"px"});const c=Bs.createElementNS(ei,"image");h.appendChild(c);const d=Ps.isBrowser()?window.SVG:global.SVG;c.setAttributeNS(d.xlink,"href",o),ti.setAttrs(c,{x:0,y:0,preserveAspectRatio:"none",width:n+"px",height:l+"px"}),c.style.opacity=t.opacity,e.dom.elDefs.node.appendChild(h)}getSeriesIndex(t){const e=this.w,s=e.config.chart.type;return("bar"===s||"rangeBar"===s)&&e.config.plotOptions.bar.distributed||"heatmap"===s||"treemap"===s?this.seriesIndex=t.seriesNumber:this.seriesIndex=t.seriesNumber%e.seriesData.series.length,this.seriesIndex}computeColorStops(t,e){const s=this.w;let i=null,a=null;for(const s of t)s>=e.threshold?(null===i||s>i)&&(i=s):(null===a||s<a)&&(a=s);null===i&&(i=e.threshold),null===a&&(a=e.threshold);let r=i-e.threshold+(e.threshold-a);0===r&&(r=1);let o=100-(e.threshold-a)/r*100;return o=Math.max(0,Math.min(o,100)),[{offset:o,color:e.colorAboveThreshold,opacity:s.config.fill.opacity},{offset:0,color:e.colorBelowThreshold,opacity:s.config.fill.opacity}]}fillPath(t){var e,s,i,a;const r=this.w;this.opts=t;const o=this.w.config;let n,l,h;this.seriesIndex=this.getSeriesIndex(t);const c=o.plotOptions.line.colors.colorAboveThreshold&&o.plotOptions.line.colors.colorBelowThreshold;let d=this.getFillColors()[this.seriesIndex];void 0!==r.seriesData.seriesColors[this.seriesIndex]&&(d=r.seriesData.seriesColors[this.seriesIndex]),"function"==typeof d&&(d=d({seriesIndex:this.seriesIndex,dataPointIndex:t.dataPointIndex,value:t.value,w:r}));const g=t.fillType?t.fillType:this.getFillType(this.seriesIndex);let p=Array.isArray(o.fill.opacity)?o.fill.opacity[this.seriesIndex]:o.fill.opacity;const u="gradient"===g||c;t.color&&(d=t.color);const f=r.config.series[this.seriesIndex];(null==(s=null==(e=null==f?void 0:f.data)?void 0:e[t.dataPointIndex])?void 0:s.fillColor)&&(d=null==(a=null==(i=null==f?void 0:f.data)?void 0:i[t.dataPointIndex])?void 0:a.fillColor),d||(d="#fff",console.warn("undefined color - ApexCharts")),void 0!==t.opacity&&null!==t.opacity&&(p=t.opacity);let x=d;Ns.isCSSVariable(d)?x=Ns.applyOpacityToColor(d,p):-1===d.indexOf("rgb")?-1===d.indexOf("#")?x=d:d.length<9&&(x=Ns.hexToRgba(d,p)):d.indexOf("rgba")>-1?p=Ns.getOpacityFromRGBA(d):x=Ns.hexToRgba(Ns.rgb2hex(d),p);const m=Ns.isCSSVariable(d)?Ns.getThemeColor(d):d;if("pattern"===g&&(l=this.handlePatternFill({fillConfig:t.fillConfig,patternFill:l,fillColor:m,defaultColor:x})),u){const e=o.fill.gradient.colorStops?[...o.fill.gradient.colorStops]:[];let s=o.fill.gradient.type;c&&(e[this.seriesIndex]=this.computeColorStops(r.seriesData.series[this.seriesIndex],o.plotOptions.line.colors),s="vertical"),h=this.handleGradientFill({type:s,fillConfig:t.fillConfig,fillColor:m,fillOpacity:p,colorStops:e,i:this.seriesIndex})}if("image"===g){const e=o.fill.image.src,s=t.patternID?t.patternID:"",i=`pattern${r.globals.cuid}${t.seriesNumber+1}${s}`;-1===this.patternIDs.indexOf(i)&&(this.clippedImgArea({opacity:p,image:Array.isArray(e)?t.seriesNumber<e.length?e[t.seriesNumber]:e[0]:e,width:t.width?t.width:void 0,height:t.height?t.height:void 0,patternUnits:t.patternUnits,patternID:i}),this.patternIDs.push(i)),n=`url(#${i})`}else n=u?h:"pattern"===g?l:x;return t.solid&&(n=x),n}getFillType(t){const e=this.w;return Array.isArray(e.config.fill.type)?e.config.fill.type[t]:e.config.fill.type}getFillColors(){const t=this.w,e=t.config,s=this.opts;let i=[];return t.globals.comboCharts?"line"===t.config.series[this.seriesIndex].type?Array.isArray(t.globals.stroke.colors)?i=t.globals.stroke.colors:i.push(t.globals.stroke.colors):Array.isArray(t.globals.fill.colors)?i=t.globals.fill.colors:i.push(t.globals.fill.colors):"line"===e.chart.type?Array.isArray(t.globals.stroke.colors)?i=t.globals.stroke.colors:i.push(t.globals.stroke.colors):Array.isArray(t.globals.fill.colors)?i=t.globals.fill.colors:i.push(t.globals.fill.colors),void 0!==s.fillColors&&(i=[],Array.isArray(s.fillColors)?i=s.fillColors.slice():i.push(s.fillColors)),i}handlePatternFill({fillConfig:t,patternFill:e,fillColor:s,defaultColor:i}){let a=this.w.config.fill;t&&(a=t);const r=this.opts,o=new ti(this.w),n=Array.isArray(a.pattern.strokeWidth)?a.pattern.strokeWidth[this.seriesIndex]:a.pattern.strokeWidth,l=s;if(Array.isArray(a.pattern.style))if(void 0!==a.pattern.style[r.seriesNumber]){e=o.drawPattern(a.pattern.style[r.seriesNumber],a.pattern.width,a.pattern.height,l,n)}else e=i;else e=o.drawPattern(a.pattern.style,a.pattern.width,a.pattern.height,l,n);return e}handleGradientFill({type:t,fillColor:e,fillOpacity:s,fillConfig:i,colorStops:a,i:r}){let o=this.w.config.fill;i&&(o=Es(Es({},o),i));const n=this.opts,l=new ti(this.w),h=new Ns;t=t||o.gradient.type;let c,d=e,g=void 0===o.gradient.opacityFrom?s:Array.isArray(o.gradient.opacityFrom)?o.gradient.opacityFrom[r]:o.gradient.opacityFrom;d.indexOf("rgba")>-1&&(g=Ns.getOpacityFromRGBA(d));let p=void 0===o.gradient.opacityTo?s:Array.isArray(o.gradient.opacityTo)?o.gradient.opacityTo[r]:o.gradient.opacityTo;if(void 0===o.gradient.gradientToColors||0===o.gradient.gradientToColors.length)c="dark"===o.gradient.shade?h.shadeColor(-1*parseFloat(o.gradient.shadeIntensity),e.indexOf("rgb")>-1?Ns.rgb2hex(e):e):h.shadeColor(parseFloat(o.gradient.shadeIntensity),e.indexOf("rgb")>-1?Ns.rgb2hex(e):e);else if(o.gradient.gradientToColors[n.seriesNumber]){const t=o.gradient.gradientToColors[n.seriesNumber];c=t,t.indexOf("rgba")>-1&&(p=Ns.getOpacityFromRGBA(t))}else c=e;if(o.gradient.gradientFrom&&(d=o.gradient.gradientFrom),o.gradient.gradientTo&&(c=o.gradient.gradientTo),o.gradient.inverseColors){const t=d;d=c,c=t}return d.indexOf("rgb")>-1&&(d=Ns.rgb2hex(d)),c.indexOf("rgb")>-1&&(c=Ns.rgb2hex(c)),l.drawGradient(t,d,c,g,p,n.size,o.gradient.stops,a,r)}}class oi{constructor(t,e){this.w=t,this.ctx=e,this._filters=new Qs(this.w),this._graphics=new ti(this.w,this.ctx)}setGlobalMarkerSize(){const t=this.w;if(t.globals.markers.size=Array.isArray(t.config.markers.size)?t.config.markers.size:[t.config.markers.size],t.globals.markers.size.length>0){if(t.globals.markers.size.length<t.seriesData.series.length+1)for(let e=0;e<=t.seriesData.series.length;e++)void 0===t.globals.markers.size[e]&&t.globals.markers.size.push(t.globals.markers.size[0])}else t.globals.markers.size=t.config.series.map(()=>t.config.markers.size)}plotChartMarkers({pointsPos:t,seriesIndex:e,j:s,pSize:i,alwaysDrawMarker:a=!1,isVirtualPoint:r=!1}){const o=this.w,n=e,l=t;let h=null;const c=new ti(this.w),d=o.config.markers.discrete&&o.config.markers.discrete.length;if(Array.isArray(l.x))for(let t=0;t<l.x.length;t++){let g,p=s,u=!Ns.isNumber(l.y[t]);0===o.globals.markers.largestSize&&o.globals.hasNullValues&&null!==o.seriesData.series[n][s+1]&&!r&&(u=!0),1===s&&0===t&&(p=0),1===s&&1===t&&(p=1);let f="apexcharts-marker";"line"!==o.config.chart.type&&"area"!==o.config.chart.type||o.globals.comboCharts||o.config.tooltip.intersect||(f+=" no-pointer-events");if((Array.isArray(o.config.markers.size)?o.globals.markers.size[e]>0:o.config.markers.size>0)||a||d){u||(f+=` w${Ns.randomId()}`);const s=this.getMarkerConfig({cssClass:f,seriesIndex:e,dataPointIndex:p}),r=o.config.series[n];if(r.data[p]&&(r.data[p].fillColor&&(s.pointFillColor=r.data[p].fillColor),r.data[p].strokeColor&&(s.pointStrokeColor=r.data[p].strokeColor)),void 0!==i&&(s.pSize=i),(l.x[t]<-o.globals.markers.largestSize||l.x[t]>o.layout.gridWidth+o.globals.markers.largestSize||l.y[t]<-o.globals.markers.largestSize||l.y[t]>o.layout.gridHeight+o.globals.markers.largestSize)&&(s.pSize=0),!u){(o.globals.markers.size[e]>0||a||d)&&!h&&(h=c.group({class:a||d?"":"apexcharts-series-markers"}),h.attr("clip-path",`url(#gridRectMarkerMask${o.globals.cuid})`),this.setupMarkerDelegation(h)),g=c.drawMarker(l.x[t],l.y[t],s),g.attr("rel",p),g.attr("j",p),g.attr("index",e),g.node.setAttribute("default-marker-size",s.pSize),this._filters.setSelectionFilter(g,e,p),h&&h.add(g)}}else void 0===o.globals.pointsArray[e]&&(o.globals.pointsArray[e]=[]),o.globals.pointsArray[e].push([l.x[t],l.y[t]])}return h}getMarkerConfig({cssClass:t,seriesIndex:e,dataPointIndex:s=null,radius:i=null,size:a=null,strokeWidth:r=null}){const o=this.w,n=this.getMarkerStyle(e);let l=null===a?o.globals.markers.size[e]:a;const h=o.config.markers;return null!==s&&h.discrete.length&&h.discrete.map(t=>{t.seriesIndex===e&&t.dataPointIndex===s&&(n.pointStrokeColor=t.strokeColor,n.pointFillColor=t.fillColor,l=t.size,n.pointShape=t.shape)}),{pSize:null===i?l:i,pRadius:null!==i?i:h.radius,pointStrokeWidth:null!==r?r:Array.isArray(h.strokeWidth)?h.strokeWidth[e]:h.strokeWidth,pointStrokeColor:n.pointStrokeColor,pointFillColor:n.pointFillColor,shape:n.pointShape||(Array.isArray(h.shape)?h.shape[e]:h.shape),class:t,pointStrokeOpacity:Array.isArray(h.strokeOpacity)?h.strokeOpacity[e]:h.strokeOpacity,pointStrokeDashArray:Array.isArray(h.strokeDashArray)?h.strokeDashArray[e]:h.strokeDashArray,pointFillOpacity:Array.isArray(h.fillOpacity)?h.fillOpacity[e]:h.fillOpacity,seriesIndex:e}}setupMarkerDelegation(t){const e=this.w,s=".apexcharts-marker";this._graphics.setupEventDelegation(t,s),t.node.addEventListener("click",i=>{if(e.config.markers.onClick){ti._findDelegateTarget(i.target,t.node,s)&&e.config.markers.onClick(i)}}),t.node.addEventListener("dblclick",i=>{if(e.config.markers.onDblClick){ti._findDelegateTarget(i.target,t.node,s)&&e.config.markers.onDblClick(i)}}),t.node.addEventListener("touchstart",e=>{const i=ti._findDelegateTarget(e.target,t.node,s);i&&i.instance&&this._graphics.pathMouseDown(i.instance,e)},{passive:!0})}addEvents(t){const e=this.w;t.node.addEventListener("mouseenter",this._graphics.pathMouseEnter.bind(this.ctx,t)),t.node.addEventListener("mouseleave",this._graphics.pathMouseLeave.bind(this.ctx,t)),t.node.addEventListener("mousedown",this._graphics.pathMouseDown.bind(this.ctx,t)),t.node.addEventListener("click",e.config.markers.onClick),t.node.addEventListener("dblclick",e.config.markers.onDblClick),t.node.addEventListener("touchstart",this._graphics.pathMouseDown.bind(this.ctx,t),{passive:!0})}getMarkerStyle(t){const e=this.w,s=e.globals.markers.colors,i=e.config.markers.strokeColor||e.config.markers.strokeColors;return{pointStrokeColor:Array.isArray(i)?i[t]:i,pointFillColor:Array.isArray(s)?s[t]:s}}}class ni{constructor(t,e){this.ctx=e,this.w=t,this.initialAnim=this.w.config.chart.animations.enabled,this.anim=new Js(this.w),this.filters=new Qs(this.w),this.fill=new ri(this.w),this.markers=new oi(this.w,this.ctx),this.graphics=new ti(this.w)}draw(t,e,s){const i=this.w,a=this.graphics,r=s.realIndex,o=s.pointsPos,n=s.zRatio,l=s.elParent,h=a.group({class:`apexcharts-series-markers apexcharts-series-${i.config.chart.type}`});if(h.attr("clip-path",`url(#gridRectMarkerMask${i.globals.cuid})`),this.markers.setupMarkerDelegation(h),Array.isArray(o.x))for(let t=0;t<o.x.length;t++){let s=e+1,a=!0;0===e&&0===t&&(s=0),0===e&&1===t&&(s=1);let c=i.globals.markers.size[r];if(n!==1/0){const t=i.config.plotOptions.bubble;c=i.seriesData.seriesZ[r][s],t.zScaling&&(c/=n),t.minBubbleRadius&&c<t.minBubbleRadius&&(c=t.minBubbleRadius),t.maxBubbleRadius&&c>t.maxBubbleRadius&&(c=t.maxBubbleRadius)}const d=o.x[t],g=o.y[t];if(c=c||0,null!==g&&void 0!==i.seriesData.series[r][s]||(a=!1),a){const t=this.drawPoint(d,g,c,r,s,e);h.add(t)}l.add(h)}}drawPoint(t,e,s,i,a,r){const o=this.w,n=i,l=this.anim,h=this.filters,c=this.fill,d=this.markers,g=this.graphics,p=d.getMarkerConfig({cssClass:"apexcharts-marker",seriesIndex:n,dataPointIndex:a,radius:"bubble"===o.config.chart.type||o.globals.comboCharts&&o.config.series[i]&&"bubble"===o.config.series[i].type?s:null});let u=c.fillPath({seriesNumber:i,dataPointIndex:a,color:p.pointFillColor,patternUnits:"objectBoundingBox",value:o.seriesData.series[i][r]});const f=g.drawMarker(t,e,p),x=o.config.series[n];if(x.data[a]&&x.data[a].fillColor&&(u=x.data[a].fillColor),f.attr({fill:u}),o.config.chart.dropShadow.enabled){const t=o.config.chart.dropShadow;h.dropShadow(f,t,i)}if(!this.initialAnim||o.globals.dataChanged||o.globals.resized)o.globals.animationEnded=!0;else{const t=o.config.chart.animations.speed;l.animateMarker(f,t,o.globals.easing,()=>{window.setTimeout(()=>{l.animationCompleted(f)},100)})}return f.attr({rel:a,j:a,index:i,"default-marker-size":p.pSize}),h.setSelectionFilter(f,i,a),f.node.classList.add("apexcharts-marker"),f}centerTextInBubble(t){const e=this.w;return{y:t+=parseInt(e.config.dataLabels.style.fontSize,10)/4}}}class li{constructor(t,e=null){this.w=t,this.ctx=e}dataLabelsCorrection(t,e,s,i,a,r,o){const n=this.w;let l=!1;const h=new ti(this.w).getTextRects(s,o),c=h.width,d=h.height;e<0&&(e=0),e>n.layout.gridHeight+d&&(e=n.layout.gridHeight+d/2),void 0===n.globals.dataLabelsRects[i]&&(n.globals.dataLabelsRects[i]=[]),n.globals.dataLabelsRects[i].push({x:t,y:e,width:c,height:d});const g=n.globals.dataLabelsRects[i].length-2,p=void 0!==n.globals.lastDrawnDataLabelsIndexes[i]?n.globals.lastDrawnDataLabelsIndexes[i][n.globals.lastDrawnDataLabelsIndexes[i].length-1]:0;if(void 0!==n.globals.dataLabelsRects[i][g]){const s=n.globals.dataLabelsRects[i][p];(t>s.x+s.width||e>s.y+s.height||e+d<s.y||t+c<s.x)&&(l=!0)}return(0===a||r)&&(l=!0),{x:t,y:e,textRects:h,drawnextLabel:l}}drawDataLabel({type:t,pos:e,i:s,j:i,isRangeStart:a,strokeWidth:r=2}){const o=this.w,n=new ti(this.w),l=o.config.dataLabels;let h=0,c=0,d=i,g=null;if(-1!==o.globals.collapsedSeriesIndices.indexOf(s)||!l.enabled||!Array.isArray(e.x))return g;g=n.group({class:"apexcharts-data-labels"});for(let n=0;n<e.x.length;n++)if(h=e.x[n]+l.offsetX,c=e.y[n]+l.offsetY+r,!isNaN(h)){1===i&&0===n&&(d=0),1===i&&1===n&&(d=1);let r=o.seriesData.series[s][d];"rangeArea"===t&&(r=a?o.rangeData.seriesRangeStart[s][d]:o.rangeData.seriesRangeEnd[s][d]);let l="";const p=t=>o.config.dataLabels.formatter(t,{seriesIndex:s,dataPointIndex:d,w:o});if("bubble"===o.config.chart.type){r=o.seriesData.seriesZ[s][d],l=p(r),c=e.y[n];c=new ni(this.w,this.ctx).centerTextInBubble(c).y}else void 0!==r&&(l=p(r));let u=o.config.dataLabels.textAnchor;o.globals.isSlopeChart&&(u=0===d?"end":d===o.config.series[s].data.length-1?"start":"middle"),this.plotDataLabelsText({x:h,y:c,text:l,i:s,j:d,parent:g,offsetCorrection:!0,dataLabelsConfig:o.config.dataLabels,textAnchor:u})}return g}plotDataLabelsText(t){const e=this.w,s=new ti(this.w);let{x:i,y:a,i:r,j:o,text:n,textAnchor:l,fontSize:h,parent:c,dataLabelsConfig:d,color:g,alwaysDrawDataLabel:p,offsetCorrection:u,className:f}=t,x=null;if(Array.isArray(e.config.dataLabels.enabledOnSeries)&&e.config.dataLabels.enabledOnSeries.indexOf(r)<0)return x;let m={x:i,y:a,drawnextLabel:!0,textRects:null};if(u&&(m=this.dataLabelsCorrection(i,a,n,r,o,p,parseInt(d.style.fontSize,10).toString())),e.interact.zoomed||(i=m.x,a=m.y),m.textRects){const t=e.globals.barPadForNumericAxis||0;(i<-(t+20)-m.textRects.width||i>e.layout.gridWidth+m.textRects.width+t+30)&&(n="")}let b=e.globals.dataLabels.style.colors[r];(("bar"===e.config.chart.type||"rangeBar"===e.config.chart.type)&&e.config.plotOptions.bar.distributed||e.config.dataLabels.distributed)&&(b=e.globals.dataLabels.style.colors[o]),"function"==typeof b&&(b=b({series:e.seriesData.series,seriesIndex:r,dataPointIndex:o,w:e})),g&&(b=g);let y=d.offsetX,w=d.offsetY;if("bar"!==e.config.chart.type&&"rangeBar"!==e.config.chart.type||(y=0,w=0),e.globals.isSlopeChart&&(0!==o&&(y=-2*d.offsetX+5),0!==o&&o!==e.config.series[r].data.length-1&&(y=0)),m.drawnextLabel){if("middle"===l&&i===e.layout.gridWidth&&(l="end"),x=s.drawText({x:i+y,y:a+w,foreColor:b,textAnchor:l||d.textAnchor,text:n,fontSize:h||d.style.fontSize,fontFamily:d.style.fontFamily,fontWeight:d.style.fontWeight||"normal"}),x.attr({class:f||"apexcharts-datalabel",cx:i,cy:a}),d.dropShadow.enabled){const t=d.dropShadow;new Qs(this.w).dropShadow(x,t)}c.add(x),void 0===e.globals.lastDrawnDataLabelsIndexes[r]&&(e.globals.lastDrawnDataLabelsIndexes[r]=[]),e.globals.lastDrawnDataLabelsIndexes[r].push(o)}return x}addBackgroundToDataLabel(t,e){const s=this.w,i=s.config.dataLabels.background,a=i.padding,r=i.padding/2,o=e.width,n=e.height,l=new ti(this.w).drawRect(e.x-a,e.y-r/2,o+2*a,n+r,i.borderRadius,"transparent"!==s.config.chart.background&&s.config.chart.background?s.config.chart.background:"#fff",i.opacity,i.borderWidth,i.borderColor);if(i.dropShadow.enabled){new Qs(this.w).dropShadow(l,i.dropShadow)}return l}dataLabelsBackground(){var t;const e=this.w;if("bubble"===e.config.chart.type)return;const s=e.dom.baseEl.querySelectorAll(".apexcharts-datalabels text");for(let i=0;i<s.length;i++){const a=s[i],r=a.getBBox();let o=null;if(r.width&&r.height&&(o=this.addBackgroundToDataLabel(a,r)),o){null==(t=a.parentNode)||t.insertBefore(o.node,a);const s=e.config.dataLabels.background.backgroundColor||a.getAttribute("fill");e.config.chart.animations.enabled&&!e.globals.resized&&!e.globals.dataChanged?o.animate().attr({fill:s}):o.attr({fill:s}),a.setAttribute("fill",e.config.dataLabels.background.foreColor)}}}bringForward(){const t=this.w,e=t.dom.baseEl.querySelectorAll(".apexcharts-datalabels"),s=t.dom.baseEl.querySelector(".apexcharts-plot-series:last-child");for(let t=0;t<e.length;t++)s&&s.insertBefore(e[t],s.nextSibling)}}class hi{static invalidateAll(t){t&&t.globals&&(t.globals.cachedSelectors&&(t.globals.cachedSelectors={}),t.globals.domCache&&t.globals.domCache.clear(),t.globals.dimensionCache={})}static invalidateDimensions(t){t&&t.globals&&(t.globals.dimensionCache={})}static invalidateSelectors(t){t&&t.globals&&t.globals.cachedSelectors&&(t.globals.cachedSelectors={})}static getCachedSelector(t,e,s){return t&&t.globals?(t.globals.cachedSelectors||(t.globals.cachedSelectors={}),t.globals.cachedSelectors[e]||(t.globals.cachedSelectors[e]=s()),t.globals.cachedSelectors[e]):s()}static getCachedDimension(t,e,s,i=1e3){if(!t||!t.globals)return s();t.globals.dimensionCache||(t.globals.dimensionCache={});const a=t.globals.dimensionCache[e],r=Date.now();if(a&&a.lastUpdate&&r-a.lastUpdate<i)return a.value;const o=s();return t.globals.dimensionCache[e]={value:o,lastUpdate:r},o}static cacheDOMElement(t,e,s){t&&t.globals&&(t.globals.domCache||(t.globals.domCache=new Map),t.globals.domCache.set(e,s))}static getCachedDOMElement(t,e){return t&&t.globals&&t.globals.domCache&&t.globals.domCache.get(e)||null}}class ci{constructor(t,{theme:e=null,timeScale:s=null}={}){this.w=t,this.theme=e,this.timeScale=s}getLabel(t,e,s,i,a=[],r="12px",o=!0){const n=this.w,l=void 0===t[i]?"":t[i];let h=l;const c=n.formatters.xLabelFormatter,d=n.config.xaxis.labels.formatter;let g=!1;const p=new Os(this.w),u=l;o&&(h=p.xLabelFormat(c,l,u,{i:i,dateFormatter:new zs(this.w).formatDate,w:n}),void 0!==d&&(h=d(l,t[i],{i:i,dateFormatter:new zs(this.w).formatDate,w:n})));e.length>0?(g=(t=>{let s=null;return e.forEach(t=>{"month"===t.unit?s="year":"day"===t.unit?s="month":"hour"===t.unit?s="day":"minute"===t.unit&&(s="hour")}),s===t})(e[i].unit),s=e[i].position,h=e[i].value):"datetime"===n.config.xaxis.type&&void 0===d&&(h=""),void 0===h&&(h=""),h=Array.isArray(h)?h:h.toString();const f=new ti(this.w);let x={};x=n.layout.rotateXLabels&&o?f.getTextRects(h,parseInt(r,10).toString(),null,`rotate(${n.config.xaxis.labels.rotate} 0 0)`,!1):f.getTextRects(h,parseInt(r,10).toString());const m=!n.config.xaxis.labels.showDuplicates&&this.timeScale;return!Array.isArray(h)&&("NaN"===String(h)||a.indexOf(h)>=0&&m)&&(h=""),{x:s,text:h,textRect:x,isBold:g}}checkLabelBasedOnTickamount(t,e,s){const i=this.w;let a=i.config.xaxis.tickAmount;if("dataPoints"===a&&(a=Math.round(i.layout.gridWidth/120)),a>s)return e;return t%Math.round(s/(a+1))===0||(e.text=""),e}checkForOverflowingLabels(t,e,s,i,a){const r=this.w;if(0===t&&r.globals.skipFirstTimelinelabel&&(e.text=""),t===s-1&&r.globals.skipLastTimelinelabel&&(e.text=""),r.config.xaxis.labels.hideOverlappingLabels&&i.length>0){const t=a[a.length-1];if(r.config.xaxis.labels.trim&&"datetime"!==r.config.xaxis.type)return e;e.x<t.textRect.width/(r.layout.rotateXLabels?Math.abs(r.config.xaxis.labels.rotate)/12:1.01)+t.x&&(e.text="")}return e}checkForReversedLabels(t,e){const s=this.w;return s.config.yaxis[t]&&s.config.yaxis[t].reversed&&e.reverse(),e}yAxisAllSeriesCollapsed(t){const e=this.w.globals;return!e.seriesYAxisMap[t].some(t=>-1===e.collapsedSeriesIndices.indexOf(t))}translateYAxisIndex(t){const e=this.w,s=e.globals,i=e.config.yaxis,a=e.seriesData.series.length>i.length||i.some(t=>Array.isArray(t.seriesName));return a?t:s.seriesYAxisReverseMap[t]}isYAxisHidden(t){const e=this.w,s=e.config.yaxis[t];if(!s.show||this.yAxisAllSeriesCollapsed(t))return!0;if(!s.showForNullSeries){const s=e.globals.seriesYAxisMap[t],i=new Ks(this.w);return s.every(t=>i.isSeriesNull(t))}return!1}getYAxisForeColor(t,e){var s;const i=this.w;return Array.isArray(t)&&i.globals.yAxisScale[e]&&(null==(s=this.theme)||s.pushExtraColors(t,i.globals.yAxisScale[e].result.length,!1)),t}drawYAxisTicks(t,e,s,i,a,r,o){const n=this.w,l=new ti(this.w);let h=n.layout.translateY+n.config.yaxis[a].labels.offsetY;if(n.globals.isBarHorizontal?h=0:"heatmap"===n.config.chart.type&&(h+=r/2),i.show&&e>0){!0===n.config.yaxis[a].opposite&&(t+=i.width);for(let a=e;a>=0;a--){const e=l.drawLine(t+s.offsetX-i.width+i.offsetX,h+i.offsetY,t+s.offsetX+i.offsetX,h+i.offsetY,i.color);o.add(e),h+=r}}}}class di{constructor(t,e,s){this.w=t,this.ctx=e,this.elgrid=s,this.axesUtils=new ci(t,{theme:e.theme,timeScale:e.timeScale}),this.xaxisLabels=t.labelData.labels.slice(),t.labelData.timescaleLabels.length>0&&!t.globals.isBarHorizontal&&(this.xaxisLabels=t.labelData.timescaleLabels.slice()),t.config.xaxis.overwriteCategories&&(this.xaxisLabels=t.config.xaxis.overwriteCategories),this.drawnLabels=[],this.drawnLabelsRects=[],"top"===t.config.xaxis.position?this.offY=0:this.offY=t.layout.gridHeight,this.offY=this.offY+t.config.xaxis.axisBorder.offsetY,this.isCategoryBarHorizontal="bar"===t.config.chart.type&&t.config.plotOptions.bar.horizontal,this.xaxisFontSize=t.config.xaxis.labels.style.fontSize,this.xaxisFontFamily=t.config.xaxis.labels.style.fontFamily,this.xaxisForeColors=t.config.xaxis.labels.style.colors,this.xaxisBorderWidth=t.config.xaxis.axisBorder.width,this.isCategoryBarHorizontal&&(this.xaxisBorderWidth=t.config.yaxis[0].axisBorder.width.toString()),String(this.xaxisBorderWidth).indexOf("%")>-1?this.xaxisBorderWidth=t.layout.gridWidth*parseInt(this.xaxisBorderWidth,10)/100:this.xaxisBorderWidth=parseInt(this.xaxisBorderWidth,10),this.xaxisBorderHeight=t.config.xaxis.axisBorder.height,this.yaxis=t.config.yaxis[0]}drawXaxis(){const t=this.w,e=new ti(this.w),s=e.group({class:"apexcharts-xaxis",transform:`translate(${t.config.xaxis.offsetX}, ${t.config.xaxis.offsetY})`}),i=e.group({class:"apexcharts-xaxis-texts-g",transform:`translate(${t.layout.translateXAxisX}, ${t.layout.translateXAxisY})`});s.add(i);let a=[];for(let t=0;t<this.xaxisLabels.length;t++)a.push(this.xaxisLabels[t]);if(this.drawXAxisLabelAndGroup(!0,e,i,a,t.axisFlags.isXNumeric,(t,e)=>e),t.labelData.hasXaxisGroups){const s=t.labelData.groups;a=[];for(let t=0;t<s.length;t++)a.push(s[t].title);const r={};t.config.xaxis.group.style&&(r.xaxisFontSize=t.config.xaxis.group.style.fontSize,r.xaxisFontFamily=t.config.xaxis.group.style.fontFamily,r.xaxisForeColors=t.config.xaxis.group.style.colors,r.fontWeight=t.config.xaxis.group.style.fontWeight,r.cssClass=t.config.xaxis.group.style.cssClass),this.drawXAxisLabelAndGroup(!1,e,i,a,!1,(t,e)=>s[t].cols*e,r)}if(void 0!==t.config.xaxis.title.text){const i=e.group({class:"apexcharts-xaxis-title"}),a=e.drawText({x:t.layout.gridWidth/2+t.config.xaxis.title.offsetX,y:this.offY+parseFloat(this.xaxisFontSize)+("bottom"===t.config.xaxis.position?t.layout.xAxisLabelsHeight:-t.layout.xAxisLabelsHeight-10)+t.config.xaxis.title.offsetY,text:t.config.xaxis.title.text,textAnchor:"middle",fontSize:t.config.xaxis.title.style.fontSize,fontFamily:t.config.xaxis.title.style.fontFamily,fontWeight:t.config.xaxis.title.style.fontWeight,foreColor:t.config.xaxis.title.style.color,cssClass:"apexcharts-xaxis-title-text "+t.config.xaxis.title.style.cssClass});i.add(a),s.add(i)}if(t.config.xaxis.axisBorder.show){const i=t.globals.barPadForNumericAxis,a=e.drawLine(t.globals.padHorizontal+t.config.xaxis.axisBorder.offsetX-i,this.offY,this.xaxisBorderWidth+i,this.offY,t.config.xaxis.axisBorder.color,0,this.xaxisBorderHeight);this.elgrid&&this.elgrid.elGridBorders&&t.config.grid.show?this.elgrid.elGridBorders.add(a):s.add(a)}return s}drawXAxisLabelAndGroup(t,e,s,i,a,r,o={}){const n=[],l=[],h=this.w,c=o.xaxisFontSize||this.xaxisFontSize,d=o.xaxisFontFamily||this.xaxisFontFamily,g=o.xaxisForeColors||this.xaxisForeColors,p=o.fontWeight||h.config.xaxis.labels.style.fontWeight,u=o.cssClass||h.config.xaxis.labels.style.cssClass;let f,x=h.globals.padHorizontal;const m=i.length;let b="category"===h.config.xaxis.type?h.globals.dataPoints:m;if(0===b&&m>b&&(b=m),a){const t=Math.max(Number(h.config.xaxis.tickAmount)||1,b>1?b-1:b);f=h.layout.gridWidth/Math.min(t,m-1),x=x+r(0,f)/2+h.config.xaxis.labels.offsetX}else f=h.layout.gridWidth/b,x=x+r(0,f)+h.config.xaxis.labels.offsetX;for(let a=0;a<=m-1;a++){let o=x-r(a,f)/2+h.config.xaxis.labels.offsetX;0===a&&1===m&&f/2===x&&1===b&&(o=h.layout.gridWidth/2);let y=this.axesUtils.getLabel(i,h.labelData.timescaleLabels,o,a,n,c,t),w=28;h.layout.rotateXLabels&&t&&(w=22),h.config.xaxis.title.text&&"top"===h.config.xaxis.position&&(w+=parseFloat(h.config.xaxis.title.style.fontSize)+2),t||(w=w+parseFloat(c)+(h.layout.xAxisLabelsHeight-h.layout.xAxisGroupLabelsHeight)+(h.layout.rotateXLabels?10:0));y=void 0!==h.config.xaxis.tickAmount&&"dataPoints"!==h.config.xaxis.tickAmount&&"datetime"!==h.config.xaxis.type?this.axesUtils.checkLabelBasedOnTickamount(a,y,m):this.axesUtils.checkForOverflowingLabels(a,y,m,n,l);const v=()=>t&&h.config.xaxis.convertedCatToNumeric?g[h.globals.minX+a-1]:g[a];if(h.config.xaxis.labels.show){const i=e.drawText({x:y.x,y:this.offY+h.config.xaxis.labels.offsetY+w-("top"===h.config.xaxis.position?h.layout.xAxisHeight+h.config.xaxis.axisTicks.height-2:0),text:y.text,textAnchor:"middle",fontWeight:y.isBold?600:p,fontSize:c,fontFamily:d,foreColor:Array.isArray(g)?v():g,isPlainText:!1,cssClass:(t?"apexcharts-xaxis-label ":"apexcharts-xaxis-group-label ")+u});if(s.add(i),i.on("click",t=>{if("function"==typeof h.config.chart.events.xAxisLabelClick){const e=Object.assign({},h,{labelIndex:a});h.config.chart.events.xAxisLabelClick(t,this.ctx,e)}}),t){const t=Bs.createElementNS(ei,"title");t.textContent=Array.isArray(y.text)?y.text.join(" "):y.text,i.node.appendChild(t),""!==y.text&&(n.push(y.text),l.push(y))}}a<m-1&&(x+=r(a+1,f))}}drawXaxisInversed(t){const e=this.w,s=new ti(this.w),i=e.config.yaxis[0].opposite?e.globals.translateYAxisX[t]:0,a=s.group({class:"apexcharts-yaxis apexcharts-xaxis-inversed",rel:t}),r=s.group({class:"apexcharts-yaxis-texts-g apexcharts-xaxis-inversed-texts-g",transform:"translate("+i+", 0)"});a.add(r);const o=[];if(e.config.yaxis[t].show)for(let t=0;t<this.xaxisLabels.length;t++)o.push(this.xaxisLabels[t]);const n=e.layout.gridHeight/o.length;let l=-n/2.2;const h=e.formatters.yLabelFormatters[0],c=e.config.yaxis[0].labels;if(c.show)for(let i=0;i<=o.length-1;i++){let a=void 0===o[i]?"":o[i];a=h(a,{seriesIndex:t,dataPointIndex:i,w:e});const d=this.axesUtils.getYAxisForeColor(c.style.colors,t),g=()=>Array.isArray(d)?d[i]:d;let p=0;Array.isArray(a)&&(p=a.length/2*parseInt(c.style.fontSize,10));let u=c.offsetX-15,f="end";this.yaxis.opposite&&(f="start"),"left"===e.config.yaxis[0].labels.align?(u=c.offsetX,f="start"):"center"===e.config.yaxis[0].labels.align?(u=c.offsetX,f="middle"):"right"===e.config.yaxis[0].labels.align&&(f="end");const x=s.drawText({x:u,y:l+n+c.offsetY-p,text:a,textAnchor:f,foreColor:g(),fontSize:c.style.fontSize,fontFamily:c.style.fontFamily,fontWeight:c.style.fontWeight,isPlainText:!1,cssClass:"apexcharts-yaxis-label "+c.style.cssClass,maxWidth:c.maxWidth});r.add(x),x.on("click",t=>{if("function"==typeof e.config.chart.events.xAxisLabelClick){const s=Object.assign({},e,{labelIndex:i});e.config.chart.events.xAxisLabelClick(t,this.ctx,s)}});const m=Bs.createElementNS(ei,"title");if(m.textContent=Array.isArray(a)?a.join(" "):a,x.node.appendChild(m),0!==e.config.yaxis[t].labels.rotate){const i=s.rotateAroundCenter(x.node);x.node.setAttribute("transform",`rotate(${e.config.yaxis[t].labels.rotate} 0 ${i.y})`)}l+=n}if(void 0!==e.config.yaxis[0].title.text){const t=s.group({class:"apexcharts-yaxis-title apexcharts-xaxis-title-inversed",transform:"translate("+i+", 0)"}),r=s.drawText({x:e.config.yaxis[0].title.offsetX,y:e.layout.gridHeight/2+e.config.yaxis[0].title.offsetY,text:e.config.yaxis[0].title.text,textAnchor:"middle",foreColor:e.config.yaxis[0].title.style.color,fontSize:e.config.yaxis[0].title.style.fontSize,fontWeight:e.config.yaxis[0].title.style.fontWeight,fontFamily:e.config.yaxis[0].title.style.fontFamily,cssClass:"apexcharts-yaxis-title-text "+e.config.yaxis[0].title.style.cssClass});t.add(r),a.add(t)}let d=0;this.isCategoryBarHorizontal&&e.config.yaxis[0].opposite&&(d=e.layout.gridWidth);const g=e.config.xaxis.axisBorder;if(g.show){const t=s.drawLine(e.globals.padHorizontal+g.offsetX+d,1+g.offsetY,e.globals.padHorizontal+g.offsetX+d,e.layout.gridHeight+g.offsetY,g.color,0);this.elgrid&&this.elgrid.elGridBorders&&e.config.grid.show?this.elgrid.elGridBorders.add(t):a.add(t)}return e.config.yaxis[0].axisTicks.show&&this.axesUtils.drawYAxisTicks(d,o.length,e.config.yaxis[0].axisBorder,e.config.yaxis[0].axisTicks,0,n,a),a}drawXaxisTicks(t,e,s){const i=this.w,a=t;if(t<0||t-2>i.layout.gridWidth)return;const r=this.offY+i.config.xaxis.axisTicks.offsetY;if(e=e+r+i.config.xaxis.axisTicks.height,"top"===i.config.xaxis.position&&(e=r-i.config.xaxis.axisTicks.height),i.config.xaxis.axisTicks.show){const o=new ti(this.w).drawLine(t+i.config.xaxis.axisTicks.offsetX,r+i.config.xaxis.offsetY,a+i.config.xaxis.axisTicks.offsetX,e+i.config.xaxis.offsetY,i.config.xaxis.axisTicks.color);s.add(o),o.node.classList.add("apexcharts-xaxis-tick")}}getXAxisTicksPositions(){const t=this.w,e=[],s=this.xaxisLabels.length;let i=t.globals.padHorizontal;if(t.labelData.timescaleLabels.length>0)for(let t=0;t<s;t++)i=this.xaxisLabels[t].position,e.push(i);else{const a=s;for(let s=0;s<a;s++){let s=a;t.axisFlags.isXNumeric&&"bar"!==t.config.chart.type&&(s-=1),i+=t.layout.gridWidth/s,e.push(i)}}return e}xAxisLabelCorrections(){var t,e,s;const i=this.w,a=new ti(this.w),r=i.dom.baseEl.querySelector(".apexcharts-xaxis-texts-g"),o=i.dom.baseEl.querySelectorAll(".apexcharts-xaxis-texts-g text:not(.apexcharts-xaxis-group-label)"),n=i.dom.baseEl.querySelectorAll(".apexcharts-yaxis-inversed text"),l=i.dom.baseEl.querySelectorAll(".apexcharts-xaxis-inversed-texts-g text tspan");if(i.layout.rotateXLabels||i.config.xaxis.labels.rotateAlways)for(let t=0;t<o.length;t++){const e=a.rotateAroundCenter(o[t]);e.y=e.y-1,e.x=e.x+1,o[t].setAttribute("transform",`rotate(${i.config.xaxis.labels.rotate} ${e.x} ${e.y})`),o[t].setAttribute("text-anchor","end"),null==r||r.setAttribute("transform","translate(0, -10)");const s=o[t].childNodes;i.config.xaxis.labels.trim&&Array.prototype.forEach.call(s,t=>{a.placeTextWithEllipsis(t,t.textContent,i.layout.xAxisLabelsHeight-("bottom"===i.config.legend.position?20:10))})}else{const t=i.layout.gridWidth/(i.labelData.labels.length+1);for(let e=0;e<o.length;e++){const s=o[e].childNodes;i.config.xaxis.labels.trim&&"datetime"!==i.config.xaxis.type&&Array.prototype.forEach.call(s,e=>{a.placeTextWithEllipsis(e,e.textContent,t)})}}if(n.length>0){const r=n[n.length-1].getBBox(),o=n[0].getBBox();r.x<-20&&(null==(t=n[n.length-1].parentNode)||t.removeChild(n[n.length-1])),o.x+o.width>i.layout.gridWidth&&!i.globals.isBarHorizontal&&(null==(e=n[0].parentNode)||e.removeChild(n[0]));for(let t=0;t<l.length;t++)a.placeTextWithEllipsis(l[t],null!=(s=l[t].textContent)?s:"",i.config.yaxis[0].labels.maxWidth-(i.config.yaxis[0].title.text?2*parseFloat(i.config.yaxis[0].title.style.fontSize):0)-15)}}}class gi{constructor(t,e){this.w=t,this.ctx=e,this.xaxisLabels=t.labelData.labels.slice(),this.axesUtils=new ci(e.w,{theme:e.theme,timeScale:e.timeScale}),this.isRangeBar=t.rangeData.seriesRange.length&&t.globals.isBarHorizontal,t.labelData.timescaleLabels.length>0&&(this.xaxisLabels=t.labelData.timescaleLabels.slice())}drawGridArea(t=null){const e=this.w,s=new ti(this.w);t||(t=s.group({class:"apexcharts-grid"}));const i=s.drawLine(e.globals.padHorizontal,1,e.globals.padHorizontal,e.layout.gridHeight,"transparent"),a=s.drawLine(e.globals.padHorizontal,e.layout.gridHeight,e.layout.gridWidth,e.layout.gridHeight,"transparent");return t.add(a),t.add(i),t}drawGrid(){if(this.w.globals.axisCharts){const t=this.renderGrid();return this.drawGridArea(t.el),t}return null}createGridMask(){const t=this.w,e=t.globals,s=new ti(this.w),i=Array.isArray(t.config.stroke.width)?Math.max(...t.config.stroke.width):t.config.stroke.width,a=t=>{const e=Bs.createElementNS(ei,"clipPath");return e.setAttribute("id",t),e};t.dom.elGridRectMask=a(`gridRectMask${e.cuid}`),t.dom.elGridRectBarMask=a(`gridRectBarMask${e.cuid}`),t.dom.elGridRectMarkerMask=a(`gridRectMarkerMask${e.cuid}`),t.dom.elForecastMask=a(`forecastMask${e.cuid}`),t.dom.elNonForecastMask=a(`nonForecastMask${e.cuid}`);let r=0,o=0;(["bar","rangeBar","candlestick","boxPlot"].includes(t.config.chart.type)||t.globals.comboBarCount>0)&&t.axisFlags.isXNumeric&&!t.globals.isBarHorizontal&&(r=Math.max(t.config.grid.padding.left,e.barPadForNumericAxis),o=Math.max(t.config.grid.padding.right,e.barPadForNumericAxis)),t.dom.elGridRect=s.drawRect(-i/2-2,-i/2-2,t.layout.gridWidth+i+4,t.layout.gridHeight+i+4,0,"#fff"),t.dom.elGridRectBar=s.drawRect(-i/2-r-2,-i/2-2,t.layout.gridWidth+i+o+r+4,t.layout.gridHeight+i+4,0,"#fff");const n=t.globals.markers.largestSize;t.dom.elGridRectMarker=s.drawRect(Math.min(-i/2-r-2,-n),-n,t.layout.gridWidth+Math.max(i+o+r+4,2*n),t.layout.gridHeight+2*n,0,"#fff"),t.dom.elGridRectMask.appendChild(t.dom.elGridRect.node),t.dom.elGridRectBarMask.appendChild(t.dom.elGridRectBar.node),t.dom.elGridRectMarkerMask.appendChild(t.dom.elGridRectMarker.node);const l=t.dom.elDefs.node;l.appendChild(t.dom.elGridRectMask),l.appendChild(t.dom.elGridRectBarMask),l.appendChild(t.dom.elGridRectMarkerMask),l.appendChild(t.dom.elForecastMask),l.appendChild(t.dom.elNonForecastMask)}_drawGridLines({i:t,x1:e,y1:s,x2:i,y2:a,xCount:r,parent:o}){const n=this.w;if(!(0===t&&n.globals.skipFirstTimelinelabel||t===r-1&&n.globals.skipLastTimelinelabel&&!n.config.xaxis.labels.formatter||"radar"===n.config.chart.type)){n.config.grid.xaxis.lines.show&&this._drawGridLine({i:t,x1:e,y1:s,x2:i,y2:a,xCount:r,parent:o});let l=0;if(n.labelData.hasXaxisGroups&&"between"===n.config.xaxis.tickPlacement){const e=n.labelData.groups;if(e){let s=0;for(let i=0;s<t&&i<e.length;i++)s+=e[i].cols;s===t&&(l=.6*n.layout.xAxisLabelsHeight)}}new di(this.w,this.ctx).drawXaxisTicks(e,l,n.dom.elGraphical)}}_drawGridLine({i:t,x1:e,y1:s,x2:i,y2:a,xCount:r,parent:o}){const n=this.w,l=o.node.classList.contains("apexcharts-gridlines-horizontal"),h=n.globals.barPadForNumericAxis,c=0===s&&0===a||0===e&&0===i||s===n.layout.gridHeight&&a===n.layout.gridHeight||n.globals.isBarHorizontal&&(0===t||t===r-1),d=new ti(this.w).drawLine(e-(l?h:0),s,i+(l?h:0),a,n.config.grid.borderColor,n.config.grid.strokeDashArray);d.node.classList.add("apexcharts-gridline"),c&&n.config.grid.show?this.elGridBorders.add(d):o.add(d)}_drawGridBandRect({c:t,x1:e,y1:s,x2:i,y2:a,type:r}){const o=this.w,n=new ti(this.w),l=o.globals.barPadForNumericAxis,h=o.config.grid[r].colors[t],c=n.drawRect(e-("row"===r?l:0),s,i+("row"===r?2*l:0),a,0,h,o.config.grid[r].opacity);this.elg.add(c),c.attr("clip-path",`url(#gridRectMask${o.globals.cuid})`),c.node.classList.add(`apexcharts-grid-${r}`)}_drawXYLines({xCount:t,tickAmount:e}){var s;const i=this.w,a=({xC:e,x1:s,y1:i,x2:a,y2:r})=>{for(let o=0;o<e;o++)s=this.xaxisLabels[o].position,a=this.xaxisLabels[o].position,this._drawGridLines({i:o,x1:s,y1:i,x2:a,y2:r,xCount:t,parent:this.elgridLinesV})},r=({xC:e,x1:s,y1:a,x2:r,y2:o})=>{for(let n=0;n<e+(i.axisFlags.isXNumeric?0:1);n++)0===n&&1===e&&1===i.globals.dataPoints&&(r=s=i.layout.gridWidth/2),this._drawGridLines({i:n,x1:s,y1:a,x2:r,y2:o,xCount:t,parent:this.elgridLinesV}),r=s+=i.layout.gridWidth/(i.axisFlags.isXNumeric?e-1:e)};if(i.config.grid.xaxis.lines.show||i.config.xaxis.axisTicks.show){const e=i.globals.padHorizontal,o=0;let n;const l=i.layout.gridHeight;i.labelData.timescaleLabels.length?a({xC:t,x1:e,y1:o,x2:n,y2:l}):(i.axisFlags.isXNumeric&&(t=null==(s=i.globals.xAxisScale)?void 0:s.result.length),r({xC:t,x1:e,y1:o,x2:n,y2:l}))}if(i.config.grid.yaxis.lines.show){const t=0;let s=0,a=0;const r=i.layout.gridWidth;let o=e+1;this.isRangeBar&&(o=i.labelData.labels.length);for(let n=0;n<o+(this.isRangeBar?1:0);n++)this._drawGridLine({i:n,xCount:o+(this.isRangeBar?1:0),x1:t,y1:s,x2:r,y2:a,parent:this.elgridLinesH}),s+=i.layout.gridHeight/(this.isRangeBar?o:e),a=s}}_drawInvertedXYLines({xCount:t}){const e=this.w;if(e.config.grid.xaxis.lines.show||e.config.xaxis.axisTicks.show){let s=e.globals.padHorizontal;const i=0;let a;const r=e.layout.gridHeight;for(let o=0;o<t+1;o++){e.config.grid.xaxis.lines.show&&this._drawGridLine({i:o,xCount:t+1,x1:s,y1:i,x2:a,y2:r,parent:this.elgridLinesV});new di(this.w,this.ctx).drawXaxisTicks(s,0,e.dom.elGraphical),s+=e.layout.gridWidth/t,a=s}}if(e.config.grid.yaxis.lines.show){const t=0;let s=0,i=0;const a=e.layout.gridWidth;for(let r=0;r<e.globals.dataPoints+1;r++)this._drawGridLine({i:r,xCount:e.globals.dataPoints+1,x1:t,y1:s,x2:a,y2:i,parent:this.elgridLinesH}),s+=e.layout.gridHeight/e.globals.dataPoints,i=s}}renderGrid(){var t,e,s;const i=this.w,a=i.globals,r=new ti(this.w);this.elg=r.group({class:"apexcharts-grid"}),this.elgridLinesH=r.group({class:"apexcharts-gridlines-horizontal"}),this.elgridLinesV=r.group({class:"apexcharts-gridlines-vertical"}),this.elGridBorders=r.group({class:"apexcharts-grid-borders"}),this.elg.add(this.elgridLinesH),this.elg.add(this.elgridLinesV),i.config.grid.show||(this.elgridLinesV.hide(),this.elgridLinesH.hide(),this.elGridBorders.hide());let o=0;for(;o<a.seriesYAxisMap.length&&a.ignoreYAxisIndexes.includes(o);)o++;o===a.seriesYAxisMap.length&&(o=0);let n,l=a.yAxisScale[o].result.length-1;return!a.isBarHorizontal||this.isRangeBar?(n=this.xaxisLabels.length,this.isRangeBar&&(l=i.labelData.labels.length,i.config.xaxis.tickAmount&&i.config.xaxis.labels.formatter&&(n=i.config.xaxis.tickAmount),(null==(s=null==(e=null==(t=a.yAxisScale)?void 0:t[o])?void 0:e.result)?void 0:s.length)>0&&"datetime"!==i.config.xaxis.type&&(n=a.yAxisScale[o].result.length-1)),this._drawXYLines({xCount:n,tickAmount:l})):(n=l,l=a.xTickAmount,this._drawInvertedXYLines({xCount:n,tickAmount:l})),this.drawGridBands(n,l),{el:this.elg,elGridBorders:this.elGridBorders,xAxisTickWidth:i.layout.gridWidth/n}}drawGridBands(t,e){var s,i,a,r,o;const n=this.w,l=(t,s,i,a,r,o)=>{for(let l=0,h=0;l<s;l++,h++)h>=n.config.grid[t].colors.length&&(h=0),this._drawGridBandRect({c:h,x1:i,y1:a,x2:r,y2:o,type:t}),a+=n.layout.gridHeight/e};if((null==(s=n.config.grid.row.colors)?void 0:s.length)>0&&l("row",e,0,0,n.layout.gridWidth,n.layout.gridHeight/e),(null==(i=n.config.grid.column.colors)?void 0:i.length)>0){let e=n.globals.isBarHorizontal||"on"!==n.config.xaxis.tickPlacement||"category"!==n.config.xaxis.type&&!n.config.xaxis.convertedCatToNumeric?t:t-1;n.axisFlags.isXNumeric&&(e=(null!=(r=null==(a=n.globals.xAxisScale)?void 0:a.result.length)?r:1)-1);let s=n.globals.padHorizontal;const i=0;let l=n.globals.padHorizontal+n.layout.gridWidth/e;const h=n.layout.gridHeight;for(let a=0,r=0;a<t;a++,r++)r>=n.config.grid.column.colors.length&&(r=0),"datetime"===n.config.xaxis.type&&(s=this.xaxisLabels[a].position,l=((null==(o=this.xaxisLabels[a+1])?void 0:o.position)||n.layout.gridWidth)-this.xaxisLabels[a].position),this._drawGridBandRect({c:r,x1:s,y1:i,x2:l,y2:h,type:"column"}),s+=n.layout.gridWidth/e}}}class pi{constructor(t){this.w=t,this.coreUtils=new Ks(this.w)}niceScale(t,e,s=0){const i=1e-11,a=this.w,r=a.globals;let o,n,l,h;r.isBarHorizontal?(o=a.config.xaxis,n=Math.max((r.svgWidth-100)/25,2)):(o=a.config.yaxis[s],n=Math.max((r.svgHeight-100)/15,2)),Ns.isNumber(n)||(n=10),l=void 0!==o.min&&null!==o.min,h=void 0!==o.max&&null!==o.min;let c=void 0!==o.stepSize&&null!==o.stepSize,d=void 0!==o.tickAmount&&null!==o.tickAmount,g=d?o.tickAmount:Vs[Math.min(Math.round(n/2),Vs.length-1)];if(r.isMultipleYAxis&&!d&&r.multiAxisTickAmount>0&&(g=r.multiAxisTickAmount,d=!0),g="dataPoints"===g?r.dataPoints-1:Math.abs(Math.round(g)),(t===Number.MIN_VALUE&&0===e||!Ns.isNumber(t)&&!Ns.isNumber(e)||t===Number.MIN_VALUE&&e===-Number.MAX_VALUE)&&(t=Ns.isNumber(o.min)?o.min:0,e=Ns.isNumber(o.max)?o.max:t+g,r.allSeriesCollapsed=!1),t>e){console.warn("axis.min cannot be greater than axis.max: swapping min and max");const s=e;e=t,t=s}else t===e&&(t=0===t?0:t-1,e=0===e?2:e+1);const p=[];g<1&&(g=1);let u=g,f=Math.abs(e-t);!l&&t>0&&t/f<.15&&(t=0,l=!0),!h&&e<0&&-e/f<.15&&(e=0,h=!0),f=Math.abs(e-t);let x=f/u,m=x;const b=Math.floor(Math.log10(m)),y=Math.pow(10,b);let w=Math.ceil(m/y);if(w=js[0===r.yValueDecimal?0:1][w],m=w*y,x=m,r.isBarHorizontal&&o.stepSize&&"datetime"!==o.type?(x=o.stepSize,c=!0):c&&(x=o.stepSize),c&&o.forceNiceScale){const t=Math.floor(Math.log10(x));x*=Math.pow(10,b-t)}if(l&&h){let t=f/u;if(d)if(c)if(0!=Ns.mod(f,x)){const e=Ns.getGCD(x,t);x=t/e<10?e:t}else 0==Ns.mod(x,t)?x=t:(t=x,d=!1);else x=t;else if(c)0==Ns.mod(f,x)?t=x:x=t;else if(0==Ns.mod(f,x))t=x;else{u=Math.ceil(f/x),t=f/u;const e=Ns.getGCD(f,x);f/e<n&&(t=e),x=t}u=Math.round(f/x)}else{if(l||h){if(h)if(d)t=e-x*u;else{const s=t;t=x*Math.floor(t/x),Math.abs(e-t)/Ns.getGCD(f,x)>n&&(t=e-x*g,t+=x*Math.floor((s-t)/x))}else if(l)if(d)e=t+x*u;else{const s=e;e=x*Math.ceil(e/x),Math.abs(e-t)/Ns.getGCD(f,x)>n&&(e=t+x*g,e+=x*Math.ceil((s-e)/x))}}else if(r.isMultipleYAxis&&d){const s=x*Math.floor(t/x);let i=s+x*u;i<e&&(x*=2),i=e,e=(t=s)+x*u,f=Math.abs(e-t),t>0&&t<Math.abs(i-e)&&(t=0,e=x*u),e<0&&-e<Math.abs(s-t)&&(e=0,t=-x*u)}else t=x*Math.floor(t/x),e=x*Math.ceil(e/x);f=Math.abs(e-t),x=Ns.getGCD(f,x),u=Math.round(f/x)}if(d||l||h||(u=Math.ceil((f-i)/(x+i)),u>16&&Ns.getPrimeFactors(u).length<2&&u++),!d&&o.forceNiceScale&&0===r.yValueDecimal&&u>f&&(u=f,x=Math.round(f/u)),u>n&&(!d&&!c||o.forceNiceScale)){const t=Ns.getPrimeFactors(u),e=t.length-1;let s=u;t:for(var v=0;v<e;v++)for(var A=0;A<=e-v;A++){const i=Math.min(A+v,e);let a=s,r=1;for(var C=A;C<=i;C++)r*=t[C];if(a/=r,a<n){s=a;break t}}x=s===u?f:f/s,u=Math.round(f/x)}r.isMultipleYAxis&&0==r.multiAxisTickAmount&&r.ignoreYAxisIndexes.indexOf(s)<0&&(r.multiAxisTickAmount=u);let _=t-x;const S=x*i;do{_+=x,p.push(Ns.stripNumber(_,7))}while(e-_>S);return{result:p,niceMin:p[0],niceMax:p[p.length-1]}}linearScale(t,e,s=10,i=0,a=void 0){const r=Math.abs(e-t);let o=[];if(t===e)return o=[t],{result:o,niceMin:o[0],niceMax:o[o.length-1]};"dataPoints"===(s=this._adjustTicksForSmallRange(s,i,r))&&(s=this.w.globals.dataPoints-1);const n=s;a||(a=r/n);if(0!==a&&isFinite(a)){const t=Math.floor(Math.log10(Math.abs(a))),e=Math.max(2,2-t),s=Math.pow(10,e);a=Math.round((a+Number.EPSILON)*s)/s}let l=s===Number.MAX_VALUE?5:n;s===Number.MAX_VALUE&&(a=1);let h=t;for(;l>=0;)o.push(h),h=Ns.preciseAddition(h,a),l-=1;return{result:o,niceMin:o[0],niceMax:o[o.length-1]}}logarithmicScaleNice(t,e,s){e<=0&&(e=Math.max(t,s)),t<=0&&(t=Math.min(e,s));const i=[],a=Math.ceil(Math.log(e)/Math.log(s)+1);for(let e=Math.floor(Math.log(t)/Math.log(s));e<a;e++)i.push(Math.pow(s,e));return{result:i,niceMin:i[0],niceMax:i[i.length-1]}}logarithmicScale(t,e,s){e<=0&&(e=Math.max(t,s)),t<=0&&(t=Math.min(e,s));const i=[],a=Math.log(e)/Math.log(s),r=Math.log(t)/Math.log(s),o=a-r,n=Math.round(o),l=o/n;for(let t=0,e=r;t<n;t++,e+=l)i.push(Math.pow(s,e));return i.push(Math.pow(s,a)),{result:i,niceMin:t,niceMax:e}}_adjustTicksForSmallRange(t,e,s){let i=t;if(void 0!==e&&this.w.config.yaxis[e].labels.formatter&&void 0===this.w.config.yaxis[e].tickAmount){const t=Number(this.w.config.yaxis[e].labels.formatter(1));Ns.isNumber(t)&&0===this.w.globals.yValueDecimal&&(i=Math.ceil(s))}return i<t?i:t}setYScaleForIndex(t,e,s){const i=this.w.globals,a=this.w.config,r=i.isBarHorizontal?a.xaxis:a.yaxis[t];void 0===i.yAxisScale[t]&&(i.yAxisScale[t]=[]);const o=Math.abs(s-e);r.logarithmic&&o<=5&&(i.invalidLogScale=!0),r.logarithmic&&o>5?(i.allSeriesCollapsed=!1,i.yAxisScale[t]=r.forceNiceScale?this.logarithmicScaleNice(e,s,r.logBase):this.logarithmicScale(e,s,r.logBase)):s!==-Number.MAX_VALUE&&Ns.isNumber(s)&&e!==Number.MAX_VALUE&&Ns.isNumber(e)?(i.allSeriesCollapsed=!1,i.yAxisScale[t]=this.niceScale(e,s,t)):i.yAxisScale[t]=this.niceScale(Number.MIN_VALUE,0,t)}setXScale(t,e){const s=this.w,i=s.globals;if(e!==-Number.MAX_VALUE&&Ns.isNumber(e)){const a=i.xTickAmount;i.xAxisScale=this.linearScale(t,e,a,0,void 0===s.config.xaxis.max?s.config.xaxis.stepSize:void 0)}else i.xAxisScale=this.linearScale(0,10,10);return i.xAxisScale}scaleMultipleYAxes(){const t=this.w.config,e=this.w.globals;this.coreUtils.setSeriesYAxisMappings();const s=e.seriesYAxisMap,i=e.minYArr,a=e.maxYArr;e.allSeriesCollapsed=!0,e.barGroups=[],s.forEach((s,r)=>{const o=[];if(s.forEach(e=>{var s;const i=null==(s=t.series[e])?void 0:s.group;o.indexOf(i)<0&&o.push(i)}),s.length>0){let n,l,h=Number.MAX_VALUE,c=-Number.MAX_VALUE,d=h,g=c;if(t.chart.stacked){const i=new Array(e.dataPoints).fill(0),a=[],p=[],u=[];o.forEach(()=>{a.push(i.map(()=>Number.MIN_VALUE)),p.push(i.map(()=>Number.MIN_VALUE)),u.push(i.map(()=>Number.MIN_VALUE))});for(let i=0;i<s.length;i++){!n&&t.series[s[i]].type&&(n=t.series[s[i]].type);const h=s[i];l=t.series[h].group?t.series[h].group:"axis-".concat(r.toString());!(e.collapsedSeriesIndices.indexOf(h)<0&&e.ancillaryCollapsedSeriesIndices.indexOf(h)<0)||(e.allSeriesCollapsed=!1,o.forEach((e,s)=>{if(t.series[h].group===e)for(let t=0;t<this.w.seriesData.series[h].length;t++){const e=this.w.seriesData.series[h][t];e>=0?p[s][t]+=e:u[s][t]+=e,a[s][t]+=e,d=Math.min(d,e),g=Math.max(g,e)}})),"bar"!==n&&"column"!==n||e.barGroups.push(l)}n||(n=t.chart.type),"bar"===n||"column"===n?o.forEach((t,e)=>{h=Math.min(h,Math.min.apply(null,u[e])),c=Math.max(c,Math.max.apply(null,p[e]))}):(o.forEach((t,e)=>{d=Math.min(d,Math.min.apply(null,a[e])),g=Math.max(g,Math.max.apply(null,a[e]))}),h=d,c=g),h===Number.MIN_VALUE&&c===Number.MIN_VALUE&&(c=-Number.MAX_VALUE)}else for(let t=0;t<s.length;t++){const r=s[t];h=Math.min(h,i[r]),c=Math.max(c,a[r]);!(e.collapsedSeriesIndices.indexOf(r)<0&&e.ancillaryCollapsedSeriesIndices.indexOf(r)<0)||(e.allSeriesCollapsed=!1)}void 0!==t.yaxis[r].min&&(h="function"==typeof t.yaxis[r].min?t.yaxis[r].min(h):t.yaxis[r].min),void 0!==t.yaxis[r].max&&(c="function"==typeof t.yaxis[r].max?t.yaxis[r].max(c):t.yaxis[r].max),e.barGroups=e.barGroups.filter((t,e,s)=>s.indexOf(t)===e),this.setYScaleForIndex(r,h,c),s.forEach(t=>{i[t]=e.yAxisScale[r].niceMin,a[t]=e.yAxisScale[r].niceMax})}else this.setYScaleForIndex(r,0,-Number.MAX_VALUE)})}}class ui{constructor(t){this.w=t,this.scales=new pi(this.w)}init(){this.setYRange(),this.setXRange(),this.setZRange()}getMinYMaxY(t,e=Number.MAX_VALUE,s=-Number.MAX_VALUE,i=null){var a,r,o,n,l;const h=this.w.config,c=this.w.globals;let d=-Number.MAX_VALUE,g=Number.MIN_VALUE;null===i&&(i=t+1);const p=this.w.seriesData.series;let u=p,f=p;"candlestick"===h.chart.type?(u=this.w.candleData.seriesCandleL,f=this.w.candleData.seriesCandleH):"boxPlot"===h.chart.type?(u=this.w.candleData.seriesCandleO,f=this.w.candleData.seriesCandleC):this.w.axisFlags.isRangeData&&(u=this.w.rangeData.seriesRangeStart,f=this.w.rangeData.seriesRangeEnd);let x=!1;if(this.w.seriesData.seriesX.length>=i){const t=null==(a=c.brushSource)?void 0:a.w.config.chart.brush;(h.chart.zoom.enabled&&h.chart.zoom.autoScaleYaxis||(null==t?void 0:t.enabled)&&(null==t?void 0:t.autoScaleYaxis))&&(x=!0)}for(let a=t;a<i;a++){c.dataPoints=Math.max(c.dataPoints,p[a].length);const t=h.series[a].type;this.w.labelData.categoryLabels.length&&(c.dataPoints=this.w.labelData.categoryLabels.filter(t=>void 0!==t).length),this.w.labelData.labels.length&&"datetime"!==h.xaxis.type&&0!==this.w.seriesData.series.reduce((t,e)=>t+e.length,0)&&(c.dataPoints=Math.max(c.dataPoints,this.w.labelData.labels.length));let i=0,m=p[a].length-1;if(x){if(h.xaxis.min)for(;i<m&&this.w.seriesData.seriesX[a][i]<h.xaxis.min;i++);if(h.xaxis.max)for(;m>i&&this.w.seriesData.seriesX[a][m]>h.xaxis.max;m--);}for(let h=i;h<=m&&h<this.w.seriesData.series[a].length;h++){let i=p[a][h];if(null!==i&&Ns.isNumber(i)){switch(void 0!==(null==(r=f[a])?void 0:r[h])&&(d=Math.max(d,f[a][h]),e=Math.min(e,f[a][h])),void 0!==(null==(o=u[a])?void 0:o[h])&&(e=Math.min(e,u[a][h]),s=Math.max(s,u[a][h])),t){case"candlestick":void 0!==this.w.candleData.seriesCandleC[a][h]&&(d=Math.max(d,this.w.candleData.seriesCandleH[a][h]),e=Math.min(e,this.w.candleData.seriesCandleL[a][h]));break;case"boxPlot":void 0!==this.w.candleData.seriesCandleC[a][h]&&(d=Math.max(d,this.w.candleData.seriesCandleC[a][h]),e=Math.min(e,this.w.candleData.seriesCandleO[a][h]))}t&&"candlestick"!==t&&"boxPlot"!==t&&"rangeArea"!==t&&"rangeBar"!==t&&(d=Math.max(d,this.w.seriesData.series[a][h]),e=Math.min(e,this.w.seriesData.series[a][h])),this.w.seriesData.seriesGoals[a]&&this.w.seriesData.seriesGoals[a][h]&&Array.isArray(this.w.seriesData.seriesGoals[a][h])&&this.w.seriesData.seriesGoals[a][h].forEach(t=>{d=Math.max(d,t.value),e=Math.min(e,t.value)}),s=d,i=Ns.noExponents(i),Ns.isFloat(i)&&(c.yValueDecimal=Math.max(c.yValueDecimal,i.toString().split(".")[1].length)),g>(null==(n=u[a])?void 0:n[h])&&(null==(l=u[a])?void 0:l[h])<0&&(g=u[a][h])}else c.hasNullValues=!0}"bar"!==t&&"column"!==t||(g<0&&d<0&&(d=0,s=Math.max(s,0)),g===Number.MIN_VALUE&&(g=0,e=Math.min(e,0)))}return"rangeBar"===h.chart.type&&this.w.rangeData.seriesRangeStart.length&&c.isBarHorizontal&&(g=e),"bar"===h.chart.type&&(g<0&&d<0&&(d=0),g===Number.MIN_VALUE&&(g=0)),{minY:g,maxY:d,lowestY:e,highestY:s}}setYRange(){const t=this.w.globals,e=this.w.config;t.maxY=-Number.MAX_VALUE,t.minY=Number.MIN_VALUE;let s,i=Number.MAX_VALUE;if(t.isMultipleYAxis){i=Number.MAX_VALUE;for(let e=0;e<this.w.seriesData.series.length;e++)s=this.getMinYMaxY(e),t.minYArr[e]=s.lowestY,t.maxYArr[e]=s.highestY,i=Math.min(i,s.lowestY)}if(s=this.getMinYMaxY(0,i,void 0,this.w.seriesData.series.length),"bar"===e.chart.type?(t.minY=s.minY,t.maxY=s.maxY):(t.minY=s.lowestY,t.maxY=s.highestY),i=s.lowestY,e.chart.stacked&&this._setStackedMinMax(),"line"===e.chart.type||"area"===e.chart.type||"scatter"===e.chart.type||"candlestick"===e.chart.type||"boxPlot"===e.chart.type||"rangeBar"===e.chart.type&&!t.isBarHorizontal?t.minY===Number.MIN_VALUE&&i!==-Number.MAX_VALUE&&i!==t.maxY&&(t.minY=i):t.minY=t.minY!==Number.MIN_VALUE?Math.min(s.minY,t.minY):s.minY,e.yaxis.forEach((e,s)=>{void 0!==e.max&&("number"==typeof e.max?t.maxYArr[s]=e.max:"function"==typeof e.max&&(t.maxYArr[s]=e.max(t.isMultipleYAxis?t.maxYArr[s]:t.maxY)),t.maxY=t.maxYArr[s]),void 0!==e.min&&("number"==typeof e.min?t.minYArr[s]=e.min:"function"==typeof e.min&&(t.minYArr[s]=e.min(t.isMultipleYAxis?t.minYArr[s]===Number.MIN_VALUE?0:t.minYArr[s]:t.minY)),t.minY=t.minYArr[s])}),t.isBarHorizontal){["min","max"].forEach(s=>{void 0!==e.xaxis[s]&&"number"==typeof e.xaxis[s]&&("min"===s?t.minY=e.xaxis[s]:t.maxY=e.xaxis[s])})}return t.isMultipleYAxis?(this.scales.scaleMultipleYAxes(),t.minY=i):(this.scales.setYScaleForIndex(0,t.minY,t.maxY),t.minY=t.yAxisScale[0].niceMin,t.maxY=t.yAxisScale[0].niceMax,t.minYArr[0]=t.minY,t.maxYArr[0]=t.maxY),t.barGroups=[],t.lineGroups=[],t.areaGroups=[],e.series.forEach(s=>{const i=s;switch(i.type||e.chart.type){case"bar":case"column":t.barGroups.push(i.group);break;case"line":t.lineGroups.push(i.group);break;case"area":t.areaGroups.push(i.group)}}),t.barGroups=t.barGroups.filter((t,e,s)=>s.indexOf(t)===e),t.lineGroups=t.lineGroups.filter((t,e,s)=>s.indexOf(t)===e),t.areaGroups=t.areaGroups.filter((t,e,s)=>s.indexOf(t)===e),{minY:t.minY,maxY:t.maxY,minYArr:t.minYArr,maxYArr:t.maxYArr,yAxisScale:t.yAxisScale}}setXRange(){const t=this.w.globals,e=this.w.config,s="numeric"===e.xaxis.type||"datetime"===e.xaxis.type||"category"===e.xaxis.type&&!this.w.axisFlags.noLabelsProvided||this.w.axisFlags.noLabelsProvided||this.w.axisFlags.isXNumeric,i=()=>{for(let e=0;e<this.w.seriesData.series.length;e++)if(this.w.labelData.labels[e])for(let s=0;s<this.w.labelData.labels[e].length;s++)null!==this.w.labelData.labels[e][s]&&Ns.isNumber(this.w.labelData.labels[e][s])&&(t.maxX=Math.max(t.maxX,this.w.labelData.labels[e][s]),t.initialMaxX=Math.max(t.maxX,this.w.labelData.labels[e][s]),t.minX=Math.min(t.minX,this.w.labelData.labels[e][s]),t.initialMinX=Math.min(t.minX,this.w.labelData.labels[e][s]))};if(this.w.axisFlags.isXNumeric&&i(),this.w.axisFlags.noLabelsProvided&&0===e.xaxis.categories.length&&(t.maxX=this.w.labelData.labels[this.w.labelData.labels.length-1],t.initialMaxX=this.w.labelData.labels[this.w.labelData.labels.length-1],t.minX=1,t.initialMinX=1),this.w.axisFlags.isXNumeric||this.w.axisFlags.noLabelsProvided||this.w.axisFlags.dataFormatXNumeric){let i=10;if(void 0===e.xaxis.tickAmount)i=Math.round(t.svgWidth/150),"numeric"===e.xaxis.type&&t.dataPoints<30&&(i=t.dataPoints-1),i>t.dataPoints&&0!==t.dataPoints&&(i=t.dataPoints-1);else if("dataPoints"===e.xaxis.tickAmount){if(this.w.seriesData.series.length>1&&(i=this.w.seriesData.series[t.maxValsInArrayIndex].length-1),this.w.axisFlags.isXNumeric){const e=Math.round(t.maxX-t.minX);e<30&&(i=e)}}else i=e.xaxis.tickAmount;if(t.xTickAmount=i,void 0!==e.xaxis.max&&"number"==typeof e.xaxis.max&&(t.maxX=e.xaxis.max),void 0!==e.xaxis.min&&"number"==typeof e.xaxis.min&&(t.minX=e.xaxis.min),void 0!==e.xaxis.range&&(t.minX=t.maxX-e.xaxis.range),t.minX!==Number.MAX_VALUE&&t.maxX!==-Number.MAX_VALUE)if(e.xaxis.convertedCatToNumeric&&!this.w.axisFlags.dataFormatXNumeric){const e=[];for(let s=t.minX-1;s<t.maxX;s++)e.push(s+1);t.xAxisScale={result:e,niceMin:e[0],niceMax:e[e.length-1]}}else t.xAxisScale=this.scales.setXScale(t.minX,t.maxX);else t.xAxisScale=this.scales.linearScale(0,i,i,0,e.xaxis.stepSize),this.w.axisFlags.noLabelsProvided&&this.w.labelData.labels.length>0&&(t.xAxisScale=this.scales.linearScale(1,this.w.labelData.labels.length,i-1,0,e.xaxis.stepSize),this.w.seriesData.seriesX=this.w.labelData.labels.slice());s&&(this.w.labelData.labels=t.xAxisScale.result.slice())}return t.isBarHorizontal&&this.w.labelData.labels.length&&(t.xTickAmount=this.w.labelData.labels.length),this._handleSingleDataPoint(),this._getMinXDiff(),{minX:t.minX,maxX:t.maxX}}setZRange(){const t=this.w.globals;if(this.w.axisFlags.isDataXYZ)for(let e=0;e<this.w.seriesData.series.length;e++)if(void 0!==this.w.seriesData.seriesZ[e])for(let s=0;s<this.w.seriesData.seriesZ[e].length;s++)null!==this.w.seriesData.seriesZ[e][s]&&Ns.isNumber(this.w.seriesData.seriesZ[e][s])&&(t.maxZ=Math.max(t.maxZ,this.w.seriesData.seriesZ[e][s]),t.minZ=Math.min(t.minZ,this.w.seriesData.seriesZ[e][s]))}_handleSingleDataPoint(){const t=this.w.globals,e=this.w.config;if(t.minX===t.maxX){const s=new zs(this.w);if("datetime"===e.xaxis.type){const i=s.getDate(t.minX);e.xaxis.labels.datetimeUTC?i.setUTCDate(i.getUTCDate()-2):i.setDate(i.getDate()-2),t.minX=new Date(i).getTime();const a=s.getDate(t.maxX);e.xaxis.labels.datetimeUTC?a.setUTCDate(a.getUTCDate()+2):a.setDate(a.getDate()+2),t.maxX=new Date(a).getTime()}else("numeric"===e.xaxis.type||"category"===e.xaxis.type&&!this.w.axisFlags.noLabelsProvided)&&(t.minX=t.minX-2,t.initialMinX=t.minX,t.maxX=t.maxX+2,t.initialMaxX=t.maxX)}}_getMinXDiff(){const t=this.w.globals;this.w.axisFlags.isXNumeric&&this.w.seriesData.seriesX.forEach(e=>{if(e.length){1===e.length&&e.push(this.w.seriesData.seriesX[t.maxValsInArrayIndex][this.w.seriesData.seriesX[t.maxValsInArrayIndex].length-1]);const s=e.slice();s.sort((t,e)=>t-e),s.forEach((e,i)=>{if(i>0){const a=e-s[i-1];a>0&&(t.minXDiff=Math.min(a,t.minXDiff))}}),1!==t.dataPoints&&t.minXDiff!==Number.MAX_VALUE||(t.minXDiff=.5)}})}_setStackedMinMax(){const t=this.w.globals;if(!this.w.seriesData.series.length)return;let e=this.w.labelData.seriesGroups;e.length||(e=[this.w.seriesData.seriesNames.map(t=>t)]);const s={},i={};e.forEach(e=>{s[e]=[],i[e]=[];const a=this.w.config.series.map((t,s)=>e.indexOf(this.w.seriesData.seriesNames[s])>-1?s:null).filter(t=>null!==t);a.forEach(a=>{var r,o,n,l;for(let h=0;h<this.w.seriesData.series[t.maxValsInArrayIndex].length;h++){void 0===s[e][h]&&(s[e][h]=0,i[e][h]=0);(this.w.config.chart.stacked&&!t.comboCharts||this.w.config.chart.stacked&&t.comboCharts&&(!this.w.config.chart.stackOnlyBar||"bar"===(null==(o=null==(r=this.w.config.series)?void 0:r[a])?void 0:o.type)||"column"===(null==(l=null==(n=this.w.config.series)?void 0:n[a])?void 0:l.type)))&&null!==this.w.seriesData.series[a][h]&&Ns.isNumber(this.w.seriesData.series[a][h])&&(this.w.seriesData.series[a][h]>0?s[e][h]+=parseFloat(String(this.w.seriesData.series[a][h]))+1e-4:i[e][h]+=parseFloat(String(this.w.seriesData.series[a][h])))}})}),Object.entries(s).forEach(([e])=>{s[e].forEach((a,r)=>{t.maxY=Math.max(t.maxY,s[e][r]),t.minY=Math.min(t.minY,i[e][r])})})}}class fi{constructor(t,{theme:e=null,timeScale:s=null}={},i){this.w=t,this.elgrid=i,this.xaxisFontSize=t.config.xaxis.labels.style.fontSize,this.axisFontFamily=t.config.xaxis.labels.style.fontFamily,this.xaxisForeColors=t.config.xaxis.labels.style.colors,this.isCategoryBarHorizontal="bar"===t.config.chart.type&&t.config.plotOptions.bar.horizontal,this.xAxisoffX="bottom"===t.config.xaxis.position?t.layout.gridHeight:0,this.drawnLabels=[],this.axesUtils=new ci(t,{theme:e,timeScale:s})}drawYaxis(t){const e=this.w,s=new ti(this.w),i=e.config.yaxis[t].labels.style,{fontSize:a,fontFamily:r,fontWeight:o}=i,n=s.group({class:"apexcharts-yaxis",rel:t,transform:`translate(${e.globals.translateYAxisX[t]}, 0)`});if(this.axesUtils.isYAxisHidden(t))return n;const l=s.group({class:"apexcharts-yaxis-texts-g"});n.add(l);const h=e.globals.yAxisScale[t].result.length-1,c=e.layout.gridHeight/h,d=e.formatters.yLabelFormatters[t],g=this.axesUtils.checkForReversedLabels(t,e.globals.yAxisScale[t].result.slice());if(e.config.yaxis[t].labels.show){let n=e.layout.translateY+e.config.yaxis[t].labels.offsetY;e.globals.isBarHorizontal?n=0:"heatmap"===e.config.chart.type&&(n-=c/2),n+=parseInt(a,10)/3;let p=null;for(let u=h;u>=0;u--){const h=d(g[u],u,e);let f=e.config.yaxis[t].labels.padding;e.config.yaxis[t].opposite&&0!==e.config.yaxis.length&&(f*=-1);const x=this.getTextAnchor(e.config.yaxis[t].labels.align,e.config.yaxis[t].opposite),m=this.axesUtils.getYAxisForeColor(i.colors,t),b=Array.isArray(m)?m[u]:m,y=Array.from(e.dom.baseEl.querySelectorAll(`.apexcharts-yaxis[rel='${t}'] .apexcharts-yaxis-label tspan`)).map(t=>t.textContent),w=s.drawText({x:f,y:n,text:y.includes(h)&&!e.config.yaxis[t].labels.showDuplicates?"":h,textAnchor:x,fontSize:a,fontFamily:r,fontWeight:o,maxWidth:e.config.yaxis[t].labels.maxWidth,foreColor:b,isPlainText:!1,cssClass:`apexcharts-yaxis-label ${i.cssClass}`});l.add(w),this.addTooltip(w,h),null===p&&(p=w),0!==e.config.yaxis[t].labels.rotate&&this.rotateLabel(s,w,p,e.config.yaxis[t].labels.rotate),n+=c}}return this.addYAxisTitle(s,n,t),this.addAxisBorder(s,n,t,h,c),n}getTextAnchor(t,e){return"left"===t?"start":"center"===t?"middle":"right"===t?"end":e?"start":"end"}addTooltip(t,e){const s=Bs.createElementNS(ei,"title");s.textContent=Array.isArray(e)?e.join(" "):e,t.node.appendChild(s)}rotateLabel(t,e,s,i){const a=t.rotateAroundCenter(s.node),r=t.rotateAroundCenter(e.node);e.node.setAttribute("transform",`rotate(${i} ${a.x} ${r.y})`)}addYAxisTitle(t,e,s){const i=this.w;if(void 0!==i.config.yaxis[s].title.text){const a=t.group({class:"apexcharts-yaxis-title"}),r=i.config.yaxis[s].opposite?i.globals.translateYAxisX[s]:0,o=t.drawText({x:r,y:i.layout.gridHeight/2+i.layout.translateY+i.config.yaxis[s].title.offsetY,text:i.config.yaxis[s].title.text,textAnchor:"end",foreColor:i.config.yaxis[s].title.style.color,fontSize:i.config.yaxis[s].title.style.fontSize,fontWeight:i.config.yaxis[s].title.style.fontWeight,fontFamily:i.config.yaxis[s].title.style.fontFamily,cssClass:`apexcharts-yaxis-title-text ${i.config.yaxis[s].title.style.cssClass}`});a.add(o),e.add(a)}}addAxisBorder(t,e,s,i,a){const r=this.w,o=r.config.yaxis[s].axisBorder;let n=31+o.offsetX;if(r.config.yaxis[s].opposite&&(n=-31-o.offsetX),o.show){const s=t.drawLine(n,r.layout.translateY+o.offsetY-2,n,r.layout.gridHeight+r.layout.translateY+o.offsetY+2,o.color,0,o.width);e.add(s)}r.config.yaxis[s].axisTicks.show&&this.axesUtils.drawYAxisTicks(n,i,o,r.config.yaxis[s].axisTicks,s,a,e)}drawYaxisInversed(t){const e=this.w,s=new ti(this.w),i=s.group({class:"apexcharts-xaxis apexcharts-yaxis-inversed"}),a=s.group({class:"apexcharts-xaxis-texts-g",transform:`translate(${e.layout.translateXAxisX}, ${e.layout.translateXAxisY})`});i.add(a);let r=e.globals.yAxisScale[t].result.length-1;const o=e.layout.gridWidth/r+.1;let n=o+e.config.xaxis.labels.offsetX;const l=e.formatters.xLabelFormatter;let h=this.axesUtils.checkForReversedLabels(t,e.globals.yAxisScale[t].result.slice());const c=e.labelData.timescaleLabels;if(c.length>0&&(this.xaxisLabels=c.slice(),h=c.slice(),r=h.length),e.config.xaxis.labels.show)for(let i=c.length?0:r;c.length?i<c.length:i>=0;c.length?i++:i--){let r=null==l?void 0:l(h[i],i,e),d=e.layout.gridWidth+e.globals.padHorizontal-(n-o+e.config.xaxis.labels.offsetX);if(c.length){const t=this.axesUtils.getLabel(h,c,d,i,this.drawnLabels,this.xaxisFontSize);d=t.x,r=t.text,this.drawnLabels.push(t.text),0===i&&e.globals.skipFirstTimelinelabel&&(r=""),i===h.length-1&&e.globals.skipLastTimelinelabel&&(r="")}const g=s.drawText({x:d,y:this.xAxisoffX+e.config.xaxis.labels.offsetY+30-("top"===e.config.xaxis.position?e.layout.xAxisHeight+e.config.xaxis.axisTicks.height-2:0),text:r,textAnchor:"middle",foreColor:Array.isArray(this.xaxisForeColors)?this.xaxisForeColors[t]:this.xaxisForeColors,fontSize:this.xaxisFontSize,fontFamily:this.axisFontFamily,fontWeight:e.config.xaxis.labels.style.fontWeight,isPlainText:!1,cssClass:`apexcharts-xaxis-label ${e.config.xaxis.labels.style.cssClass}`});a.add(g),this.addTooltip(g,r),n+=o}return this.inversedYAxisTitleText(i),this.inversedYAxisBorder(i),i}inversedYAxisBorder(t){const e=this.w,s=new ti(this.w),i=e.config.xaxis.axisBorder;if(i.show){let a=0;"bar"===e.config.chart.type&&e.axisFlags.isXNumeric&&(a-=15);const r=s.drawLine(e.globals.padHorizontal+a+i.offsetX,this.xAxisoffX,e.layout.gridWidth,this.xAxisoffX,i.color,0,i.height);this.elgrid&&this.elgrid.elGridBorders&&e.config.grid.show?this.elgrid.elGridBorders.add(r):t.add(r)}}inversedYAxisTitleText(t){const e=this.w,s=new ti(this.w);if(void 0!==e.config.xaxis.title.text){const i=s.group({class:"apexcharts-xaxis-title apexcharts-yaxis-title-inversed"}),a=s.drawText({x:e.layout.gridWidth/2+e.config.xaxis.title.offsetX,y:this.xAxisoffX+parseFloat(this.xaxisFontSize)+parseFloat(e.config.xaxis.title.style.fontSize)+e.config.xaxis.title.offsetY+20,text:e.config.xaxis.title.text,textAnchor:"middle",fontSize:e.config.xaxis.title.style.fontSize,fontFamily:e.config.xaxis.title.style.fontFamily,fontWeight:e.config.xaxis.title.style.fontWeight,foreColor:e.config.xaxis.title.style.color,cssClass:`apexcharts-xaxis-title-text ${e.config.xaxis.title.style.cssClass}`});i.add(a),t.add(i)}}yAxisTitleRotate(t,e){const s=this.w,i=new ti(this.w),a=s.dom.baseEl.querySelector(`.apexcharts-yaxis[rel='${t}'] .apexcharts-yaxis-texts-g`),r=a?a.getBoundingClientRect():{width:0,height:0},o=s.dom.baseEl.querySelector(`.apexcharts-yaxis[rel='${t}'] .apexcharts-yaxis-title text`),n=o?o.getBoundingClientRect():{width:0,height:0};if(o){const a=this.xPaddingForYAxisTitle(t,r,n,e);o.setAttribute("x",String(a.xPos-(e?10:0)));const l=i.rotateAroundCenter(o);o.setAttribute("transform",`rotate(${e?-1*s.config.yaxis[t].title.rotate:s.config.yaxis[t].title.rotate} ${l.x} ${l.y})`)}}xPaddingForYAxisTitle(t,e,s,i){const a=this.w;let r=0,o=10;return void 0===a.config.yaxis[t].title.text||t<0?{xPos:r,padd:0}:(i?r=e.width+a.config.yaxis[t].title.offsetX+s.width/2+o/2:(r=-1*e.width+a.config.yaxis[t].title.offsetX+o/2+s.width/2,a.globals.isBarHorizontal&&(o=25,r=-1*e.width-a.config.yaxis[t].title.offsetX-o)),{xPos:r,padd:o})}setYAxisXPosition(t,e){const s=this.w;let i=0,a=0,r=18,o=1;s.config.yaxis.length>1&&(this.multipleYs=!0),s.config.yaxis.forEach((n,l)=>{const h=s.globals.ignoreYAxisIndexes.includes(l)||!n.show||n.floating||0===t[l].width,c=t[l].width+e[l].width;n.opposite?s.globals.isBarHorizontal?(a=s.layout.gridWidth+s.layout.translateX-1,s.globals.translateYAxisX[l]=a-n.labels.offsetX):(a=s.layout.gridWidth+s.layout.translateX+o,h||(o+=c+20),s.globals.translateYAxisX[l]=a-n.labels.offsetX+20):(i=s.layout.translateX-r,h||(r+=c+20),s.globals.translateYAxisX[l]=i+n.labels.offsetX)})}setYAxisTextAlignments(){const t=this.w;Array.from(t.dom.baseEl.getElementsByClassName("apexcharts-yaxis")).forEach((e,s)=>{const i=t.config.yaxis[s];if(i&&!i.floating&&void 0!==i.labels.align){const e=t.dom.baseEl.querySelector(`.apexcharts-yaxis[rel='${s}'] .apexcharts-yaxis-texts-g`),a=Array.from(t.dom.baseEl.querySelectorAll(`.apexcharts-yaxis[rel='${s}'] .apexcharts-yaxis-label`)),r=e.getBoundingClientRect();a.forEach(t=>{t.setAttribute("text-anchor",i.labels.align)}),"left"!==i.labels.align||i.opposite?"center"===i.labels.align?e.setAttribute("transform",`translate(${r.width/2*(i.opposite?1:-1)}, 0)`):"right"===i.labels.align&&i.opposite&&e.setAttribute("transform",`translate(${r.width}, 0)`):e.setAttribute("transform",`translate(-${r.width}, 0)`)}})}}class xi{constructor(t,e){this.w=t,this.ctx=e,this.documentEvent=this.documentEvent.bind(this)}addEventListener(t,e){const s=this.w;Object.prototype.hasOwnProperty.call(s.globals.events,t)?s.globals.events[t].push(e):s.globals.events[t]=[e]}removeEventListener(t,e){const s=this.w;if(!Object.prototype.hasOwnProperty.call(s.globals.events,t))return;const i=s.globals.events[t].indexOf(e);-1!==i&&s.globals.events[t].splice(i,1)}fireEvent(t,e){const s=this.w;if(!Object.prototype.hasOwnProperty.call(s.globals.events,t))return;e&&e.length||(e=[]);const i=s.globals.events[t],a=i.length;for(let t=0;t<a;t++)i[t].apply(null,e)}setupEventHandlers(){const t=this.w,e=this.ctx,s=t.dom.baseEl.querySelector(t.globals.chartClass);this.ctx.eventList.forEach(i=>{null==s||s.addEventListener(i,s=>{const i=null===s.target.getAttribute("i")&&-1!==t.interact.capturedSeriesIndex?t.interact.capturedSeriesIndex:s.target.getAttribute("i"),a=null===s.target.getAttribute("j")&&-1!==t.interact.capturedDataPointIndex?t.interact.capturedDataPointIndex:s.target.getAttribute("j"),r=Object.assign({},t,{seriesIndex:t.globals.axisCharts?i:0,dataPointIndex:a});"keydown"===s.type?t.config.chart.accessibility.enabled&&t.config.chart.accessibility.keyboard.enabled&&(e.ctx.keyboardNavigation&&e.ctx.keyboardNavigation.handleKey(s),"function"==typeof t.config.chart.events.keyDown&&t.config.chart.events.keyDown(s,e,r),e.ctx.events.fireEvent("keydown",[s,e,r])):"keyup"===s.type?t.config.chart.accessibility.enabled&&t.config.chart.accessibility.keyboard.enabled&&("function"==typeof t.config.chart.events.keyUp&&t.config.chart.events.keyUp(s,e,r),e.ctx.events.fireEvent("keyup",[s,e,r])):"mousemove"===s.type||"touchmove"===s.type?"function"==typeof t.config.chart.events.mouseMove&&t.config.chart.events.mouseMove(s,e,r):"mouseleave"===s.type||"touchleave"===s.type?"function"==typeof t.config.chart.events.mouseLeave&&t.config.chart.events.mouseLeave(s,e,r):("mouseup"===s.type&&1===s.which||"touchend"===s.type)&&("function"==typeof t.config.chart.events.click&&t.config.chart.events.click(s,e,r),e.ctx.events.fireEvent("click",[s,e,r]))},{capture:!1,passive:!0})}),this.ctx.eventList.forEach(e=>{t.dom.baseEl.addEventListener(e,this.documentEvent,{passive:!0})}),this.ctx.core.setupBrushHandler()}documentEvent(t){const e=this.w,s=t.target.className;if("click"===t.type){const t=e.dom.baseEl.querySelector(".apexcharts-menu");t&&t.classList.contains("apexcharts-menu-open")&&"apexcharts-menu-icon"!==s&&t.classList.remove("apexcharts-menu-open")}e.interact.clientX="touchmove"===t.type?t.touches[0].clientX:t.clientX,e.interact.clientY="touchmove"===t.type?t.touches[0].clientY:t.clientY}}class mi{constructor(t){this.w=t}setCurrentLocaleValues(t){let e=this.w.config.chart.locales;const s=Ps.getApex();s.chart&&s.chart.locales&&s.chart.locales.length>0&&(e=this.w.config.chart.locales.concat(s.chart.locales));const i=e.filter(e=>e.name===t)[0];if(!i)throw new Error("Wrong locale name provided. Please make sure you set the correct locale name in options");{const t=Ns.extend(Ws,i);this.w.globals.locale=t.options}}}class bi{constructor(t,e){this.w=t,this.ctx=e}drawAxis(t,e){const s=this.w.globals,i=this.w.config,a=new di(this.w,this.ctx,e),r=new fi(this.w,{theme:this.ctx.theme,timeScale:this.ctx.timeScale},e);if(s.axisCharts&&"radar"!==t){let t,e;s.isBarHorizontal?(e=r.drawYaxisInversed(0),t=a.drawXaxisInversed(0),this.w.dom.elGraphical.add(t),this.w.dom.elGraphical.add(e)):(t=a.drawXaxis(),this.w.dom.elGraphical.add(t),i.yaxis.map((t,i)=>{if(-1===s.ignoreYAxisIndexes.indexOf(i)&&(e=r.drawYaxis(i),this.w.dom.Paper.add(e),"back"===this.w.config.grid.position)){const t=this.w.dom.Paper.children()[1];t&&(t.remove(),this.w.dom.Paper.add(t))}}))}}}class yi{constructor(t){this.w=t}drawXCrosshairs(){const t=this.w,e=new ti(this.w),s=new Qs(this.w),i=t.config.xaxis.crosshairs.fill.gradient,a=t.config.xaxis.crosshairs.dropShadow,r=t.config.xaxis.crosshairs.fill.type,o=i.colorFrom,n=i.colorTo,l=i.opacityFrom,h=i.opacityTo,c=i.stops,d=a.enabled,g=a.left,p=a.top,u=a.blur,f=a.color,x=a.opacity;let m=t.config.xaxis.crosshairs.fill.color;if(t.config.xaxis.crosshairs.show){"gradient"===r&&(m=e.drawGradient("vertical",o,n,l,h,null,c,[]));let i=e.drawRect();1===t.config.xaxis.crosshairs.width&&(i=e.drawLine(0,0,0,0));let a=t.layout.gridHeight;(!Ns.isNumber(a)||a<0)&&(a=0);let b=t.config.xaxis.crosshairs.width;(!Ns.isNumber(b)||Number(b)<0)&&(b=0),i.attr({class:"apexcharts-xcrosshairs",x:0,y:0,y2:a,width:b,height:a,fill:m,filter:"none","fill-opacity":t.config.xaxis.crosshairs.opacity,stroke:t.config.xaxis.crosshairs.stroke.color,"stroke-width":t.config.xaxis.crosshairs.stroke.width,"stroke-dasharray":t.config.xaxis.crosshairs.stroke.dashArray}),d&&(i=s.dropShadow(i,{left:g,top:p,blur:u,color:f,opacity:x})),t.dom.elGraphical.add(i)}}drawYCrosshairs(){const t=this.w,e=new ti(this.w),s=t.config.yaxis[0].crosshairs,i=t.globals.barPadForNumericAxis;if(t.config.yaxis[0].crosshairs.show){const a=e.drawLine(-i,0,t.layout.gridWidth+i,0,s.stroke.color,s.stroke.dashArray,s.stroke.width);a.attr({class:"apexcharts-ycrosshairs"}),t.dom.elGraphical.add(a)}const a=e.drawLine(-i,0,t.layout.gridWidth+i,0,s.stroke.color,0,0);a.attr({class:"apexcharts-ycrosshairs-hidden"}),t.dom.elGraphical.add(a)}}class wi{constructor(t){this.w=t,this._activeBreakpoint=null}checkResponsiveConfig(t){const e=this.w,s=e.config;if(0===s.responsive.length)return;const i=s.responsive.slice();i.sort((t,e)=>t.breakpoint>e.breakpoint?1:e.breakpoint>t.breakpoint?-1:0).reverse();const a=new Us({}),r=(t={})=>{const s=i[0].breakpoint,r=Ps.isBrowser()?window.innerWidth>0?window.innerWidth:screen.width:0;if(r>s){if(null!==this._activeBreakpoint){if(!e.globals.initialConfig)return;const s=Ns.clone(e.globals.initialConfig);s.series=Ns.clone(e.config.series);const i=Ks.extendArrayProps(a,s,e);t=Ns.extend(i,t),this.overrideResponsiveOptions(t),this._activeBreakpoint=null}}else for(let s=0;s<i.length;s++)r<i[s].breakpoint&&(t=Ks.extendArrayProps(a,i[s].options,e),t=Ns.extend(e.config,t),this.overrideResponsiveOptions(t),this._activeBreakpoint=i[s].breakpoint)};if(t){let s=Ks.extendArrayProps(a,t,e);s=Ns.extend(e.config,s),s=Ns.extend(s,t),r(s)}else r({})}overrideResponsiveOptions(t){const e=new Us(t).init({responsiveOverride:!0});this.w.config=e}}class vi{constructor(t,{toggleDataSeries:e,revertDefaultAxisMinMax:s,updateSeries:i}={}){this.w=t,this._toggleDataSeries=e||null,this._revertDefaultAxisMinMax=s||null,this._updateSeries=i||null,this.legendInactiveClass="legend-mouseover-inactive"}clearSeriesCache(){const t=this.w;t.globals.cachedSelectors&&(delete t.globals.cachedSelectors.allSeriesEls,delete t.globals.cachedSelectors.highlightSeriesEls)}getAllSeriesEls(){const t=this.w,e="allSeriesEls";return t.globals.cachedSelectors[e]||(t.globals.cachedSelectors[e]=t.dom.baseEl.getElementsByClassName("apexcharts-series")),t.globals.cachedSelectors[e]}getSeriesByName(t){return this.w.dom.baseEl.querySelector(`.apexcharts-inner .apexcharts-series[seriesName='${Ns.escapeString(t)}']`)}isSeriesHidden(t){var e;const s=this.getSeriesByName(t),i=parseInt(null!=(e=s.getAttribute("data:realIndex"))?e:"0",10);return{isHidden:s.classList.contains("apexcharts-series-collapsed"),realIndex:i}}addCollapsedClassToSeries(t,e){vi.addCollapsedClassToSeries(this.w,t,e)}static addCollapsedClassToSeries(t,e,s){function i(t){for(let i=0;i<t.length;i++)t[i].index===s&&e.node.classList.add("apexcharts-series-collapsed")}i(t.globals.collapsedSeries),i(t.globals.ancillaryCollapsedSeries)}toggleSeries(t){var e;const s=this.isSeriesHidden(t);return null==(e=this._toggleDataSeries)||e.call(this,s.realIndex,s.isHidden),s.isHidden}showSeries(t){var e;const s=this.isSeriesHidden(t);s.isHidden&&(null==(e=this._toggleDataSeries)||e.call(this,s.realIndex,!0))}hideSeries(t){var e;const s=this.isSeriesHidden(t);s.isHidden||null==(e=this._toggleDataSeries)||e.call(this,s.realIndex,!1)}resetSeries(t=!0,e=!0,s=!0){var i,a;const r=this.w;this.clearSeriesCache();let o=Ns.clone(r.globals.initialSeries);r.globals.previousPaths=[],s?(r.globals.collapsedSeries=[],r.globals.ancillaryCollapsedSeries=[],r.globals.collapsedSeriesIndices=[],r.globals.ancillaryCollapsedSeriesIndices=[]):o=this.emptyCollapsedSeries(o),r.config.series=o,t&&(e&&(r.interact.zoomed=!1,null==(i=this._revertDefaultAxisMinMax)||i.call(this)),null==(a=this._updateSeries)||a.call(this,o,r.config.chart.animations.dynamicAnimation.enabled))}emptyCollapsedSeries(t){const e=this.w;for(let s=0;s<t.length;s++)e.globals.collapsedSeriesIndices.indexOf(s)>-1&&(t[s].data=[]);return t}highlightSeries(t){var e;const s=this.w,i=this.getSeriesByName(t),a=parseInt(null!=(e=null==i?void 0:i.getAttribute("data:realIndex"))?e:"",10),r="highlightSeriesEls";let o=s.globals.cachedSelectors[r];o||(o=s.dom.baseEl.querySelectorAll(".apexcharts-series, .apexcharts-datalabels, .apexcharts-yaxis"),s.globals.cachedSelectors[r]=o);let n=null,l=null,h=null;if(s.globals.axisCharts||"radialBar"===s.config.chart.type)if(s.globals.axisCharts){n=s.dom.baseEl.querySelector(`.apexcharts-series[data\\:realIndex='${a}']`),l=s.dom.baseEl.querySelector(`.apexcharts-datalabels[data\\:realIndex='${a}']`);const t=s.globals.seriesYAxisReverseMap[a];h=s.dom.baseEl.querySelector(`.apexcharts-yaxis[rel='${t}']`)}else n=s.dom.baseEl.querySelector(`.apexcharts-series[rel='${a+1}']`);else n=s.dom.baseEl.querySelector(`.apexcharts-series[rel='${a+1}'] path`);for(let t=0;t<o.length;t++){o[t].classList.add(this.legendInactiveClass)}if(n){if(!s.globals.axisCharts){const t=n.parentNode;null==t||t.classList.remove(this.legendInactiveClass)}n.classList.remove(this.legendInactiveClass),null!==l&&l.classList.remove(this.legendInactiveClass),null!==h&&h.classList.remove(this.legendInactiveClass)}else for(let t=0;t<o.length;t++){o[t].classList.remove(this.legendInactiveClass)}}toggleSeriesOnHover(t,e){const s=this.w;e||(e=t.target);const i=s.dom.baseEl.querySelectorAll(".apexcharts-series, .apexcharts-datalabels, .apexcharts-yaxis");if("mousemove"===t.type){const t=parseInt(e.getAttribute("rel"),10)-1;this.highlightSeries(s.seriesData.seriesNames[t])}else if("mouseout"===t.type)for(let t=0;t<i.length;t++)i[t].classList.remove(this.legendInactiveClass)}highlightRangeInSeries(t,e){const s=this.w,i=s.dom.baseEl.getElementsByClassName("apexcharts-heatmap-rect"),a=t=>{for(let e=0;e<i.length;e++){const s=i[e].classList[t];"function"==typeof s&&s.call(i[e].classList,this.legendInactiveClass)}},r=(t,e)=>{for(let s=0;s<i.length;s++){const a=Number(i[s].getAttribute("val"));a>=t.from&&(a<t.to||t.to===e&&a===e)&&i[s].classList.remove(this.legendInactiveClass)}};if("mousemove"===t.type){const t=parseInt(e.getAttribute("rel"),10)-1;a("add");const i=s.config.plotOptions.heatmap.colorScale.ranges;r(i[t],i.reduce((t,e)=>Math.max(t,e.to),0))}else"mouseout"===t.type&&a("remove")}getActiveConfigSeriesIndex(t="asc",e=[]){const s=this.w;let i=0;if(s.config.series.length>1){const a=s.config.series.map((t,i)=>t.data&&t.data.length>0&&-1===s.globals.collapsedSeriesIndices.indexOf(i)&&(!s.globals.comboCharts||0===e.length||e.length&&e.indexOf(s.config.series[i].type)>-1)?i:-1);for(let e="asc"===t?0:a.length-1;"asc"===t?e<a.length:e>=0;"asc"===t?e++:e--)if(-1!==a[e]){i=a[e];break}}return i}getBarSeriesIndices(){return this.w.globals.comboCharts?this.w.config.series.map((t,e)=>"bar"===t.type||"column"===t.type?e:-1).filter(t=>-1!==t):this.w.config.series.map((t,e)=>e)}getPreviousPaths(){var t,e,s,i;const a=this.w;function r(t,e,s){const i=t[e].childNodes,r={type:s,paths:[],realIndex:t[e].getAttribute("data:realIndex")};for(let t=0;t<i.length;t++)if(i[t].hasAttribute("pathTo")){const e=i[t].getAttribute("pathTo");r.paths.push({d:e})}a.globals.previousPaths.push(r)}a.globals.previousPaths=[];["line","area","bar","rangebar","rangeArea","candlestick","radar"].forEach(t=>{const e=(s=t,a.dom.baseEl.querySelectorAll(`.apexcharts-${s}-series .apexcharts-series`));var s;for(let s=0;s<e.length;s++)r(e,s,t)});const o=a.dom.baseEl.querySelectorAll(`.apexcharts-${a.config.chart.type} .apexcharts-series`);if(o.length>0)for(let r=0;r<o.length;r++){const o=a.dom.baseEl.querySelectorAll(`.apexcharts-${a.config.chart.type} .apexcharts-series[data\\:realIndex='${r}'] rect`),n=[];for(let a=0;a<o.length;a++){const r=t=>o[a].getAttribute(t),l={x:parseFloat(null!=(t=r("x"))?t:"0"),y:parseFloat(null!=(e=r("y"))?e:"0"),width:parseFloat(null!=(s=r("width"))?s:"0"),height:parseFloat(null!=(i=r("height"))?i:"0")};n.push({rect:l,color:o[a].getAttribute("color")})}a.globals.previousPaths.push(n)}a.globals.axisCharts||(a.globals.previousPaths=a.seriesData.series)}clearPreviousPaths(){const t=this.w;t.globals.previousPaths=[],t.globals.allSeriesCollapsed=!1}handleNoData(){const t=this.w,e=t.config.noData,s=new ti(this.w);let i=t.globals.svgWidth/2,a=t.globals.svgHeight/2,r="middle";if(t.globals.noData=!0,t.globals.animationEnded=!0,"left"===e.align?(i=10,r="start"):"right"===e.align&&(i=t.globals.svgWidth-10,r="end"),"top"===e.verticalAlign?a=50:"bottom"===e.verticalAlign&&(a=t.globals.svgHeight-50),i+=e.offsetX,a=a+parseInt(e.style.fontSize,10)+2+e.offsetY,void 0!==e.text&&""!==e.text){const o=s.drawText({x:i,y:a,text:e.text,textAnchor:r,fontSize:e.style.fontSize,fontFamily:e.style.fontFamily,foreColor:e.style.color,opacity:1,cssClass:"apexcharts-text-nodata"});t.dom.Paper.add(o)}}setNullSeriesToZeroValues(t){const e=this.w;for(let s=0;s<t.length;s++)if(0===t[s].length)for(let i=0;i<t[e.globals.maxValsInArrayIndex].length;i++)t[s].push(0);return t}hasAllSeriesEqualX(){let t=!0;const e=this.w,s=this.filteredSeriesX();for(let e=0;e<s.length-1;e++)if(s[e][0]!==s[e+1][0]){t=!1;break}return e.globals.allSeriesHasEqualX=t,t}filteredSeriesX(){return this.w.seriesData.seriesX.map(t=>t.length>0?t:[])}}class Ai{constructor(t){this.w=t,this.colors=[],this.isColorFn=!1,this.isHeatmapDistributed=this.checkHeatmapDistributed(),this.isBarDistributed=this.checkBarDistributed()}checkHeatmapDistributed(){const{chart:t,plotOptions:e}=this.w.config;return"treemap"===t.type&&e.treemap&&e.treemap.distributed||"heatmap"===t.type&&e.heatmap&&e.heatmap.distributed}checkBarDistributed(){const{chart:t,plotOptions:e}=this.w.config;return e.bar&&e.bar.distributed&&("bar"===t.type||"rangeBar"===t.type)}init(){this.setDefaultColors()}setDefaultColors(){var t;const e=this.w,s=new Ns;e.dom.elWrap.classList.add(`apexcharts-theme-${e.config.theme.mode||"light"}`);const i=null==(t=e.config.theme.accessibility)?void 0:t.colorBlindMode;if(i){e.globals.colors=this.getColorBlindColors(i),this.applySeriesColors(e.seriesData.seriesColors,e.globals.colors);const t=e.globals.colors.slice();return this.pushExtraColors(e.globals.colors),this.applyColorTypes(["fill","stroke"],t),this.applyDataLabelsColors(t),this.applyRadarPolygonsColors(),this.applyMarkersColors(t),void("highContrast"===i&&e.dom.elWrap.classList.add("apexcharts-high-contrast"))}const a=[...e.config.colors||e.config.fill.colors||[]];e.globals.colors=this.getColors(a),this.applySeriesColors(e.seriesData.seriesColors,e.globals.colors),e.config.theme.monochrome.enabled&&(e.globals.colors=this.getMonochromeColors(e.config.theme.monochrome,e.seriesData.series,s));const r=e.globals.colors.slice();this.pushExtraColors(e.globals.colors),this.applyColorTypes(["fill","stroke"],r),this.applyDataLabelsColors(r),this.applyRadarPolygonsColors(),this.applyMarkersColors(r)}getColors(t){const e=this.w;return t&&0!==t.length?Array.isArray(t)&&t.length>0&&"function"==typeof t[0]?(this.isColorFn=!0,e.config.series.map((s,i)=>{const a=t[i]||t[0];return"function"==typeof a?a({value:e.globals.axisCharts?e.seriesData.series[i][0]||0:e.seriesData.series[i],seriesIndex:i,dataPointIndex:i,w:this.w}):a})):t:this.predefined()}applySeriesColors(t,e){t.forEach((t,s)=>{t&&(e[s]=t)})}getMonochromeColors(t,e,s){const{color:i,shadeIntensity:a,shadeTo:r}=t,o=this.isBarDistributed||this.isHeatmapDistributed?e[0].length*e.length:e.length,n=1/(o/a);let l=0;return Array.from({length:o},()=>{const t="dark"===r?s.shadeColor(-1*l,i):s.shadeColor(l,i);return l+=n,t})}applyColorTypes(t,e){const s=this.w;t.forEach(t=>{s.globals[t].colors=void 0===s.config[t].colors?this.isColorFn?s.config.colors:e:s.config[t].colors.slice(),this.pushExtraColors(s.globals[t].colors)})}applyDataLabelsColors(t){const e=this.w;e.globals.dataLabels.style.colors=void 0===e.config.dataLabels.style.colors?t:e.config.dataLabels.style.colors.slice(),this.pushExtraColors(e.globals.dataLabels.style.colors,50)}applyRadarPolygonsColors(){const t=this.w;t.globals.radarPolygons.fill.colors=void 0===t.config.plotOptions.radar.polygons.fill.colors?["dark"===t.config.theme.mode?"#343A3F":"none"]:t.config.plotOptions.radar.polygons.fill.colors.slice(),this.pushExtraColors(t.globals.radarPolygons.fill.colors,20)}applyMarkersColors(t){const e=this.w;e.globals.markers.colors=void 0===e.config.markers.colors?t:e.config.markers.colors.slice(),this.pushExtraColors(e.globals.markers.colors)}pushExtraColors(t,e,s=null){const i=this.w;let a=e||i.seriesData.series.length;if(null===s&&(s=this.isBarDistributed||this.isHeatmapDistributed||"heatmap"===i.config.chart.type&&i.config.plotOptions.heatmap&&i.config.plotOptions.heatmap.colorScale.inverse),s&&i.seriesData.series.length&&(a=i.seriesData.series[i.globals.maxValsInArrayIndex].length*i.seriesData.series.length),t.length<a){const e=a-t.length;for(let s=0;s<e;s++)t.push(t[s])}}getColorBlindColors(t){const e={palette1:["#008FFB","#00E396","#FEB019","#FF4560","#775DD0"],palette2:["#3F51B5","#03A9F4","#4CAF50","#F9CE1D","#FF9800"],palette3:["#33B2DF","#546E7A","#D4526E","#13D8AA","#A5978B"],palette4:["#4ECDC4","#C7F464","#81D4FA","#FD6A6A","#546E7A"],palette5:["#2B908F","#F9A3A4","#90EE7E","#FA4443","#69D2E7"],palette6:["#449DD1","#F86624","#EA3546","#662E9B","#C5D86D"],palette7:["#D7263D","#1B998B","#2E294E","#F46036","#E2C044"],palette8:["#662E9B","#F86624","#F9C80E","#EA3546","#43BCCD"],palette9:["#5C4742","#A5978B","#8D5B4C","#5A2A27","#C4BBAF"],palette10:["#A300D6","#7D02EB","#5653FE","#2983FF","#00B1F2"],cvdDeuteranopia:["#0072B2","#E69F00","#56B4E9","#009E73","#F0E442","#D55E00","#CC79A7"],cvdProtanopia:["#0077BB","#EE7733","#009988","#EE3377","#BBBBBB","#33BBEE","#CC3311"],cvdTritanopia:["#CC3311","#009988","#EE7733","#0077BB","#EE3377","#BBBBBB","#33BBEE"],highContrast:["#005A9C","#C00000","#007A33","#6C3483","#7B3F00","#0097A7","#4A235A"]};return({deuteranopia:e.cvdDeuteranopia,protanopia:e.cvdProtanopia,tritanopia:e.cvdTritanopia,highContrast:e.highContrast}[t]||e.palette1).slice()}updateThemeOptions(t){t.chart=t.chart||{},t.tooltip=t.tooltip||{};const e=t.theme.mode,s="dark"===e?"palette4":"light"===e?"palette1":t.theme.palette||"palette1",i="dark"===e?"#f6f7f8":"light"===e?"#373d3f":t.chart.foreColor||"#373d3f";return t.tooltip.theme=e||"light",t.chart.foreColor=i,t.theme.palette=s,t}predefined(){const t={palette1:["#008FFB","#00E396","#FEB019","#FF4560","#775DD0"],palette2:["#3F51B5","#03A9F4","#4CAF50","#F9CE1D","#FF9800"],palette3:["#33B2DF","#546E7A","#D4526E","#13D8AA","#A5978B"],palette4:["#4ECDC4","#C7F464","#81D4FA","#FD6A6A","#546E7A"],palette5:["#2B908F","#F9A3A4","#90EE7E","#FA4443","#69D2E7"],palette6:["#449DD1","#F86624","#EA3546","#662E9B","#C5D86D"],palette7:["#D7263D","#1B998B","#2E294E","#F46036","#E2C044"],palette8:["#662E9B","#F86624","#F9C80E","#EA3546","#43BCCD"],palette9:["#5C4742","#A5978B","#8D5B4C","#5A2A27","#C4BBAF"],palette10:["#A300D6","#7D02EB","#5653FE","#2983FF","#00B1F2"],cvdDeuteranopia:["#0072B2","#E69F00","#56B4E9","#009E73","#F0E442","#D55E00","#CC79A7"],cvdProtanopia:["#0077BB","#EE7733","#009988","#EE3377","#BBBBBB","#33BBEE","#CC3311"],cvdTritanopia:["#CC3311","#009988","#EE7733","#0077BB","#EE3377","#BBBBBB","#33BBEE"],highContrast:["#005A9C","#C00000","#007A33","#6C3483","#7B3F00","#0097A7","#4A235A"]};return t[this.w.config.theme.palette]||t.palette1}}class Ci{constructor(t){this.w=t}draw(){this.drawTitleSubtitle("title"),this.drawTitleSubtitle("subtitle")}drawTitleSubtitle(t){const e=this.w,s="title"===t?e.config.title:e.config.subtitle;let i=e.globals.svgWidth/2,a=s.offsetY,r="middle";if("left"===s.align?(i=10,r="start"):"right"===s.align&&(i=e.globals.svgWidth-10,r="end"),i+=s.offsetX,a=a+parseInt(s.style.fontSize,10)+s.margin/2,void 0!==s.text){const o=new ti(this.w).drawText({x:i,y:a,text:s.text,textAnchor:r,fontSize:s.style.fontSize,fontFamily:s.style.fontFamily,fontWeight:s.style.fontWeight,foreColor:s.style.color,opacity:1});o.node.setAttribute("class",`apexcharts-${t}-text`),e.dom.Paper.add(o)}}}let _i=class{constructor(t){this.w=t.w,this.dCtx=t}getTitleSubtitleCoords(t){const e=this.w;let s=0,i=0;const a="title"===t?e.config.title.floating:e.config.subtitle.floating,r=e.dom.baseEl.querySelector(`.apexcharts-${t}-text`);if(null!==r&&!a){const t=r.getBoundingClientRect();s=t.width,i=e.globals.axisCharts?t.height+5:t.height}return{width:s,height:i}}getLegendsRect(){const t=this.w,e=t.dom.elLegendWrap;t.config.legend.height||"top"!==t.config.legend.position&&"bottom"!==t.config.legend.position||e&&(e.style.maxHeight=t.globals.svgHeight/2+"px");const s=Object.assign({},Ns.getBoundingClientRect(e));return null!==e&&!t.config.legend.floating&&t.config.legend.show?this.dCtx.lgRect={x:s.x,y:s.y,height:s.height,width:0===s.height?0:s.width}:this.dCtx.lgRect={x:0,y:0,height:0,width:0},"left"!==t.config.legend.position&&"right"!==t.config.legend.position||1.5*this.dCtx.lgRect.width>t.globals.svgWidth&&(this.dCtx.lgRect.width=t.globals.svgWidth/1.5),this.dCtx.lgRect}getDatalabelsRect(){const t=this.w,e=[];t.config.series.forEach((s,i)=>{s.data.forEach((s,a)=>{const r=(e=>t.config.dataLabels.formatter(e,{seriesIndex:i,dataPointIndex:a,w:t}))(t.seriesData.series[i][a]);e.push(r)})});const s=Ns.getLargestStringFromArr(e),i=new ti(this.w),a=t.config.dataLabels.style,r=i.getTextRects(s,parseInt(a.fontSize).toString(),a.fontFamily);return{width:1.05*r.width,height:r.height}}getLargestStringFromMultiArr(t,e){let s=t;if(this.w.axisFlags.isMultiLineX){const t=e.map(t=>Array.isArray(t)?t.length:1),i=Math.max(...t);s=e[t.indexOf(i)]}return s}};class Si{constructor(t){this.w=t.w,this.dCtx=t}getxAxisLabelsCoords(){const t=this.w;let e,s=t.labelData.labels.slice();if(t.config.xaxis.convertedCatToNumeric&&0===s.length&&(s=t.labelData.categoryLabels),t.labelData.timescaleLabels.length>0){const s=this.getxAxisTimeScaleLabelsCoords();e={width:s.width,height:s.height},t.layout.rotateXLabels=!1}else{this.dCtx.lgWidthForSideLegends="left"!==t.config.legend.position&&"right"!==t.config.legend.position||t.config.legend.floating?0:this.dCtx.lgRect.width;const i=t.formatters.xLabelFormatter;let a=Ns.getLargestStringFromArr(s),r=this.dCtx.dimHelpers.getLargestStringFromMultiArr(a,s);t.globals.isBarHorizontal&&(a=t.globals.yAxisScale[0].result.reduce((t,e)=>t.length>e.length?t:e,0),r=a);const o=new Os(this.w),n=a;a=o.xLabelFormat(i,a,n,{i:void 0,dateFormatter:new zs(this.w).formatDate,w:t}),r=o.xLabelFormat(i,r,n,{i:void 0,dateFormatter:new zs(this.w).formatDate,w:t}),(t.config.xaxis.convertedCatToNumeric&&void 0===a||""===String(a).trim())&&(a="1",r=a);const l=new ti(this.w);let h=l.getTextRects(a,t.config.xaxis.labels.style.fontSize),c=h;if(a!==r&&(c=l.getTextRects(r,t.config.xaxis.labels.style.fontSize)),e={width:h.width>=c.width?h.width:c.width,height:h.height>=c.height?h.height:c.height},e.width*s.length>t.globals.svgWidth-this.dCtx.lgWidthForSideLegends-this.dCtx.yAxisWidth-this.dCtx.gridPad.left-this.dCtx.gridPad.right&&0!==t.config.xaxis.labels.rotate||t.config.xaxis.labels.rotateAlways){if(!t.globals.isBarHorizontal){t.layout.rotateXLabels=!0;const s=e=>l.getTextRects(e,t.config.xaxis.labels.style.fontSize,t.config.xaxis.labels.style.fontFamily,`rotate(${t.config.xaxis.labels.rotate} 0 0)`,!1);h=s(a),a!==r&&(c=s(r)),e.height=(h.height>c.height?h.height:c.height)/1.5,e.width=h.width>c.width?h.width:c.width}}else t.layout.rotateXLabels=!1}return t.config.xaxis.labels.show||(e={width:0,height:0}),{width:e.width,height:e.height}}getxAxisGroupLabelsCoords(){var t;const e=this.w;if(!e.labelData.hasXaxisGroups)return{width:0,height:0};const s=(null==(t=e.config.xaxis.group.style)?void 0:t.fontSize)||e.config.xaxis.labels.style.fontSize,i=e.labelData.groups.map(t=>t.title);let a;const r=Ns.getLargestStringFromArr(i),o=this.dCtx.dimHelpers.getLargestStringFromMultiArr(r,i),n=new ti(this.w),l=n.getTextRects(r,s);let h=l;return r!==o&&(h=n.getTextRects(o,s)),a={width:l.width>=h.width?l.width:h.width,height:l.height>=h.height?l.height:h.height},e.config.xaxis.labels.show||(a={width:0,height:0}),{width:a.width,height:a.height}}getxAxisTitleCoords(){const t=this.w;let e=0,s=0;if(void 0!==t.config.xaxis.title.text){const i=new ti(this.w).getTextRects(t.config.xaxis.title.text,t.config.xaxis.title.style.fontSize);e=i.width,s=i.height}return{width:e,height:s}}getxAxisTimeScaleLabelsCoords(){const t=this.w;this.dCtx.timescaleLabels=t.labelData.timescaleLabels.slice();const e=this.dCtx.timescaleLabels.map(t=>t.value),s=e.reduce((t,e)=>void 0===t?(console.error("You have possibly supplied invalid Date format. Please supply a valid JavaScript Date"),0):t.length>e.length?t:e,0),i=new ti(this.w).getTextRects(s,t.config.xaxis.labels.style.fontSize);return 1.05*i.width*e.length>t.layout.gridWidth&&0!==t.config.xaxis.labels.rotate&&(t.globals.overlappingXLabels=!0),i}additionalPaddingXLabels(t){const e=this.w,s=e.globals,i=e.config,a=i.xaxis.type,r=t.width;s.skipLastTimelinelabel=!1,s.skipFirstTimelinelabel=!1;const o=e.config.yaxis[0].opposite&&e.globals.isBarHorizontal,n=t=>{if(this.dCtx.timescaleLabels&&this.dCtx.timescaleLabels.length){const a=this.dCtx.timescaleLabels[0],o=this.dCtx.timescaleLabels[this.dCtx.timescaleLabels.length-1].position+r/1.75-this.dCtx.yAxisWidthRight,n=a.position-r/1.75+this.dCtx.yAxisWidthLeft,l="right"===e.config.legend.position&&this.dCtx.lgRect.width>0?this.dCtx.lgRect.width:0;o>s.svgWidth-e.layout.translateX-l&&(s.skipLastTimelinelabel=!0),n<-(t.show&&!t.floating||"bar"!==i.chart.type&&"candlestick"!==i.chart.type&&"rangeBar"!==i.chart.type&&"boxPlot"!==i.chart.type?10:r/1.75)&&(s.skipFirstTimelinelabel=!0)}else"datetime"===a?this.dCtx.gridPad.right<r&&!e.layout.rotateXLabels&&(s.skipLastTimelinelabel=!0):"datetime"!==a&&this.dCtx.gridPad.right<r/2-this.dCtx.yAxisWidthRight&&!e.layout.rotateXLabels&&!e.config.xaxis.labels.trim&&(this.dCtx.xPadRight=r/2+1)},l=(t,e)=>{i.yaxis.length>1&&(t=>-1!==s.collapsedSeriesIndices.indexOf(t))(e)||n(t)};i.yaxis.forEach((t,e)=>{o?(this.dCtx.gridPad.left<r&&(this.dCtx.xPadLeft=r/2+1),this.dCtx.xPadRight=r/2+1):l(t,e)})}}class ki{constructor(t){this.w=t.w,this.dCtx=t}getyAxisLabelsCoords(){const t=this.w,e=[];let s=10;const i=new ci(this.w,{theme:this.dCtx.theme,timeScale:this.dCtx.timeScale});return t.config.yaxis.map((a,r)=>{const o={seriesIndex:r,dataPointIndex:-1,w:t},n=t.globals.yAxisScale[r];let l=0;if(!i.isYAxisHidden(r)&&a.labels.show&&void 0!==a.labels.minWidth&&(l=a.labels.minWidth),!i.isYAxisHidden(r)&&a.labels.show&&n.result.length){const i=t.formatters.yLabelFormatters[r],h=n.niceMin===Number.MIN_VALUE?0:n.niceMin;let c=n.result.reduce((t,e)=>{var s,a;return(null==(s=String(i(t,o)))?void 0:s.length)>(null==(a=String(i(e,o)))?void 0:a.length)?t:e},h);c=i(c,o);let d=c;if(void 0!==c&&0!==c.length||(c=n.niceMax),1===String(c).length&&(c+=".0",d=c),t.globals.isBarHorizontal){s=0;const e=t.labelData.labels.slice();c=Ns.getLargestStringFromArr(e),c=i(c,{seriesIndex:r,dataPointIndex:-1,w:t}),d=this.dCtx.dimHelpers.getLargestStringFromMultiArr(c,e)}const g=new ti(this.w),p="rotate(".concat(a.labels.rotate," 0 0)"),u=g.getTextRects(c,a.labels.style.fontSize,a.labels.style.fontFamily,p,!1);let f=u;c!==d&&(f=g.getTextRects(d,a.labels.style.fontSize,a.labels.style.fontFamily,p,!1)),e.push({width:(l>f.width||l>u.width?l:f.width>u.width?f.width:u.width)+s,height:f.height>u.height?f.height:u.height})}else e.push({width:0,height:0})}),e}getyAxisTitleCoords(){const t=this.w,e=[];return t.config.yaxis.map(t=>{if(t.show&&void 0!==t.title.text){const s=new ti(this.w),i="rotate(".concat(t.title.rotate," 0 0)"),a=s.getTextRects(t.title.text,t.title.style.fontSize,t.title.style.fontFamily,i,!1);e.push({width:a.width,height:a.height})}else e.push({width:0,height:0})}),e}getTotalYAxisWidth(){const t=this.w;let e=0,s=0,i=0;const a=t.globals.yAxisScale.length>1?10:0,r=new ci(this.w,{theme:this.dCtx.theme,timeScale:this.dCtx.timeScale}),o=(o,n)=>{const l=t.config.yaxis[n].floating;let h=0;o.width>0&&!l?(h=o.width+a,function(e){return t.globals.ignoreYAxisIndexes.indexOf(e)>-1}(n)&&(h=h-o.width-a)):h=l||r.isYAxisHidden(n)?0:5,t.config.yaxis[n].opposite?i+=h:s+=h,e+=h};return t.layout.yLabelsCoords.map((t,e)=>{o(t,e)}),t.layout.yTitleCoords.map((t,e)=>{o(t,e)}),t.globals.isBarHorizontal&&!t.config.yaxis[0].floating&&(e=t.layout.yLabelsCoords[0].width+t.layout.yTitleCoords[0].width+15),this.dCtx.yAxisWidthLeft=s,this.dCtx.yAxisWidthRight=i,e}}class Ei{constructor(t){this.w=t.w,this.dCtx=t}gridPadForColumnsInNumericAxis(t){const{w:e}=this,{config:s,globals:i}=e;if(i.noData||i.collapsedSeries.length+i.ancillaryCollapsedSeries.length===s.series.length)return 0;const a=t=>["bar","rangeBar","candlestick","boxPlot"].includes(t),r=s.chart.type;let o=0,n=a(r)?s.series.length:1;i.comboBarCount>0&&(n=i.comboBarCount),i.collapsedSeries.forEach(t=>{a(t.type)&&(n-=1)}),s.chart.stacked&&(n=1);const l=a(r)||i.comboBarCount>0;let h=Math.abs(i.initialMaxX-i.initialMinX);if(l&&e.axisFlags.isXNumeric&&!i.isBarHorizontal&&n>0&&0!==h){h<=3&&(h=i.dataPoints);const e=h/t;let a=i.minXDiff&&i.minXDiff/e>0?i.minXDiff/e:0;a>t/2&&(a/=2),o=a*parseInt(s.plotOptions.bar.columnWidth,10)/100,o<1&&(o=1),i.barPadForNumericAxis=o}return o}gridPadFortitleSubtitle(){const{w:t}=this,{globals:e}=t;let s=this.dCtx.isSparkline||!e.axisCharts?0:10;["title","subtitle"].forEach(i=>{void 0!==t.config[i].text?s+=t.config[i].margin:s+=this.dCtx.isSparkline||!e.axisCharts?0:5}),!t.config.legend.show||"bottom"!==t.config.legend.position||t.config.legend.floating||e.axisCharts||(s+=10);const i=this.dCtx.dimHelpers.getTitleSubtitleCoords("title"),a=this.dCtx.dimHelpers.getTitleSubtitleCoords("subtitle");t.layout.gridHeight-=i.height+a.height+s,t.layout.translateY+=i.height+a.height+s}setGridXPosForDualYAxis(t,e){const{w:s}=this,i=new ci(this.w,{theme:this.dCtx.theme,timeScale:this.dCtx.timeScale});s.config.yaxis.forEach((a,r)=>{-1!==s.globals.ignoreYAxisIndexes.indexOf(r)||a.floating||i.isYAxisHidden(r)||(a.opposite&&(s.layout.translateX-=e[r].width+t[r].width+parseInt(a.labels.style.fontSize,10)/1.2+12),s.layout.translateX<2&&(s.layout.translateX=2))})}}class Di{constructor(t,e){this.w=t,this.ctx=e,this.theme=e.theme,this.timeScale=e.timeScale,this.lgRect={},this.yAxisWidth=0,this.yAxisWidthLeft=0,this.yAxisWidthRight=0,this.xAxisHeight=0,this.isSparkline=this.w.config.chart.sparkline.enabled,this.dimHelpers=new _i(this),this.dimYAxis=new ki(this),this.dimXAxis=new Si(this),this.dimGrid=new Ei(this),this.lgWidthForSideLegends=0,this.gridPad=this.w.config.grid.padding,this.xPadRight=0,this.xPadLeft=0,this.datalabelsCoords={width:0,height:0},this.xAxisWidth=0,this.timescaleLabels=[]}plotCoords(){const t=this.w,e=t.globals;this.lgRect=this.dimHelpers.getLegendsRect(),this.datalabelsCoords={width:0,height:0};const s=Array.isArray(t.config.stroke.width)?Math.max(...t.config.stroke.width):t.config.stroke.width;this.isSparkline&&((t.config.markers.discrete.length>0||t.config.markers.size>0)&&Object.entries(this.gridPad).forEach(([t,e])=>{this.gridPad[t]=Math.max(e,this.w.globals.markers.largestSize/1.5)}),this.gridPad.top=Math.max(s/2,this.gridPad.top),this.gridPad.bottom=Math.max(s/2,this.gridPad.bottom)),e.axisCharts?this.setDimensionsForAxisCharts():this.setDimensionsForNonAxisCharts(),this.dimGrid.gridPadFortitleSubtitle(),t.layout.gridHeight=t.layout.gridHeight-this.gridPad.top-this.gridPad.bottom,t.layout.gridWidth=t.layout.gridWidth-this.gridPad.left-this.gridPad.right-this.xPadRight-this.xPadLeft;const i=this.dimGrid.gridPadForColumnsInNumericAxis(t.layout.gridWidth);return t.layout.gridWidth=t.layout.gridWidth-2*i,t.layout.translateX=t.layout.translateX+this.gridPad.left+this.xPadLeft+(i>0?i:0),t.layout.translateY=t.layout.translateY+this.gridPad.top,{layout:{gridHeight:t.layout.gridHeight,gridWidth:t.layout.gridWidth,translateX:t.layout.translateX,translateY:t.layout.translateY,translateXAxisX:t.layout.translateXAxisX,translateXAxisY:t.layout.translateXAxisY,rotateXLabels:t.layout.rotateXLabels,xAxisHeight:t.layout.xAxisHeight,xAxisLabelsHeight:t.layout.xAxisLabelsHeight,xAxisGroupLabelsHeight:t.layout.xAxisGroupLabelsHeight,xAxisLabelsWidth:t.layout.xAxisLabelsWidth,yLabelsCoords:t.layout.yLabelsCoords,yTitleCoords:t.layout.yTitleCoords}}}setDimensionsForAxisCharts(){const t=this.w,e=t.globals,s=this.dimYAxis.getyAxisLabelsCoords(),i=this.dimYAxis.getyAxisTitleCoords();e.isSlopeChart&&(this.datalabelsCoords=this.dimHelpers.getDatalabelsRect()),t.layout.yLabelsCoords=[],t.layout.yTitleCoords=[],t.config.yaxis.map((e,a)=>{t.layout.yLabelsCoords.push({width:s[a].width,index:a}),t.layout.yTitleCoords.push({width:i[a].width,index:a})}),this.yAxisWidth=this.dimYAxis.getTotalYAxisWidth();const a=this.dimXAxis.getxAxisLabelsCoords(),r=this.dimXAxis.getxAxisGroupLabelsCoords(),o=this.dimXAxis.getxAxisTitleCoords();this.conditionalChecksForAxisCoords(a,o,r),t.layout.translateXAxisY=t.layout.rotateXLabels?this.xAxisHeight/8:-4,t.layout.translateXAxisX=t.layout.rotateXLabels&&t.axisFlags.isXNumeric&&t.config.xaxis.labels.rotate<=-45?-this.xAxisWidth/4:0,t.globals.isBarHorizontal&&(t.layout.rotateXLabels=!1,t.layout.translateXAxisY=parseInt(t.config.xaxis.labels.style.fontSize,10)/1.5*-1),t.layout.translateXAxisY=t.layout.translateXAxisY+t.config.xaxis.labels.offsetY,t.layout.translateXAxisX=t.layout.translateXAxisX+t.config.xaxis.labels.offsetX;let n=this.yAxisWidth,l=this.xAxisHeight;t.layout.xAxisLabelsHeight=this.xAxisHeight-o.height,t.layout.xAxisGroupLabelsHeight=t.layout.xAxisLabelsHeight-a.height,t.layout.xAxisLabelsWidth=this.xAxisWidth,t.layout.xAxisHeight=this.xAxisHeight;let h=10;("radar"===t.config.chart.type||this.isSparkline)&&(n=0,l=0),this.isSparkline&&(this.lgRect={height:0,width:0}),(this.isSparkline||"treemap"===t.config.chart.type)&&(n=0,l=0,h=0),this.isSparkline||"treemap"===t.config.chart.type||this.dimXAxis.additionalPaddingXLabels(a);const c=()=>{t.layout.translateX=n+this.datalabelsCoords.width,t.layout.gridHeight=e.svgHeight-this.lgRect.height-l-(this.isSparkline||"treemap"===t.config.chart.type?0:t.layout.rotateXLabels?10:15),t.layout.gridWidth=e.svgWidth-n-2*this.datalabelsCoords.width};switch("top"===t.config.xaxis.position&&(h=t.layout.xAxisHeight-t.config.xaxis.axisTicks.height-5),t.config.legend.position){case"bottom":t.layout.translateY=h,c();break;case"top":t.layout.translateY=this.lgRect.height+h,c();break;case"left":t.layout.translateY=h,t.layout.translateX=this.lgRect.width+n+this.datalabelsCoords.width,t.layout.gridHeight=e.svgHeight-l-12,t.layout.gridWidth=e.svgWidth-this.lgRect.width-n-2*this.datalabelsCoords.width;break;case"right":t.layout.translateY=h,t.layout.translateX=n+this.datalabelsCoords.width,t.layout.gridHeight=e.svgHeight-l-12,t.layout.gridWidth=e.svgWidth-this.lgRect.width-n-2*this.datalabelsCoords.width-5;break;default:throw new Error("Legend position not supported")}this.dimGrid.setGridXPosForDualYAxis(i,s);new fi(this.w,{theme:this.theme,timeScale:this.timeScale}).setYAxisXPosition(s,i)}setDimensionsForNonAxisCharts(){const t=this.w,e=t.globals,s=t.config;let i=0;t.config.legend.show&&!t.config.legend.floating&&(i=20);const a="pie"===s.chart.type||"polarArea"===s.chart.type||"donut"===s.chart.type?"pie":"radialBar",r=s.plotOptions[a].offsetY,o=s.plotOptions[a].offsetX;if(!s.legend.show||s.legend.floating){t.layout.gridHeight=e.svgHeight;const s=t.dom.elWrap.getBoundingClientRect().width;return t.layout.gridWidth=Math.min(s,t.layout.gridHeight),t.layout.translateY=r,void(t.layout.translateX=o+(e.svgWidth-t.layout.gridWidth)/2)}switch(s.legend.position){case"bottom":t.layout.gridHeight=e.svgHeight-this.lgRect.height,t.layout.gridWidth=e.svgWidth,t.layout.translateY=r-10,t.layout.translateX=o+(e.svgWidth-t.layout.gridWidth)/2;break;case"top":t.layout.gridHeight=e.svgHeight-this.lgRect.height,t.layout.gridWidth=e.svgWidth,t.layout.translateY=this.lgRect.height+r+10,t.layout.translateX=o+(e.svgWidth-t.layout.gridWidth)/2;break;case"left":t.layout.gridWidth=e.svgWidth-this.lgRect.width-i,t.layout.gridHeight="auto"!==s.chart.height?e.svgHeight:t.layout.gridWidth,t.layout.translateY=r,t.layout.translateX=o+this.lgRect.width+i;break;case"right":t.layout.gridWidth=e.svgWidth-this.lgRect.width-i-5,t.layout.gridHeight="auto"!==s.chart.height?e.svgHeight:t.layout.gridWidth,t.layout.translateY=r,t.layout.translateX=o+10;break;default:throw new Error("Legend position not supported")}}conditionalChecksForAxisCoords(t,e,s){const i=this.w,a=i.labelData.hasXaxisGroups?2:1,r=s.height+t.height+e.height,o=i.axisFlags.isMultiLineX?1.2:1.618,n=i.layout.rotateXLabels?22:10,l=i.layout.rotateXLabels&&"bottom"===i.config.legend.position?10:0;this.xAxisHeight=r*o+a*n+l,this.xAxisWidth=t.width,this.xAxisHeight-e.height>i.config.xaxis.labels.maxHeight&&(this.xAxisHeight=i.config.xaxis.labels.maxHeight),i.config.xaxis.labels.minHeight&&this.xAxisHeight<i.config.xaxis.labels.minHeight&&(this.xAxisHeight=i.config.xaxis.labels.minHeight),i.config.xaxis.floating&&(this.xAxisHeight=0);let h=0,c=0;i.config.yaxis.forEach(t=>{h+=t.labels.minWidth,c+=t.labels.maxWidth}),this.yAxisWidth<h&&(this.yAxisWidth=h),this.yAxisWidth>c&&(this.yAxisWidth=c)}}const Li=86400,Pi=10/Li;class Mi{constructor(t,e){this.w=t,this.ctx=e,this.timeScaleArray=[],this.utc=this.w.config.xaxis.labels.datetimeUTC}calculateTimeScaleTicks(t,e){const s=this.w;if(s.globals.allSeriesCollapsed)return s.labelData.labels=[],s.labelData.timescaleLabels=[],[];const i=new zs(this.w),a=(e-t)/864e5;this.determineInterval(a),s.interact.disableZoomIn=!1,s.interact.disableZoomOut=!1,a<Pi?s.interact.disableZoomIn=!0:a>5e4&&(s.interact.disableZoomOut=!0);const r=i.getTimeUnitsfromTimestamp(t,e),o=s.layout.gridWidth/a,n=o/24,l=n/60,h=l/60,c=Math.floor(24*a),d=Math.floor(1440*a),g=Math.floor(a*Li),p=Math.floor(a),u=Math.floor(a/30),f=Math.floor(a/365),x={minMillisecond:r.minMillisecond,minSecond:r.minSecond,minMinute:r.minMinute,minHour:r.minHour,minDate:r.minDate,minMonth:r.minMonth,minYear:r.minYear},m={firstVal:x,currentMillisecond:x.minMillisecond,currentSecond:x.minSecond,currentMinute:x.minMinute,currentHour:x.minHour,currentMonthDate:x.minDate,currentDate:x.minDate,currentMonth:x.minMonth,currentYear:x.minYear,daysWidthOnXAxis:o,hoursWidthOnXAxis:n,minutesWidthOnXAxis:l,secondsWidthOnXAxis:h,numberOfSeconds:g,numberOfMinutes:d,numberOfHours:c,numberOfDays:p,numberOfMonths:u,numberOfYears:f};switch(this.tickInterval){case"years":this.generateYearScale(m);break;case"months":case"half_year":this.generateMonthScale(m);break;case"months_days":case"months_fortnight":case"days":case"week_days":this.generateDayScale(m);break;case"hours":this.generateHourScale(m);break;case"minutes_fives":case"minutes":this.generateMinuteScale(m);break;case"seconds_tens":case"seconds_fives":case"seconds":this.generateSecondScale(m)}const b=this.timeScaleArray.map(t=>{const e={position:t.position,unit:t.unit,year:t.year,day:t.day?t.day:1,hour:t.hour?t.hour:0,month:t.month+1};return"month"===t.unit?Ds(Es({},e),{day:1,value:t.value+1}):"day"===t.unit||"hour"===t.unit?Ds(Es({},e),{value:t.value}):"minute"===t.unit?Ds(Es({},e),{value:t.value,minute:t.value}):"second"===t.unit?Ds(Es({},e),{value:t.value,minute:t.minute,second:t.second}):t});return b.filter(t=>{let e=1,i=Math.ceil(s.layout.gridWidth/120);const a=t.value;void 0!==s.config.xaxis.tickAmount&&(i=s.config.xaxis.tickAmount),b.length>i&&(e=Math.floor(b.length/i));let r=!1,o=!1;switch(this.tickInterval){case"years":"year"===t.unit&&(r=!0);break;case"half_year":e=7,"year"===t.unit&&(r=!0);break;case"months":e=1,"year"===t.unit&&(r=!0);break;case"months_fortnight":e=15,"year"!==t.unit&&"month"!==t.unit||(r=!0),30===a&&(o=!0);break;case"months_days":e=10,"month"===t.unit&&(r=!0),30===a&&(o=!0);break;case"week_days":e=8,"month"===t.unit&&(r=!0);break;case"days":e=1,"month"===t.unit&&(r=!0);break;case"hours":"day"===t.unit&&(r=!0);break;case"minutes_fives":case"seconds_fives":a%5!=0&&(o=!0);break;case"seconds_tens":a%10!=0&&(o=!0)}if("hours"===this.tickInterval||"minutes_fives"===this.tickInterval||"seconds_tens"===this.tickInterval||"seconds_fives"===this.tickInterval){if(!o)return!0}else if((a%e===0||r)&&!o)return!0})}recalcDimensionsBasedOnFormat(t){const e=this.w,s=this.formatDates(t),i=this.removeOverlappingTS(s);e.labelData.timescaleLabels=i.slice();const a=new Di(this.w,this.ctx).plotCoords();this.ctx._writeLayoutCoords(a.layout)}determineInterval(t){const e=24*t,s=60*e;switch(!0){case t/365>5:this.tickInterval="years";break;case t>800:this.tickInterval="half_year";break;case t>180:this.tickInterval="months";break;case t>90:this.tickInterval="months_fortnight";break;case t>60:this.tickInterval="months_days";break;case t>30:this.tickInterval="week_days";break;case t>2:this.tickInterval="days";break;case e>2.4:this.tickInterval="hours";break;case s>15:this.tickInterval="minutes_fives";break;case s>5:this.tickInterval="minutes";break;case s>1:this.tickInterval="seconds_tens";break;case 60*s>20:this.tickInterval="seconds_fives";break;default:this.tickInterval="seconds"}}generateYearScale({firstVal:t,currentMonth:e,currentYear:s,daysWidthOnXAxis:i,numberOfYears:a}){let r=t.minYear,o=0;const n=new zs(this.w),l="year";if(t.minDate>1||t.minMonth>0){const e=n.determineRemainingDaysOfYear(t.minYear,t.minMonth,t.minDate);o=(n.determineDaysOfYear(t.minYear)-e+1)*i,r=t.minYear+1,this.timeScaleArray.push({position:o,value:r,unit:l,year:r,month:1})}else 1===t.minDate&&0===t.minMonth&&this.timeScaleArray.push({position:o,value:r,unit:l,year:s,month:Ns.monthMod(e+1)});let h=r,c=o;for(let t=0;t<a;t++)h++,c=n.determineDaysOfYear(h-1)*i+c,this.timeScaleArray.push({position:c,value:h,unit:l,year:h,month:1})}generateMonthScale({firstVal:t,currentMonthDate:e,currentMonth:s,currentYear:i,daysWidthOnXAxis:a,numberOfMonths:r}){let o=s,n=0;const l=new zs(this.w);let h="month",c=0;if(t.minDate>1){n=(l.determineDaysOfMonths(s+1,t.minYear)-e+1)*a,o=Ns.monthMod(s+1);let r=i+c,d=Ns.monthMod(o),g=o;0===o&&(h="year",g=r,d=1,c+=1,r+=c),this.timeScaleArray.push({position:n,value:g,unit:h,year:r,month:d})}else this.timeScaleArray.push({position:n,value:o,unit:h,year:i,month:Ns.monthMod(s)});let d=o+1,g=n;for(let t=0,e=1;t<r;t++,e++){d=Ns.monthMod(d),0===d?(h="year",c+=1):h="month";const t=this._getYear(i,d,c);g=l.determineDaysOfMonths(d,t)*a+g;const e=0===d?t:d;this.timeScaleArray.push({position:g,value:e,unit:h,year:t,month:0===d?1:d}),d++}}generateDayScale({firstVal:t,currentMonth:e,currentYear:s,hoursWidthOnXAxis:i,numberOfDays:a}){const r=new zs(this.w);let o="day",n=t.minDate+1,l=n;const h=(t,e,s)=>t>r.determineDaysOfMonths(e+1,s)?(l=1,o="month",d=e+=1,e):e;let c=(24-t.minHour)*i,d=n,g=h(l,e,s);0===t.minHour&&1===t.minDate?(c=0,d=Ns.monthMod(t.minMonth),o="month",l=t.minDate):1!==t.minDate&&0===t.minHour&&0===t.minMinute&&(c=0,n=t.minDate,l=n,d=n,g=h(l,e,s),1!==d&&(o="day")),this.timeScaleArray.push({position:c,value:d,unit:o,year:this._getYear(s,g,0),month:Ns.monthMod(g),day:l});let p=c;for(let t=0;t<a;t++){l+=1,o="day",g=h(l,g,this._getYear(s,g,0));const t=this._getYear(s,g,0);p=24*i+p;const e=1===l?Ns.monthMod(g):l;this.timeScaleArray.push({position:p,value:e,unit:o,year:t,month:Ns.monthMod(g),day:e})}}generateHourScale({firstVal:t,currentDate:e,currentMonth:s,currentYear:i,minutesWidthOnXAxis:a,numberOfHours:r}){const o=new zs(this.w);let n="hour";const l=(t,e)=>(t>o.determineDaysOfMonths(e+1,i)&&(u=1,e+=1),{month:e,date:u}),h=(t,e)=>t>o.determineDaysOfMonths(e+1,i)?e+=1:e,c=60-(t.minMinute+t.minSecond/60);let d=c*a,g=t.minHour+1,p=g;60===c&&(d=0,g=t.minHour,p=g);let u=e;p>=24&&(p=0,u+=1,n="day",g=u);let f=l(u,s).month;f=h(u,f),"day"===n&&(g=u),this.timeScaleArray.push({position:d,value:g,unit:n,day:u,hour:p,year:i,month:Ns.monthMod(f)}),p++;let x=d;for(let t=0;t<r;t++){if(n="hour",p>=24){p=0,u+=1,n="day";f=l(u,f).month,f=h(u,f)}const t=this._getYear(i,f,0);x=60*a+x;const e=0===p?u:p;this.timeScaleArray.push({position:x,value:e,unit:n,hour:p,day:u,year:t,month:Ns.monthMod(f)}),p++}}generateMinuteScale({currentMillisecond:t,currentSecond:e,currentMinute:s,currentHour:i,currentDate:a,currentMonth:r,currentYear:o,minutesWidthOnXAxis:n,secondsWidthOnXAxis:l,numberOfMinutes:h}){const c=new zs(this.w);let d=(60-e-t/1e3)*l,g=s+1;0===e&&0===t&&(d=0,g=s);let p=a,u=r;const f=o;let x=i,m=d;for(let t=0;t<h;t++){if(g>=60&&(g=0,x+=1,24===x)){x=0,p+=1;p>c.determineDaysOfMonths(u+1,this._getYear(f,u,0))&&(p=1,u+=1)}this.timeScaleArray.push({position:m,value:g,unit:"minute",hour:x,minute:g,day:p,year:this._getYear(f,u,0),month:Ns.monthMod(u)}),m+=n,g++}}generateSecondScale({currentMillisecond:t,currentSecond:e,currentMinute:s,currentHour:i,currentDate:a,currentMonth:r,currentYear:o,secondsWidthOnXAxis:n,numberOfSeconds:l}){let h=(1e3-t)/1e3*n,c=e+1;0===t&&(h=0,c=e);let d=s;const g=a,p=r,u=o;let f=i,x=h;for(let t=0;t<l;t++)c>=60&&(d++,c=0,d>=60&&(f++,d=0,24===f&&(f=0))),this.timeScaleArray.push({position:x,value:c,unit:"second",hour:f,minute:d,second:c,day:g,year:this._getYear(u,p,0),month:Ns.monthMod(p)}),x+=n,c++}createRawDateString(t,e){let s=t.year;return 0===t.month&&(t.month=1),s+="-"+("0"+t.month.toString()).slice(-2),"day"===t.unit?s+="-"+("0"+e).slice(-2):s+="-"+("0"+(t.day?t.day:"1")).slice(-2),"hour"===t.unit?s+="T"+("0"+e).slice(-2):s+="T"+("0"+(t.hour?t.hour:"0")).slice(-2),"minute"===t.unit?s+=":"+("0"+e).slice(-2):s+=":"+(t.minute?("0"+t.minute).slice(-2):"00"),"second"===t.unit?s+=":"+("0"+e).slice(-2):s+=":00",this.utc&&(s+=".000Z"),s}formatDates(t){const e=this.w;return t.map(t=>{let s=t.value.toString();const i=new zs(this.w),a=this.createRawDateString(t,s);let r=i.getDate(i.parseDate(a));if(this.utc||(r=i.getDate(i.parseDateWithTimezone(a))),void 0===e.config.xaxis.labels.format){let a="dd MMM";const o=e.config.xaxis.labels.datetimeFormatter;"year"===t.unit&&(a=o.year),"month"===t.unit&&(a=o.month),"day"===t.unit&&(a=o.day),"hour"===t.unit&&(a=o.hour),"minute"===t.unit&&(a=o.minute),"second"===t.unit&&(a=o.second),s=i.formatDate(r,a)}else s=i.formatDate(r,e.config.xaxis.labels.format);return{dateString:a,position:t.position,value:s,unit:t.unit,year:t.year,month:t.month}})}removeOverlappingTS(t){const e=new ti(this.w);let s,i=!1;t.length>0&&t[0].value&&t.every(e=>e.value.length===t[0].value.length)&&(i=!0,s=e.getTextRects(t[0].value,this.w.config.xaxis.labels.style.fontSize).width);let a=0,r=t.map((r,o)=>{if(o>0&&this.w.config.xaxis.labels.hideOverlappingLabels){const n=i?s:e.getTextRects(t[a].value,this.w.config.xaxis.labels.style.fontSize).width,l=t[a].position;return r.position>l+n+10?(a=o,r):null}return r});return r=r.filter(t=>null!==t),r}_getYear(t,e,s){return t+Math.floor(e/12)+s}}const Ti="__apexcharts_registry__";function Ii(){return globalThis[Ti]}function Hi(t){const e=Ii()[t];if(!e)throw new Error(`ApexCharts: chart type "${t}" is not registered. Import it via ApexCharts.use() or use the full apexcharts bundle.`);return e}globalThis[Ti]||(globalThis[Ti]={});class Fi{constructor(t,e,s){this.w=e,this.ctx=s,this.el=t}setupElements(){const{globals:t,config:e}=this.w,s=e.chart.type,i=["line","area","bar","rangeBar","rangeArea","candlestick","boxPlot","scatter","bubble"],a=[...i,"radar","heatmap","treemap"];t.axisCharts=a.includes(s),t.xyCharts=i.includes(s),t.isBarHorizontal=["bar","rangeBar","boxPlot"].includes(s)&&e.plotOptions.bar.horizontal,t.chartClass=`.apexcharts${t.chartID}`,this.w.dom.baseEl=this.el,this.w.dom.elWrap=Bs.createElementNS("http://www.w3.org/1999/xhtml","div"),ti.setAttrs(this.w.dom.elWrap,{id:t.chartClass.substring(1),class:`apexcharts-canvas ${t.chartClass.substring(1)}`}),this.el.appendChild(this.w.dom.elWrap);const r=Ps.isBrowser()?window.SVG:global.SVG;if(this.w.dom.Paper=r().addTo(this.w.dom.elWrap),this.w.dom.Paper.attr({class:"apexcharts-svg","xmlns:data":"ApexChartsNS",transform:`translate(${e.chart.offsetX}, ${e.chart.offsetY})`}),this.w.dom.Paper.node.style.background="dark"!==e.theme.mode||e.chart.background?"light"!==e.theme.mode||e.chart.background?e.chart.background:"#fff":"#343A3F",this.setSVGDimensions(),this.w.dom.elLegendForeign=Bs.createElementNS(ei,"foreignObject"),ti.setAttrs(this.w.dom.elLegendForeign,{x:0,y:0,width:t.svgWidth,height:t.svgHeight}),this.w.dom.elLegendWrap=Bs.createElementNS("http://www.w3.org/1999/xhtml","div"),this.w.dom.elLegendWrap.classList.add("apexcharts-legend"),this.w.dom.elWrap.appendChild(this.w.dom.elLegendWrap),this.w.dom.Paper.node.appendChild(this.w.dom.elLegendForeign),e.chart.accessibility.enabled){const t=this.getAccessibleChartLabel(),s=e.chart.accessibility.keyboard.enabled&&e.chart.accessibility.keyboard.navigation.enabled?"application":"img";if(this.w.dom.Paper.attr({role:s,"aria-label":t}),e.chart.accessibility.description){const t=Bs.createElementNS(ei,"desc");t.textContent=e.chart.accessibility.description,this.w.dom.Paper.node.insertBefore(t,this.w.dom.elLegendForeign.nextSibling)}}this.w.dom.elGraphical=this.w.dom.Paper.group().attr({class:"apexcharts-inner apexcharts-graphical"}),this.w.dom.elDefs=this.w.dom.Paper.defs(),this.w.dom.Paper.add(this.w.dom.elGraphical),this.w.dom.elGraphical.add(this.w.dom.elDefs)}plotChartType(t,e){const{w:s,ctx:i}=this,{config:a,globals:r}=s,o={line:{series:[],i:[]},area:{series:[],i:[]},scatter:{series:[],i:[]},bubble:{series:[],i:[]},bar:{series:[],i:[]},candlestick:{series:[],i:[]},boxPlot:{series:[],i:[]},rangeBar:{series:[],i:[]},rangeArea:{series:[],seriesRangeEnd:[],i:[]}},n=a.chart.type||"line";let l=null,h=0;this.w.seriesData.series.forEach((e,i)=>{var a,r;const c="column"===(null==(a=t[i])?void 0:a.type)?"bar":(null==(r=t[i])?void 0:r.type)||("column"===n?"bar":n);o[c]?("rangeArea"===c?(o[c].series.push(this.w.rangeData.seriesRangeStart[i]),o[c].seriesRangeEnd.push(this.w.rangeData.seriesRangeEnd[i])):o[c].series.push(e),o[c].i.push(i),"bar"===c&&(s.globals.columnSeries=o.bar)):["heatmap","treemap","pie","donut","polarArea","radialBar","radar"].includes(c)?l=c:console.warn(`You have specified an unrecognized series type (${c}).`),n!==c&&"scatter"!==c&&h++}),h>0&&(l&&console.warn(`Chart or series type ${l} cannot appear with other chart or series types.`),o.bar.series.length>0&&a.plotOptions.bar.horizontal&&(h-=o.bar.series.length,o.bar={series:[],i:[]},s.globals.columnSeries={series:[],i:[]},console.warn("Horizontal bars are not supported in a mixed/combo chart. Please turn off `plotOptions.bar.horizontal`"))),r.comboCharts||(r.comboCharts=h>0);const c=o.line.series.length>0||o.area.series.length>0||o.scatter.series.length>0||o.bubble.series.length>0||o.rangeArea.series.length>0||!r.comboCharts&&["line","area","scatter","bubble","rangeArea"].includes(a.chart.type)?new(Hi("line"))(i.w,i,e):null,d=o.candlestick.series.length>0||o.boxPlot.series.length>0||!r.comboCharts&&["candlestick","boxPlot"].includes(a.chart.type)?new(Hi("candlestick"))(i.w,i,e):null,g=!r.comboCharts&&["pie","donut","polarArea"].includes(a.chart.type);i.pie=g?new(Hi("pie"))(i.w,i):null;const p=o.rangeBar.series.length>0||!r.comboCharts&&"rangeBar"===a.chart.type;i.rangeBar=p?new(Hi("rangeBar"))(i.w,i,e):null;let u=[];if(r.comboCharts){const t=new Ks(this.w);if(o.area.series.length>0&&u.push(...t.drawSeriesByGroup(o.area,r.areaGroups,"area",c)),o.bar.series.length>0)if(a.chart.stacked){const t=new(Hi("barStacked"))(i.w,i,e);u.push(t.draw(o.bar.series,o.bar.i))}else i.bar=new(Hi("bar"))(i.w,i,e),u.push(i.bar.draw(o.bar.series,o.bar.i));if(o.rangeArea.series.length>0&&u.push(c.draw(o.rangeArea.series,"rangeArea",o.rangeArea.i,o.rangeArea.seriesRangeEnd)),o.line.series.length>0&&u.push(...t.drawSeriesByGroup(o.line,r.lineGroups,"line",c)),o.candlestick.series.length>0&&u.push(d.draw(o.candlestick.series,"candlestick",o.candlestick.i)),o.boxPlot.series.length>0&&u.push(d.draw(o.boxPlot.series,"boxPlot",o.boxPlot.i)),o.rangeBar.series.length>0&&u.push(i.rangeBar.draw(o.rangeBar.series,o.rangeBar.i)),o.scatter.series.length>0){const t=new(Hi("line"))(i.w,i,e,!0);u.push(t.draw(o.scatter.series,"scatter",o.scatter.i))}if(o.bubble.series.length>0){const t=new(Hi("line"))(i.w,i,e,!0);u.push(t.draw(o.bubble.series,"bubble",o.bubble.i))}}else{const t=a.chart.type;switch(t){case"line":u=c.draw(this.w.seriesData.series,"line");break;case"area":u=c.draw(this.w.seriesData.series,"area");break;case"bar":if(a.chart.stacked){u=new(Hi("barStacked"))(i.w,i,e).draw(this.w.seriesData.series)}else i.bar=new(Hi("bar"))(i.w,i,e),u=i.bar.draw(this.w.seriesData.series);break;case"candlestick":u=d.draw(this.w.seriesData.series,"candlestick");break;case"boxPlot":u=d.draw(this.w.seriesData.series,t);break;case"rangeBar":u=i.rangeBar.draw(this.w.seriesData.series);break;case"rangeArea":u=c.draw(this.w.rangeData.seriesRangeStart,"rangeArea",void 0,this.w.rangeData.seriesRangeEnd);break;case"heatmap":u=new(Hi("heatmap"))(i.w,i,e).draw(this.w.seriesData.series);break;case"treemap":u=new(Hi("treemap"))(i.w,i).draw(this.w.seriesData.series);break;case"pie":case"donut":case"polarArea":u=i.pie.draw(this.w.seriesData.series);break;case"radialBar":u=new(Hi("radialBar"))(i.w,i).draw(this.w.seriesData.series);break;case"radar":u=new(Hi("radar"))(i.w,i).draw(this.w.seriesData.series);break;default:u=c.draw(this.w.seriesData.series)}}return u}setSVGDimensions(){var t;const{globals:e,config:s}=this.w;s.chart.width=s.chart.width||"100%",s.chart.height=s.chart.height||"auto";const i=s.chart.width,a=s.chart.height;e.svgWidth=NaN,e.svgHeight=NaN;let r=Ns.getDimensions(this.el);const o=i.toString().split(/[0-9]+/g).pop();"%"===o?Ns.isNumber(r[0])&&(0===r[0].width&&(r=Ns.getDimensions(this.el.parentNode)),e.svgWidth=r[0]*parseInt(i,10)/100):"px"!==o&&""!==o||(e.svgWidth=parseInt(i,10));const n=String(a).toString().split(/[0-9]+/g).pop();if("auto"!==a&&""!==a)if("%"===n){const t=Ns.getDimensions(this.el.parentNode);e.svgHeight=t[1]*parseInt(a,10)/100}else e.svgHeight=parseInt(a,10);else e.svgHeight=e.axisCharts?e.svgWidth/1.61:e.svgWidth/1.2;if(e.svgWidth=Math.max(e.svgWidth,0),e.svgHeight=Math.max(e.svgHeight,0),ti.setAttrs(this.w.dom.Paper.node,{width:e.svgWidth,height:e.svgHeight}),"%"!==n&&Ps.isBrowser()){const i=s.chart.sparkline.enabled?0:e.axisCharts?s.chart.parentHeightOffset:0,a=this.w.dom.Paper.node;(null==(t=a.parentNode)?void 0:t.parentNode)&&(a.parentNode.parentNode.style.minHeight=`${e.svgHeight+i}px`)}this.w.dom.elWrap.style.width=`${e.svgWidth}px`,this.w.dom.elWrap.style.height=`${e.svgHeight}px`}shiftGraphPosition(){const{globals:t}=this.w,{translateY:e,translateX:s}=t;ti.setAttrs(this.w.dom.elGraphical.node,{transform:`translate(${s}, ${e})`})}resizeNonAxisCharts(){var t,e;const{w:s}=this;let i=0,a=s.config.chart.sparkline.enabled?1:15;a+=s.config.grid.padding.bottom,["top","bottom"].includes(s.config.legend.position)&&s.config.legend.show&&!s.config.legend.floating&&(i=(null!=(e=null==(t=this.ctx.legend)?void 0:t.legendHelpers.getLegendDimensions().clwh)?e:0)+7);const r=s.dom.baseEl.querySelector(".apexcharts-radialbar, .apexcharts-pie");let o=2.05*s.globals.radialSize;if(r&&!s.config.chart.sparkline.enabled&&0!==s.config.plotOptions.radialBar.startAngle){const t=Ns.getBoundingClientRect(r);o=t.bottom;const e=t.bottom-t.top;o=Math.max(2.05*s.globals.radialSize,e)}const n=Math.ceil(o+this.w.layout.translateY+i+a);this.w.dom.elLegendForeign&&this.w.dom.elLegendForeign.setAttribute("height",String(n)),s.config.chart.height&&String(s.config.chart.height).includes("%")||(this.w.dom.elWrap.style.height=`${n}px`,ti.setAttrs(this.w.dom.Paper.node,{height:n}),Ps.isBrowser()&&(this.w.dom.Paper.node.parentNode.parentNode.style.minHeight=`${n}px`))}coreCalculations(){new ui(this.w).init()}resetGlobals(){const t=()=>this.w.config.series.map(()=>[]),e=new qs,{globals:s}=this.w,i={dataWasParsed:this.w.axisFlags.dataWasParsed,originalSeries:s.originalSeries};e.initGlobalVars(s),s.seriesXvalues=t(),s.seriesYvalues=t(),i.dataWasParsed&&(this.w.axisFlags.dataWasParsed=i.dataWasParsed,s.originalSeries=i.originalSeries)}isMultipleY(){return!!(Array.isArray(this.w.config.yaxis)&&this.w.config.yaxis.length>1)&&(this.w.globals.isMultipleYAxis=!0,!0)}xySettings(){const{w:t}=this;let e=null;if(t.globals.axisCharts){if("back"===t.config.xaxis.crosshairs.position&&new yi(this.w).drawXCrosshairs(),"back"===t.config.yaxis[0].crosshairs.position&&new yi(this.w).drawYCrosshairs(),"datetime"===t.config.xaxis.type&&void 0===t.config.xaxis.labels.formatter){this.ctx.timeScale=new Mi(this.w,this.ctx);let e=[];isFinite(t.globals.minX)&&isFinite(t.globals.maxX)&&!t.globals.isBarHorizontal?e=this.ctx.timeScale.calculateTimeScaleTicks(t.globals.minX,t.globals.maxX):t.globals.isBarHorizontal&&(e=this.ctx.timeScale.calculateTimeScaleTicks(t.globals.minY,t.globals.maxY)),this.ctx.timeScale.recalcDimensionsBasedOnFormat(e)}e=new Ks(this.w).getCalculatedRatios()}return e}updateSourceChart(t){this.ctx.w.interact.selection=void 0,this.ctx.updateHelpers._updateOptions({chart:{selection:{xaxis:{min:t.w.globals.minX,max:t.w.globals.maxX}}}},!1,!1)}setupBrushHandler(){const{ctx:t,w:e}=this;if(e.config.chart.brush.enabled&&"function"!=typeof e.config.chart.events.selection){const s=Array.isArray(e.config.chart.brush.targets)?e.config.chart.brush.targets:[e.config.chart.brush.target];s.forEach(e=>{const s=t.constructor.getChartByID(e);s.w.globals.brushSource=this.ctx,"function"!=typeof s.w.config.chart.events.zoomed&&(s.w.config.chart.events.zoomed=()=>this.updateSourceChart(s)),"function"!=typeof s.w.config.chart.events.scrolled&&(s.w.config.chart.events.scrolled=()=>this.updateSourceChart(s))}),e.config.chart.events.selection=(e,i)=>{s.forEach(e=>{t.constructor.getChartByID(e).ctx.updateHelpers._updateOptions({xaxis:{min:i.xaxis.min,max:i.xaxis.max}},!1,!1,!1,!1)})}}}getAccessibleChartLabel(){const t=this.w,e=t.config;let s="";if(e.chart.accessibility&&e.chart.accessibility.description)s=e.chart.accessibility.description;else if(e.title.text){const t=e.chart.type;s=`${e.title.text}. ${t} chart`,e.subtitle.text&&(s+=`. ${e.subtitle.text}`)}else{s=`${e.chart.type} chart with ${t.seriesData.series.length||(e.series?e.series.length:0)} data series`}return s}}class Ri{constructor(t,{resetGlobals:e=()=>{},isMultipleY:s=()=>{}}={}){this.w=t,this.resetGlobals=e,this.isMultipleY=s,this.twoDSeries=[],this.threeDSeries=[],this.twoDSeriesX=[],this.seriesGoals=[],this.coreUtils=new Ks(this.w),this.activeSeriesIndex=0}getFirstDataPoint(){const t=this.w.config.series,e=new vi(this.w);this.activeSeriesIndex=e.getActiveConfigSeriesIndex();const s=t[this.activeSeriesIndex];return s&&s.data&&s.data.length>0&&null!==s.data[0]&&void 0!==s.data[0]?s.data[0]:null}isMultiFormat(){return this.isFormatXY()||this.isFormat2DArray()}isFormatXY(){var t;const e=this.getFirstDataPoint();if(!e||void 0===e.x)return!1;const s=null==(t=this.w.config.series[this.activeSeriesIndex])?void 0:t.data;if(s){const t=t=>t&&void 0!==t.x;for(let e=1;e<Math.min(3,s.length);e++)if(!0!==t(s[e])){console.warn(`ApexCharts: series data has mixed formats starting at index ${e}`);break}}return!0}isFormat2DArray(){const t=this.getFirstDataPoint();return t&&Array.isArray(t)}handleFormat2DArray(t,e){const s=this.w.config,i=t[e].data,a="boxPlot"===s.chart.type||"boxPlot"===s.series[e].type;for(let t=0;t<i.length;t++){const e=i[t],r=e[0],o=e[1],n=e[2];if(void 0!==o&&(Array.isArray(o)&&4===o.length&&!a?this.twoDSeries.push(Ns.parseNumber(o[3])):e.length>=5?this.twoDSeries.push(Ns.parseNumber(e[4])):this.twoDSeries.push(Ns.parseNumber(o)),this.w.axisFlags.dataFormatXNumeric=!0),"datetime"===s.xaxis.type){const t=new Date(r).getTime();this.twoDSeriesX.push(t)}else this.twoDSeriesX.push(r);void 0!==n&&(this.threeDSeries.push(n),this.w.axisFlags.isDataXYZ=!0)}}handleFormatXY(t,e){const s=this.w.config,i=this.w.globals,a=new zs(this.w),r=t[e].data;let o=e;i.collapsedSeriesIndices.indexOf(e)>-1&&(o=this.activeSeriesIndex);const n=t[o].data;for(let t=0;t<r.length;t++){const s=r[t];if(void 0!==s.y){const t=Array.isArray(s.y)?Ns.parseNumber(s.y[s.y.length-1]):Ns.parseNumber(s.y);this.twoDSeries.push(t)}void 0===this.seriesGoals[e]&&(this.seriesGoals[e]=[]),void 0!==s.goals&&Array.isArray(s.goals)?this.seriesGoals[e].push(s.goals):this.seriesGoals[e].push(null),void 0!==s.z&&(this.threeDSeries.push(s.z),this.w.axisFlags.isDataXYZ=!0)}for(let t=0;t<n.length;t++){const e=n[t].x,r="string"==typeof e,o=Array.isArray(e),l=!o&&!!a.isValidDate(e);if(r||l)if(r||s.xaxis.convertedCatToNumeric){const t=i.isBarHorizontal&&this.w.axisFlags.isRangeData;"datetime"!==s.xaxis.type||t?(this.fallbackToCategory=!0,this.twoDSeriesX.push(e),isNaN(e)||"category"===this.w.config.xaxis.type||"string"==typeof e||(this.w.axisFlags.isXNumeric=!0)):this.twoDSeriesX.push(a.parseDate(e))}else"datetime"===s.xaxis.type?this.twoDSeriesX.push(a.parseDate(e.toString())):(this.w.axisFlags.dataFormatXNumeric=!0,this.w.axisFlags.isXNumeric=!0,this.twoDSeriesX.push(parseFloat(e)));else o?(this.fallbackToCategory=!0,this.twoDSeriesX.push(e)):(this.w.axisFlags.isXNumeric=!0,this.w.axisFlags.dataFormatXNumeric=!0,this.twoDSeriesX.push(e))}}handleRangeData(t,e){let s={start:[],end:[],rangeUniques:[]};return this.isFormat2DArray()?s=this.handleRangeDataFormat("array",t,e):this.isFormatXY()&&(s=this.handleRangeDataFormat("xy",t,e)),this.w.rangeData.seriesRangeStart[e]=void 0===s.start?[]:s.start,this.w.rangeData.seriesRangeEnd[e]=void 0===s.end?[]:s.end,this.w.rangeData.seriesRange[e]=s.rangeUniques,this.w.rangeData.seriesRange.forEach(t=>{t&&t.forEach(t=>{const e=t.y,s=e.length;if(!(s<=1))for(let i=0;i<s;i++){const a=e[i],r=a.y1,o=a.y2;for(let n=i+1;n<s;n++){const s=e[n],i=s.y1;if(r<=s.y2&&i<=o){const e=t;e.overlaps.add(a.rangeName),e.overlaps.add(s.rangeName)}}}})}),s}handleCandleStickBoxData(t,e){let s={o:[],h:[],m:[],l:[],c:[]};return this.isFormat2DArray()?s=this.handleCandleStickBoxDataFormat("array",t,e):this.isFormatXY()&&(s=this.handleCandleStickBoxDataFormat("xy",t,e)),this.w.candleData.seriesCandleO[e]=s.o,this.w.candleData.seriesCandleH[e]=s.h,this.w.candleData.seriesCandleM[e]=s.m,this.w.candleData.seriesCandleL[e]=s.l,this.w.candleData.seriesCandleC[e]=s.c,s}handleRangeDataFormat(t,e,s){const i=[],a=[],r=new Map,o=[];if(e[s].data.forEach(t=>{if(!r.has(t.x)){const e={x:t.x,overlaps:new Set,y:[]};r.set(t.x,e),o.push(e)}}),"array"===t)for(let t=0;t<e[s].data.length;t++)Array.isArray(e[s].data[t])?(i.push(e[s].data[t][1][0]),a.push(e[s].data[t][1][1])):(i.push(e[s].data[t]),a.push(e[s].data[t]));else if("xy"===t)for(let t=0;t<e[s].data.length;t++){const o=Array.isArray(e[s].data[t].y),n=Ns.randomId(),l=e[s].data[t].x,h={y1:o?e[s].data[t].y[0]:e[s].data[t].y,y2:o?e[s].data[t].y[1]:e[s].data[t].y,rangeName:n};e[s].data[t].rangeName=n;const c=r.get(l);c&&c.y.push(h),i.push(h.y1),a.push(h.y2)}return{start:i,end:a,rangeUniques:o}}handleCandleStickBoxDataFormat(t,e,s){const i=this.w,a="boxPlot"===i.config.chart.type||"boxPlot"===i.config.series[s].type,r=[],o=[],n=[],l=[],h=[],c=e[s].data;let d;if("array"===t){d=a&&6===c[0].length||!a&&5===c[0].length?t=>t.slice(1):t=>Array.isArray(t[1])?t[1]:[]}else d=t=>Array.isArray(t.y)?t.y:[];for(let t=0;t<c.length;t++){const e=d(c[t]);e&&e.length>=2&&(r.push(e[0]),o.push(e[1]),a?(n.push(e[2]),l.push(e[3]),h.push(e[4])):(l.push(e[2]),h.push(e[3])))}return{o:r,h:o,m:n,l:l,c:h}}parseDataAxisCharts(t){var e,s;const i=this.w.config,a=this.w.globals,r=new zs(this.w),o=i.labels.length>0?i.labels.slice():i.xaxis.categories.slice();this.w.axisFlags.isRangeBar="rangeBar"===i.chart.type&&a.isBarHorizontal,this.w.labelData.hasXaxisGroups="category"===i.xaxis.type&&i.xaxis.group.groups.length>0,this.w.labelData.hasXaxisGroups&&(this.w.labelData.groups=i.xaxis.group.groups),t.forEach((t,e)=>{void 0!==t.name?this.w.seriesData.seriesNames.push(t.name):this.w.seriesData.seriesNames.push("series-"+parseInt(String(e+1),10))}),this.coreUtils.setSeriesYAxisMappings();const n=[],l=[...new Set(i.series.map(t=>t.group))];i.series.forEach((t,e)=>{const s=l.indexOf(t.group);n[s]||(n[s]=[]),n[s].push(this.w.seriesData.seriesNames[e])}),this.w.labelData.seriesGroups=n;const h=()=>{for(let t=0;t<o.length;t++)if("string"==typeof o[t]){if(!r.isValidDate(o[t]))throw new Error("You have provided invalid Date format. Please provide a valid JavaScript Date");this.twoDSeriesX.push(r.parseDate(o[t]))}else this.twoDSeriesX.push(o[t])};for(let a=0;a<t.length;a++){if(this.twoDSeries=[],this.twoDSeriesX=[],this.threeDSeries=[],void 0===t[a].data)return void console.error("It is a possibility that you may have not included 'data' property in series.");const r=i.chart.dataReducer;if((null==r?void 0:r.enabled)&&this.isMultiFormat()&&t[a].data.length>(null!=(e=r.threshold)?e:500)&&(t[a]=Ds(Es({},t[a]),{data:Ri.lttbDownsample(t[a].data,null!=(s=r.targetPoints)?s:250)})),"rangeBar"!==i.chart.type&&"rangeArea"!==i.chart.type&&"rangeBar"!==t[a].type&&"rangeArea"!==t[a].type||(this.w.axisFlags.isRangeData=!0,this.handleRangeData(t,a)),this.isMultiFormat())this.isFormat2DArray()?this.handleFormat2DArray(t,a):this.isFormatXY()&&this.handleFormatXY(t,a),"candlestick"!==i.chart.type&&"candlestick"!==t[a].type&&"boxPlot"!==i.chart.type&&"boxPlot"!==t[a].type||this.handleCandleStickBoxData(t,a),this.w.seriesData.series.push(this.twoDSeries),this.w.labelData.labels.push(this.twoDSeriesX),this.w.seriesData.seriesX.push(this.twoDSeriesX),this.w.seriesData.seriesGoals=this.seriesGoals,a!==this.activeSeriesIndex||this.fallbackToCategory||(this.w.axisFlags.isXNumeric=!0);else{"datetime"===i.xaxis.type?(this.w.axisFlags.isXNumeric=!0,h(),this.w.seriesData.seriesX.push(this.twoDSeriesX)):"numeric"===i.xaxis.type&&(this.w.axisFlags.isXNumeric=!0,o.length>0&&(this.twoDSeriesX=o,this.w.seriesData.seriesX.push(this.twoDSeriesX))),this.w.labelData.labels.push(this.twoDSeriesX);const e=t[a].data.map(t=>Ns.parseNumber(t));this.w.seriesData.series.push(e)}this.w.seriesData.seriesZ.push(this.threeDSeries),void 0!==t[a].color?this.w.seriesData.seriesColors.push(t[a].color):this.w.seriesData.seriesColors.push(void 0)}return this.w}parseDataNonAxisCharts(t){const e=this.w.config,s=Array.isArray(t)&&t.every(t=>"number"==typeof t)&&e.labels.length>0,i=Array.isArray(t)&&t.some(t=>t&&"object"==typeof t&&t.data||t&&"object"==typeof t&&t.parsing);if(s&&i&&console.warn("ApexCharts: Both old format (numeric series + labels) and new format (series objects with data/parsing) detected. Using old format for backward compatibility."),s){this.w.seriesData.series=t.slice(),this.w.seriesData.seriesNames=e.labels.slice();for(let t=0;t<this.w.seriesData.series.length;t++)void 0===this.w.seriesData.seriesNames[t]&&this.w.seriesData.seriesNames.push("series-"+(t+1));return this.w}if(Array.isArray(t)&&t.every(t=>"number"==typeof t)){this.w.seriesData.series=t.slice(),this.w.seriesData.seriesNames=[];for(let t=0;t<this.w.seriesData.series.length;t++)this.w.seriesData.seriesNames.push(e.labels[t]||`series-${t+1}`);return this.w}const a=this.extractPieDataFromSeries(t);this.w.seriesData.series=a.values,this.w.seriesData.seriesNames=a.labels,"radialBar"===e.chart.type&&(this.w.seriesData.series=this.w.seriesData.series.map(t=>{const e=Ns.parseNumber(t);return e>100&&console.warn(`ApexCharts: RadialBar value ${e} > 100, consider using percentage values (0-100)`),e}));for(let t=0;t<this.w.seriesData.series.length;t++)void 0===this.w.seriesData.seriesNames[t]&&this.w.seriesData.seriesNames.push("series-"+(t+1));return this.w}resetParsingFlags(){const t=this.w;t.axisFlags.dataWasParsed=!1,t.globals.originalSeries=null,t.config.series&&t.config.series.forEach(t=>{t.__apexParsed&&delete t.__apexParsed})}extractPieDataFromSeries(t){const e=[],s=[];if(!Array.isArray(t))return console.warn("ApexCharts: Expected array for series data"),{values:[],labels:[]};if(0===t.length)return console.warn("ApexCharts: Empty series array"),{values:[],labels:[]};const i=t[0];return"object"==typeof i&&null!==i&&i.data?(this.extractPieDataFromSeriesObjects(t,e,s),{values:e,labels:s}):(console.warn("ApexCharts: Unsupported series format for pie/donut/radialBar. Expected series objects with data property."),{values:[],labels:[]})}extractPieDataFromSeriesObjects(t,e,s){t.forEach((t,i)=>{t.data&&Array.isArray(t.data)?t.data.forEach(t=>{"object"==typeof t&&null!==t?void 0!==t.x&&void 0!==t.y?(s.push(String(t.x)),e.push(Ns.parseNumber(t.y))):console.warn("ApexCharts: Invalid data point format for pie chart. Expected {x, y} format:",t):console.warn("ApexCharts: Expected object data point, got:",typeof t)}):console.warn(`ApexCharts: Series ${i} has no valid data array`)})}handleExternalLabelsData(t){const e=this.w.config;if(e.xaxis.categories.length>0)this.w.labelData.labels=e.xaxis.categories;else if(e.labels.length>0)this.w.labelData.labels=e.labels.slice();else if(this.fallbackToCategory){if(this.w.labelData.labels=this.w.labelData.labels[0],this.w.rangeData.seriesRange.length){this.w.rangeData.seriesRange.map(t=>{t.forEach(t=>{this.w.labelData.labels.indexOf(t.x)<0&&t.x&&this.w.labelData.labels.push(t.x)})});const t=this.w.labelData.labels;if(t.length>0&&("number"==typeof t[0]||"string"==typeof t[0]))this.w.labelData.labels=[...new Set(t)];else{const e=new Map;for(const s of t){const t=JSON.stringify(s);e.has(t)||e.set(t,s)}this.w.labelData.labels=Array.from(e.values())}}if(e.xaxis.convertedCatToNumeric){new $s(e).convertCatToNumericXaxis(e,this.w.seriesData.seriesX[0]),this._generateExternalLabels(t)}}else this._generateExternalLabels(t)}_generateExternalLabels(t){const e=this.w.globals,s=this.w.config;let i=[];if(e.axisCharts){if(this.w.seriesData.series.length>0)if(this.isFormatXY()){const t=s.series.map(t=>{const e=new Map;for(const s of t.data)e.has(s.x)||e.set(s.x,s);return Array.from(e.values())}),e=t.reduce((t,e,s,i)=>i[t].length>e.length?t:s,0);for(let s=0;s<t[e].length;s++)i.push(s+1)}else for(let t=0;t<this.w.seriesData.series[e.maxValsInArrayIndex].length;t++)i.push(t+1);this.w.seriesData.seriesX=[];for(let e=0;e<t.length;e++)this.w.seriesData.seriesX.push(i);this.w.globals.isBarHorizontal||(this.w.axisFlags.isXNumeric=!0)}if(0===i.length){i=e.axisCharts?[]:this.w.seriesData.series.map((t,e)=>e+1);for(let e=0;e<t.length;e++)this.w.seriesData.seriesX.push(i)}this.w.labelData.labels=i,s.xaxis.convertedCatToNumeric&&(this.w.labelData.categoryLabels=i.map(t=>s.xaxis.labels.formatter(t))),this.w.axisFlags.noLabelsProvided=!0}parseRawDataIfNeeded(t){const e=this.w.config,s=this.w.globals,i=e.parsing;if(this.w.axisFlags.dataWasParsed)return t;if(!i&&!t.some(t=>t.parsing))return t;const a=t.map((t,e)=>{var s,a,r;if(!t.data||!Array.isArray(t.data)||0===t.data.length)return t;const o={x:(null==(s=t.parsing)?void 0:s.x)||(null==i?void 0:i.x),y:(null==(a=t.parsing)?void 0:a.y)||(null==i?void 0:i.y),z:(null==(r=t.parsing)?void 0:r.z)||(null==i?void 0:i.z)};if(!o.x&&!o.y)return t;const n=t.data[0];if("object"==typeof n&&null!==n&&(Object.prototype.hasOwnProperty.call(n,"x")||Object.prototype.hasOwnProperty.call(n,"y"))||Array.isArray(n))return t;if(!o.x||!o.y||Array.isArray(o.y)&&0===o.y.length)return console.warn(`ApexCharts: Series ${e} has parsing config but missing x or y field specification`),t;const l=t.data.map((t,s)=>{if("object"!=typeof t||null===t)return console.warn(`ApexCharts: Series ${e}, data point ${s} is not an object, skipping parsing`),t;const i=this.getNestedValue(t,o.x);let a,r;if(Array.isArray(o.y)){const s=o.y.map(e=>this.getNestedValue(t,e));"bubble"===this.w.config.chart.type?(s.length<2&&console.warn(`ApexCharts: series[${e}] bubble chart requires parseData.y to have at least 2 fields (y and z). Got: ${JSON.stringify(o.y)}`),a=s[0]):a=s}else a=this.getNestedValue(t,o.y);o.z&&(r=this.getNestedValue(t,o.z)),void 0===i&&console.warn(`ApexCharts: Series ${e}, data point ${s} missing field '${o.x}'`),void 0===a&&console.warn(`ApexCharts: Series ${e}, data point ${s} missing field '${o.y}'`);const n={x:i,y:a,z:void 0};if("bubble"===this.w.config.chart.type&&Array.isArray(o.y)&&2===o.y.length){const e=this.getNestedValue(t,o.y[1]);void 0!==e&&(n.z=e)}return void 0!==r&&(n.z=r),n});return Ds(Es({},t),{data:l,__apexParsed:!0})});return this.w.axisFlags.dataWasParsed=!0,s.originalSeries||(s.originalSeries=Ns.clone(t)),a}getNestedValue(t,e){if(!t||"object"!=typeof t||!e)return;if(-1===e.indexOf("."))return t[e];const s=e.split(".");let i=t;for(let t=0;t<s.length;t++){if(null==i||"object"!=typeof i)return;i=i[s[t]]}return i}parseData(t){const e=this.w,s=e.config,i=e.globals;if(t=this.parseRawDataIfNeeded(t),s.series=t,i.initialSeries=Ns.clone(t),this.excludeCollapsedSeriesInYAxis(),this.fallbackToCategory=!1,this.resetGlobals(),this.isMultipleY(),i.axisCharts?(this.parseDataAxisCharts(t),this.coreUtils.getLargestSeries()):this.parseDataNonAxisCharts(t),s.chart.stacked){const t=new vi(this.w);this.w.seriesData.series=t.setNullSeriesToZeroValues(this.w.seriesData.series)}this.coreUtils.getSeriesTotals(),i.axisCharts&&(this.w.seriesData.stackedSeriesTotals=this.coreUtils.getStackedSeriesTotals(),this.w.seriesData.stackedSeriesTotalsByGroups=this.coreUtils.getStackedSeriesTotalsByGroups()),this.coreUtils.getPercentSeries(),this.w.axisFlags.dataFormatXNumeric||this.w.axisFlags.isXNumeric&&("numeric"!==s.xaxis.type||0!==s.labels.length||0!==s.xaxis.categories.length)||this.handleExternalLabelsData(t);const a=this.coreUtils.getCategoryLabels(this.w.labelData.labels);for(let t=0;t<a.length;t++)if(Array.isArray(a[t])){this.w.axisFlags.isMultiLineX=!0;break}return{seriesData:{series:this.w.seriesData.series,seriesNames:this.w.seriesData.seriesNames,seriesX:this.w.seriesData.seriesX,seriesZ:this.w.seriesData.seriesZ,seriesColors:this.w.seriesData.seriesColors,seriesGoals:this.w.seriesData.seriesGoals,initialSeries:i.initialSeries,originalSeries:i.originalSeries,stackedSeriesTotals:this.w.seriesData.stackedSeriesTotals,stackedSeriesTotalsByGroups:this.w.seriesData.stackedSeriesTotalsByGroups,noLabelsProvided:this.w.axisFlags.noLabelsProvided},rangeData:{seriesRangeStart:this.w.rangeData.seriesRangeStart,seriesRangeEnd:this.w.rangeData.seriesRangeEnd,seriesRange:this.w.rangeData.seriesRange},candleData:{seriesCandleO:this.w.candleData.seriesCandleO,seriesCandleH:this.w.candleData.seriesCandleH,seriesCandleM:this.w.candleData.seriesCandleM,seriesCandleL:this.w.candleData.seriesCandleL,seriesCandleC:this.w.candleData.seriesCandleC},labelData:{labels:this.w.labelData.labels,categoryLabels:this.w.labelData.categoryLabels},axisFlags:{isXNumeric:this.w.axisFlags.isXNumeric,dataFormatXNumeric:this.w.axisFlags.dataFormatXNumeric,isDataXYZ:this.w.axisFlags.isDataXYZ,isRangeData:this.w.axisFlags.isRangeData,isRangeBar:this.w.axisFlags.isRangeBar,isMultiLineX:this.w.axisFlags.isMultiLineX,dataWasParsed:this.w.axisFlags.dataWasParsed,hasXaxisGroups:this.w.labelData.hasXaxisGroups,groups:this.w.labelData.groups,seriesGroups:this.w.labelData.seriesGroups}}}static lttbDownsample(t,e){const s=t.length;if(e>=s||e<3)return t;const i=!Array.isArray(t[0]),a=i?t=>t.x:t=>t[0],r=i?t=>t.y:t=>t[1],o=[];o.push(t[0]);const n=(s-2)/(e-2);let l=0;for(let i=0;i<e-2;i++){const e=Math.floor((i+1)*n)+1,h=Math.min(Math.floor((i+2)*n)+1,s);let c=0,d=0;const g=h-e;for(let s=e;s<h;s++)c+=a(t[s]),d+=r(t[s]);c/=g,d/=g;const p=Math.floor(i*n)+1,u=Math.min(Math.floor((i+1)*n)+1,s),f=a(t[l]),x=r(t[l]);let m=-1,b=p;for(let e=p;e<u;e++){const s=.5*Math.abs((f-c)*(r(t[e])-x)-(f-a(t[e]))*(d-x));s>m&&(m=s,b=e)}o.push(t[b]),l=b}return o.push(t[s-1]),o}excludeCollapsedSeriesInYAxis(){const t=this.w,e=[];t.globals.seriesYAxisMap.forEach((s,i)=>{let a=0;s.forEach(e=>{-1!==t.globals.collapsedSeriesIndices.indexOf(e)&&a++}),a>0&&a==s.length&&e.push(i)}),t.globals.ignoreYAxisIndexes=e.map(t=>t)}}class Bi{constructor(t,e){this.w=t,this.ctx=e}_updateOptions(t,e=!1,s=!0,i=!0,a=!1){return new Promise(r=>{let o=[this.ctx];i&&(o=this.ctx.getSyncedCharts()),this.w.globals.isExecCalled&&(o=[this.ctx],this.w.globals.isExecCalled=!1),o.forEach((i,n)=>{const l=i.w;if(l.globals.shouldAnimate=s,e||(l.globals.resized=!0,l.globals.dataChanged=!0,s&&i.series.getPreviousPaths()),t&&"object"==typeof t&&(i.config=new Us(t),t=Ks.extendArrayProps(i.config,t,l),i.w.globals.chartID!==this.w.globals.chartID&&delete t.series,l.config=Ns.extend(l.config,t),a&&(l.globals.lastXAxis=t.xaxis?Ns.clone(t.xaxis):[],l.globals.lastYAxis=t.yaxis?Ns.clone(t.yaxis):[],l.globals.initialConfig=Ns.extend({},l.config),l.globals.initialSeries=Ns.clone(l.config.series),t.series))){for(let t=0;t<l.globals.collapsedSeriesIndices.length;t++){const e=l.config.series[l.globals.collapsedSeriesIndices[t]];l.globals.collapsedSeries[t].data=l.globals.axisCharts?e.data.slice():e}for(let t=0;t<l.globals.ancillaryCollapsedSeriesIndices.length;t++){const e=l.config.series[l.globals.ancillaryCollapsedSeriesIndices[t]];l.globals.ancillaryCollapsedSeries[t].data=l.globals.axisCharts?e.data.slice():e}i.series.emptyCollapsedSeries(l.config.series)}return i.update(t).then(()=>{n===o.length-1&&r(i)})})})}_updateSeries(t,e,s=!1){return new Promise(i=>{const a=this.w;a.globals.shouldAnimate=e,a.globals.dataChanged=!0,hi.invalidateSelectors(a),e&&this.ctx.series.getPreviousPaths();const r=a.config.series.length;this.ctx.data.resetParsingFlags();const o=this.ctx.data.parseData(t);return this.ctx._writeParsedSeriesData(o.seriesData),this.ctx._writeParsedRangeData(o.rangeData),this.ctx._writeParsedCandleData(o.candleData),this.ctx._writeParsedLabelData(o.labelData),this.ctx._writeParsedAxisFlags(o.axisFlags),s&&(a.globals.initialConfig&&(a.globals.initialConfig.series=Ns.clone(a.config.series)),a.globals.initialSeries=Ns.clone(a.config.series)),this._canUseFastPath(t,r,a)?this.ctx.fastUpdate(e).then(()=>{i(this.ctx)}):this.ctx.update().then(()=>{i(this.ctx)})})}_canUseFastPath(t,e,s){return!!s.dom.elGraphical&&(!!s.globals.axisCharts&&(t.length===e&&(!(s.globals.collapsedSeries.length>0)&&(!(s.globals.ancillaryCollapsedSeries.length>0)&&(!(s.globals.risingSeries.length>0)&&(!s.globals.comboCharts&&!s.interact.zoomed))))))}_extendSeries(t,e){const s=this.w,i=s.config.series[e];return Ds(Es({},s.config.series[e]),{name:t.name?t.name:null==i?void 0:i.name,color:t.color?t.color:null==i?void 0:i.color,type:t.type?t.type:null==i?void 0:i.type,group:t.group?t.group:null==i?void 0:i.group,hidden:void 0!==t.hidden?t.hidden:null==i?void 0:i.hidden,data:t.data?t.data:null==i?void 0:i.data,zIndex:void 0!==t.zIndex?t.zIndex:e})}toggleDataPointSelection(t,e){const s=this.w;let i=null;const a=`.apexcharts-series[data\\:realIndex='${t}']`;if(s.globals.axisCharts?i=s.dom.Paper.findOne(`${a} path[j='${e}'], ${a} circle[j='${e}'], ${a} rect[j='${e}']`):void 0===e&&(i=s.dom.Paper.findOne(`${a} path[j='${t}']`),"pie"!==s.config.chart.type&&"polarArea"!==s.config.chart.type&&"donut"!==s.config.chart.type||this.ctx.pie.pieClicked(t)),!i)return console.warn("toggleDataPointSelection: Element not found"),null;new ti(this.w).pathMouseDown(i,null);return i.node?i.node:null}forceXAxisUpdate(t){const e=this.w;if(["min","max"].forEach(s=>{void 0!==t.xaxis[s]&&(e.config.xaxis[s]=t.xaxis[s],e.globals.lastXAxis[s]=t.xaxis[s])}),t.xaxis.categories&&t.xaxis.categories.length&&(e.config.xaxis.categories=t.xaxis.categories),e.config.xaxis.convertedCatToNumeric){const e=new $s(t);t=e.convertCatToNumericXaxis(t,this.ctx)}return t}forceYAxisUpdate(t){return t.chart&&t.chart.stacked&&"100%"===t.chart.stackType&&(Array.isArray(t.yaxis)?t.yaxis.forEach((e,s)=>{t.yaxis[s].min=0,t.yaxis[s].max=100}):(t.yaxis.min=0,t.yaxis.max=100)),t}revertDefaultAxisMinMax(t){const e=this.w;let s=e.globals.lastXAxis,i=e.globals.lastYAxis;t&&t.xaxis&&(s=t.xaxis),t&&t.yaxis&&(i=t.yaxis);const a=s;e.config.xaxis.min=a.min,e.config.xaxis.max=a.max;const r=t=>{if(void 0!==i[t]){const s=i[t];e.config.yaxis[t].min=s.min,e.config.yaxis[t].max=s.max}};e.config.yaxis.map((t,s)=>{e.interact.zoomed||void 0!==i[s]?r(s):void 0!==this.ctx.opts.yaxis[s]&&(t.min=this.ctx.opts.yaxis[s].min,t.max=this.ctx.opts.yaxis[s].max)})}}class Ni{constructor(t){this.w=t.w,this.ttCtx=t}getNearestValues({hoverArea:t,elGrid:e,clientX:s,clientY:i}){var a,r;const o=this.w,n=e.getBoundingClientRect(),l=n.width,h=n.height;let c=l/(o.globals.dataPoints-1);const d=h/o.globals.dataPoints,g=this.hasBars();!o.globals.comboCharts&&!g||o.config.xaxis.convertedCatToNumeric||(c=l/o.globals.dataPoints);const p=s-n.left-o.globals.barPadForNumericAxis,u=i-n.top;p<0||u<0||p>l||u>h?(t.classList.remove("hovering-zoom"),t.classList.remove("hovering-pan")):o.interact.zoomEnabled?(t.classList.remove("hovering-pan"),t.classList.add("hovering-zoom")):o.interact.panEnabled&&(t.classList.remove("hovering-zoom"),t.classList.add("hovering-pan"));let f=Math.round(p/c);const x=Math.floor(u/d);g&&!o.config.xaxis.convertedCatToNumeric&&(f=Math.ceil(p/c),f-=1);let m=null,b=null,y=o.globals.seriesXvalues.map(t=>t.filter(t=>Ns.isNumber(t)));const w=o.globals.seriesYvalues.map(t=>t.filter(t=>Ns.isNumber(t)));if(o.axisFlags.isXNumeric){const t=this.ttCtx.getElGrid();if(!t)return{hoverX:p,hoverY:u};const e=t.getBoundingClientRect(),s=p*(e.width/l),i=u*(e.height/h);b=this.closestInMultiArray(s,i,y,w),m=b.index,f=null!=(a=b.j)?a:0,null!==m&&o.globals.hasNullValues&&(y=o.globals.seriesXvalues[m],b=this.closestInArray(s,y),f=null!=(r=b.j)?r:0)}return o.interact.capturedSeriesIndex=null===m?-1:m,(!f||f<1)&&(f=0),o.globals.isBarHorizontal?o.interact.capturedDataPointIndex=x:o.interact.capturedDataPointIndex=f,{capturedSeries:m,j:o.globals.isBarHorizontal?x:f,hoverX:p,hoverY:u}}getFirstActiveXArray(t){const e=this.w;let s=0;const i=t.map((t,e)=>t.length>0?e:-1);for(let t=0;t<i.length;t++)if(-1!==i[t]&&-1===e.globals.collapsedSeriesIndices.indexOf(t)&&-1===e.globals.ancillaryCollapsedSeriesIndices.indexOf(t)){s=i[t];break}return s}closestInMultiArray(t,e,s,i){const a=this.w,r=t=>-1===a.globals.collapsedSeriesIndices.indexOf(t)&&-1===a.globals.ancillaryCollapsedSeriesIndices.indexOf(t);let o=1/0,n=null,l=null;for(let h=0;h<s.length;h++){if(!r(h))continue;const c=s[h],d=i[h],g=Math.min(c.length,d.length);for(let s=0;s<g;s++){const i=t-c[s];let r=Math.sqrt(i*i);if(!a.globals.allSeriesHasEqualX){const t=e-d[s];r=Math.sqrt(i*i+t*t)}r<o&&(o=r,n=h,l=s)}}return{index:n,j:l}}closestInArray(t,e){const s=e[0];let i=null,a=Math.abs(t-s);for(let s=0;s<e.length;s++){const r=Math.abs(t-e[s]);r<a&&(a=r,i=s)}return{j:i}}isXoverlap(t){const e=[],s=this.w.seriesData.seriesX.filter(t=>void 0!==t[0]);if(s.length>0)for(let i=0;i<s.length-1;i++)void 0!==s[i][t]&&void 0!==s[i+1][t]&&s[i][t]!==s[i+1][t]&&e.push("unEqual");return 0===e.length}isInitialSeriesSameLen(){var t,e,s;let i=!0;const a=(null==(t=this.w.globals.initialSeries)?void 0:t.filter((t,e)=>{var s;return!(null==(s=this.w.globals.collapsedSeriesIndices)?void 0:s.includes(e))}))||[];for(let t=0;t<a.length-1;t++){if(!(null==(e=a[t])?void 0:e.data)||!(null==(s=a[t+1])?void 0:s.data))return!0;if(a[t].data.length!==a[t+1].data.length){i=!1;break}}return i}getBarsHeight(t){return[...t].reduce((t,e)=>t+e.getBBox().height,0)}getElMarkers(t){return"number"==typeof t?this.w.dom.baseEl.querySelectorAll(`.apexcharts-series[data\\:realIndex='${t}'] .apexcharts-series-markers-wrap > *`):this.w.dom.baseEl.querySelectorAll(".apexcharts-series-markers-wrap > *")}getAllMarkers(t=!1){let e=[...this.w.dom.baseEl.querySelectorAll(".apexcharts-series-markers-wrap")];t&&(e=e.filter(t=>{const e=Number(t.getAttribute("data:realIndex"));return-1===this.w.globals.collapsedSeriesIndices.indexOf(e)})),e.sort((t,e)=>{var s=Number(t.getAttribute("data:realIndex")),i=Number(e.getAttribute("data:realIndex"));return i<s?1:i>s?-1:0});const s=[];return e.forEach(t=>{s.push(t.querySelector(".apexcharts-marker"))}),s}hasMarkers(t){return this.getElMarkers(t).length>0}getPathFromPoint(t,e){const s=Number(t.getAttribute("cx")),i=Number(t.getAttribute("cy")),a=t.getAttribute("shape");return new ti(this.w).getMarkerPath(s,i,a,e)}getElBars(){return this.w.dom.baseEl.querySelectorAll(".apexcharts-bar-series,  .apexcharts-candlestick-series, .apexcharts-boxPlot-series, .apexcharts-rangebar-series")}hasBars(){return this.getElBars().length>0}getHoverMarkerSize(t){const e=this.w;let s=e.config.markers.hover.size;return void 0===s&&(s=e.globals.markers.size[t]+e.config.markers.hover.sizeOffset),s}toggleAllTooltipSeriesGroups(t){const e=this.w,s=this.ttCtx;0===s.allTooltipSeriesGroups.length&&(s.allTooltipSeriesGroups=e.dom.baseEl.querySelectorAll(".apexcharts-tooltip-series-group"));const i=s.allTooltipSeriesGroups;for(let s=0;s<i.length;s++)"enable"===t?(i[s].classList.add("apexcharts-active"),i[s].style.display=e.config.tooltip.items.display):(i[s].classList.remove("apexcharts-active"),i[s].style.display="none")}}class zi{constructor(t){this.w=t.w,this.ttCtx=t,this.tooltipUtil=new Ni(t)}drawSeriesTexts({shared:t=!0,ttItems:e,i:s=0,j:i=null,y1:a,y2:r,e:o}){const n=this.w;void 0!==n.config.tooltip.custom?this.handleCustomTooltip({i:s,j:i,y1:a,y2:r,w:n}):this.toggleActiveInactiveSeries(t,s);const l=this.getValuesToPrint({i:s,j:i});this.printLabels({i:s,j:i,values:l,ttItems:e,shared:t,e:o});const h=this.ttCtx.getElTooltip();h&&(this.ttCtx.tooltipRect.ttWidth=h.getBoundingClientRect().width,this.ttCtx.tooltipRect.ttHeight=h.getBoundingClientRect().height)}printLabels({i:t,j:e,values:s,ttItems:i,shared:a,e:r}){var o;const n=this.w;let l,h=[];const c=t=>n.seriesData.seriesGoals[t]&&n.seriesData.seriesGoals[t][e]&&Array.isArray(n.seriesData.seriesGoals[t][e]),{xVal:d,zVal:g,xAxisTTVal:p}=s;let u="",f=n.globals.colors[t];null!==e&&n.config.plotOptions.bar.distributed&&(f=n.globals.colors[e]);for(let s=0,x=n.seriesData.series.length-1;s<n.seriesData.series.length;s++,x--){let m=this.getFormatters(t);u=this.getSeriesName({fn:m.yLbTitleFormatter,index:t,seriesIndex:t,j:e}),"treemap"===n.config.chart.type&&(u=m.yLbTitleFormatter(String(n.config.series[t].data[e].x),{series:n.seriesData.series,seriesIndex:t,dataPointIndex:e,w:n}));const b=n.config.tooltip.inverseOrder?x:s;if(n.globals.axisCharts){const s=t=>{var s,i,a,r;return n.axisFlags.isRangeData?m.yLbFormatter(null==(i=null==(s=n.rangeData.seriesRangeStart)?void 0:s[t])?void 0:i[e],{series:n.rangeData.seriesRangeStart,seriesIndex:t,dataPointIndex:e,w:n})+" - "+m.yLbFormatter(null==(r=null==(a=n.rangeData.seriesRangeEnd)?void 0:a[t])?void 0:r[e],{series:n.rangeData.seriesRangeEnd,seriesIndex:t,dataPointIndex:e,w:n}):m.yLbFormatter(n.seriesData.series[t][e],{series:n.seriesData.series,seriesIndex:t,dataPointIndex:e,w:n})};if(a)m=this.getFormatters(b),u=this.getSeriesName({fn:m.yLbTitleFormatter,index:b,seriesIndex:t,j:e}),f=n.globals.colors[b],l=s(b),c(b)&&(h=n.seriesData.seriesGoals[b][e].map(t=>({attrs:t,val:m.yLbFormatter(t.value,{seriesIndex:b,dataPointIndex:e,w:n})})));else{const i=null==(o=null==r?void 0:r.target)?void 0:o.getAttribute("fill");i&&(-1!==i.indexOf("url")?-1!==i.indexOf("Pattern")&&(f=n.dom.baseEl.querySelector(i.substr(4).slice(0,-1)).childNodes[0].getAttribute("stroke")):f=i),l=s(t),c(t)&&Array.isArray(n.seriesData.seriesGoals[t][e])&&(h=n.seriesData.seriesGoals[t][e].map(s=>({attrs:s,val:m.yLbFormatter(s.value,{seriesIndex:t,dataPointIndex:e,w:n})})))}}null===e&&(l=m.yLbFormatter(n.seriesData.series[t],Ds(Es({},n),{seriesIndex:t,dataPointIndex:t}))),this.DOMHandling({i:t,t:b,j:e,ttItems:i,values:{val:l,goalVals:h,xVal:d,xAxisTTVal:p,zVal:g},seriesName:u,shared:a,pColor:f})}}getFormatters(t){const e=this.w;let s,i=e.formatters.yLabelFormatters[t];return void 0!==e.formatters.ttVal?Array.isArray(e.formatters.ttVal)?(i=e.formatters.ttVal[t]&&e.formatters.ttVal[t].formatter,s=e.formatters.ttVal[t]&&e.formatters.ttVal[t].title&&e.formatters.ttVal[t].title.formatter):(i=e.formatters.ttVal.formatter,"function"==typeof e.formatters.ttVal.title.formatter&&(s=e.formatters.ttVal.title.formatter)):s=e.config.tooltip.y.title.formatter,"function"!=typeof i&&(i=e.formatters.yLabelFormatters[0]?e.formatters.yLabelFormatters[0]:function(t){return t}),"function"!=typeof s&&(s=function(t){return t?t+": ":""}),{yLbFormatter:i,yLbTitleFormatter:s}}getSeriesName({fn:t,index:e,seriesIndex:s,j:i}){const a=this.w;return t(String(a.seriesData.seriesNames[e]),{series:a.seriesData.series,seriesIndex:s,dataPointIndex:i,w:a})}DOMHandling({t:t,j:e,ttItems:s,values:i,seriesName:a,shared:r,pColor:o}){const n=this.w,l=this.ttCtx,{val:h,goalVals:c,xVal:d,xAxisTTVal:g,zVal:p}=i;let u=null;u=s[t].children,n.config.tooltip.fillSeriesColor&&(s[t].style.backgroundColor=o,u[0].style.display="none"),l.showTooltipTitle&&(null===l.tooltipTitle&&(l.tooltipTitle=n.dom.baseEl.querySelector(".apexcharts-tooltip-title")),l.tooltipTitle&&(l.tooltipTitle.innerHTML=d)),l.isXAxisTooltipEnabled&&l.xaxisTooltipText&&(l.xaxisTooltipText.innerHTML=""!==g?g:d);const f=s[t].querySelector(".apexcharts-tooltip-text-y-label");f&&(f.innerHTML=a||"");const x=s[t].querySelector(".apexcharts-tooltip-text-y-value");x&&(x.innerHTML=void 0!==h?h:""),u[0]&&u[0].classList.contains("apexcharts-tooltip-marker")&&(n.config.tooltip.marker.fillColors&&Array.isArray(n.config.tooltip.marker.fillColors)&&(o=n.config.tooltip.marker.fillColors[t]),n.config.tooltip.fillSeriesColor?u[0].style.backgroundColor=o:u[0].style.color=o),n.config.tooltip.marker.show||(u[0].style.display="none");const m=s[t].querySelector(".apexcharts-tooltip-text-goals-label"),b=s[t].querySelector(".apexcharts-tooltip-text-goals-value");if(c.length&&n.seriesData.seriesGoals[t]){const s=()=>{let t="<div>",e="<div>";c.forEach(s=>{t+=` <div style="display: flex"><span class="apexcharts-tooltip-marker" style="background-color: ${s.attrs.strokeColor}; height: 3px; border-radius: 0; top: 5px;"></span> ${s.attrs.name}</div>`,e+=`<div>${s.val}</div>`}),m.innerHTML=t+"</div>",b.innerHTML=e+"</div>"};r?n.seriesData.seriesGoals[t][e]&&Array.isArray(n.seriesData.seriesGoals[t][e])?s():(m.innerHTML="",b.innerHTML=""):s()}else m.innerHTML="",b.innerHTML="";if(null!==p){s[t].querySelector(".apexcharts-tooltip-text-z-label").innerHTML=n.config.tooltip.z.title;s[t].querySelector(".apexcharts-tooltip-text-z-value").innerHTML=void 0!==p?p:""}if(r&&u[0]){if(n.config.tooltip.hideEmptySeries){const e=s[t].querySelector(".apexcharts-tooltip-marker"),i=s[t].querySelector(".apexcharts-tooltip-text");0==parseFloat(h)?(e.style.display="none",i.style.display="none"):(e.style.display="block",i.style.display="block")}null==h||n.globals.ancillaryCollapsedSeriesIndices.indexOf(t)>-1||n.globals.collapsedSeriesIndices.indexOf(t)>-1||Array.isArray(l.tConfig.enabledOnSeries)&&-1===l.tConfig.enabledOnSeries.indexOf(t)?u[0].parentNode.style.display="none":u[0].parentNode.style.display=n.config.tooltip.items.display}else Array.isArray(l.tConfig.enabledOnSeries)&&-1===l.tConfig.enabledOnSeries.indexOf(t)&&(u[0].parentNode.style.display="none")}toggleActiveInactiveSeries(t,e){const s=this.w;if(t)this.tooltipUtil.toggleAllTooltipSeriesGroups("enable");else{this.tooltipUtil.toggleAllTooltipSeriesGroups("disable");const t=s.dom.baseEl.querySelector(`.apexcharts-tooltip-series-group-${e}`);if(t){const e=t;e.classList.add("apexcharts-active"),e.style.display=s.config.tooltip.items.display}}}getValuesToPrint({i:t,j:e}){var s,i,a,r,o,n,l,h;const c=this.w,d=c.seriesData.seriesX.map(t=>t.length>0?t:[]);let g="",p="",u=null,f=null;const x={series:c.seriesData.series,seriesIndex:t,dataPointIndex:e,w:c},m=c.formatters.ttZFormatter;if(null===e)f=c.seriesData.series[t];else if(c.axisFlags.isXNumeric&&"treemap"!==c.config.chart.type){if(g=d[t][e],0===d[t].length){g=d[this.tooltipUtil.getFirstActiveXArray(d)][e]}}else{g=new Ri(this.w).isFormatXY()?void 0!==c.config.series[t].data[e]?c.config.series[t].data[e].x:"":void 0!==c.labelData.labels[e]?c.labelData.labels[e]:""}const b=g;if(c.axisFlags.isXNumeric&&"datetime"===c.config.xaxis.type){g=new Os(this.w).xLabelFormat(c.formatters.ttKeyFormatter,b,b,{i:void 0,dateFormatter:new zs(this.w).formatDate,w:this.w})}else g=c.globals.isBarHorizontal?c.formatters.yLabelFormatters[0](b,x):null!=(a=null==(i=(s=c.formatters).xLabelFormatter)?void 0:i.call(s,b,x))?a:b;return void 0!==c.config.tooltip.x.formatter&&(g=null!=(n=null==(o=(r=c.formatters).ttKeyFormatter)?void 0:o.call(r,b,x))?n:b),c.seriesData.seriesZ.length>0&&c.seriesData.seriesZ[t].length>0&&(u=null==m?void 0:m(c.seriesData.seriesZ[t][e],c)),p="function"==typeof c.config.xaxis.tooltip.formatter?null==(h=(l=c.formatters).xaxisTooltipFormatter)?void 0:h.call(l,b,x):g,{val:Array.isArray(f)?f.join(" "):f,xVal:Array.isArray(g)?g.join(" "):g,xAxisTTVal:Array.isArray(p)?p.join(" "):p,zVal:u}}handleCustomTooltip({i:t,j:e,y1:s,y2:i,w:a}){const r=this.ttCtx.getElTooltip();let o=a.config.tooltip.custom;Array.isArray(o)&&o[t]&&(o=o[t]);const n=o({series:a.seriesData.series,seriesIndex:t,dataPointIndex:e,y1:s,y2:i,w:a});r&&("string"==typeof n||"number"==typeof n?r.innerHTML=String(n):(n instanceof Element||"string"==typeof n.nodeName)&&(r.innerHTML="",r.appendChild(n.cloneNode(!0))))}}class Oi{constructor(t){this.ttCtx=t,this.w=t.w}moveXCrosshairs(t,e=null){const s=this.ttCtx,i=this.w,a=s.getElXCrosshairs();let r=t-s.xcrosshairsWidth/2;const o=i.labelData.labels.slice().length;if(null!==e&&(r=i.layout.gridWidth/o*e),null===a||i.globals.isBarHorizontal||(a.setAttribute("x",String(r)),a.setAttribute("x1",String(r)),a.setAttribute("x2",String(r)),a.setAttribute("y2",String(i.layout.gridHeight)),a.classList.add("apexcharts-active")),r<0&&(r=0),r>i.layout.gridWidth&&(r=i.layout.gridWidth),s.isXAxisTooltipEnabled){let t=r;"tickWidth"!==i.config.xaxis.crosshairs.width&&"barWidth"!==i.config.xaxis.crosshairs.width||(t=r+s.xcrosshairsWidth/2),this.moveXAxisTooltip(t)}}moveYCrosshairs(t){const e=this.ttCtx;null!==e.ycrosshairs&&ti.setAttrs(e.ycrosshairs,{y1:t,y2:t}),null!==e.ycrosshairsHidden&&ti.setAttrs(e.ycrosshairsHidden,{y1:t,y2:t})}moveXAxisTooltip(t){var e,s;const i=this.w,a=this.ttCtx;if(null!==a.xaxisTooltip&&0!==a.xcrosshairsWidth){a.xaxisTooltip.classList.add("apexcharts-active");const r=a.xaxisOffY+i.config.xaxis.tooltip.offsetY+i.layout.translateY+1+i.config.xaxis.offsetY;if(t-=a.xaxisTooltip.getBoundingClientRect().width/2,!isNaN(t)){t+=i.layout.translateX;const o=new ti(this.w).getTextRects(null!=(s=null==(e=a.xaxisTooltipText)?void 0:e.innerHTML)?s:"",i.config.xaxis.labels.style.fontSize);a.xaxisTooltipText&&(a.xaxisTooltipText.style.minWidth=o.width+"px"),a.xaxisTooltip.style.left=t+"px",a.xaxisTooltip.style.top=r+"px"}}}moveYAxisTooltip(t){var e,s;const i=this.w,a=this.ttCtx;null===a.yaxisTTEls&&(a.yaxisTTEls=[...i.dom.baseEl.querySelectorAll(".apexcharts-yaxistooltip")]);const r=parseInt(null!=(s=null==(e=a.ycrosshairsHidden)?void 0:e.getAttribute("y1"))?s:"0",10);let o=i.layout.translateY+r;if(a.yaxisTTEls){const e=a.yaxisTTEls[t].getBoundingClientRect(),s=e.height;let r=i.globals.translateYAxisX[t]-2;i.config.yaxis[t].opposite&&(r-=e.width),o-=s/2,-1===i.globals.ignoreYAxisIndexes.indexOf(t)&&o>0&&o<i.layout.gridHeight?(a.yaxisTTEls[t].classList.add("apexcharts-active"),a.yaxisTTEls[t].style.top=o+"px",a.yaxisTTEls[t].style.left=r+i.config.yaxis[t].tooltip.offsetX+"px"):a.yaxisTTEls[t].classList.remove("apexcharts-active")}}moveTooltip(t,e,s=null){const i=this.w,a=this.ttCtx,r=a.getElTooltip(),o=a.tooltipRect,n=null!==s?parseFloat(String(s)):1;let l=parseFloat(String(t))+n+5,h=parseFloat(String(e))+n/2;if(l>i.layout.gridWidth/2&&(l=l-o.ttWidth-n-10),l>i.layout.gridWidth-o.ttWidth-10&&(l=i.layout.gridWidth-o.ttWidth),l<-20&&(l=-20),i.config.tooltip.followCursor){const t=a.getElGrid();if(!t)return;const e=t.getBoundingClientRect();l=a.e.clientX-e.left,l>i.layout.gridWidth/2&&(l-=a.tooltipRect.ttWidth),h=a.e.clientY+i.layout.translateY-e.top,h>i.layout.gridHeight/2&&(h-=a.tooltipRect.ttHeight)}else i.globals.isBarHorizontal||o.ttHeight/2+h>i.layout.gridHeight&&(h=i.layout.gridHeight-o.ttHeight+i.layout.translateY);isNaN(l)||(l+=i.layout.translateX,r&&(r.style.left=l+"px",r.style.top=h+"px"))}moveMarkers(t,e){var s;const i=this.w,a=this.ttCtx;if(i.globals.markers.size[t]>0){const r=i.dom.baseEl.querySelectorAll(` .apexcharts-series[data\\:realIndex='${t}'] .apexcharts-marker`);for(let t=0;t<r.length;t++)parseInt(null!=(s=r[t].getAttribute("rel"))?s:"0",10)===e&&(a.marker.resetPointsSize(),a.marker.enlargeCurrentPoint(e,r[t]))}else a.marker.resetPointsSize(),this.moveDynamicPointOnHover(e,t)}moveDynamicPointOnHover(t,e){var s,i,a,r,o;const n=this.w,l=this.ttCtx;let h=0,c=0;const d=new ti(this.w),g=n.globals.pointsArray,p=l.tooltipUtil.getHoverMarkerSize(e),u=n.config.series[e].type;if(u&&("column"===u||"candlestick"===u||"boxPlot"===u))return;h=null==(i=null==(s=g[e])?void 0:s[t])?void 0:i[0],c=(null==(r=null==(a=g[e])?void 0:a[t])?void 0:r[1])||0;const f=n.dom.baseEl.querySelector(`.apexcharts-series[data\\:realIndex='${e}'] .apexcharts-series-markers path`);if(f&&c<n.layout.gridHeight&&c>0){const t=null!=(o=f.getAttribute("shape"))?o:"circle",e=d.getMarkerPath(h,c,t,1.5*p);f.setAttribute("d",e)}this.moveXCrosshairs(h),l.fixedTooltip||this.moveTooltip(h,c,p)}moveDynamicPointsOnHover(t){var e,s;const i=this.ttCtx,a=i.w;let r=0,o=0,n=0;const l=a.globals.pointsArray,h=new vi(this.w),c=new ti(this.w);n=h.getActiveConfigSeriesIndex("asc",["line","area","scatter","bubble"]);const d=i.tooltipUtil.getHoverMarkerSize(n);if((null==(e=l[n])?void 0:e[t])&&(r=l[n][t][0],o=l[n][t][1]),isNaN(r))return;const g=i.tooltipUtil.getAllMarkers();if(g.length)for(let e=0;e<a.seriesData.series.length;e++){const i=l[e];if(a.globals.comboCharts&&void 0===i&&g.splice(e,0,null),i&&i.length){let i,o=l[e][t][1];g[e].setAttribute("cx",r);const n=null!=(s=g[e].getAttribute("shape"))?s:"circle";if("rangeArea"===a.config.chart.type&&!a.globals.comboCharts){const s=t+a.seriesData.series[e].length;i=l[e][s][1];o-=Math.abs(o-i)/2}if(null!==o&&!isNaN(o)&&o<a.layout.gridHeight+d&&o+d>0){const t=c.getMarkerPath(r,o,n,d);g[e].setAttribute("d",t)}else g[e].setAttribute("d","")}}this.moveXCrosshairs(r),i.fixedTooltip||this.moveTooltip(r,o||a.layout.gridHeight,d)}moveStickyTooltipOverBars(t,e){var s,i,a;const r=this.w,o=this.ttCtx;let n=r.globals.columnSeries?r.globals.columnSeries.length:r.seriesData.series.length;r.config.chart.stacked&&(n=r.globals.barGroups.length);let l=n>=2&&n%2==0?Math.floor(n/2):Math.floor(n/2)+1;if(r.globals.isBarHorizontal){l=new vi(this.w).getActiveConfigSeriesIndex("desc")+1}let h=r.dom.baseEl.querySelector(`.apexcharts-bar-series .apexcharts-series[rel='${l}'] path[j='${t}'], .apexcharts-candlestick-series .apexcharts-series[rel='${l}'] path[j='${t}'], .apexcharts-boxPlot-series .apexcharts-series[rel='${l}'] path[j='${t}'], .apexcharts-rangebar-series .apexcharts-series[rel='${l}'] path[j='${t}']`);h||"number"!=typeof e||(h=r.dom.baseEl.querySelector(`.apexcharts-bar-series .apexcharts-series[data\\:realIndex='${e}'] path[j='${t}'],\n        .apexcharts-candlestick-series .apexcharts-series[data\\:realIndex='${e}'] path[j='${t}'],\n        .apexcharts-boxPlot-series .apexcharts-series[data\\:realIndex='${e}'] path[j='${t}'],\n        .apexcharts-rangebar-series .apexcharts-series[data\\:realIndex='${e}'] path[j='${t}']`));let c=h?parseFloat(null!=(s=h.getAttribute("cx"))?s:"0"):0,d=h?parseFloat(null!=(i=h.getAttribute("cy"))?i:"0"):0;const g=h?parseFloat(null!=(a=h.getAttribute("barWidth"))?a:"0"):0,p=o.getElGrid();if(!p)return;const u=p.getBoundingClientRect(),f=h&&(h.classList.contains("apexcharts-candlestick-area")||h.classList.contains("apexcharts-boxPlot-area"));r.axisFlags.isXNumeric?(h&&!f&&(c-=n%2!=0?g/2:0),h&&f&&(c-=g/2)):r.globals.isBarHorizontal||(c=o.xAxisTicksPositions[t-1]+o.dataPointsDividedWidth/2,isNaN(c)&&(c=o.xAxisTicksPositions[t]-o.dataPointsDividedWidth/2)),r.globals.isBarHorizontal?d-=o.tooltipRect.ttHeight:r.config.tooltip.followCursor?d=o.e.clientY-u.top-o.tooltipRect.ttHeight/2:d+o.tooltipRect.ttHeight+15>r.layout.gridHeight&&(d=r.layout.gridHeight),r.globals.isBarHorizontal||this.moveXCrosshairs(c),o.fixedTooltip||this.moveTooltip(c,d||r.layout.gridHeight)}}class Xi{constructor(t){this.w=t.w,this.ttCtx=t,this.ctx=t.ctx,this.tooltipPosition=new Oi(t)}drawDynamicPoints(){const t=this.w,e=new ti(this.w),s=new oi(this.w,this.ctx),i=[...t.dom.baseEl.querySelectorAll(".apexcharts-series")];t.config.chart.stacked&&i.sort((t,e)=>parseFloat(t.getAttribute("data:realIndex"))-parseFloat(e.getAttribute("data:realIndex")));for(let a=0;a<i.length;a++){const r=i[a].querySelector(".apexcharts-series-markers-wrap");if(null!==r){let i=`apexcharts-marker w${(Math.random()+1).toString(36).substring(4)}`;"line"!==t.config.chart.type&&"area"!==t.config.chart.type||t.globals.comboCharts||t.config.tooltip.intersect||(i+=" no-pointer-events");const a=s.getMarkerConfig({cssClass:i,seriesIndex:Number(r.getAttribute("data:realIndex"))}),o=e.drawMarker(0,0,a);o.node.setAttribute("default-marker-size",0);const n=Bs.createElementNS(ei,"g");n.classList.add("apexcharts-series-markers"),n.appendChild(o.node),r.appendChild(n)}}}enlargeCurrentPoint(t,e,s=null,i=null){const a=this.w;"bubble"!==a.config.chart.type&&this.newPointSize(t,e);let r=e.getAttribute("cx"),o=e.getAttribute("cy");if(null!==s&&null!==i&&(r=s,o=i),this.tooltipPosition.moveXCrosshairs(r),!this.fixedTooltip){if("radar"===a.config.chart.type){const t=this.ttCtx.getElGrid();if(!t)return;const e=t.getBoundingClientRect();r=this.ttCtx.e.clientX-e.left}this.tooltipPosition.moveTooltip(r,o,a.config.markers.hover.size)}}enlargePoints(t){var e,s;const i=this.w,a=this,r=this.ttCtx,o=t,n=i.dom.baseEl.querySelectorAll(".apexcharts-series:not(.apexcharts-series-collapsed) .apexcharts-marker");let l=i.config.markers.hover.size;for(let t=0;t<n.length;t++){const h=n[t].getAttribute("rel"),c=n[t].getAttribute("index");if(void 0===l&&(l=i.globals.markers.size[c]+i.config.markers.hover.sizeOffset),o===parseInt(null!=h?h:"0",10)){a.newPointSize(o,n[t]);const i=null!=(e=n[t].getAttribute("cx"))?e:"0",h=null!=(s=n[t].getAttribute("cy"))?s:"0";a.tooltipPosition.moveXCrosshairs(parseFloat(i)),r.fixedTooltip||a.tooltipPosition.moveTooltip(parseFloat(i),parseFloat(h),l)}else a.oldPointSize(n[t])}}newPointSize(t,e){const s=this.w;let i=s.config.markers.hover.size;const a=0===t?e.parentNode.firstChild:e.parentNode.lastChild;if("0"!==a.getAttribute("default-marker-size")){const t=parseInt(a.getAttribute("index"),10);void 0===i&&(i=s.globals.markers.size[t]+s.config.markers.hover.sizeOffset),i<0&&(i=0);const r=this.ttCtx.tooltipUtil.getPathFromPoint(e,i);e.setAttribute("d",r)}}oldPointSize(t){const e=parseFloat(t.getAttribute("default-marker-size")),s=this.ttCtx.tooltipUtil.getPathFromPoint(t,e);t.setAttribute("d",s)}resetPointsSize(){var t;const e=this.w.dom.baseEl.querySelectorAll(".apexcharts-series:not(.apexcharts-series-collapsed) .apexcharts-marker");for(let s=0;s<e.length;s++){const i=parseFloat(null!=(t=e[s].getAttribute("default-marker-size"))?t:"0");if(Ns.isNumber(i)&&i>0){const t=this.ttCtx.tooltipUtil.getPathFromPoint(e[s],i);e[s].setAttribute("d",t)}else e[s].setAttribute("d","M0,0")}}}class Yi{constructor(t){this.w=t.w;const e=this.w;this.ttCtx=t,this.isVerticalGroupedRangeBar=!e.globals.isBarHorizontal&&"rangeBar"===e.config.chart.type&&e.config.plotOptions.bar.rangeBarGroupRows}getAttr(t,e){var s;return parseFloat(null!=(s=t.target.getAttribute(e))?s:"")}handleHeatTreeTooltip({e:t,opt:e,x:s,y:i,type:a}){var r,o;const n=this.ttCtx,l=this.w;if(t.target.classList.contains(`apexcharts-${a}-rect`)){const a=this.getAttr(t,"i"),h=this.getAttr(t,"j"),c=this.getAttr(t,"cx"),d=this.getAttr(t,"cy"),g=this.getAttr(t,"width"),p=this.getAttr(t,"height");if(n.tooltipLabels.drawSeriesTexts({ttItems:e.ttItems,i:a,j:h,shared:!1,e:t}),l.interact.capturedSeriesIndex=a,l.interact.capturedDataPointIndex=h,s=c+n.tooltipRect.ttWidth/2+g,i=d+n.tooltipRect.ttHeight/2-p/2,n.tooltipPosition.moveXCrosshairs(c+g/2),s>l.layout.gridWidth/2&&(s=c-n.tooltipRect.ttWidth/2+g),n.w.config.tooltip.followCursor){const t=l.dom.elWrap.getBoundingClientRect();s=(null!=(r=l.interact.clientX)?r:0)-t.left-(s>l.layout.gridWidth/2?n.tooltipRect.ttWidth:0),i=(null!=(o=l.interact.clientY)?o:0)-t.top-(i>l.layout.gridHeight/2?n.tooltipRect.ttHeight:0)}}return{x:s,y:i}}handleMarkerTooltip({e:t,opt:e,x:s,y:i}){const a=this.w,r=this.ttCtx;let o,n;if(t.target.classList.contains("apexcharts-marker")){const l=parseInt(e.paths.getAttribute("cx"),10),h=parseInt(e.paths.getAttribute("cy"),10),c=parseFloat(e.paths.getAttribute("val"));if(n=parseInt(e.paths.getAttribute("rel"),10),o=parseInt(e.paths.parentNode.parentNode.parentNode.getAttribute("rel"),10)-1,r.intersect){const t=Ns.findAncestor(e.paths,"apexcharts-series");t&&(o=parseInt(t.getAttribute("data:realIndex"),10))}if(r.tooltipLabels.drawSeriesTexts({ttItems:e.ttItems,i:o,j:n,shared:!r.showOnIntersect&&a.config.tooltip.shared,e:t}),"mouseup"===t.type&&r.markerClick(t,o,n),a.interact.capturedSeriesIndex=o,a.interact.capturedDataPointIndex=n,s=l,i=h+a.layout.translateY-1.4*r.tooltipRect.ttHeight,r.w.config.tooltip.followCursor){const t=r.getElGrid();if(!t)return{x:s,y:i};const e=t.getBoundingClientRect();i=r.e.clientY+a.layout.translateY-e.top}c<0&&(i=h),r.marker.enlargeCurrentPoint(n,e.paths,s,i)}return{x:s,y:i}}handleBarTooltip({e:t,opt:e}){const s=this.w,i=this.ttCtx,a=i.getElTooltip();let r,o=0,n=0,l=0,h=0;const c=this.getBarTooltipXY({e:t,opt:e});if(null===c.j&&0===c.barHeight&&0===c.barWidth)return;h=c.i;const d=c.j;if(s.interact.capturedSeriesIndex=h,s.interact.capturedDataPointIndex=null!==d?d:s.interact.capturedDataPointIndex,s.globals.isBarHorizontal&&i.tooltipUtil.hasBars()||!s.config.tooltip.shared?(n=c.x,l=c.y,r=Array.isArray(s.config.stroke.width)?s.config.stroke.width[h]:s.config.stroke.width,o=n):s.globals.comboCharts||s.config.tooltip.shared||(o/=2),isNaN(l)&&(l=s.globals.svgHeight-i.tooltipRect.ttHeight),n+i.tooltipRect.ttWidth>s.layout.gridWidth?n-=i.tooltipRect.ttWidth:n<0&&(n=0),i.w.config.tooltip.followCursor){if(!i.getElGrid())return}null===i.tooltip&&(i.tooltip=s.dom.baseEl.querySelector(".apexcharts-tooltip")),s.config.tooltip.shared||(s.globals.comboBarCount>0?i.tooltipPosition.moveXCrosshairs(o+r/2):i.tooltipPosition.moveXCrosshairs(o)),!i.fixedTooltip&&(!s.config.tooltip.shared||s.globals.isBarHorizontal&&i.tooltipUtil.hasBars())&&(l=l+s.layout.translateY-i.tooltipRect.ttHeight/2,a&&(a.style.left=n+s.layout.translateX+"px",a.style.top=l+"px"))}getBarTooltipXY({e:t,opt:e}){const s=this.w;let i=null;const a=this.ttCtx;let r=0,o=0,n=0,l=0,h=0;const c=t.target.classList;if(c.contains("apexcharts-bar-area")||c.contains("apexcharts-candlestick-area")||c.contains("apexcharts-boxPlot-area")||c.contains("apexcharts-rangebar-area")){const c=t.target,d=c.getBoundingClientRect(),g=e.elGrid.getBoundingClientRect(),p=d.height;h=d.height;const u=d.width,f=parseInt(c.getAttribute("cx"),10),x=parseInt(c.getAttribute("cy"),10);l=parseFloat(c.getAttribute("barWidth"));const m="touchmove"===t.type?t.touches[0].clientX:t.clientX;i=parseInt(c.getAttribute("j"),10),r=parseInt(c.parentNode.getAttribute("rel"),10)-1;const b=c.getAttribute("data-range-y1"),y=c.getAttribute("data-range-y2");s.globals.comboCharts&&(r=parseInt(c.parentNode.getAttribute("data:realIndex"),10));const w=t=>s.axisFlags.isXNumeric?f-u/2:this.isVerticalGroupedRangeBar?f+u/2:f-a.dataPointsDividedWidth+u/2,v=()=>x-a.dataPointsDividedHeight+p/2-a.tooltipRect.ttHeight/2;a.tooltipLabels.drawSeriesTexts({ttItems:e.ttItems,i:r,j:i,y1:b?parseInt(b,10):null,y2:y?parseInt(y,10):null,shared:!a.showOnIntersect&&s.config.tooltip.shared,e:t}),s.config.tooltip.followCursor?s.globals.isBarHorizontal?(o=m-g.left+15,n=v()):(o=w(o),n=t.clientY-g.top-a.tooltipRect.ttHeight/2-15):s.globals.isBarHorizontal?(o=f,a.xyRatios&&o<a.xyRatios.baseLineInvertedY&&(o=f-a.tooltipRect.ttWidth),n=v()):(o=w(o),n=x)}return{x:o,y:n,barHeight:h,barWidth:l,i:r,j:i}}}class $i{constructor(t){this.w=t.w,this.ttCtx=t}drawXaxisTooltip(){const t=this.w,e=this.ttCtx,s="bottom"===t.config.xaxis.position;e.xaxisOffY=s?t.layout.gridHeight+1:-t.layout.xAxisHeight-t.config.xaxis.axisTicks.height+3;const i=s?"apexcharts-xaxistooltip apexcharts-xaxistooltip-bottom":"apexcharts-xaxistooltip apexcharts-xaxistooltip-top",a=t.dom.elWrap;if(e.isXAxisTooltipEnabled){null===t.dom.baseEl.querySelector(".apexcharts-xaxistooltip")&&(e.xaxisTooltip=Bs.createElementNS("http://www.w3.org/1999/xhtml","div"),e.xaxisTooltip.setAttribute("class",i+" apexcharts-theme-"+t.config.tooltip.theme),a.appendChild(e.xaxisTooltip),e.xaxisTooltipText=Bs.createElementNS("http://www.w3.org/1999/xhtml","div"),e.xaxisTooltipText.classList.add("apexcharts-xaxistooltip-text"),e.xaxisTooltipText.style.fontFamily=t.config.xaxis.tooltip.style.fontFamily||t.config.chart.fontFamily,e.xaxisTooltipText.style.fontSize=t.config.xaxis.tooltip.style.fontSize,e.xaxisTooltip.appendChild(e.xaxisTooltipText))}}drawYaxisTooltip(){const t=this.w,e=this.ttCtx;for(let s=0;s<t.config.yaxis.length;s++){const i=t.config.yaxis[s].opposite||t.config.yaxis[s].crosshairs.opposite;e.yaxisOffX=i?t.layout.gridWidth+1:1;const a=i?`apexcharts-yaxistooltip apexcharts-yaxistooltip-${s} apexcharts-yaxistooltip-right`:`apexcharts-yaxistooltip apexcharts-yaxistooltip-${s} apexcharts-yaxistooltip-left`,r=t.dom.elWrap;null===t.dom.baseEl.querySelector(`.apexcharts-yaxistooltip apexcharts-yaxistooltip-${s}`)&&(e.yaxisTooltip=Bs.createElementNS("http://www.w3.org/1999/xhtml","div"),e.yaxisTooltip.setAttribute("class",a+" apexcharts-theme-"+t.config.tooltip.theme),r.appendChild(e.yaxisTooltip),0===s&&(e.yaxisTooltipText=[]),e.yaxisTooltipText[s]=Bs.createElementNS("http://www.w3.org/1999/xhtml","div"),e.yaxisTooltipText[s].classList.add("apexcharts-yaxistooltip-text"),e.yaxisTooltip.appendChild(e.yaxisTooltipText[s]))}}setXCrosshairWidth(){var t,e;const s=this.w,i=this.ttCtx,a=i.getElXCrosshairs();if(i.xcrosshairsWidth=parseInt(s.config.xaxis.crosshairs.width,10),s.globals.comboCharts){const t=s.dom.baseEl.querySelector(".apexcharts-bar-area");if(null!==t&&"barWidth"===s.config.xaxis.crosshairs.width){const s=parseFloat(null!=(e=t.getAttribute("barWidth"))?e:"0");i.xcrosshairsWidth=s}else if("tickWidth"===s.config.xaxis.crosshairs.width){const t=s.labelData.labels.length;i.xcrosshairsWidth=s.layout.gridWidth/t}}else if("tickWidth"===s.config.xaxis.crosshairs.width){const t=s.labelData.labels.length;i.xcrosshairsWidth=s.layout.gridWidth/t}else if("barWidth"===s.config.xaxis.crosshairs.width){const e=s.dom.baseEl.querySelector(".apexcharts-bar-area");if(null!==e){const s=parseFloat(null!=(t=e.getAttribute("barWidth"))?t:"0");i.xcrosshairsWidth=s}else i.xcrosshairsWidth=1}s.globals.isBarHorizontal&&(i.xcrosshairsWidth=0),null!==a&&i.xcrosshairsWidth>0&&a.setAttribute("width",String(i.xcrosshairsWidth))}handleYCrosshair(){const t=this.w,e=this.ttCtx;e.ycrosshairs=t.dom.baseEl.querySelector(".apexcharts-ycrosshairs"),e.ycrosshairsHidden=t.dom.baseEl.querySelector(".apexcharts-ycrosshairs-hidden")}drawYaxisTooltipText(t,e,s){const i=this.ttCtx,a=this.w,r=a.globals,o=r.seriesYAxisMap[t];if(i.yaxisTooltips[t]&&o.length>0){const n=a.formatters.yLabelFormatters[t],l=i.getElGrid();if(!l)return;const h=l.getBoundingClientRect(),c=o[0];let d=0;s.yRatio.length>1&&(d=c);const g=(e-h.top)*s.yRatio[d],p=r.maxYArr[c]-r.minYArr[c];let u=r.minYArr[c]+(p-g);a.config.yaxis[t].reversed&&(u=r.maxYArr[c]-(p-g)),i.tooltipPosition.moveYCrosshairs(e-h.top),i.yaxisTooltipText[t].innerHTML=n(u),i.tooltipPosition.moveYAxisTooltip(t)}}}class Wi{constructor(t,e){this.w=t,this.ctx=e,this.tConfig=t.config.tooltip,this.tooltipUtil=new Ni(this),this.tooltipLabels=new zi(this),this.tooltipPosition=new Oi(this),this.marker=new Xi(this),this.intersect=new Yi(this),this.axesTooltip=new $i(this),this.showOnIntersect=this.tConfig.intersect,this.showTooltipTitle=this.tConfig.x.show,this.fixedTooltip=this.tConfig.fixed.enabled,this.xaxisTooltip=null,this.xaxisTooltipText=null,this.yaxisTooltip=null,this.yaxisTooltipText=null,this.yaxisTTEls=null,this.xaxisOffY=0,this.yaxisOffX=0,this.xcrosshairsWidth=0,this.ycrosshairs=null,this.ycrosshairsHidden=null,this.tooltip=null,this.e=null,this.isBarShared=!t.globals.isBarHorizontal&&this.tConfig.shared,this.lastHoverTime=Date.now(),this.dimensionUpdateScheduled=!1,this.xyRatios=null,this.isXAxisTooltipEnabled=!1,this.yaxisTooltips=[],this.allTooltipSeriesGroups=[],this.xAxisTicksPositions=null,this.dataPointsDividedHeight=0,this.dataPointsDividedWidth=0,this.tooltipTitle=null,this.legendLabels=null,this.ttItems=null,this.seriesBound=null,this.seriesHoverTimeout=void 0,this.clientX=0,this.clientY=0,this.barSeriesHeight=0,this.tooltipRect={x:0,y:0,ttWidth:0,ttHeight:0}}setupDimensionCache(){const t=this.w,e=this.getElTooltip();e&&(this.updateDimensionCache(),"undefined"==typeof ResizeObserver||t.globals.resizeObserver||(t.globals.resizeObserver=new ResizeObserver(()=>{this.dimensionUpdateScheduled||(this.dimensionUpdateScheduled=!0,requestAnimationFrame(()=>{this.updateDimensionCache(),this.dimensionUpdateScheduled=!1}))}),t.globals.resizeObserver.observe(e)))}updateDimensionCache(){const t=this.w,e=this.getElTooltip();if(!e)return;const s=e.getBoundingClientRect();t.globals.dimensionCache.tooltip={width:s.width,height:s.height,lastUpdate:Date.now()}}getCachedDimensions(){const t=this.w;if(t.globals.dimensionCache.tooltip){const e=t.globals.dimensionCache.tooltip;if(Date.now()-e.lastUpdate<1e3)return{ttWidth:e.width,ttHeight:e.height}}this.updateDimensionCache();const e=t.globals.dimensionCache.tooltip;return e?{ttWidth:e.width,ttHeight:e.height}:{ttWidth:0,ttHeight:0}}getElTooltip(t){return t||(t=this),t.w.dom.baseEl?t.w.dom.baseEl.querySelector(".apexcharts-tooltip"):null}getElXCrosshairs(){return this.w.dom.baseEl.querySelector(".apexcharts-xcrosshairs")}getElGrid(){return this.w.dom.baseEl.querySelector(".apexcharts-grid")}drawTooltip(t){const e=this.w;this.xyRatios=t,this.isXAxisTooltipEnabled=e.config.xaxis.tooltip.enabled&&e.globals.axisCharts,this.yaxisTooltips=e.config.yaxis.map(t=>!!(t.show&&t.tooltip.enabled&&e.globals.axisCharts)),this.allTooltipSeriesGroups=[],e.globals.axisCharts||(this.showTooltipTitle=!1);const s=this.getElTooltip();(null==s?void 0:s.parentNode)&&s.parentNode.removeChild(s),this.tooltipTitle=null;const i=Bs.createElementNS("http://www.w3.org/1999/xhtml","div");if(i.classList.add("apexcharts-tooltip"),e.config.tooltip.cssClass&&i.classList.add(e.config.tooltip.cssClass),i.classList.add(`apexcharts-theme-${this.tConfig.theme||"light"}`),e.config.chart.accessibility.enabled&&e.config.chart.accessibility.announcements.enabled&&(i.setAttribute("role","tooltip"),i.setAttribute("aria-live","polite"),i.setAttribute("aria-atomic","true"),i.setAttribute("aria-hidden","true")),e.dom.elWrap.appendChild(i),e.globals.axisCharts){this.axesTooltip.drawXaxisTooltip(),this.axesTooltip.drawYaxisTooltip(),this.axesTooltip.setXCrosshairWidth(),this.axesTooltip.handleYCrosshair();const t=new di(this.w,this.ctx,void 0);this.xAxisTicksPositions=t.getXAxisTicksPositions()}if(!e.globals.comboCharts&&!this.tConfig.intersect&&"rangeBar"!==e.config.chart.type||this.tConfig.shared||(this.showOnIntersect=!0),0!==e.config.markers.size&&0!==e.globals.markers.largestSize||this.marker.drawDynamicPoints(),e.globals.collapsedSeries.length===e.seriesData.series.length)return;this.dataPointsDividedHeight=e.layout.gridHeight/e.globals.dataPoints,this.dataPointsDividedWidth=e.layout.gridWidth/e.globals.dataPoints,this.showTooltipTitle&&(this.tooltipTitle=Bs.createElementNS("http://www.w3.org/1999/xhtml","div"),this.tooltipTitle.classList.add("apexcharts-tooltip-title"),this.tooltipTitle.style.fontFamily=this.tConfig.style.fontFamily||e.config.chart.fontFamily,this.tooltipTitle.style.fontSize=this.tConfig.style.fontSize,i.appendChild(this.tooltipTitle));let a=e.seriesData.series.length;(e.globals.xyCharts||e.globals.comboCharts)&&this.tConfig.shared&&(a=this.showOnIntersect?1:e.seriesData.series.length),this.legendLabels=e.dom.baseEl.querySelectorAll(".apexcharts-legend-text"),this.ttItems=this.createTTElements(a),this.addSVGEvents(),this.setupDimensionCache()}createTTElements(t){const e=this.w,s=[],i=this.getElTooltip();if(!i)return s;for(let a=0;a<t;a++){const r=Bs.createElementNS("http://www.w3.org/1999/xhtml","div");r.classList.add("apexcharts-tooltip-series-group",`apexcharts-tooltip-series-group-${a}`),r.style.order=String(e.config.tooltip.inverseOrder?t-a:a+1);const o=Bs.createElementNS("http://www.w3.org/1999/xhtml","span");o.classList.add("apexcharts-tooltip-marker"),e.config.tooltip.fillSeriesColor?o.style.backgroundColor=e.globals.colors[a]:o.style.color=e.globals.colors[a];const n=e.config.markers.shape;let l=n;Array.isArray(n)&&(l=n[a]),o.setAttribute("shape",l),r.appendChild(o);const h=Bs.createElementNS("http://www.w3.org/1999/xhtml","div");h.classList.add("apexcharts-tooltip-text"),h.style.fontFamily=this.tConfig.style.fontFamily||e.config.chart.fontFamily,h.style.fontSize=this.tConfig.style.fontSize,["y","goals","z"].forEach(t=>{const e=Bs.createElementNS("http://www.w3.org/1999/xhtml","div");e.classList.add(`apexcharts-tooltip-${t}-group`);const s=Bs.createElementNS("http://www.w3.org/1999/xhtml","span");s.classList.add(`apexcharts-tooltip-text-${t}-label`),e.appendChild(s);const i=Bs.createElementNS("http://www.w3.org/1999/xhtml","span");i.classList.add(`apexcharts-tooltip-text-${t}-value`),e.appendChild(i),h.appendChild(e)}),r.appendChild(h),i.appendChild(r),s.push(r)}return s}addSVGEvents(){const t=this.w,e=t.config.chart.type,s=this.getElTooltip();if(!s)return;const i=!("bar"!==e&&"candlestick"!==e&&"boxPlot"!==e&&"rangeBar"!==e),a="area"===e||"line"===e||"scatter"===e||"bubble"===e||"radar"===e,r=t.dom.Paper.node,o=this.getElGrid();o&&(this.seriesBound=o.getBoundingClientRect());const n=[],l=[],h={hoverArea:r,elGrid:o,tooltipEl:s,tooltipY:n,tooltipX:l,ttItems:this.ttItems};let c;if(t.globals.axisCharts&&(a?c=t.dom.baseEl.querySelectorAll(".apexcharts-series[data\\:longestSeries='true'] .apexcharts-marker"):i?c=t.dom.baseEl.querySelectorAll(".apexcharts-series .apexcharts-bar-area, .apexcharts-series .apexcharts-candlestick-area, .apexcharts-series .apexcharts-boxPlot-area, .apexcharts-series .apexcharts-rangebar-area"):"heatmap"!==e&&"treemap"!==e||(c=t.dom.baseEl.querySelectorAll(".apexcharts-series .apexcharts-heatmap, .apexcharts-series .apexcharts-treemap")),c&&c.length))for(let t=0;t<c.length;t++)n.push(c[t].getAttribute("cy")),l.push(c[t].getAttribute("cx"));if(t.globals.xyCharts&&!this.showOnIntersect||t.globals.comboCharts&&!this.showOnIntersect||i&&this.tooltipUtil.hasBars()&&this.tConfig.shared)this.addPathsEventListeners([r],h);else if(i&&!t.globals.comboCharts||a&&this.showOnIntersect)this.addDatapointEventsListeners(h);else if(!t.globals.axisCharts||"heatmap"===e||"treemap"===e){const e=t.dom.baseEl.querySelectorAll(".apexcharts-series");this.addPathsEventListeners(e,h)}if(this.showOnIntersect){const e=t.dom.baseEl.querySelectorAll(".apexcharts-line-series .apexcharts-marker, .apexcharts-area-series .apexcharts-marker");e.length>0&&this.addPathsEventListeners(e,h),this.tooltipUtil.hasBars()&&!this.tConfig.shared&&this.addDatapointEventsListeners(h)}}drawFixedTooltipRect(){const t=this.w,e=this.getElTooltip();if(!e)return{x:0,y:0,ttWidth:0,ttHeight:0};const s=e.getBoundingClientRect(),i=s.width+10,a=s.height+10;let r=this.tConfig.fixed.offsetX,o=this.tConfig.fixed.offsetY;const n=this.tConfig.fixed.position.toLowerCase();return n.indexOf("right")>-1&&(r=r+t.globals.svgWidth-i+10),n.indexOf("bottom")>-1&&(o=o+t.globals.svgHeight-a-10),e.style.left=r+"px",e.style.top=o+"px",{x:r,y:o,ttWidth:i,ttHeight:a}}addDatapointEventsListeners(t){const e=this.w.dom.baseEl.querySelectorAll(".apexcharts-series-markers .apexcharts-marker, .apexcharts-bar-area, .apexcharts-candlestick-area, .apexcharts-boxPlot-area, .apexcharts-rangebar-area");this.addPathsEventListeners(e,t)}addPathsEventListeners(t,e){const s=this;for(let i=0;i<t.length;i++){const a={paths:t[i],tooltipEl:e.tooltipEl,tooltipY:e.tooltipY,tooltipX:e.tooltipX,elGrid:e.elGrid,hoverArea:e.hoverArea,ttItems:e.ttItems};["mousemove","mouseup","touchmove","mouseout","touchend"].map(e=>t[i].addEventListener(e,s.onSeriesHover.bind(s,a),{capture:!1,passive:!0}))}}onSeriesHover(t,e){const s=Date.now()-this.lastHoverTime;s>=20?this.seriesHover(t,e):(clearTimeout(this.seriesHoverTimeout),this.seriesHoverTimeout=setTimeout(()=>{this.seriesHover(t,e)},20-s))}seriesHover(t,e){this.lastHoverTime=Date.now();let s=[];const i=this.w;i.config.chart.group&&(s=this.ctx.getGroupedCharts()),i.globals.axisCharts&&(i.globals.minX===-1/0&&i.globals.maxX===1/0||0===i.globals.dataPoints)||(s.length?s.forEach(s=>{const i=this.getElTooltip(s),a={paths:t.paths,tooltipEl:i,tooltipY:t.tooltipY,tooltipX:t.tooltipX,elGrid:t.elGrid,hoverArea:t.hoverArea,ttItems:s.w.globals.tooltip.ttItems};s.w.globals.minX===this.w.globals.minX&&s.w.globals.maxX===this.w.globals.maxX&&s.w.globals.tooltip.seriesHoverByContext({chartCtx:s,ttCtx:s.w.globals.tooltip,opt:a,e:e})}):this.seriesHoverByContext({chartCtx:this.ctx,ttCtx:this.w.globals.tooltip,opt:t,e:e}))}seriesHoverByContext({chartCtx:t,ttCtx:e,opt:s,e:i}){const a=t.w;if(!this.getElTooltip(t))return;const r=e.getCachedDimensions();if(e.tooltipRect={x:0,y:0,ttWidth:r.ttWidth,ttHeight:r.ttHeight},e.e=i,e.tooltipUtil.hasBars()&&!a.globals.comboCharts&&!e.isBarShared&&this.tConfig.onDatasetHover.highlightDataSeries){new vi(t.w).toggleSeriesOnHover(i,i.target.parentNode)}a.globals.axisCharts?e.axisChartsTooltips({e:i,opt:s,tooltipRect:e.tooltipRect}):e.nonAxisChartsTooltips({e:i,opt:s,tooltipRect:e.tooltipRect}),e.fixedTooltip&&e.drawFixedTooltipRect()}axisChartsTooltips({e:t,opt:e}){var s;const i=this.w;let a,r;const o=e.elGrid.getBoundingClientRect(),n="touchmove"===t.type?t.touches[0].clientX:t.clientX,l="touchmove"===t.type?t.touches[0].clientY:t.clientY;if(this.clientY=l,this.clientX=n,i.interact.capturedSeriesIndex=-1,i.interact.capturedDataPointIndex=-1,l<o.top||l>o.top+o.height)return void this.handleMouseOut(e);if(Array.isArray(this.tConfig.enabledOnSeries)&&!i.config.tooltip.shared){const t=parseInt(e.paths.getAttribute("index"),10);if(this.tConfig.enabledOnSeries.indexOf(t)<0)return void this.handleMouseOut(e)}const h=this.getElTooltip();if(!h)return;const c=this.getElXCrosshairs();let d=[];i.config.chart.group&&(d=this.ctx.getSyncedCharts());const g=i.globals.xyCharts||"bar"===i.config.chart.type&&!i.globals.isBarHorizontal&&this.tooltipUtil.hasBars()&&this.tConfig.shared||i.globals.comboCharts&&this.tooltipUtil.hasBars();if("mousemove"===t.type||"touchmove"===t.type||"mouseup"===t.type){if(i.globals.collapsedSeries.length+i.globals.ancillaryCollapsedSeries.length===i.seriesData.series.length)return;null!==c&&c.classList.add("apexcharts-active");const o=null==(s=this.yaxisTooltips)?void 0:s.filter(t=>!0===t),p=this.ycrosshairs;if(null!==p&&(null==o?void 0:o.length)&&p.classList.add("apexcharts-active"),g&&!this.showOnIntersect||d.length>1)this.handleStickyTooltip(t,n,l,e);else if("heatmap"===i.config.chart.type||"treemap"===i.config.chart.type){const s=this.intersect.handleHeatTreeTooltip({e:t,opt:e,x:a,y:r,type:i.config.chart.type});a=s.x,r=s.y,h.style.left=a+"px",h.style.top=r+"px"}else this.tooltipUtil.hasBars()&&this.intersect.handleBarTooltip({e:t,opt:e}),this.tooltipUtil.hasMarkers(0)&&this.intersect.handleMarkerTooltip({e:t,opt:e,x:a,y:r});if(this.yaxisTooltips&&this.yaxisTooltips.length)for(let t=0;t<i.config.yaxis.length;t++)this.axesTooltip.drawYaxisTooltipText(t,l,this.xyRatios);i.dom.baseEl.classList.add("apexcharts-tooltip-active"),e.tooltipEl.classList.add("apexcharts-active"),i.config.chart.accessibility.enabled&&i.config.chart.accessibility.announcements.enabled&&e.tooltipEl.removeAttribute("aria-hidden")}else"mouseout"!==t.type&&"touchend"!==t.type||this.handleMouseOut(e)}nonAxisChartsTooltips({e:t,opt:e,tooltipRect:s}){var i,a,r,o;const n=this.w,l=e.paths.getAttribute("rel"),h=this.getElTooltip();if(!h)return;const c=n.dom.elWrap.getBoundingClientRect();if("mousemove"===t.type||"touchmove"===t.type){let t,o;n.dom.baseEl.classList.add("apexcharts-tooltip-active"),h.classList.add("apexcharts-active"),n.config.chart.accessibility.enabled&&n.config.chart.accessibility.announcements.enabled&&h.removeAttribute("aria-hidden"),this.tooltipLabels.drawSeriesTexts({ttItems:e.ttItems,i:parseInt(l,10)-1,shared:!1});const d=e.paths.querySelector("path[data\\:cx]")||e.paths;if(n.config.tooltip.intersect&&d.hasAttribute("data:cx")&&d.hasAttribute("data:cy")){const e=n.dom.Paper.node.getBoundingClientRect();t=e.left-c.left+parseFloat(d.getAttribute("data:cx"))-s.ttWidth/2,o=e.top-c.top+parseFloat(d.getAttribute("data:cy"))-s.ttHeight-10}else t=(null!=(i=n.interact.clientX)?i:0)-c.left-s.ttWidth/2,o=(null!=(a=n.interact.clientY)?a:0)-c.top-s.ttHeight-10;if(h.style.left=t+"px",h.style.top=o+"px",n.config.legend.tooltipHoverFormatter){const t=n.config.legend.tooltipHoverFormatter,e=l-1,s=null==(r=this.legendLabels)?void 0:r[e];if(!s)return;const i=t(s.getAttribute("data:default-text"),{seriesIndex:e,dataPointIndex:e,w:n});s.innerHTML=i}}else"mouseout"!==t.type&&"touchend"!==t.type||(h.classList.remove("apexcharts-active"),n.dom.baseEl.classList.remove("apexcharts-tooltip-active"),n.config.legend.tooltipHoverFormatter&&(null==(o=this.legendLabels)||o.forEach(t=>{const e=t.getAttribute("data:default-text");t.innerHTML=decodeURIComponent(null!=e?e:"")})))}handleStickyTooltip(t,e,s,i){const a=this.w,r=this.tooltipUtil.getNearestValues({context:this,hoverArea:i.hoverArea,elGrid:i.elGrid,clientX:e,clientY:s}),o=r.j;let n=r.capturedSeries;null!==n&&a.globals.collapsedSeriesIndices.includes(null!=n?n:-1)&&(n=null);const l=i.elGrid.getBoundingClientRect();if(r.hoverX<0||r.hoverX>l.width)this.handleMouseOut(i);else if(null!==n)this.handleStickyCapturedSeries(t,null!=n?n:-1,i,null!=o?o:0);else if(this.tooltipUtil.isXoverlap(null!=o?o:0)||a.globals.isBarHorizontal){const e=a.seriesData.series.findIndex((t,e)=>!a.globals.collapsedSeriesIndices.includes(e));this.create(t,this,e,null!=o?o:0,i.ttItems)}}handleStickyCapturedSeries(t,e,s,i){const a=this.w;if(!this.tConfig.shared){if(null===a.seriesData.series[e][i])return void this.handleMouseOut(s)}if(void 0!==a.seriesData.series[e][i])this.tConfig.shared&&this.tooltipUtil.isXoverlap(i)&&this.tooltipUtil.isInitialSeriesSameLen()?this.create(t,this,e,i,s.ttItems):this.create(t,this,e,i,s.ttItems,!1);else if(this.tooltipUtil.isXoverlap(i)){const e=a.seriesData.series.findIndex((t,e)=>!a.globals.collapsedSeriesIndices.includes(e));this.create(t,this,e,i,s.ttItems)}}deactivateHoverFilter(){const t=this.w,e=new ti(this.w,this.ctx),s=t.dom.Paper.find(".apexcharts-bar-area");for(let t=0;t<s.length;t++)e.pathMouseLeave(s[t],void 0)}handleMouseOut(t){var e,s;const i=this.w,a=this.getElXCrosshairs();i.dom.baseEl.classList.remove("apexcharts-tooltip-active"),t.tooltipEl.classList.remove("apexcharts-active"),i.config.chart.accessibility.enabled&&i.config.chart.accessibility.announcements.enabled&&t.tooltipEl.setAttribute("aria-hidden","true"),this.deactivateHoverFilter(),"bubble"!==i.config.chart.type&&this.marker.resetPointsSize(),null!==a&&a.classList.remove("apexcharts-active");const r=this.ycrosshairs;if(null!==r&&r.classList.remove("apexcharts-active"),this.isXAxisTooltipEnabled&&(null==(e=this.xaxisTooltip)||e.classList.remove("apexcharts-active")),this.yaxisTooltips&&this.yaxisTooltips.length){null===this.yaxisTTEls&&(this.yaxisTTEls=[...i.dom.baseEl.querySelectorAll(".apexcharts-yaxistooltip")]);for(let t=0;t<this.yaxisTTEls.length;t++)this.yaxisTTEls[t].classList.remove("apexcharts-active")}i.config.legend.tooltipHoverFormatter&&(null==(s=this.legendLabels)||s.forEach(t=>{const e=t.getAttribute("data:default-text");t.innerHTML=decodeURIComponent(null!=e?e:"")}))}markerClick(t,e,s){const i=this.w;"function"==typeof i.config.chart.events.markerClick&&i.config.chart.events.markerClick(t,this.ctx,{seriesIndex:e,dataPointIndex:s,w:i}),this.ctx.events.fireEvent("markerClick",[t,this.ctx,{seriesIndex:e,dataPointIndex:s,w:i}])}create(t,e,s,i,a,r=null){var o,n,l,h,c,d,g,p,u,f,x,m,b,y,w,v,A,C,_;const S=this.w,k=e;"mouseup"===t.type&&this.markerClick(t,s,i),null===r&&(r=this.tConfig.shared);const E=this.tooltipUtil.hasMarkers(s),D=this.tooltipUtil.getElBars(),L=()=>{S.globals.markers.largestSize>0?k.marker.enlargePoints(i):k.tooltipPosition.moveDynamicPointsOnHover(i)};if(S.config.legend.tooltipHoverFormatter){const t=S.config.legend.tooltipHoverFormatter,e=Array.from(null!=(o=this.legendLabels)?o:[]);e.forEach(t=>{const e=t.getAttribute("data:default-text");t.innerHTML=decodeURIComponent(null!=e?e:"")});for(let a=0;a<e.length;a++){const o=e[a],h=parseInt(null!=(n=o.getAttribute("i"))?n:"",10),c=decodeURIComponent(null!=(l=o.getAttribute("data:default-text"))?l:""),d=t(c,{seriesIndex:r?h:s,dataPointIndex:i,w:S});if(r)o.innerHTML=S.globals.collapsedSeriesIndices.indexOf(h)<0?d:c;else if(o.innerHTML=h===s?d:c,s===h)break}}const P=S.rangeData,M=Es(Es({ttItems:a,i:s,j:i},void 0!==(null==(g=null==(d=null==(c=null==(h=P.seriesRange)?void 0:h[s])?void 0:c[i])?void 0:d.y[0])?void 0:g.y1)&&{y1:null==(x=null==(f=null==(u=null==(p=P.seriesRange)?void 0:p[s])?void 0:u[i])?void 0:f.y[0])?void 0:x.y1}),void 0!==(null==(w=null==(y=null==(b=null==(m=P.seriesRange)?void 0:m[s])?void 0:b[i])?void 0:y.y[0])?void 0:w.y2)&&{y2:null==(_=null==(C=null==(A=null==(v=P.seriesRange)?void 0:v[s])?void 0:A[i])?void 0:C.y[0])?void 0:_.y2});if(r){if(k.tooltipLabels.drawSeriesTexts(Ds(Es({},M),{shared:!this.showOnIntersect&&this.tConfig.shared})),E)L();else if(this.tooltipUtil.hasBars()&&(this.barSeriesHeight=this.tooltipUtil.getBarsHeight([...D]),this.barSeriesHeight>0)){const t=new ti(this.w,this.ctx),e=S.dom.Paper.find(`.apexcharts-bar-area[j='${i}']`);this.deactivateHoverFilter();k.tooltipUtil.getAllMarkers(!0).length&&!this.barSeriesHeight&&L(),k.tooltipPosition.moveStickyTooltipOverBars(i,s);for(let s=0;s<e.length;s++)t.pathMouseEnter(e[s],void 0)}}else k.tooltipLabels.drawSeriesTexts(Es({shared:!1},M)),this.tooltipUtil.hasBars()&&k.tooltipPosition.moveStickyTooltipOverBars(i,s),E&&k.tooltipPosition.moveMarkers(s,i)}}class Gi{constructor(t){this.node=t,t&&(t.instance=this),this._listeners=[],this._filter=null}attr(t,e){if("string"==typeof t&&void 0===e)return this.node.getAttribute(t);const s="string"==typeof t?{[t]:e}:t;for(const t in s){let e=s[t];null===e?this.node.removeAttribute(t):void 0!==e&&("number"==typeof e&&isNaN(e)&&(e=0),this.node.setAttribute(t,e))}if("text"===this.node.nodeName&&null!=s.x){const t=this.node.querySelectorAll("tspan[data-newline]");for(let e=0;e<t.length;e++)t[e].setAttribute("x",s.x)}return this}css(t){for(const e in t)this.node.style[e]=t[e];return this}fill(t){return"object"==typeof t?this.attr(t):this.attr("fill",t)}stroke(t){return"object"==typeof t?(void 0!==t.color&&this.attr("stroke",t.color),void 0!==t.width&&this.attr("stroke-width",t.width),void 0!==t.dasharray&&this.attr("stroke-dasharray",t.dasharray),void 0!==t.linecap&&this.attr("stroke-linecap",t.linecap),void 0!==t.opacity&&this.attr("stroke-opacity",t.opacity),this):this.attr("stroke",t)}size(t,e){return this.attr({width:t,height:e})}move(t,e){return this.attr({x:t,y:e})}center(t,e){if("g"===this.node.nodeName){const s=this.bbox(),i=t-(s.x+s.width/2),a=e-(s.y+s.height/2);return this.attr("transform",`translate(${i}, ${a})`)}return this.attr({cx:t,cy:e})}add(t){return this.node.appendChild(t.node||t),this}addTo(t){return(t.node||t).appendChild(this.node),this}remove(){return this.node.parentNode&&this.node.parentNode.removeChild(this.node),this}clear(){for(;this.node.firstChild;)this.node.removeChild(this.node.firstChild);return this}find(t){return Array.from(this.node.querySelectorAll(t)).map(t=>t.instance||new Gi(t))}findOne(t){const e=this.node.querySelector(t);return e?e.instance||new Gi(e):null}on(t,e){const s=t.split(".")[0];return this._listeners.push({event:t,eventType:s,handler:e}),this.node.addEventListener(s,e),this}off(t,e){if(t||e)if(t&&!e){const e=t.split(".")[0];this._listeners=this._listeners.filter(t=>t.eventType!==e||(this.node.removeEventListener(t.eventType,t.handler),!1))}else{const s=t.split(".")[0];this._listeners=this._listeners.filter(t=>t.eventType!==s||t.handler!==e||(this.node.removeEventListener(t.eventType,t.handler),!1))}else this._listeners.forEach(t=>{this.node.removeEventListener(t.eventType,t.handler)}),this._listeners=[];return this}each(t,e){return Array.from(this.node.children).forEach(s=>{const i=s.instance||new Gi(s);t.call(i),e&&i.each(t,e)}),this}removeClass(t){return"*"===t?this.node.removeAttribute("class"):this.node.classList.remove(t),this}children(){return Array.from(this.node.childNodes).filter(t=>1===t.nodeType).map(t=>t.instance||new Gi(t))}hide(){return this.node.style.display="none",this}show(){return this.node.style.display="",this}bbox(){if("function"==typeof this.node.getBBox)try{return this.node.getBBox()}catch(t){}return{x:0,y:0,width:0,height:0}}tspan(t){const e=Bs.createElementNS("http://www.w3.org/2000/svg","tspan");return e.textContent=t,this.node.appendChild(e),new Gi(e)}plot(t){return"string"==typeof t&&this.attr("d",t),this}animate(){throw new Error("Animation module not loaded")}filterWith(){throw new Error("Filter module not loaded")}unfilter(t){return this._filter&&(this.node.removeAttribute("filter"),t&&this._filter.node&&this._filter.node.parentNode&&this._filter.node.parentNode.removeChild(this._filter.node),this._filter=null),this}filterer(){return this._filter}}let Ui=0;class ji extends Gi{constructor(t,e,s){const i="radial"===e?"radialGradient":"linearGradient";super(Bs.createElementNS(ei,i)),this._id="SvgjsGradient"+ ++Ui,this.attr("id",this._id),"function"==typeof s&&s(new Vi(this));let a=t.node.querySelector("defs");a||(a=Bs.createElementNS(ei,"defs"),t.node.appendChild(a)),a.appendChild(this.node)}stop(t,e,s){const i=Bs.createElementNS(ei,"stop");return i.setAttribute("offset",t),i.setAttribute("stop-color",e),void 0!==s&&i.setAttribute("stop-opacity",String(s)),this.node.appendChild(i),this}from(t,e){return this.attr({x1:t,y1:e})}to(t,e){return this.attr({x2:t,y2:e})}url(){return"url(#"+this._id+")"}toString(){return this.url()}valueOf(){return this.url()}fill(){return this.url()}}class Vi{constructor(t){this.gradient=t}stop(t,e,s){return this.gradient.stop(t,e,s),this}}let qi=0;class Zi extends Gi{constructor(t,e,s,i){if(super(Bs.createElementNS(ei,"pattern")),this._id="SvgjsPattern"+ ++qi,this.attr({id:this._id,width:e,height:s,patternUnits:"userSpaceOnUse"}),"function"==typeof i){i(new Ki(this.node))}let a=t.node.querySelector("defs");a||(a=Bs.createElementNS(ei,"defs"),t.node.appendChild(a)),a.appendChild(this.node)}url(){return"url(#"+this._id+")"}toString(){return this.url()}valueOf(){return this.url()}fill(){return this.url()}}class Ki extends Gi{line(t,e,s,i){const a=this._make("line");return void 0!==t&&a.attr({x1:t,y1:e,x2:s,y2:i}),a}rect(t,e){const s=this._make("rect");return void 0!==t&&s.attr({width:t,height:e}),s}circle(t){const e=this._make("circle");return void 0!==t&&e.attr({r:t/2,cx:t/2,cy:t/2}),e}path(t){const e=this._make("path");return t&&e.attr("d",t),e}polygon(t){const e=this._make("polygon");return t&&e.attr("points",t),e}group(){return this._makeContainer("g")}defs(){return this._makeContainer("defs")}plain(t){const e=Bs.createElementNS(ei,"text");e.textContent=t;const s=new Gi(e);return this.node.appendChild(e),s}text(t){const e=Bs.createElementNS(ei,"text"),s=new Gi(e);return this.node.appendChild(e),"function"==typeof t&&t(new Ji(e)),s}image(t,e){const s=Bs.createElementNS(ei,"image");s.setAttributeNS("http://www.w3.org/1999/xlink","href",t);const i=new Gi(s);if(this.node.appendChild(s),"function"==typeof e){const s=new Image;s.onload=function(){i.size(s.width,s.height),e.call(i,{width:s.width,height:s.height})},s.src=t}return i}gradient(t,e){return new ji(this,t,e)}pattern(t,e,s){return new Zi(this,t,e,s)}_make(t){const e=Bs.createElementNS(ei,t);return this.node.appendChild(e),new Gi(e)}_makeContainer(t){const e=Bs.createElementNS(ei,t);return this.node.appendChild(e),new Ki(e)}}class Ji{constructor(t){this.textNode=t}tspan(t){const e=Bs.createElementNS(ei,"tspan");return e.textContent=t,this.textNode.appendChild(e),new Qi(e,this.textNode)}}class Qi{constructor(t,e){this.node=t,this.textNode=e}newLine(){return this.node.setAttribute("dy","1.1em"),this.node.dataset.newline="1",this}}let ta=0;class ea extends Gi{constructor(){super(Bs.createElementNS(ei,"filter")),this._id="SvgjsFilter"+ ++ta,this.attr("id",this._id)}size(t,e,s,i){return this.attr({width:t,height:e,x:s,y:i})}}class sa{constructor(t){this.filter=t}colorMatrix(t){return this._primitive("feColorMatrix",t)}offset(t){return this._primitive("feOffset",t)}gaussianBlur(t){return this._primitive("feGaussianBlur",t)}flood(t){return this._primitive("feFlood",t)}composite(t){return this._primitive("feComposite",t)}merge(t){const e=Bs.createElementNS(ei,"feMerge");return t.forEach(t=>{const s=Bs.createElementNS(ei,"feMergeNode");s.setAttribute("in",t),e.appendChild(s)}),this.filter.node.appendChild(e),new Gi(e)}_primitive(t,e){const s=Bs.createElementNS(ei,t);for(const t in e)s.setAttribute(t,e[t]);return this.filter.node.appendChild(s),new Gi(s)}}
-/*!
- * Path morphing for SVG path animations
- * Based on svg.pathmorphing.js by Ulrich-Matthias Schäfer (MIT License)
- * Refactored to be standalone (no SVG.js dependency)
- */
-function ia(t){if(!t||"string"!=typeof t)return[["M",0,0]];const e=[],s=/([MmLlHhVvCcSsQqTtAaZz])\s*/g,i=/[+-]?(?:\d+\.?\d*|\.\d+)(?:e[+-]?\d+)?/gi;let a;const r=[],o=[];for(;null!==(a=s.exec(t));)r.push(a[1]),o.push(a.index);for(let s=0;s<r.length;s++){const a=o[s]+r[s].length,n=s+1<o.length?o[s+1]:t.length,l=t.substring(a,n),h=[];let c;for(i.lastIndex=0;null!==(c=i.exec(l));)h.push(parseFloat(c[0]));const d=r[s].toUpperCase();if("Z"===d)e.push(["Z"]);else if("M"===d||"L"===d||"T"===d)for(let t=0;t<h.length;t+=2)e.push([d,h[t],h[t+1]]);else if("H"===d)for(let t=0;t<h.length;t++)e.push([d,h[t]]);else if("V"===d)for(let t=0;t<h.length;t++)e.push([d,h[t]]);else if("C"===d)for(let t=0;t<h.length;t+=6)e.push([d,h[t],h[t+1],h[t+2],h[t+3],h[t+4],h[t+5]]);else if("S"===d||"Q"===d)for(let t=0;t<h.length;t+=4)e.push([d,h[t],h[t+1],h[t+2],h[t+3]]);else if("A"===d)for(let t=0;t<h.length;t+=7)e.push([d,h[t],h[t+1],h[t+2],h[t+3],h[t+4],h[t+5],h[t+6]])}return 0===e.length&&e.push(["M",0,0]),e}function aa(t){let e=1/0,s=1/0,i=-1/0,a=-1/0;return t.forEach(t=>{for(let r=1;r<t.length;r+=2)if(r+1<=t.length){const o=t[r],n=t[r+1];"number"==typeof o&&"number"==typeof n&&(o<e&&(e=o),o>i&&(i=o),n<s&&(s=n),n>a&&(a=n))}}),e===1/0?{x:0,y:0,width:0,height:0}:{x:e,y:s,width:i-e,height:a-s}}function ra(t){switch(t[0]){case"z":case"Z":t[0]="L",t[1]=this.start[0],t[2]=this.start[1];break;case"H":t[0]="L",t[2]=this.pos[1];break;case"V":t[0]="L",t[2]=t[1],t[1]=this.pos[0];break;case"T":t[0]="Q",t[3]=t[1],t[4]=t[2],t[1]=this.reflection[1],t[2]=this.reflection[0];break;case"S":t[0]="C",t[6]=t[4],t[5]=t[3],t[4]=t[2],t[3]=t[1],t[2]=this.reflection[1],t[1]=this.reflection[0]}return t}function oa(t){var e=t.length;return this.pos=[t[e-2],t[e-1]],-1!="SCQT".indexOf(t[0])&&(this.reflection=[2*this.pos[0]-t[e-4],2*this.pos[1]-t[e-3]]),t}function na(t){var e,s=[t];switch(t[0]){case"M":return this.pos=this.start=[t[1],t[2]],s;case"L":t[5]=t[3]=t[1],t[6]=t[4]=t[2],t[1]=this.pos[0],t[2]=this.pos[1];break;case"Q":t[6]=t[4],t[5]=t[3],t[4]=1*t[4]/3+2*t[2]/3,t[3]=1*t[3]/3+2*t[1]/3,t[2]=1*this.pos[1]/3+2*t[2]/3,t[1]=1*this.pos[0]/3+2*t[1]/3;break;case"A":s=function(t,e){var s,i,a,r,o,n,l,h,c,d,g,p,u,f,x,m,b,y,w,v,A,C,_,S,k,E,D=Math.abs(e[1]),L=Math.abs(e[2]),P=e[3]%360,M=e[4],T=e[5],I=e[6],H=e[7],F=new si(t[0],t[1]),R=new si(I,H),B=[];if(0===D||0===L||F.x===R.x&&F.y===R.y)return[["C",F.x,F.y,R.x,R.y,R.x,R.y]];s=new si((F.x-R.x)/2,(F.y-R.y)/2).transform(new ii(0,0,0,0,0,0).rotate(P)),(i=s.x*s.x/(D*D)+s.y*s.y/(L*L))>1&&(D*=i=Math.sqrt(i),L*=i);a=new ii(0,0,0,0,0,0).rotate(P).scale(1/D,1/L).rotate(-P),F=F.transform(a),R=R.transform(a),r=[R.x-F.x,R.y-F.y],n=r[0]*r[0]+r[1]*r[1],o=Math.sqrt(n),r[0]/=o,r[1]/=o,l=n<4?Math.sqrt(1-n/4):0,M===T&&(l*=-1);h=new si((R.x+F.x)/2+l*-r[1],(R.y+F.y)/2+l*r[0]),c=new si(F.x-h.x,F.y-h.y),d=new si(R.x-h.x,R.y-h.y),g=Math.acos(c.x/Math.sqrt(c.x*c.x+c.y*c.y)),c.y<0&&(g*=-1);p=Math.acos(d.x/Math.sqrt(d.x*d.x+d.y*d.y)),d.y<0&&(p*=-1);T&&g>p&&(p+=2*Math.PI);!T&&g<p&&(p-=2*Math.PI);for(f=Math.ceil(2*Math.abs(g-p)/Math.PI),m=[],b=g,u=(p-g)/f,x=4*Math.tan(u/4)/3,A=0;A<=f;A++)w=Math.cos(b),y=Math.sin(b),v=new si(h.x+w,h.y+y),m[A]=[new si(v.x+x*y,v.y-x*w),v,new si(v.x-x*y,v.y+x*w)],b+=u;for(m[0][0]=m[0][1].clone(),m[m.length-1][2]=m[m.length-1][1].clone(),a=new ii(0,0,0,0,0,0).rotate(P).scale(D,L).rotate(-P),A=0,C=m.length;A<C;A++)m[A][0]=m[A][0].transform(a),m[A][1]=m[A][1].transform(a),m[A][2]=m[A][2].transform(a);for(A=1,C=m.length;A<C;A++)_=(v=m[A-1][2]).x,S=v.y,k=(v=m[A][0]).x,E=v.y,I=(v=m[A][1]).x,H=v.y,B.push(["C",_,S,k,E,I,H]);return B}(null!=(e=this.pos)?e:[],t),t=s[0]}return t[0]="C",this.pos=[t[5],t[6]],this.reflection=[2*t[5]-t[3],2*t[6]-t[4]],s}function la(t,e){if(!1===e)return!1;for(var s=e,i=t.length;s<i;++s)if("M"==t[s][0])return s;return!1}function ha(t,e,s,i,a,r){for(var o=t.slice(e,s||void 0),n=i.slice(a,r||void 0),l=0,h={pos:[0,0],start:[0,0]},c={pos:[0,0],start:[0,0]};o[l]=ra.call(h,o[l]),n[l]=ra.call(c,n[l]),o[l][0]!=n[l][0]||"M"==o[l][0]||"A"==o[l][0]&&(o[l][4]!=n[l][4]||o[l][5]!=n[l][5])?(Array.prototype.splice.apply(o,[l,1].concat(na.call(h,o[l]))),Array.prototype.splice.apply(n,[l,1].concat(na.call(c,n[l])))):(o[l]=oa.call(h,o[l]),n[l]=oa.call(c,n[l])),++l!=o.length||l!=n.length;)l==o.length&&o.push(["C",h.pos[0],h.pos[1],h.pos[0],h.pos[1],h.pos[0],h.pos[1]]),l==n.length&&n.push(["C",c.pos[0],c.pos[1],c.pos[0],c.pos[1],c.pos[0],c.pos[1]]);return{start:o,dest:n}}function ca(t,e){var s=function(t,e){for(var s,i=ia(t),a=ia(e),r=0,o=0,n=!1,l=!1;!1!==r||!1!==o;){if(n=la(i,!1!==r&&r+1),l=la(a,!1!==o&&o+1),!1===r){const t=aa(s.start);r=0==t.height||0==t.width?i.push(i[0])-1:i.push(["M",t.x+t.width/2,t.y+t.height/2])-1}if(!1===o){const t=aa(s.dest);o=0==t.height||0==t.width?a.push(a[0])-1:a.push(["M",t.x+t.width/2,t.y+t.height/2])-1}s=ha(i,r,n,a,o,l),i=i.slice(0,r).concat(s.start,!1===n?[]:i.slice(n)),a=a.slice(0,o).concat(s.dest,!1===l?[]:a.slice(l)),r=!1!==n&&r+s.start.length,o=!1!==l&&o+s.dest.length}return{start:i,dest:a}}(t,e),i=s.start,a=s.dest;return function(t){var e=i.map(function(e,s){return a[s].map(function(i,r){return 0===r?i:e[r]+(a[s][r]-e[r])*t})});return e.map(t=>t.join(" ")).join(" ")}}function da(t){if(!t||"string"!=typeof t)return null;if("#"===t[0]){let e=t.slice(1);3===e.length&&(e=e[0]+e[0]+e[1]+e[1]+e[2]+e[2]);const s=parseInt(e,16);return[s>>16&255,s>>8&255,255&s,1]}const e=t.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*([\d.]+))?\s*\)/);return e?[+e[1],+e[2],+e[3],void 0!==e[4]?+e[4]:1]:null}function ga(t,e,s){return`rgba(${Math.round(t[0]+(e[0]-t[0])*s)},${Math.round(t[1]+(e[1]-t[1])*s)},${Math.round(t[2]+(e[2]-t[2])*s)},${t[3]+(e[3]-t[3])*s})`}class pa{constructor(t,e,s){this.el=t,this.duration=null!=e?e:300,this.delay=s||0,this._attrTarget=null,this._plotTarget=null,this._afterCb=null,this._duringCb=null,this._next=null,this._root=null,this._scheduled=!1}attr(t){return this._attrTarget=t,this._schedule(),this}plot(t){return this._plotTarget=t,this._schedule(),this}after(t){return this._afterCb=t,this._schedule(),this}during(t){return this._duringCb=t,this._schedule(),this}animate(t,e){const s=new pa(this.el,t,e);return this._next=s,s._root=this._root||this,s}_schedule(){const t=this._root||this;t._scheduled||(t._scheduled=!0,queueMicrotask(()=>t._executeChain()))}_executeChain(){const t=[];let e=this;for(;e;)t.push(e),e=e._next;let s=0;t.forEach(t=>{s+=t.delay,t._execute(s),s+=t.duration})}_execute(t){const e=this.el,s=this.duration;if(s<=1){const s=()=>{this._attrTarget&&e.attr(this._attrTarget),this._plotTarget&&e.plot(this._plotTarget),this._afterCb&&this._afterCb.call(e)};return void(t>0?setTimeout(s,t):s())}const i=()=>{const t={},i={},a={};if(this._attrTarget)for(const s of Object.keys(this._attrTarget)){const r=e.attr(s);t[s]=r;const o=da(r),n=da(String(this._attrTarget[s]));o&&n&&(i[s]=o,a[s]=n)}let r=null;if(this._plotTarget){const t=e.attr("d")||"";try{r=ca(t,this._plotTarget)}catch(t){r=null}}const o=performance.now(),n=l=>{const h=l-o,c=Math.min(h/s,1),d=function(t){return-Math.cos(t*Math.PI)/2+.5}(c);if(this._attrTarget)if(c>=1)e.attr(this._attrTarget);else{const s={};for(const e of Object.keys(this._attrTarget))if(i[e]&&a[e])s[e]=ga(i[e],a[e],d);else{const i=parseFloat(t[e]),a=parseFloat(this._attrTarget[e]);isNaN(i)||isNaN(a)||(s[e]=i+(a-i)*d)}e.attr(s)}r&&c<1&&e.attr("d",r(d)),this._duringCb&&this._duringCb(d),c<1?Bs.requestAnimationFrame(n):(this._plotTarget&&e.attr("d",this._plotTarget),this._afterCb&&this._afterCb.call(e))};Bs.requestAnimationFrame(n)};t>0?setTimeout(i,t):i()}}var ua;function fa(){const t=Bs.createElementNS(ei,"svg"),e=new Ki(t);return e.attr({xmlns:ei}),e}(ua=Gi).prototype.filterWith=function(t){const e=new ea;this._filter=e;let s=this.node;for(;s&&"svg"!==s.nodeName;)s=s.parentNode;if(s){let t=s.querySelector("defs");t||(t=Bs.createElementNS(ei,"defs"),s.insertBefore(t,s.firstChild)),t.appendChild(e.node)}return t(new sa(e)),this.attr("filter","url(#"+e._id+")"),this},ua.prototype.unfilter=function(t){return this._filter&&(this.node.removeAttribute("filter"),t&&this._filter.node&&this._filter.node.parentNode&&this._filter.node.parentNode.removeChild(this._filter.node),this._filter=null),this},ua.prototype.filterer=function(){return this._filter},function(t){t.prototype.animate=function(t,e){return new pa(this,t,e)}}(Gi),function(t){t.prototype.draggable=function(t){if(!1===t)return this._dragCleanup&&(this._dragCleanup(),this._dragCleanup=null),this;const e=this,s=t||{},i=t=>{if(t.button&&0!==t.button)return;t.stopPropagation();const i="touchstart"===t.type?t.touches[0]:t,a=e.node,r=parseFloat(a.getAttribute("x"))||0,o=parseFloat(a.getAttribute("y"))||0,n=i.clientX,l=i.clientY,h=a.ownerSVGElement;let c=null;h&&(c=h.getScreenCTM());const d=t=>{const e="touchmove"===t.type?t.touches[0]:t;let i=e.clientX-n,h=e.clientY-l;c&&(i/=c.a,h/=c.d);let d=r+i,g=o+h;const p=parseFloat(a.getAttribute("width"))||0,u=parseFloat(a.getAttribute("height"))||0;void 0!==s.minX&&d<s.minX&&(d=s.minX),void 0!==s.minY&&g<s.minY&&(g=s.minY),void 0!==s.maxX&&d+p>s.maxX&&(d=s.maxX-p),void 0!==s.maxY&&g+u>s.maxY&&(g=s.maxY-u);const f=new CustomEvent("dragmove",{detail:{handler:{move:function(t,e){a.setAttribute("x",t),a.setAttribute("y",e)}},box:{x:d,y:g,w:p,h:u,x2:d+p,y2:g+u}}});a.dispatchEvent(f)},g=()=>{Ps.isBrowser()&&(document.removeEventListener("mousemove",d),document.removeEventListener("touchmove",d),document.removeEventListener("mouseup",g),document.removeEventListener("touchend",g))};Ps.isBrowser()&&(document.addEventListener("mousemove",d),document.addEventListener("touchmove",d),document.addEventListener("mouseup",g),document.addEventListener("touchend",g))};return e.node.addEventListener("mousedown",i),e.node.addEventListener("touchstart",i),e._dragCleanup=()=>{e.node.removeEventListener("mousedown",i),e.node.removeEventListener("touchstart",i)},e}}(Gi),function(t){t.prototype.select=function(t){if(!1===t)return this._selectCleanup&&(this._selectCleanup(),this._selectCleanup=null),this;const e=this,{createHandle:s,updateHandle:i}=t,a=document.createElementNS(ei,"g");a.setAttribute("class","svg_select_points");const r=e.node.parentNode;r&&r.appendChild(a);const o={},n=["t","b","l","r","lt","rt","lb","rb"];n.forEach((t,e)=>{const i=new Ki(document.createElementNS(ei,"g"));a.appendChild(i.node);const r=s(i,[0,0],e,[],t);o[t]={group:i,handle:r}});const l=()=>{const t=parseFloat(e.attr("x"))||0,s=parseFloat(e.attr("y"))||0,r=parseFloat(e.attr("width"))||0,l=parseFloat(e.attr("height"))||0,h=e.node.getAttribute("transform");h?a.setAttribute("transform",h):a.removeAttribute("transform");const c={t:[t+r/2,s],b:[t+r/2,s+l],l:[t,s+l/2],r:[t+r,s+l/2],lt:[t,s],rt:[t+r,s],lb:[t,s+l],rb:[t+r,s+l]};n.forEach(t=>{o[t]&&c[t]&&i(o[t].group,c[t])})};return l(),e._selectHandles=a,e._selectHandlesMap=o,e._updateSelectPositions=l,e._selectCleanup=()=>{a.parentNode&&a.parentNode.removeChild(a),e._selectHandles=null,e._selectHandlesMap=null,e._updateSelectPositions=null},e},t.prototype.resize=function(t){if(!1===t)return this._resizeCleanup&&(this._resizeCleanup(),this._resizeCleanup=null),this;const e=this,s=e._selectHandlesMap;if(!s)return e;const i=[],a=t=>{const a=s[t];if(!a||!a.group||!a.group.node)return;const r=a.group.node,o=s=>{if(s.button&&0!==s.button)return;s.stopPropagation();const i=("touchstart"===s.type?s.touches[0]:s).clientX,a=e.node.ownerSVGElement;let r=null;a&&(r=a.getScreenCTM());const o=parseFloat(e.attr("x"))||0,n=parseFloat(e.attr("width"))||0,l=s=>{let a=("touchmove"===s.type?s.touches[0]:s).clientX-i;r&&(a/=r.a);let l=o,h=n;"l"===t?(l=o+a,h=n-a):"r"===t&&(h=n+a),h<0&&(h=0),e.attr({x:l,width:h}),e._updateSelectPositions&&e._updateSelectPositions();const c=new CustomEvent("resize",{detail:{el:e}});e.node.dispatchEvent(c)},h=()=>{Ps.isBrowser()&&(document.removeEventListener("mousemove",l),document.removeEventListener("touchmove",l),document.removeEventListener("mouseup",h),document.removeEventListener("touchend",h));const t=new CustomEvent("resize",{detail:{el:e}});e.node.dispatchEvent(t)};Ps.isBrowser()&&(document.addEventListener("mousemove",l),document.addEventListener("touchmove",l),document.addEventListener("mouseup",h),document.addEventListener("touchend",h))};r.addEventListener("mousedown",o),r.addEventListener("touchstart",o),i.push(()=>{r.removeEventListener("mousedown",o),r.removeEventListener("touchstart",o)})};return a("l"),a("r"),e._resizeCleanup=()=>{i.forEach(t=>t())},e}}(Gi),fa.xlink="http://www.w3.org/1999/xlink",Ps.isBrowser()&&void 0===window.SVG&&(window.SVG=fa),Ps.isBrowser()?(void 0===window.SVG&&(window.SVG=fa),void 0===window.Apex&&(window.Apex={})):"undefined"!=typeof global&&(void 0===global.Apex&&(global.Apex={}),void 0===global.SVG&&(global.SVG=fa));const xa=class t{static registerFeatures(e){for(const[s,i]of Object.entries(e))t._featureRegistry.set(s,i)}constructor(t){this.ctx=t,this.w=t.w}initModules(){this.ctx.publicMethods=["updateOptions","updateSeries","appendData","appendSeries","isSeriesHidden","highlightSeries","toggleSeries","showSeries","hideSeries","setLocale","resetSeries","zoomX","toggleDataPointSelection","dataURI","exportToCSV","addXaxisAnnotation","addYaxisAnnotation","addPointAnnotation","clearAnnotations","removeAnnotation","paper","destroy"],this.ctx.eventList=["click","mousedown","mousemove","mouseleave","touchstart","touchmove","touchleave","mouseup","touchend","keydown","keyup"],this.ctx.animations=new Js(this.w,this.ctx),this.ctx.axes=new bi(this.w,this.ctx),this.ctx.core=new Fi(this.ctx.el,this.w,this.ctx),this.ctx.config=new Us({}),this.ctx.data=new Ri(this.w,{resetGlobals:()=>this.ctx.core.resetGlobals(),isMultipleY:()=>this.ctx.core.isMultipleY()}),this.ctx.grid=new gi(this.w,this.ctx),this.ctx.graphics=new ti(this.w,this.ctx),this.ctx.coreUtils=new Ks(this.w),this.ctx.crosshairs=new yi(this.w),this.ctx.events=new xi(this.w,this.ctx),this.ctx.fill=new ri(this.w),this.ctx.localization=new mi(this.w),this.ctx.options=new Gs,this.ctx.responsive=new wi(this.w),this.ctx.series=new vi(this.w,{toggleDataSeries:(...t)=>{var e;return null==(e=this.ctx.legend)?void 0:e.legendHelpers.toggleDataSeries(...t)},revertDefaultAxisMinMax:()=>this.ctx.updateHelpers.revertDefaultAxisMinMax(),updateSeries:(...t)=>this.ctx.updateHelpers._updateSeries(...t)}),this.ctx.theme=new Ai(this.w),this.ctx.formatters=new Os(this.w),this.ctx.titleSubtitle=new Ci(this.w),this.ctx.dimensions=new Di(this.w,this.ctx),this.ctx.updateHelpers=new Bi(this.w,this.ctx);const t=new Wi(this.w,this.ctx);this.w.globals.tooltip=t,Object.defineProperty(this.ctx,"tooltip",{get(){return this.w.globals.tooltip},configurable:!0}),this._initOptionalModules()}_initOptionalModules(){const e=t._featureRegistry,s=this.w,i=this.ctx,a=e.get("exports");i.exports=a?new a(s,i):null;const r=e.get("legend");i.legend=r?new r(s,i):null;const o=e.get("toolbar");Object.defineProperty(i,"toolbar",{get(){var t;return!this._toolbar&&o&&(this._toolbar=new o(s,this)),null!=(t=this._toolbar)?t:null},configurable:!0});const n=e.get("zoomPanSelection");Object.defineProperty(i,"zoomPanSelection",{get(){var t;return!this._zoomPanSelection&&n&&(this._zoomPanSelection=new n(s,this)),null!=(t=this._zoomPanSelection)?t:null},configurable:!0});const l=e.get("keyboardNavigation");Object.defineProperty(i,"keyboardNavigation",{get(){var t;return!this._keyboardNavigation&&l&&(this._keyboardNavigation=new l(s,this)),null!=(t=this._keyboardNavigation)?t:null},configurable:!0})}};Ls(xa,"_featureRegistry",new Map);let ma=xa;class ba{constructor(t){this.ctx=t,this.w=t.w}clear({isUpdating:t}){this.ctx._zoomPanSelection&&this.ctx._zoomPanSelection.destroy(),this.ctx._toolbar&&this.ctx._toolbar.destroy(),this.w.globals.resizeObserver&&"function"==typeof this.w.globals.resizeObserver.disconnect&&(this.w.globals.resizeObserver.disconnect(),this.w.globals.resizeObserver=null),hi.invalidateAll(this.w),t?(this.ctx._zoomPanSelection=null,this.ctx._toolbar=null,this.ctx._keyboardNavigation=null):(this.ctx.animations=null,this.ctx.axes=null,this.ctx.annotations=null,this.ctx.core=null,this.ctx.data=null,this.ctx.grid=null,this.ctx.series=null,this.ctx.responsive=null,this.ctx.theme=null,this.ctx.formatters=null,this.ctx.titleSubtitle=null,this.ctx.legend=null,this.ctx.dimensions=null,this.ctx.options=null,this.ctx.crosshairs=null,this.ctx._zoomPanSelection=null,this.ctx.updateHelpers=null,this.ctx._toolbar=null,this.ctx.localization=null,this.ctx._keyboardNavigation=null,this.ctx.w.globals.tooltip=null),this.clearDomElements({isUpdating:t})}killSVG(t){t.each(function(){this.removeClass("*"),this.off()},!0),t.clear()}clearDomElements({isUpdating:t}){const e=this.w.dom;if(Ps.isBrowser()){const s=e.Paper.node;s.parentNode&&s.parentNode.parentNode&&!t&&(s.parentNode.parentNode.style.minHeight="unset");const i=e.baseEl;if(i&&this.ctx.eventList.forEach(t=>{i.removeEventListener(t,this.ctx.events.documentEvent)}),null!==this.ctx.el)for(;this.ctx.el.firstChild;)this.ctx.el.removeChild(this.ctx.el.firstChild);this.killSVG(e.Paper),e.Paper.remove()}e.elWrap=null,e.elGraphical=null,e.elLegendWrap=null,e.elLegendForeign=null,e.baseEl=null,e.elGridRect=null,e.elGridRectMask=null,e.elGridRectBarMask=null,e.elGridRectMarkerMask=null,e.elForecastMask=null,e.elNonForecastMask=null,e.elDefs=null}}const ya=new WeakMap;class wa{constructor(t,e){Ls(this,"core"),Ls(this,"responsive"),Ls(this,"axes"),Ls(this,"grid"),Ls(this,"graphics"),Ls(this,"coreUtils"),Ls(this,"crosshairs"),Ls(this,"events"),Ls(this,"fill"),Ls(this,"localization"),Ls(this,"options"),Ls(this,"series"),Ls(this,"theme"),Ls(this,"formatters"),Ls(this,"titleSubtitle"),Ls(this,"dimensions"),Ls(this,"updateHelpers"),Ls(this,"tooltip"),Ls(this,"data"),Ls(this,"animations"),Ls(this,"exports"),Ls(this,"legend"),Ls(this,"toolbar"),Ls(this,"zoomPanSelection"),Ls(this,"keyboardNavigation"),Ls(this,"annotations"),Ls(this,"timeScale"),Ls(this,"_keyboardNavigation"),Ls(this,"windowResizeHandler"),Ls(this,"parentResizeHandler"),Ls(this,"publicMethods",[]),Ls(this,"eventList",[]),Ls(this,"config"),this.opts=e,this.ctx=this,this.w=new Zs(e).init(),this.el=t,this.w.globals.cuid=Ns.randomId(),this.w.globals.chartID=this.w.config.chart.id?Ns.escapeString(this.w.config.chart.id):this.w.globals.cuid;new ma(this).initModules(),this.lastUpdateOptions=null,this.create=this.create.bind(this),Ps.isBrowser()&&(this.windowResizeHandler=this._windowResizeHandler.bind(this),this.parentResizeHandler=this._parentResizeCallback.bind(this))}render(){var t,e;return(null==(e=null==(t=this.w)?void 0:t.config)?void 0:e.chart)?new Promise((t,e)=>{var s;if(Ns.elementExists(this.el)){void 0===Apex._chartInstances&&(Apex._chartInstances=[]),this.w.config.chart.id&&Apex._chartInstances.push({id:this.w.globals.chartID,group:this.w.config.chart.group,chart:this}),this.setLocale(this.w.config.chart.defaultLocale);const i=this.w.config.chart.events.beforeMount;if("function"==typeof i&&i(this,this.w),this.events.fireEvent("beforeMount",[this,this.w]),Ps.isBrowser()){window.addEventListener("resize",this.windowResizeHandler),function(t,e){if(Ps.isSSR())return;let s=!1;if(t.nodeType!==Node.DOCUMENT_FRAGMENT_NODE){const e=t.getBoundingClientRect();"none"!==t.style.display&&0!==e.width||(s=!0)}const i=new ResizeObserver(i=>{s&&e.call(t,i),s=!0});t.nodeType===Node.DOCUMENT_FRAGMENT_NODE?Array.from(t.children).forEach(t=>i.observe(t)):i.observe(t),ya.set(e,i)}(this.el.parentNode,this.parentResizeHandler);const t=this.el.getRootNode&&this.el.getRootNode(),e=Ns.is("ShadowRoot",t),i=this.el.ownerDocument;let a=e?t.getElementById("apexcharts-css"):i.getElementById("apexcharts-css");if(!a){a=Bs.createElementNS("http://www.w3.org/1999/xhtml","style"),a.id="apexcharts-css",a.textContent='@keyframes opaque {\n  0% {\n    opacity: 0\n  }\n\n  to {\n    opacity: 1\n  }\n}\n\n@keyframes resizeanim {\n\n  0%,\n  to {\n    opacity: 0\n  }\n}\n\n.apexcharts-canvas {\n  position: relative;\n  direction: ltr !important;\n  user-select: none\n}\n\n.apexcharts-canvas ::-webkit-scrollbar {\n  -webkit-appearance: none;\n  width: 6px\n}\n\n.apexcharts-canvas ::-webkit-scrollbar-thumb {\n  border-radius: 4px;\n  background-color: rgba(0, 0, 0, .5);\n  box-shadow: 0 0 1px rgba(255, 255, 255, .5);\n  -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, .5)\n}\n\n.apexcharts-inner {\n  position: relative\n}\n\n.apexcharts-text tspan {\n  font-family: inherit\n}\n\nrect.legend-mouseover-inactive,\n.legend-mouseover-inactive rect,\n.legend-mouseover-inactive path,\n.legend-mouseover-inactive circle,\n.legend-mouseover-inactive line,\n.legend-mouseover-inactive text.apexcharts-yaxis-title-text,\n.legend-mouseover-inactive text.apexcharts-yaxis-label {\n  transition: .15s ease all;\n  opacity: .2\n}\n\n.apexcharts-legend-text {\n  padding-left: 15px;\n  margin-left: -15px;\n}\n\n.apexcharts-legend-series[role="button"]:focus {\n  outline: 2px solid #008FFB;\n  outline-offset: 2px;\n}\n\n.apexcharts-legend-series[role="button"]:focus:not(:focus-visible) {\n  outline: none;\n}\n\n.apexcharts-legend-series[role="button"]:focus-visible {\n  outline: 2px solid #008FFB;\n  outline-offset: 2px;\n}\n\n.apexcharts-series-collapsed {\n  opacity: 0\n}\n\n.apexcharts-canvas svg:focus:not(:focus-visible) {\n  outline: none;\n}\n\n/* Keyboard navigation focus indicator on SVG data elements.\n   SVG elements don\'t support CSS outline, so we use stroke. */\n.apexcharts-bar-area.apexcharts-keyboard-focused,\n.apexcharts-candlestick-area.apexcharts-keyboard-focused,\n.apexcharts-boxPlot-area.apexcharts-keyboard-focused,\n.apexcharts-rangebar-area.apexcharts-keyboard-focused,\n.apexcharts-pie-area.apexcharts-keyboard-focused,\n.apexcharts-heatmap-rect.apexcharts-keyboard-focused,\n.apexcharts-treemap-rect.apexcharts-keyboard-focused {\n  stroke: #008FFB;\n  stroke-width: 2;\n  stroke-opacity: 1;\n}\n\n.apexcharts-tooltip {\n  border-radius: 5px;\n  box-shadow: 2px 2px 6px -4px #999;\n  cursor: default;\n  font-size: 14px;\n  left: 62px;\n  opacity: 0;\n  pointer-events: none;\n  position: absolute;\n  top: 20px;\n  display: flex;\n  flex-direction: column;\n  overflow: hidden;\n  white-space: nowrap;\n  z-index: 12;\n  transition: .15s ease all\n}\n\n.apexcharts-tooltip.apexcharts-active {\n  opacity: 1;\n  transition: .15s ease all\n}\n\n.apexcharts-tooltip.apexcharts-theme-light {\n  border: 1px solid #e3e3e3;\n  background: rgba(255, 255, 255, .96)\n}\n\n.apexcharts-tooltip.apexcharts-theme-dark {\n  color: #fff;\n  background: rgba(30, 30, 30, .8)\n}\n\n.apexcharts-tooltip * {\n  font-family: inherit\n}\n\n.apexcharts-tooltip-title {\n  padding: 6px;\n  font-size: 15px;\n  margin-bottom: 4px\n}\n\n.apexcharts-tooltip.apexcharts-theme-light .apexcharts-tooltip-title {\n  background: #eceff1;\n  border-bottom: 1px solid #ddd\n}\n\n.apexcharts-tooltip.apexcharts-theme-dark .apexcharts-tooltip-title {\n  background: rgba(0, 0, 0, .7);\n  border-bottom: 1px solid #333\n}\n\n.apexcharts-tooltip-text-goals-value,\n.apexcharts-tooltip-text-y-value,\n.apexcharts-tooltip-text-z-value {\n  display: inline-block;\n  margin-left: 5px;\n  font-weight: 600\n}\n\n.apexcharts-tooltip-text-goals-label:empty,\n.apexcharts-tooltip-text-goals-value:empty,\n.apexcharts-tooltip-text-y-label:empty,\n.apexcharts-tooltip-text-y-value:empty,\n.apexcharts-tooltip-text-z-value:empty,\n.apexcharts-tooltip-title:empty {\n  display: none\n}\n\n.apexcharts-tooltip-text-goals-label,\n.apexcharts-tooltip-text-goals-value {\n  padding: 6px 0 5px\n}\n\n.apexcharts-tooltip-goals-group,\n.apexcharts-tooltip-text-goals-label,\n.apexcharts-tooltip-text-goals-value {\n  display: flex\n}\n\n.apexcharts-tooltip-text-goals-label:not(:empty),\n.apexcharts-tooltip-text-goals-value:not(:empty) {\n  margin-top: -6px\n}\n\n.apexcharts-tooltip-marker {\n  display: inline-block;\n  position: relative;\n  width: 16px;\n  height: 16px;\n  font-size: 16px;\n  line-height: 16px;\n  margin-right: 4px;\n  text-align: center;\n  vertical-align: middle;\n  color: inherit;\n}\n\n.apexcharts-tooltip-marker::before {\n  content: "";\n  display: inline-block;\n  width: 100%;\n  text-align: center;\n  color: currentcolor;\n  text-rendering: optimizeLegibility;\n  -webkit-font-smoothing: antialiased;\n  font-size: 26px;\n  font-family: Arial, Helvetica, sans-serif;\n  line-height: 14px;\n  font-weight: 900;\n}\n\n.apexcharts-tooltip-marker[shape="circle"]::before {\n  content: "\\25CF";\n}\n\n.apexcharts-tooltip-marker[shape="square"]::before,\n.apexcharts-tooltip-marker[shape="rect"]::before {\n  content: "\\25A0";\n  transform: translate(-1px, -2px);\n}\n\n.apexcharts-tooltip-marker[shape="line"]::before {\n  content: "\\2500";\n}\n\n.apexcharts-tooltip-marker[shape="diamond"]::before {\n  content: "\\25C6";\n  font-size: 28px;\n}\n\n.apexcharts-tooltip-marker[shape="triangle"]::before {\n  content: "\\25B2";\n  font-size: 22px;\n}\n\n.apexcharts-tooltip-marker[shape="cross"]::before {\n  content: "\\2715";\n  font-size: 18px;\n}\n\n.apexcharts-tooltip-marker[shape="plus"]::before {\n  content: "\\2715";\n  transform: rotate(45deg) translate(-1px, -1px);\n  font-size: 18px;\n}\n\n.apexcharts-tooltip-marker[shape="star"]::before {\n  content: "\\2605";\n  font-size: 18px;\n}\n\n.apexcharts-tooltip-marker[shape="sparkle"]::before {\n  content: "\\2726";\n  font-size: 20px;\n}\n\n.apexcharts-tooltip-series-group {\n  padding: 0 10px;\n  display: none;\n  text-align: left;\n  justify-content: left;\n  align-items: center\n}\n\n.apexcharts-tooltip-series-group.apexcharts-active .apexcharts-tooltip-marker {\n  opacity: 1\n}\n\n.apexcharts-tooltip-series-group.apexcharts-active,\n.apexcharts-tooltip-series-group:last-child {\n  padding-bottom: 4px\n}\n\n.apexcharts-tooltip-y-group {\n  padding: 6px 0 5px\n}\n\n.apexcharts-custom-tooltip,\n.apexcharts-tooltip-box {\n  padding: 4px 8px\n}\n\n.apexcharts-tooltip-boxPlot {\n  display: flex;\n  flex-direction: column-reverse\n}\n\n.apexcharts-tooltip-box>div {\n  margin: 4px 0\n}\n\n.apexcharts-tooltip-box span.value {\n  font-weight: 700\n}\n\n.apexcharts-tooltip-rangebar {\n  padding: 5px 8px\n}\n\n.apexcharts-tooltip-rangebar .category {\n  font-weight: 600;\n  color: #777\n}\n\n.apexcharts-tooltip-rangebar .series-name {\n  font-weight: 700;\n  display: block;\n  margin-bottom: 5px\n}\n\n.apexcharts-xaxistooltip,\n.apexcharts-yaxistooltip {\n  opacity: 0;\n  pointer-events: none;\n  color: #373d3f;\n  font-size: 13px;\n  text-align: center;\n  border-radius: 2px;\n  position: absolute;\n  z-index: 10;\n  background: #eceff1;\n  border: 1px solid #90a4ae\n}\n\n.apexcharts-xaxistooltip {\n  padding: 9px 10px;\n  transition: .15s ease all\n}\n\n.apexcharts-xaxistooltip.apexcharts-theme-dark {\n  background: rgba(0, 0, 0, .7);\n  border: 1px solid rgba(0, 0, 0, .5);\n  color: #fff\n}\n\n.apexcharts-xaxistooltip:after,\n.apexcharts-xaxistooltip:before {\n  left: 50%;\n  border: solid transparent;\n  content: " ";\n  height: 0;\n  width: 0;\n  position: absolute;\n  pointer-events: none\n}\n\n.apexcharts-xaxistooltip:after {\n  border-color: transparent;\n  border-width: 6px;\n  margin-left: -6px\n}\n\n.apexcharts-xaxistooltip:before {\n  border-color: transparent;\n  border-width: 7px;\n  margin-left: -7px\n}\n\n.apexcharts-xaxistooltip-bottom:after,\n.apexcharts-xaxistooltip-bottom:before {\n  bottom: 100%\n}\n\n.apexcharts-xaxistooltip-top:after,\n.apexcharts-xaxistooltip-top:before {\n  top: 100%\n}\n\n.apexcharts-xaxistooltip-bottom:after {\n  border-bottom-color: #eceff1\n}\n\n.apexcharts-xaxistooltip-bottom:before {\n  border-bottom-color: #90a4ae\n}\n\n.apexcharts-xaxistooltip-bottom.apexcharts-theme-dark:after,\n.apexcharts-xaxistooltip-bottom.apexcharts-theme-dark:before {\n  border-bottom-color: rgba(0, 0, 0, .5)\n}\n\n.apexcharts-xaxistooltip-top:after {\n  border-top-color: #eceff1\n}\n\n.apexcharts-xaxistooltip-top:before {\n  border-top-color: #90a4ae\n}\n\n.apexcharts-xaxistooltip-top.apexcharts-theme-dark:after,\n.apexcharts-xaxistooltip-top.apexcharts-theme-dark:before {\n  border-top-color: rgba(0, 0, 0, .5)\n}\n\n.apexcharts-xaxistooltip.apexcharts-active {\n  opacity: 1;\n  transition: .15s ease all\n}\n\n.apexcharts-yaxistooltip {\n  padding: 4px 10px\n}\n\n.apexcharts-yaxistooltip.apexcharts-theme-dark {\n  background: rgba(0, 0, 0, .7);\n  border: 1px solid rgba(0, 0, 0, .5);\n  color: #fff\n}\n\n.apexcharts-yaxistooltip:after,\n.apexcharts-yaxistooltip:before {\n  top: 50%;\n  border: solid transparent;\n  content: " ";\n  height: 0;\n  width: 0;\n  position: absolute;\n  pointer-events: none\n}\n\n.apexcharts-yaxistooltip:after {\n  border-color: transparent;\n  border-width: 6px;\n  margin-top: -6px\n}\n\n.apexcharts-yaxistooltip:before {\n  border-color: transparent;\n  border-width: 7px;\n  margin-top: -7px\n}\n\n.apexcharts-yaxistooltip-left:after,\n.apexcharts-yaxistooltip-left:before {\n  left: 100%\n}\n\n.apexcharts-yaxistooltip-right:after,\n.apexcharts-yaxistooltip-right:before {\n  right: 100%\n}\n\n.apexcharts-yaxistooltip-left:after {\n  border-left-color: #eceff1\n}\n\n.apexcharts-yaxistooltip-left:before {\n  border-left-color: #90a4ae\n}\n\n.apexcharts-yaxistooltip-left.apexcharts-theme-dark:after,\n.apexcharts-yaxistooltip-left.apexcharts-theme-dark:before {\n  border-left-color: rgba(0, 0, 0, .5)\n}\n\n.apexcharts-yaxistooltip-right:after {\n  border-right-color: #eceff1\n}\n\n.apexcharts-yaxistooltip-right:before {\n  border-right-color: #90a4ae\n}\n\n.apexcharts-yaxistooltip-right.apexcharts-theme-dark:after,\n.apexcharts-yaxistooltip-right.apexcharts-theme-dark:before {\n  border-right-color: rgba(0, 0, 0, .5)\n}\n\n.apexcharts-yaxistooltip.apexcharts-active {\n  opacity: 1\n}\n\n.apexcharts-yaxistooltip-hidden {\n  display: none\n}\n\n.apexcharts-xcrosshairs,\n.apexcharts-ycrosshairs {\n  pointer-events: none;\n  opacity: 0;\n  transition: .15s ease all\n}\n\n.apexcharts-xcrosshairs.apexcharts-active,\n.apexcharts-ycrosshairs.apexcharts-active {\n  opacity: 1;\n  transition: .15s ease all\n}\n\n.apexcharts-ycrosshairs-hidden {\n  opacity: 0\n}\n\n.apexcharts-selection-rect {\n  cursor: move\n}\n\n.svg_select_shape {\n  stroke-width: 1;\n  stroke-dasharray: 10 10;\n  stroke: black;\n  stroke-opacity: 0.1;\n  pointer-events: none;\n  fill: none;\n}\n\n.svg_select_handle {\n  stroke-width: 3;\n  stroke: black;\n  fill: none;\n}\n\n.svg_select_handle_r {\n  cursor: e-resize;\n}\n\n.svg_select_handle_l {\n  cursor: w-resize;\n}\n\n.apexcharts-svg.apexcharts-zoomable.hovering-zoom {\n  cursor: crosshair\n}\n\n.apexcharts-svg.apexcharts-zoomable.hovering-pan {\n  cursor: move\n}\n\n.apexcharts-menu-icon,\n.apexcharts-pan-icon,\n.apexcharts-reset-icon,\n.apexcharts-selection-icon,\n.apexcharts-toolbar-custom-icon,\n.apexcharts-zoom-icon,\n.apexcharts-zoomin-icon,\n.apexcharts-zoomout-icon {\n  cursor: pointer;\n  width: 20px;\n  height: 20px;\n  line-height: 24px;\n  color: #6e8192;\n  text-align: center\n}\n\n.apexcharts-menu-icon svg,\n.apexcharts-reset-icon svg,\n.apexcharts-zoom-icon svg,\n.apexcharts-zoomin-icon svg,\n.apexcharts-zoomout-icon svg {\n  fill: #6e8192\n}\n\n.apexcharts-selection-icon svg {\n  fill: #444;\n  transform: scale(.76)\n}\n\n.apexcharts-theme-dark .apexcharts-menu-icon svg,\n.apexcharts-theme-dark .apexcharts-pan-icon svg,\n.apexcharts-theme-dark .apexcharts-reset-icon svg,\n.apexcharts-theme-dark .apexcharts-selection-icon svg,\n.apexcharts-theme-dark .apexcharts-toolbar-custom-icon svg,\n.apexcharts-theme-dark .apexcharts-zoom-icon svg,\n.apexcharts-theme-dark .apexcharts-zoomin-icon svg,\n.apexcharts-theme-dark .apexcharts-zoomout-icon svg {\n  fill: #f3f4f5\n}\n\n.apexcharts-canvas .apexcharts-reset-zoom-icon.apexcharts-selected svg,\n.apexcharts-canvas .apexcharts-selection-icon.apexcharts-selected svg,\n.apexcharts-canvas .apexcharts-zoom-icon.apexcharts-selected svg {\n  fill: #008ffb\n}\n\n.apexcharts-theme-light .apexcharts-menu-icon:hover svg,\n.apexcharts-theme-light .apexcharts-reset-icon:hover svg,\n.apexcharts-theme-light .apexcharts-selection-icon:not(.apexcharts-selected):hover svg,\n.apexcharts-theme-light .apexcharts-zoom-icon:not(.apexcharts-selected):hover svg,\n.apexcharts-theme-light .apexcharts-zoomin-icon:hover svg,\n.apexcharts-theme-light .apexcharts-zoomout-icon:hover svg {\n  fill: #333\n}\n\n.apexcharts-menu-icon,\n.apexcharts-selection-icon {\n  position: relative\n}\n\n.apexcharts-reset-icon {\n  margin-left: 5px\n}\n\n.apexcharts-menu-icon,\n.apexcharts-reset-icon,\n.apexcharts-zoom-icon {\n  transform: scale(.85)\n}\n\n.apexcharts-zoomin-icon,\n.apexcharts-zoomout-icon {\n  transform: scale(.7)\n}\n\n.apexcharts-zoomout-icon {\n  margin-right: 3px\n}\n\n.apexcharts-pan-icon {\n  transform: scale(.62);\n  position: relative;\n  left: 1px;\n  top: 0\n}\n\n.apexcharts-pan-icon svg {\n  fill: #fff;\n  stroke: #6e8192;\n  stroke-width: 2\n}\n\n.apexcharts-pan-icon.apexcharts-selected svg {\n  stroke: #008ffb\n}\n\n.apexcharts-pan-icon:not(.apexcharts-selected):hover svg {\n  stroke: #333\n}\n\n.apexcharts-toolbar {\n  position: absolute;\n  z-index: 11;\n  max-width: 176px;\n  text-align: right;\n  border-radius: 3px;\n  padding: 0 6px 2px;\n  display: flex;\n  justify-content: space-between;\n  align-items: center\n}\n\n.apexcharts-menu {\n  background: #fff;\n  position: absolute;\n  top: 100%;\n  border: 1px solid #ddd;\n  border-radius: 3px;\n  padding: 3px;\n  right: 10px;\n  opacity: 0;\n  min-width: 110px;\n  transition: .15s ease all;\n  pointer-events: none\n}\n\n.apexcharts-menu.apexcharts-menu-open {\n  opacity: 1;\n  pointer-events: all;\n  transition: .15s ease all\n}\n\n.apexcharts-menu-item {\n  padding: 6px 7px;\n  font-size: 12px;\n  cursor: pointer\n}\n\n.apexcharts-theme-light .apexcharts-menu-item:hover {\n  background: #eee\n}\n\n.apexcharts-theme-dark .apexcharts-menu {\n  background: rgba(0, 0, 0, .7);\n  color: #fff\n}\n\n@media screen and (min-width:768px) {\n  .apexcharts-canvas:hover .apexcharts-toolbar {\n    opacity: 1\n  }\n}\n\n/* Toolbar keyboard accessibility: show toolbar when any button inside it is focused */\n.apexcharts-toolbar:focus-within {\n  opacity: 1\n}\n\n/* Focus indicator for toolbar icon buttons */\n.apexcharts-menu-icon:focus-visible,\n.apexcharts-pan-icon:focus-visible,\n.apexcharts-reset-icon:focus-visible,\n.apexcharts-selection-icon:focus-visible,\n.apexcharts-toolbar-custom-icon:focus-visible,\n.apexcharts-zoom-icon:focus-visible,\n.apexcharts-zoomin-icon:focus-visible,\n.apexcharts-zoomout-icon:focus-visible {\n  outline: 2px solid #008FFB;\n  outline-offset: 2px;\n  border-radius: 2px\n}\n\n/* Focus indicator for hamburger menu items */\n.apexcharts-menu-item:focus-visible {\n  outline: 2px solid #008FFB;\n  outline-offset: -2px;\n  background: #eee\n}\n\n.apexcharts-canvas .apexcharts-element-hidden,\n.apexcharts-datalabel.apexcharts-element-hidden,\n.apexcharts-hide .apexcharts-series-points {\n  opacity: 0;\n}\n\n.apexcharts-hidden-element-shown {\n  opacity: 1;\n  transition: 0.25s ease all;\n}\n\n.apexcharts-datalabel,\n.apexcharts-datalabel-label,\n.apexcharts-datalabel-value,\n.apexcharts-datalabels,\n.apexcharts-pie-label {\n  cursor: default;\n  pointer-events: none\n}\n\n.apexcharts-pie-label-delay {\n  opacity: 0;\n  animation-name: opaque;\n  animation-duration: .3s;\n  animation-fill-mode: forwards;\n  animation-timing-function: ease\n}\n\n.apexcharts-radialbar-label {\n  cursor: pointer;\n}\n\n.apexcharts-annotation-rect,\n.apexcharts-area-series .apexcharts-area,\n.apexcharts-gridline,\n.apexcharts-line,\n.apexcharts-point-annotation-label,\n.apexcharts-radar-series path:not(.apexcharts-marker),\n.apexcharts-radar-series polygon,\n.apexcharts-toolbar svg,\n.apexcharts-tooltip .apexcharts-marker,\n.apexcharts-xaxis-annotation-label,\n.apexcharts-yaxis-annotation-label,\n.apexcharts-zoom-rect,\n.no-pointer-events {\n  pointer-events: none\n}\n\n.apexcharts-tooltip-active .apexcharts-marker {\n  transition: .15s ease all\n}\n\n.apexcharts-radar-series .apexcharts-yaxis {\n  pointer-events: none;\n}\n\n.resize-triggers {\n  animation: 1ms resizeanim;\n  visibility: hidden;\n  opacity: 0;\n  height: 100%;\n  width: 100%;\n  overflow: hidden\n}\n\n.contract-trigger:before,\n.resize-triggers,\n.resize-triggers>div {\n  content: " ";\n  display: block;\n  position: absolute;\n  top: 0;\n  left: 0\n}\n\n.resize-triggers>div {\n  height: 100%;\n  width: 100%;\n  background: #eee;\n  overflow: auto\n}\n\n.contract-trigger:before {\n  overflow: hidden;\n  width: 200%;\n  height: 200%\n}\n\n.apexcharts-bar-goals-markers {\n  pointer-events: none\n}\n\n.apexcharts-bar-shadows {\n  pointer-events: none\n}\n\n.apexcharts-rangebar-goals-markers {\n  pointer-events: none\n}\n\n.apexcharts-disable-transitions * {\n  transition: none !important;\n}';const r=(null==(s=this.opts.chart)?void 0:s.nonce)||this.w.config.chart.nonce;r&&a.setAttribute("nonce",r),e?t.prepend(a):!1!==this.w.config.chart.injectStyleSheet&&i.head.appendChild(a)}}const a=this.create(this.w.config.series,{});if(!a)return t(this);this.mount(a).then(()=>{"function"==typeof this.w.config.chart.events.mounted&&this.w.config.chart.events.mounted(this,this.w),this.events.fireEvent("mounted",[this,this.w]),t(a)}).catch(t=>{var s,i;const a=t instanceof Error?t:new Error(String(t)),r=a;r.chartId=null==(i=null==(s=this.w)?void 0:s.globals)?void 0:i.chartID,r.el=this.el,e(a)})}else e(new Error("Element not found"))}):Promise.reject(new Error("ApexCharts: chart configuration is missing or invalid. Ensure the options object includes a `chart` property."))}create(t,e){var s;const i=this.w;if(!this.core){new ma(this).initModules()}const a=this.w.globals;if(a.noData=!1,a.animationEnded=!1,!Ns.elementExists(this.el))return a.animationEnded=!0,null;if(this.responsive.checkResponsiveConfig(e),i.config.xaxis.convertedCatToNumeric){new $s(i.config).convertCatToNumericXaxis(i.config,this.ctx)}if(this.core.setupElements(),"treemap"===i.config.chart.type&&(i.config.grid.show=!1,i.config.yaxis[0].show=!1),0===a.svgWidth)return a.animationEnded=!0,null;let r=t;t.forEach((t,e)=>{t.hidden&&(r=this.legend.legendHelpers.getSeriesAfterCollapsing({realIndex:e}))});const o=Ks.checkComboSeries(r,i.config.chart.type);a.comboCharts=o.comboCharts,a.comboBarCount=o.comboBarCount;const n=r.every(t=>t.data&&0===t.data.length);(0===r.length||n&&a.collapsedSeries.length<1)&&this.series.handleNoData(),Ps.isBrowser()&&this.events.setupEventHandlers();const l=this.data.parseData(r);this._writeParsedSeriesData(l.seriesData),this._writeParsedRangeData(l.rangeData),this._writeParsedCandleData(l.candleData),this._writeParsedLabelData(l.labelData),this._writeParsedAxisFlags(l.axisFlags),this.theme.init();new oi(this.w,this).setGlobalMarkerSize(),this.formatters.setLabelFormatters(),this.titleSubtitle.draw(),a.noData&&a.collapsedSeries.length!==i.seriesData.series.length&&!i.config.legend.showForSingleSeries||null==(s=this.legend)||s.init(),this.series.hasAllSeriesEqualX(),a.axisCharts&&(this.core.coreCalculations(),"category"!==i.config.xaxis.type&&this.formatters.setLabelFormatters(),this.ctx.toolbar&&(this.ctx.toolbar.minX=i.globals.minX,this.ctx.toolbar.maxX=i.globals.maxX)),this.formatters.heatmapLabelFormatters();new Ks(this.w).getLargestMarkerSize();const h=this.dimensions.plotCoords();this._writeLayoutCoords(h.layout);const c=this.core.xySettings();this.grid.createGridMask();const d=this.core.plotChartType(r,c),g=new li(this.w,this);g.bringForward(),i.config.dataLabels.background.enabled&&g.dataLabelsBackground(),this.core.shiftGraphPosition(),i.globals.dataPoints>50&&i.dom.elWrap.classList.add("apexcharts-disable-transitions");return{elGraph:d,xyRatios:c,dimensions:{plot:{left:i.layout.translateX,top:i.layout.translateY,width:i.layout.gridWidth,height:i.layout.gridHeight}}}}mount(t=null){const e=this,s=e.w;return new Promise((i,a)=>{var r,o,n,l,h,c,d,g,p;if(null===e.el)return a(new Error("Not enough data to display or target element not found"));(null===t||s.globals.allSeriesCollapsed)&&e.series.handleNoData(),e.grid=new gi(e.w,e);const u=e.grid.drawGrid(),f=ma._featureRegistry.get("annotations");if(e.annotations=f?new f(e.w,{theme:e.theme,timeScale:e.timeScale}):null,null==(r=e.annotations)||r.drawImageAnnos(),null==(o=e.annotations)||o.drawTextAnnos(),"back"===s.config.grid.position&&(u&&s.dom.elGraphical.add(u.el),(null==(n=null==u?void 0:u.elGridBorders)?void 0:n.node)&&s.dom.elGraphical.add(u.elGridBorders)),Array.isArray(t.elGraph))for(let e=0;e<t.elGraph.length;e++)s.dom.elGraphical.add(t.elGraph[e]);else s.dom.elGraphical.add(t.elGraph);"front"===s.config.grid.position&&(u&&s.dom.elGraphical.add(u.el),(null==(l=null==u?void 0:u.elGridBorders)?void 0:l.node)&&s.dom.elGraphical.add(u.elGridBorders)),"front"===s.config.xaxis.crosshairs.position&&e.crosshairs.drawXCrosshairs(),"front"===s.config.yaxis[0].crosshairs.position&&e.crosshairs.drawYCrosshairs(),"treemap"!==s.config.chart.type&&e.axes.drawAxis(s.config.chart.type,u);const x=new di(this.w,this.ctx,u),m=new fi(this.w,{theme:this.theme,timeScale:this.timeScale},u);if(null!==u&&(x.xAxisLabelCorrections(),m.setYAxisTextAlignments(),s.config.yaxis.map((t,e)=>{-1===s.globals.ignoreYAxisIndexes.indexOf(e)&&m.yAxisTitleRotate(e,t.opposite)})),null==(h=e.annotations)||h.drawAxesAnnotations(),!s.globals.noData){if(Ps.isBrowser()&&s.config.tooltip.enabled&&!s.globals.noData&&(null==(c=e.w.globals.tooltip)||c.drawTooltip(t.xyRatios)),s.config.chart.accessibility.enabled&&s.config.chart.accessibility.keyboard.enabled&&s.config.chart.accessibility.keyboard.navigation.enabled&&(null==(d=e.keyboardNavigation)||d.init()),Ps.isBrowser()&&s.globals.axisCharts&&(s.axisFlags.isXNumeric||s.config.xaxis.convertedCatToNumeric||s.axisFlags.isRangeBar))(s.config.chart.zoom.enabled||s.config.chart.selection&&s.config.chart.selection.enabled||s.config.chart.pan&&s.config.chart.pan.enabled)&&(null==(g=e.zoomPanSelection)||g.init({xyRatios:t.xyRatios}));else{const t=s.config.chart.toolbar.tools;["zoom","zoomin","zoomout","selection","pan","reset"].forEach(e=>{t[e]=!1})}s.config.chart.toolbar.show&&!s.globals.allSeriesCollapsed&&(null==(p=e.toolbar)||p.createToolbar())}s.globals.memory.methodsToExec.length>0&&s.globals.memory.methodsToExec.forEach(t=>{t.method(t.params,!1,t.context)}),s.globals.axisCharts||s.globals.noData||e.core.resizeNonAxisCharts(),i(e)})}destroy(){Ps.isBrowser()&&(window.removeEventListener("resize",this.windowResizeHandler),function(t,e){if(Ps.isSSR())return;const s=ya.get(e);s&&(s.disconnect(),ya.delete(e))}(this.el.parentNode,this.parentResizeHandler));const t=this.w.config.chart.id;t&&Apex._chartInstances.forEach((e,s)=>{e.id===Ns.escapeString(t)&&Apex._chartInstances.splice(s,1)}),this._keyboardNavigation&&this._keyboardNavigation.destroy(),new ba(this.ctx).clear({isUpdating:!1})}updateOptions(t,e=!1,s=!0,i=!0,a=!0){const r=this.w;if(r.interact.selection=void 0,this.lastUpdateOptions){if(Ns.shallowEqual(this.lastUpdateOptions,t))return Promise.resolve(this);if(t.series&&this.lastUpdateOptions.series&&JSON.stringify(this.lastUpdateOptions.series)===JSON.stringify(t.series)){const e=Es({},t),s=Es({},this.lastUpdateOptions);if(delete e.series,delete s.series,Ns.shallowEqual(e,s))return Promise.resolve(this)}}return t.series&&(this.data.resetParsingFlags(),this.series.resetSeries(!1,!0,!1),t.series.length&&t.series[0].data&&(t.series=t.series.map((t,e)=>this.updateHelpers._extendSeries(t,e))),this.updateHelpers.revertDefaultAxisMinMax()),t.xaxis&&(t=this.updateHelpers.forceXAxisUpdate(t)),t.yaxis&&(t=this.updateHelpers.forceYAxisUpdate(t)),r.globals.collapsedSeriesIndices.length>0&&this.series.clearPreviousPaths(),t.theme&&(t=this.theme.updateThemeOptions(t)),this.updateHelpers._updateOptions(t,e,s,i,a)}updateSeries(t=[],e=!0,s=!0){return this.data.resetParsingFlags(),this.series.resetSeries(!1),this.updateHelpers.revertDefaultAxisMinMax(),this.updateHelpers._updateSeries(t,e,s)}appendSeries(t,e=!0,s=!0){this.data.resetParsingFlags();const i=this.w.config.series.slice();return i.push(t),this.series.resetSeries(!1),this.updateHelpers.revertDefaultAxisMinMax(),this.updateHelpers._updateSeries(i,e,s)}appendData(t,e=!0){const s=this;s.data.resetParsingFlags(),s.w.globals.dataChanged=!0,s.series.getPreviousPaths();const i=s.w.config.series.slice();for(let e=0;e<i.length;e++)if(null!==t[e]&&void 0!==t[e]){const s=t[e],a=i[e];for(let t=0;t<s.data.length;t++)a.data.push(s.data[t])}return s.w.config.series=i,e&&(s.w.globals.initialSeries=Ns.clone(s.w.config.series)),this.update()}update(t){return new Promise((e,s)=>{if(this.lastUpdateOptions&&JSON.stringify(this.lastUpdateOptions)===JSON.stringify(t))return e(this);this.lastUpdateOptions=Ns.clone(t),new ba(this.ctx).clear({isUpdating:!0});const i=this.create(this.w.config.series,null!=t?t:{});if(!i)return e(this);this.mount(i).then(()=>{"function"==typeof this.w.config.chart.events.updated&&this.w.config.chart.events.updated(this,this.w),this.events.fireEvent("updated",[this,this.w]),this.w.globals.isDirty=!0,e(this)}).catch(t=>{s(t)})})}fastUpdate(t){return new Promise((e,s)=>{var i;try{const s=this.w,a=s.globals;a.shouldAnimate=t,a.dataChanged=!0,a.animationEnded=!1,hi.invalidateSelectors(s);const r=s.globals;r.maxY=-Number.MAX_VALUE,r.minY=Number.MIN_VALUE,r.minYArr=[],r.maxYArr=[],r.maxX=-Number.MAX_VALUE,r.minX=Number.MAX_VALUE,r.initialMaxX=-Number.MAX_VALUE,r.initialMinX=Number.MAX_VALUE,r.yAxisScale=[],r.xAxisScale=null,r.xAxisTicksPositions=[],r.xRange=0,r.yRange=[],r.zRange=0,r.xTickAmount=0,r.multiAxisTickAmount=0,r.pointsArray=[],r.dataLabelsRects=[],r.lastDrawnDataLabelsIndexes=[],r.textRectsCache=new Map,r.domCache=new Map,r.cachedSelectors={},r.disableZoomIn=!1,r.disableZoomOut=!1,a.axisCharts&&(this.core.coreCalculations(),"category"!==s.config.xaxis.type&&this.formatters.setLabelFormatters());const o=this.core.xySettings(),n=s.dom.elGraphical.node;n.querySelectorAll(".apexcharts-series, .apexcharts-datalabels, .apexcharts-datalabels-background").forEach(t=>{var e;return null==(e=t.parentNode)?void 0:e.removeChild(t)});const l=this.core.plotChartType(s.config.series,o),h=n.querySelector(".apexcharts-grid"),c=Array.isArray(l)?l:[l];h&&"front"===s.config.grid.position?c.forEach(t=>{const e=t&&t.node?t.node:t;e&&n.insertBefore(e,h)}):c.forEach(t=>{s.dom.elGraphical.add(t)});const d=new li(s,this);d.bringForward(),s.config.dataLabels.background.enabled&&d.dataLabelsBackground(),Ps.isBrowser()&&s.config.tooltip.enabled&&!a.noData&&(null==(i=s.globals.tooltip)||i.drawTooltip(o)),"function"==typeof s.config.chart.events.updated&&s.config.chart.events.updated(this,s),this.events.fireEvent("updated",[this,s]),a.isDirty=!0,e(this)}catch(t){s(t)}})}getSyncedCharts(){const t=this.getGroupedCharts();let e=[this];return t.length&&(e=[],t.forEach(t=>{e.push(t)})),e}getGroupedCharts(){return Apex._chartInstances.filter(t=>{if(t.group)return!0}).map(t=>this.w.config.chart.group===t.group?t.chart:this)}static getChartByID(t){const e=Ns.escapeString(t);if(!Apex._chartInstances)return;const s=Apex._chartInstances.filter(t=>t.id===e)[0];return s&&s.chart}static initOnLoad(){var t;const e=document.querySelectorAll("[data-apexcharts]");for(let s=0;s<e.length;s++){const i=e[s],a=JSON.parse(null!=(t=e[s].getAttribute("data-options"))?t:"");new wa(i,a).render()}}static exec(t,e,...s){const i=this.getChartByID(t);if(!i)return;i.w.globals.isExecCalled=!0;let a=null;return-1!==i.publicMethods.indexOf(e)&&(a=i[e](...s)),a}static merge(t,e){return Ns.extend(t,e)}static getThemePalettes(){return{palette1:["#008FFB","#00E396","#FEB019","#FF4560","#775DD0"],palette2:["#3F51B5","#03A9F4","#4CAF50","#F9CE1D","#FF9800"],palette3:["#33B2DF","#546E7A","#D4526E","#13D8AA","#A5978B"],palette4:["#4ECDC4","#C7F464","#81D4FA","#FD6A6A","#546E7A"],palette5:["#2B908F","#F9A3A4","#90EE7E","#FA4443","#69D2E7"],palette6:["#449DD1","#F86624","#EA3546","#662E9B","#C5D86D"],palette7:["#D7263D","#1B998B","#2E294E","#F46036","#E2C044"],palette8:["#662E9B","#F86624","#F9C80E","#EA3546","#43BCCD"],palette9:["#5C4742","#A5978B","#8D5B4C","#5A2A27","#C4BBAF"],palette10:["#A300D6","#7D02EB","#5653FE","#2983FF","#00B1F2"],cvdDeuteranopia:["#0072B2","#E69F00","#56B4E9","#009E73","#F0E442","#D55E00","#CC79A7"],cvdProtanopia:["#0077BB","#EE7733","#009988","#EE3377","#BBBBBB","#33BBEE","#CC3311"],cvdTritanopia:["#CC3311","#009988","#EE7733","#0077BB","#EE3377","#BBBBBB","#33BBEE"],highContrast:["#005A9C","#C00000","#007A33","#6C3483","#7B3F00","#0097A7","#4A235A"]}}static use(t){!function(t){Object.assign(Ii(),t)}(t)}static registerFeatures(t){ma.registerFeatures(t)}toggleSeries(t){return this.series.toggleSeries(t)}highlightSeriesOnLegendHover(t,e){return this.series.toggleSeriesOnHover(t,e)}showSeries(t){this.series.showSeries(t)}hideSeries(t){this.series.hideSeries(t)}highlightSeries(t){this.series.highlightSeries(t)}isSeriesHidden(t){return this.series.isSeriesHidden(t)}resetSeries(t=!0,e=!0){this.series.resetSeries(t,e)}addEventListener(t,e){this.events.addEventListener(t,e)}removeEventListener(t,e){this.events.removeEventListener(t,e)}addXaxisAnnotation(t,e=!0,s=void 0){var i;let a=this;s&&(a=s),null==(i=a.annotations)||i.addXaxisAnnotationExternal(t,e,a)}addYaxisAnnotation(t,e=!0,s=void 0){var i;let a=this;s&&(a=s),null==(i=a.annotations)||i.addYaxisAnnotationExternal(t,e,a)}addPointAnnotation(t,e=!0,s=void 0){var i;let a=this;s&&(a=s),null==(i=a.annotations)||i.addPointAnnotationExternal(t,e,a)}clearAnnotations(t=void 0){var e;let s=this;t&&(s=t),null==(e=s.annotations)||e.clearAnnotations(s)}removeAnnotation(t,e=void 0){var s;let i=this;e&&(i=e),null==(s=i.annotations)||s.removeAnnotation(i,t)}getChartArea(){return this.w.dom.baseEl.querySelector(".apexcharts-inner")}getSeriesTotalXRange(t,e){return this.coreUtils.getSeriesTotalsXRange(t,e)}getHighestValueInSeries(t=0){return new ui(this.w).getMinYMaxY(t).highestY}getLowestValueInSeries(t=0){return new ui(this.w).getMinYMaxY(t).lowestY}getSeriesTotal(){return this.w.globals.seriesTotals}getState(){const t=this.w,e=t.globals;return{series:t.seriesData.series,seriesNames:t.seriesData.seriesNames,colors:e.colors,labels:t.labelData.labels,seriesTotals:e.seriesTotals,seriesPercent:e.seriesPercent,seriesXvalues:e.seriesXvalues,seriesYvalues:e.seriesYvalues,minX:e.minX,maxX:e.maxX,minY:e.minY,maxY:e.maxY,minYArr:e.minYArr,maxYArr:e.maxYArr,minXDiff:e.minXDiff,dataPoints:e.dataPoints,xAxisScale:e.xAxisScale,yAxisScale:e.yAxisScale,xTickAmount:e.xTickAmount,isXNumeric:t.axisFlags.isXNumeric,seriesYAxisMap:e.seriesYAxisMap,seriesYAxisReverseMap:e.seriesYAxisReverseMap,svgWidth:e.svgWidth,svgHeight:e.svgHeight,gridWidth:t.layout.gridWidth,gridHeight:t.layout.gridHeight,selectedDataPoints:t.interact.selectedDataPoints,collapsedSeriesIndices:e.collapsedSeriesIndices,zoomed:t.interact.zoomed,seriesX:t.seriesData.seriesX,seriesZ:t.seriesData.seriesZ,seriesCandleO:t.candleData.seriesCandleO,seriesCandleH:t.candleData.seriesCandleH,seriesCandleM:t.candleData.seriesCandleM,seriesCandleL:t.candleData.seriesCandleL,seriesCandleC:t.candleData.seriesCandleC,seriesRangeStart:t.rangeData.seriesRangeStart,seriesRangeEnd:t.rangeData.seriesRangeEnd,seriesGoals:t.seriesData.seriesGoals}}toggleDataPointSelection(t,e){return this.updateHelpers.toggleDataPointSelection(t,e)}zoomX(t,e){var s;null==(s=this.ctx.toolbar)||s.zoomUpdateOptions(t,e)}setLocale(t){this.localization.setCurrentLocaleValues(t)}dataURI(t){if(!this.ctx.exports)throw new Error("apexcharts: Exports feature is not registered. Import apexcharts/features/exports.");return this.ctx.exports.dataURI(t)}getSvgString(t){if(!this.ctx.exports)throw new Error("apexcharts: Exports feature is not registered. Import apexcharts/features/exports.");return this.ctx.exports.getSvgString(t)}exportToCSV(t={}){if(!this.ctx.exports)throw new Error("apexcharts: Exports feature is not registered. Import apexcharts/features/exports.");return this.ctx.exports.exportToCSV(t)}paper(){return this.w.dom.Paper}_writeParsedSeriesData(t){Object.assign(this.w.seriesData,t)}_writeParsedRangeData(t){Object.assign(this.w.rangeData,t)}_writeParsedCandleData(t){Object.assign(this.w.candleData,t)}_writeParsedLabelData(t){Object.assign(this.w.labelData,t)}_writeParsedAxisFlags(t){Object.assign(this.w.axisFlags,t)}_writeLayoutCoords(t){Object.assign(this.w.layout,t)}_parentResizeCallback(){this.w.globals.animationEnded&&this.w.config.chart.redrawOnParentResize&&this._windowResize()}_windowResize(){this.w.globals.resizeTimer=window.setTimeout(()=>{this.w.globals.resized=!0,this.w.globals.dataChanged=!1,this.ctx.update()},150)}_windowResizeHandler(){var t;clearTimeout(null!=(t=this.w.globals.resizeTimer)?t:void 0);let{redrawOnWindowResize:e}=this.w.config.chart;"function"==typeof e&&(e=e()),e&&this._windowResize()}}const va=".apexcharts-flip-y {\n  transform: scaleY(-1) translateY(-100%);\n  transform-origin: top;\n  transform-box: fill-box;\n}\n.apexcharts-flip-x {\n  transform: scaleX(-1);\n  transform-origin: center;\n  transform-box: fill-box;\n}\n.apexcharts-legend {\n  display: flex;\n  overflow: auto;\n  padding: 0 10px;\n}\n.apexcharts-legend.apexcharts-legend-group-horizontal {\n  flex-direction: column;\n}\n.apexcharts-legend-group {\n  display: flex;\n}\n.apexcharts-legend-group-vertical {\n  flex-direction: column-reverse;\n}\n.apexcharts-legend.apx-legend-position-bottom, .apexcharts-legend.apx-legend-position-top {\n  flex-wrap: wrap\n}\n.apexcharts-legend.apx-legend-position-right, .apexcharts-legend.apx-legend-position-left {\n  flex-direction: column;\n  bottom: 0;\n}\n.apexcharts-legend.apx-legend-position-bottom.apexcharts-align-left, .apexcharts-legend.apx-legend-position-top.apexcharts-align-left, .apexcharts-legend.apx-legend-position-right, .apexcharts-legend.apx-legend-position-left {\n  justify-content: flex-start;\n  align-items: flex-start;\n}\n.apexcharts-legend.apx-legend-position-bottom.apexcharts-align-center, .apexcharts-legend.apx-legend-position-top.apexcharts-align-center {\n  justify-content: center;\n  align-items: center;\n}\n.apexcharts-legend.apx-legend-position-bottom.apexcharts-align-right, .apexcharts-legend.apx-legend-position-top.apexcharts-align-right {\n  justify-content: flex-end;\n  align-items: flex-end;\n}\n.apexcharts-legend-series {\n  cursor: pointer;\n  line-height: normal;\n  display: flex;\n  align-items: center;\n}\n.apexcharts-legend-text {\n  position: relative;\n  font-size: 14px;\n}\n.apexcharts-legend-text *, .apexcharts-legend-marker * {\n  pointer-events: none;\n}\n.apexcharts-legend-marker {\n  position: relative;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  cursor: pointer;\n  margin-right: 1px;\n}\n\n.apexcharts-legend-series.apexcharts-no-click {\n  cursor: auto;\n}\n.apexcharts-legend .apexcharts-hidden-zero-series, .apexcharts-legend .apexcharts-hidden-null-series {\n  display: none !important;\n}\n.apexcharts-inactive-legend {\n  opacity: 0.45;\n} ";class Aa{constructor(t,e){this.w=t,this.ctx=e}svgStringToNode(t){return(new DOMParser).parseFromString(t,"image/svg+xml").documentElement}scaleSvgNode(t,e){const s=parseFloat(t.getAttributeNS(null,"width")),i=parseFloat(t.getAttributeNS(null,"height"));t.setAttributeNS(null,"width",s*e),t.setAttributeNS(null,"height",i*e),t.setAttributeNS(null,"viewBox","0 0 "+s+" "+i)}getSvgString(t){return new Promise(e=>{const s=this.w;let i=t||s.config.chart.toolbar.export.scale||s.config.chart.toolbar.export.width/s.globals.svgWidth;i||(i=1);const a=s.globals.svgWidth*i,r=s.globals.svgHeight*i,o=s.dom.elWrap.cloneNode(!0);o.style.width=a+"px",o.style.height=r+"px";const n=(new XMLSerializer).serializeToString(o);let l="\n        .apexcharts-tooltip, .apexcharts-toolbar, .apexcharts-xaxistooltip, .apexcharts-yaxistooltip, .apexcharts-xcrosshairs, .apexcharts-ycrosshairs, .apexcharts-zoom-rect, .apexcharts-selection-rect {\n          display: none;\n        }\n      ";s.config.legend.show&&s.dom.elLegendWrap&&s.dom.elLegendWrap.children.length>0&&(l+=va);let h=`\n        <svg xmlns="http://www.w3.org/2000/svg"\n          version="1.1"\n          xmlns:xlink="http://www.w3.org/1999/xlink"\n          class="apexcharts-svg"\n          xmlns:data="ApexChartsNS"\n          transform="translate(0, 0)"\n          width="${s.globals.svgWidth}px" height="${s.globals.svgHeight}px">\n          <foreignObject width="100%" height="100%">\n            <div xmlns="http://www.w3.org/1999/xhtml" style="width:${a}px; height:${r}px;">\n            <style type="text/css">\n              ${l}\n            </style>\n              ${n}\n            </div>\n          </foreignObject>\n        </svg>\n      `;const c=this.svgStringToNode(h);1!==i&&this.scaleSvgNode(c,i),this.convertImagesToBase64(c).then(()=>{h=(new XMLSerializer).serializeToString(c),e(h.replace(/&nbsp;/g,"&#160;"))})})}convertImagesToBase64(t){const e=t.getElementsByTagName("image"),s=Array.from(e).map(t=>{const e=t.getAttributeNS("http://www.w3.org/1999/xlink","href");return e&&!e.startsWith("data:")?this.getBase64FromUrl(e).then(e=>{t.setAttributeNS("http://www.w3.org/1999/xlink","href",e)}).catch(t=>{console.error("Error converting image to base64:",t)}):Promise.resolve()});return Promise.all(s)}getBase64FromUrl(t){return Ps.isSSR()?Promise.resolve(t):new Promise((e,s)=>{const i=new Image;i.crossOrigin="Anonymous",i.onload=()=>{const t=document.createElement("canvas");t.width=i.width,t.height=i.height;const s=t.getContext("2d");s&&s.drawImage(i,0,0),e(t.toDataURL())},i.onerror=s,i.src=t})}svgUrl(){return new Promise(t=>{this.getSvgString().then(e=>{const s=new Blob([e],{type:"image/svg+xml;charset=utf-8"});t(URL.createObjectURL(s))})})}dataURI(t){return Ps.isSSR()?Promise.resolve({imgURI:""}):new Promise(e=>{const s=this.w,i=t?t.scale||t.width/s.globals.svgWidth:1,a=document.createElement("canvas");a.width=s.globals.svgWidth*i,a.height=parseInt(s.dom.elWrap.style.height,10)*i;const r="transparent"!==s.config.chart.background&&s.config.chart.background?s.config.chart.background:"#fff",o=a.getContext("2d");o&&(o.fillStyle=r,o.fillRect(0,0,a.width*i,a.height*i),this.getSvgString(i).then(t=>{const s="data:image/svg+xml,"+encodeURIComponent(t),i=new Image;i.crossOrigin="anonymous",i.onload=()=>{o.drawImage(i,0,0);const t=a;if(t.msToBlob){const s=t.msToBlob();e({blob:s})}else{const t=a.toDataURL("image/png");e({imgURI:t})}},i.src=s}))})}exportToSVG(){this.svgUrl().then(t=>{this.triggerDownload(t,this.w.config.chart.toolbar.export.svg.filename,".svg")})}exportToPng(){const t=this.w.config.chart.toolbar.export.scale,e=this.w.config.chart.toolbar.export.width,s=t?{scale:t}:e?{width:e}:void 0;this.dataURI(s).then(({imgURI:t,blob:e})=>{e?navigator.msSaveOrOpenBlob(e,this.w.globals.chartID+".png"):this.triggerDownload(t,this.w.config.chart.toolbar.export.png.filename,".png")})}exportToCSV({series:t,fileName:e,columnDelimiter:s=",",lineDelimiter:i="\n"}){const a=this.w;t||(t=a.config.series);let r=[];const o=[];let n="";const l=a.seriesData.series.map((t,e)=>-1===a.globals.collapsedSeriesIndices.indexOf(e)?t:[]),h=t=>"function"==typeof a.config.chart.toolbar.export.csv.categoryFormatter?a.config.chart.toolbar.export.csv.categoryFormatter(t):"datetime"===a.config.xaxis.type&&String(t).length>=10?new Date(t).toDateString():Ns.isNumber(t)?t:t.split(s).join(""),c=t=>"function"==typeof a.config.chart.toolbar.export.csv.valueFormatter?a.config.chart.toolbar.export.csv.valueFormatter(t):t,d=Math.max(...t.map(t=>t.data?t.data.length:0)),g=new Ri(this.w),p=new ci(this.w,{theme:this.ctx.theme,timeScale:this.ctx.timeScale}),u=t=>{let e="";if(a.globals.axisCharts){if("category"===a.config.xaxis.type||a.config.xaxis.convertedCatToNumeric)if(a.globals.isBarHorizontal){const s=a.formatters.yLabelFormatters[0],i=new vi(this.ctx.w).getActiveConfigSeriesIndex();e=s(a.labelData.labels[t],{seriesIndex:i,dataPointIndex:t,w:a})}else e=p.getLabel(a.labelData.labels,a.labelData.timescaleLabels,0,t).text;"datetime"===a.config.xaxis.type&&(a.config.xaxis.categories.length?e=a.config.xaxis.categories[t]:a.config.labels.length&&(e=a.config.labels[t]))}else e=a.config.labels[t];return null===e?"nullvalue":(Array.isArray(e)&&(e=e.join(" ")),Ns.isNumber(e)?e:e.split(s).join(""))},f=(e,i)=>{var n;if(r.length&&0===i&&o.push(r.join(s)),e.data){e.data=e.data.length&&e.data||[...Array(d)].map(()=>"");for(let d=0;d<e.data.length;d++){r=[];let p=u(d);if("nullvalue"!==p){if(p||(g.isFormatXY()?p=t[i].data[d].x:g.isFormat2DArray()&&(p=t[i].data[d]?t[i].data[d][0]:"")),0===i){r.push(h(p));for(let e=0;e<a.seriesData.series.length;e++){const s=g.isFormatXY()?null==(n=t[e].data[d])?void 0:n.y:l[e][d];r.push(c(s))}}("candlestick"===a.config.chart.type||e.type&&"candlestick"===e.type)&&(r.pop(),r.push(a.candleData.seriesCandleO[i][d]),r.push(a.candleData.seriesCandleH[i][d]),r.push(a.candleData.seriesCandleL[i][d]),r.push(a.candleData.seriesCandleC[i][d])),("boxPlot"===a.config.chart.type||e.type&&"boxPlot"===e.type)&&(r.pop(),r.push(a.candleData.seriesCandleO[i][d]),r.push(a.candleData.seriesCandleH[i][d]),r.push(a.candleData.seriesCandleM[i][d]),r.push(a.candleData.seriesCandleL[i][d]),r.push(a.candleData.seriesCandleC[i][d])),"rangeBar"===a.config.chart.type&&(r.pop(),r.push(a.rangeData.seriesRangeStart[i][d]),r.push(a.rangeData.seriesRangeEnd[i][d])),r.length&&o.push(r.join(s))}}}};r.push(a.config.chart.toolbar.export.csv.headerCategory),"boxPlot"===a.config.chart.type?(r.push("minimum"),r.push("q1"),r.push("median"),r.push("q3"),r.push("maximum")):"candlestick"===a.config.chart.type?(r.push("open"),r.push("high"),r.push("low"),r.push("close")):"rangeBar"===a.config.chart.type?(r.push("minimum"),r.push("maximum")):t.map((t,e)=>{const i=(t.name?t.name:`series-${e}`)+"";a.globals.axisCharts&&r.push(i.split(s).join("")?i.split(s).join(""):`series-${e}`)}),a.globals.axisCharts||(r.push(a.config.chart.toolbar.export.csv.headerValue),o.push(r.join(s))),a.globals.allSeriesHasEqualX||!a.globals.axisCharts||a.config.xaxis.categories.length||a.config.labels.length?t.map((t,e)=>{a.globals.axisCharts?f(t,e):(r=[],r.push(h(a.labelData.labels[e])),r.push(c(l[e])),o.push(r.join(s)))}):(()=>{const e=new Set,i={};t.forEach((s,a)=>{null==s||s.data.forEach(s=>{let r,o;if(g.isFormatXY())r=s.x,o=s.y;else{if(!g.isFormat2DArray())return;r=s[0],o=s[1]}i[r]||(i[r]=Array(t.length).fill("")),i[r][a]=c(o),e.add(r)})}),r.length&&o.push(r.join(s)),Array.from(e).sort().forEach(t=>{o.push([h(t),i[t].join(s)])})})(),n+=o.join(i),this.triggerDownload("data:text/csv; charset=utf-8,"+encodeURIComponent("\ufeff"+n),e||a.config.chart.toolbar.export.csv.filename,".csv")}triggerDownload(t,e,s){if(Ps.isSSR())return;const i=document.createElement("a");i.href=t,i.download=(e||this.w.globals.chartID)+s,document.body.appendChild(i),i.click(),document.body.removeChild(i)}}wa.registerFeatures({exports:Aa});let Ca=class{constructor(t){this.w=t.w,this.lgCtx=t}getLegendStyles(){if(Ps.isSSR())return null;const t=document.createElement("style");t.setAttribute("type","text/css");const e=this.w.config.chart.nonce;e&&t.setAttribute("nonce",e);const s=document.createTextNode(va);return t.appendChild(s),t}getLegendDimensions(){const t=this.w.dom.baseEl.querySelector(".apexcharts-legend");if(!t)return{clwh:0,clww:0};const{width:e,height:s}=t.getBoundingClientRect();return{clwh:s,clww:e}}appendToForeignObject(){var t;const e=this.getLegendStyles();!1!==this.w.config.chart.injectStyleSheet&&e&&(null==(t=this.w.dom.elLegendForeign)||t.appendChild(e))}toggleDataSeries(t,e){var s,i;const a=this.w;if(a.globals.axisCharts||"radialBar"===a.config.chart.type){a.globals.resized=!0;let r=null,o=null;if(a.globals.risingSeries=[],a.globals.axisCharts){if(r=a.dom.baseEl.querySelector(`.apexcharts-series[data\\:realIndex='${t}']`),!r)return;o=parseInt(null!=(s=r.getAttribute("data:realIndex"))?s:"",10)}else{if(r=a.dom.baseEl.querySelector(`.apexcharts-series[rel='${t+1}']`),!r)return;o=parseInt(null!=(i=r.getAttribute("rel"))?i:"",10)-1}if(e){[{cs:a.globals.collapsedSeries,csi:a.globals.collapsedSeriesIndices},{cs:a.globals.ancillaryCollapsedSeries,csi:a.globals.ancillaryCollapsedSeriesIndices}].forEach(t=>{const e=t.cs,s=t.csi;this.riseCollapsedSeries(e,s,o)})}else this.hideSeries({seriesEl:r,realIndex:o});if(a.config.chart.accessibility.enabled){const e=a.dom.baseEl.querySelector(`.apexcharts-legend-series[rel="${t+1}"]`);if(e){const s=a.globals.collapsedSeriesIndices.includes(o)||a.globals.ancillaryCollapsedSeriesIndices.includes(o);e.setAttribute("aria-pressed",s?"true":"false");const i=e.querySelector(".apexcharts-legend-text"),r=i?i.textContent:a.seriesData.seriesNames[t],n=s?"hidden":"visible";e.setAttribute("aria-label",`${r}, ${n}. Press Enter or Space to toggle.`)}}}else{const e=a.dom.Paper.findOne(` .apexcharts-series[rel='${t+1}'] path`),s=a.config.chart.type;if("pie"===s||"polarArea"===s||"donut"===s){const t=a.config.plotOptions.pie.donut.labels;new ti(this.w).pathMouseDown(e,null),this.lgCtx.printDataLabelsInner(e.node,t)}if(a.config.chart.accessibility.enabled){const e=a.dom.baseEl.querySelector(`.apexcharts-legend-series[rel="${t+1}"]`);if(e){const s=a.globals.collapsedSeriesIndices.includes(t);e.setAttribute("aria-pressed",s?"true":"false");const i=e.querySelector(".apexcharts-legend-text"),r=i?i.textContent:a.seriesData.seriesNames[t],o=s?"hidden":"visible";e.setAttribute("aria-label",`${r}, ${o}. Press Enter or Space to toggle.`)}}}}getSeriesAfterCollapsing({realIndex:t}){var e;const s=this.w,i=s.globals,a=Ns.clone(s.config.series);if(i.axisCharts){const e=s.config.yaxis[i.seriesYAxisReverseMap[t]],r={index:t,data:a[t].data.slice(),type:a[t].type||s.config.chart.type};if(e&&e.show&&e.showAlways)i.ancillaryCollapsedSeriesIndices.indexOf(t)<0&&(i.ancillaryCollapsedSeries.push(r),i.ancillaryCollapsedSeriesIndices.push(t));else if(i.collapsedSeriesIndices.indexOf(t)<0){i.collapsedSeries.push(r),i.collapsedSeriesIndices.push(t);const e=i.risingSeries.indexOf(t);i.risingSeries.splice(e,1)}}else i.collapsedSeries.push({index:t,data:a[t],type:null!=(e=s.config.series[t].type)?e:"line"}),i.collapsedSeriesIndices.push(t);return i.allSeriesCollapsed=i.collapsedSeries.length+i.ancillaryCollapsedSeries.length===s.config.series.length,this._getSeriesBasedOnCollapsedState(a)}hideSeries({seriesEl:t,realIndex:e}){const s=this.w,i=this.getSeriesAfterCollapsing({realIndex:e}),a=t.childNodes;for(let t=0;t<a.length;t++)a[t].classList.contains("apexcharts-series-markers-wrap")&&(a[t].classList.contains("apexcharts-hide")?a[t].classList.remove("apexcharts-hide"):a[t].classList.add("apexcharts-hide"));this.lgCtx.updateSeries(i,s.config.chart.animations.dynamicAnimation.enabled)}riseCollapsedSeries(t,e,s){const i=this.w;let a=Ns.clone(i.config.series);if(t.length>0){for(let r=0;r<t.length;r++)t[r].index===s&&(i.globals.axisCharts?a[s].data=t[r].data.slice():a[s]=t[r].data,"number"!=typeof a[s]&&(a[s].hidden=!1),t.splice(r,1),e.splice(r,1),i.globals.risingSeries.push(s),r--);a=this._getSeriesBasedOnCollapsedState(a),this.lgCtx.updateSeries(a,i.config.chart.animations.dynamicAnimation.enabled)}}_getSeriesBasedOnCollapsedState(t){const e=this.w;let s=0;return e.globals.axisCharts?t.forEach((i,a)=>{e.globals.collapsedSeriesIndices.indexOf(a)<0&&e.globals.ancillaryCollapsedSeriesIndices.indexOf(a)<0||(t[a].data=[],s++)}):t.forEach((i,a)=>{e.globals.collapsedSeriesIndices.indexOf(a)<0||(t[a]=0,s++)}),e.globals.allSeriesCollapsed=s===t.length,t}};wa.registerFeatures({legend:class{constructor(t,e){this.w=t,this.ctx=e,this.printDataLabelsInner=(...t)=>{var s;return null==(s=e.pie)?void 0:s.printDataLabelsInner(...t)},this.updateSeries=(...t)=>e.updateHelpers._updateSeries(...t),this.onLegendClick=this.onLegendClick.bind(this),this.onLegendHovered=this.onLegendHovered.bind(this),this.isBarsDistributed="bar"===this.w.config.chart.type&&this.w.config.plotOptions.bar.distributed&&1===this.w.config.series.length,this.legendHelpers=new Ca(this)}init(){const t=this.w,e=t.globals,s=t.config,i=s.legend.showForSingleSeries&&1===this.w.seriesData.series.length||this.isBarsDistributed||this.w.seriesData.series.length>1;if(this.legendHelpers.appendToForeignObject(),(i||!e.axisCharts)&&s.legend.show){const e=t.dom.elLegendWrap;for(;e.firstChild;)e.removeChild(e.firstChild);this.drawLegends(),"bottom"===s.legend.position||"top"===s.legend.position?this.legendAlignHorizontal():"right"!==s.legend.position&&"left"!==s.legend.position||this.legendAlignVertical()}}createLegendMarker({i:t,fillcolor:e}){const s=this.w,i=Bs.createElement("span");i.classList.add("apexcharts-legend-marker");const a=s.config.legend.markers.shape||s.config.markers.shape;let r=a;Array.isArray(a)&&(r=a[t]);const o=Array.isArray(s.config.legend.markers.size)?parseFloat(s.config.legend.markers.size[t]):parseFloat(s.config.legend.markers.size),n=Array.isArray(s.config.legend.markers.offsetX)?parseFloat(s.config.legend.markers.offsetX[t]):parseFloat(s.config.legend.markers.offsetX),l=Array.isArray(s.config.legend.markers.offsetY)?parseFloat(s.config.legend.markers.offsetY[t]):parseFloat(s.config.legend.markers.offsetY),h=Array.isArray(s.config.legend.markers.strokeWidth)?parseFloat(s.config.legend.markers.strokeWidth[t]):parseFloat(s.config.legend.markers.strokeWidth),c=i.style;if(c.height=2*(o+h)+"px",c.width=2*(o+h)+"px",c.left=n+"px",c.top=l+"px",s.config.legend.markers.customHTML)c.background="transparent",c.color=e[t],Array.isArray(s.config.legend.markers.customHTML)?s.config.legend.markers.customHTML[t]&&(i.innerHTML=s.config.legend.markers.customHTML[t]()):i.innerHTML=s.config.legend.markers.customHTML();else{const a=new oi(this.ctx.w,this.ctx).getMarkerConfig({cssClass:`apexcharts-legend-marker apexcharts-marker apexcharts-marker-${r}`,seriesIndex:t,strokeWidth:h,size:o}),n=(Ps.isBrowser()?window.SVG:global.SVG)().addTo(i).size("100%","100%"),l=new ti(this.w).drawMarker(0,0,Ds(Es({},a),{pointFillColor:Array.isArray(e)?e[t]:a.pointFillColor,shape:r}));s.dom.Paper.find(".apexcharts-legend-marker.apexcharts-marker").forEach(t=>{t.node.classList.contains("apexcharts-marker-triangle")?t.node.style.transform="translate(50%, 45%)":t.node.style.transform="translate(50%, 50%)"}),n.add(l)}return i}drawLegends(){var t;const e=this,s=this.w,i=s.dom.elLegendWrap,a=s.config.legend.fontFamily;let r=s.seriesData.seriesNames,o=s.config.legend.markers.fillColors?s.config.legend.markers.fillColors.slice():s.globals.colors.slice();if("heatmap"===s.config.chart.type){const t=s.config.plotOptions.heatmap.colorScale.ranges;r=t.map(t=>t.name?t.name:t.from+" - "+t.to),o=t.map(t=>t.color)}else this.isBarsDistributed&&(r=s.labelData.labels.slice());s.config.legend.customLegendItems.length&&(r=s.config.legend.customLegendItems);const n=s.formatters.legendFormatter,l=s.config.legend.inverseOrder,h=[];s.labelData.seriesGroups.length>1&&s.config.legend.clusterGroupedSeries&&s.labelData.seriesGroups.forEach((t,e)=>{h[e]=Bs.createElement("div"),h[e].classList.add("apexcharts-legend-group",`apexcharts-legend-group-${e}`),"horizontal"===s.config.legend.clusterGroupedSeriesOrientation?i.classList.add("apexcharts-legend-group-horizontal"):h[e].classList.add("apexcharts-legend-group-vertical")});for(let e=l?r.length-1:0;l?e>=0:e<=r.length-1;l?e--:e++){const l=n(r[e],{seriesIndex:e,w:s});let c=!1,d=!1;if(s.globals.collapsedSeries.length>0)for(let t=0;t<s.globals.collapsedSeries.length;t++)s.globals.collapsedSeries[t].index===e&&(c=!0);if(s.globals.ancillaryCollapsedSeriesIndices.length>0)for(let t=0;t<s.globals.ancillaryCollapsedSeriesIndices.length;t++)s.globals.ancillaryCollapsedSeriesIndices[t]===e&&(d=!0);const g=this.createLegendMarker({i:e,fillcolor:o});ti.setAttrs(g,{rel:e+1,"data:collapsed":c||d}),(c||d)&&g.classList.add("apexcharts-inactive-legend");const p=Bs.createElement("div");if(s.config.chart.accessibility.enabled&&s.config.chart.accessibility.keyboard.enabled){p.setAttribute("role","button"),p.setAttribute("tabindex","0");const t=Array.isArray(l)?l.join(" "):l,e=c||d,s=e?"hidden":"visible";p.setAttribute("aria-label",`${t}, ${s}. Press Enter or Space to toggle.`),p.setAttribute("aria-pressed",e?"true":"false")}const u=Bs.createElement("span");u.classList.add("apexcharts-legend-text"),u.innerHTML=Array.isArray(l)?l.join(" "):l;let f=s.config.legend.labels.useSeriesColors?s.globals.colors[e]:Array.isArray(s.config.legend.labels.colors)?null==(t=s.config.legend.labels.colors)?void 0:t[e]:s.config.legend.labels.colors;f||(f=s.config.chart.foreColor),u.style.color=f,u.style.fontSize=s.config.legend.fontSize,u.style.fontWeight=s.config.legend.fontWeight,u.style.fontFamily=a||s.config.chart.fontFamily,ti.setAttrs(u,{rel:e+1,i:e,"data:default-text":encodeURIComponent(l),"data:collapsed":c||d}),p.appendChild(g),p.appendChild(u);const x=new Ks(this.w);if(!s.config.legend.showForZeroSeries){0===x.getSeriesTotalByIndex(e)&&x.seriesHaveSameValues(e)&&!x.isSeriesNull(e)&&-1===s.globals.collapsedSeriesIndices.indexOf(e)&&-1===s.globals.ancillaryCollapsedSeriesIndices.indexOf(e)&&p.classList.add("apexcharts-hidden-zero-series")}s.config.legend.showForNullSeries||x.isSeriesNull(e)&&-1===s.globals.collapsedSeriesIndices.indexOf(e)&&-1===s.globals.ancillaryCollapsedSeriesIndices.indexOf(e)&&p.classList.add("apexcharts-hidden-null-series"),h.length?s.labelData.seriesGroups.forEach((t,a)=>{var r,o;t.includes(null!=(o=null==(r=s.config.series[e])?void 0:r.name)?o:"")&&(i.appendChild(h[a]),h[a].appendChild(p))}):i.appendChild(p),i.classList.add(`apexcharts-align-${s.config.legend.horizontalAlign}`),i.classList.add("apx-legend-position-"+s.config.legend.position),p.classList.add("apexcharts-legend-series"),p.style.margin=`${s.config.legend.itemMargin.vertical}px ${s.config.legend.itemMargin.horizontal}px`,i.style.width=s.config.legend.width?s.config.legend.width+"px":"",i.style.height=s.config.legend.height?s.config.legend.height+"px":"",ti.setAttrs(p,{rel:e+1,seriesName:Ns.escapeString(r[e]),"data:collapsed":c||d}),(c||d)&&p.classList.add("apexcharts-inactive-legend"),s.config.legend.onItemClick.toggleDataSeries||p.classList.add("apexcharts-no-click")}s.dom.elWrap.addEventListener("click",e.onLegendClick,!0),s.config.legend.onItemHover.highlightDataSeries&&0===s.config.legend.customLegendItems.length&&(s.dom.elWrap.addEventListener("mousemove",e.onLegendHovered,!0),s.dom.elWrap.addEventListener("mouseout",e.onLegendHovered,!0)),s.config.chart.accessibility.enabled&&s.config.chart.accessibility.keyboard.enabled&&s.dom.elWrap.addEventListener("keydown",e.onLegendKeyDown.bind(e),!0)}setLegendWrapXY(t,e){const s=this.w,i=s.dom.elLegendWrap,a=i.clientHeight;let r=0,o=0;if("bottom"===s.config.legend.position)o=s.globals.svgHeight-Math.min(a,s.globals.svgHeight/2)-5;else if("top"===s.config.legend.position){const t=new Di(this.w,this.ctx),e=t.dimHelpers.getTitleSubtitleCoords("title").height,s=t.dimHelpers.getTitleSubtitleCoords("subtitle").height;o=(e>0?e-10:0)+(s>0?s-10:0)}i.style.position="absolute",r=r+t+s.config.legend.offsetX,o=o+e+s.config.legend.offsetY,i.style.left=r+"px",i.style.top=o+"px","right"===s.config.legend.position&&(i.style.left="auto",i.style.right=25+s.config.legend.offsetX+"px");["width","height"].forEach(t=>{i&&i.style[t]&&(i.style[t]=parseInt(String(s.config.legend[t]),10)+"px")})}legendAlignHorizontal(){const t=this.w;t.dom.elLegendWrap.style.right="0";const e=new Di(this.w,this.ctx),s=e.dimHelpers.getTitleSubtitleCoords("title"),i=e.dimHelpers.getTitleSubtitleCoords("subtitle");let a=0;"top"===t.config.legend.position&&(a=s.height+i.height+t.config.title.margin+t.config.subtitle.margin-10),this.setLegendWrapXY(20,a)}legendAlignVertical(){const t=this.w,e=this.legendHelpers.getLegendDimensions();let s=0;"left"===t.config.legend.position&&(s=20),"right"===t.config.legend.position&&(s=t.globals.svgWidth-e.clww-10),this.setLegendWrapXY(s,20)}onLegendHovered(t){var e;const s=this.w,i=t.target,a=i.classList.contains("apexcharts-legend-series")||i.classList.contains("apexcharts-legend-text")||i.classList.contains("apexcharts-legend-marker");if("heatmap"===s.config.chart.type||this.isBarsDistributed){if(a){const s=parseInt(null!=(e=i.getAttribute("rel"))?e:"0",10)-1;this.ctx.events.fireEvent("legendHover",[this.ctx,s,this.w]);new vi(this.ctx.w).highlightRangeInSeries(t,i)}}else if(!i.classList.contains("apexcharts-inactive-legend")&&a){new vi(this.ctx.w).toggleSeriesOnHover(t,i)}}onLegendKeyDown(t){const e=this,s=this.w,i=t.target;if((i.classList.contains("apexcharts-legend-series")||i.classList.contains("apexcharts-legend-text")||i.classList.contains("apexcharts-legend-marker"))&&("Enter"===t.key||" "===t.key)){t.preventDefault();const a=i.getAttribute("rel");e.onLegendClick(t),null!==a&&s.config.legend.onItemClick.toggleDataSeries&&requestAnimationFrame(()=>{const t=s.dom.baseEl.querySelector(`.apexcharts-legend-series[rel="${a}"]`);t&&t.focus()})}}onLegendClick(t){var e;const s=this.w,i=t.target;if(!s.config.legend.customLegendItems.length&&(i.classList.contains("apexcharts-legend-series")||i.classList.contains("apexcharts-legend-text")||i.classList.contains("apexcharts-legend-marker"))){const t=parseInt(null!=(e=i.getAttribute("rel"))?e:"0",10)-1,a="true"===i.getAttribute("data:collapsed"),r=this.w.config.chart.events.legendClick;"function"==typeof r&&r(this.ctx,t,this.w),this.ctx.events.fireEvent("legendClick",[this.ctx,t,this.w]);const o=this.w.config.legend.markers.onClick;"function"==typeof o&&i.classList.contains("apexcharts-legend-marker")&&(o(this.ctx,t,this.w),this.ctx.events.fireEvent("legendMarkerClick",[this.ctx,t,this.w]));"treemap"!==s.config.chart.type&&"heatmap"!==s.config.chart.type&&!this.isBarsDistributed&&s.config.legend.onItemClick.toggleDataSeries&&this.legendHelpers.toggleDataSeries(t,a)}}}});class _a{constructor(t,e){this.w=t,this.ctx=e,this.ev=this.w.config.chart.events,this.selectedClass="apexcharts-selected",this.localeValues=this.w.globals.locale.toolbar,this.minX=t.globals.minX,this.maxX=t.globals.maxX,this.elZoom=null,this.elZoomIn=null,this.elZoomOut=null,this.elPan=null,this.elSelection=null,this.elZoomReset=null,this.elMenuIcon=null,this.elMenu=null,this.elMenuItems=[],this.t=null}createToolbar(){const t=this.w,e=()=>Bs.createElementNS("http://www.w3.org/1999/xhtml","div"),s=e();if(s.setAttribute("class","apexcharts-toolbar"),s.style.top=t.config.chart.toolbar.offsetY+"px",s.style.right=3-t.config.chart.toolbar.offsetX+"px",t.dom.elWrap.appendChild(s),this.elZoom=e(),this.elZoomIn=e(),this.elZoomOut=e(),this.elPan=e(),this.elSelection=e(),this.elZoomReset=e(),this.elMenuIcon=e(),this.elMenu=e(),this.elCustomIcons=[],this.t=t.config.chart.toolbar.tools,Array.isArray(this.t.customIcons))for(let t=0;t<this.t.customIcons.length;t++)this.elCustomIcons.push(e());const i=[],a=(e,s,a)=>{const r=e.toLowerCase();this.t[r]&&t.config.chart.zoom.enabled&&i.push({el:s,icon:"string"==typeof this.t[r]?this.t[r]:a,title:this.localeValues[e],class:`apexcharts-${r}-icon`})};a("zoomIn",this.elZoomIn,'<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">\n    <path d="M0 0h24v24H0z" fill="none"/>\n    <path d="M13 7h-2v4H7v2h4v4h2v-4h4v-2h-4V7zm-1-5C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>\n</svg>\n'),a("zoomOut",this.elZoomOut,'<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">\n    <path d="M0 0h24v24H0z" fill="none"/>\n    <path d="M7 11v2h10v-2H7zm5-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>\n</svg>\n');const r=e=>{this.t[e]&&t.config.chart[e].enabled&&i.push({el:"zoom"===e?this.elZoom:this.elSelection,icon:"string"==typeof this.t[e]?this.t[e]:"zoom"===e?'<svg xmlns="http://www.w3.org/2000/svg" fill="#000000" height="24" viewBox="0 0 24 24" width="24">\n    <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>\n    <path d="M0 0h24v24H0V0z" fill="none"/>\n    <path d="M12 10h-2v2H9v-2H7V9h2V7h1v2h2v1z"/>\n</svg>':'<svg fill="#6E8192" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">\n    <path d="M0 0h24v24H0z" fill="none"/>\n    <path d="M3 5h2V3c-1.1 0-2 .9-2 2zm0 8h2v-2H3v2zm4 8h2v-2H7v2zM3 9h2V7H3v2zm10-6h-2v2h2V3zm6 0v2h2c0-1.1-.9-2-2-2zM5 21v-2H3c0 1.1.9 2 2 2zm-2-4h2v-2H3v2zM9 3H7v2h2V3zm2 18h2v-2h-2v2zm8-8h2v-2h-2v2zm0 8c1.1 0 2-.9 2-2h-2v2zm0-12h2V7h-2v2zm0 8h2v-2h-2v2zm-4 4h2v-2h-2v2zm0-16h2V3h-2v2z"/>\n</svg>',title:this.localeValues["zoom"===e?"selectionZoom":"selection"],class:`apexcharts-${e}-icon`})};r("zoom"),r("selection"),this.t.pan&&t.config.chart.zoom.enabled&&i.push({el:this.elPan,icon:"string"==typeof this.t.pan?this.t.pan:'<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="#000000" height="24" viewBox="0 0 24 24" width="24">\n    <defs>\n        <path d="M0 0h24v24H0z" id="a"/>\n    </defs>\n    <clipPath id="b">\n        <use overflow="visible" xlink:href="#a"/>\n    </clipPath>\n    <path clip-path="url(#b)" d="M23 5.5V20c0 2.2-1.8 4-4 4h-7.3c-1.08 0-2.1-.43-2.85-1.19L1 14.83s1.26-1.23 1.3-1.25c.22-.19.49-.29.79-.29.22 0 .42.06.6.16.04.01 4.31 2.46 4.31 2.46V4c0-.83.67-1.5 1.5-1.5S11 3.17 11 4v7h1V1.5c0-.83.67-1.5 1.5-1.5S15 .67 15 1.5V11h1V2.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5V11h1V5.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5z"/>\n</svg>',title:this.localeValues.pan,class:"apexcharts-pan-icon"}),a("reset",this.elZoomReset,'<svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">\n    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>\n    <path d="M0 0h24v24H0z" fill="none"/>\n</svg>'),this.t.download&&i.push({el:this.elMenuIcon,icon:"string"==typeof this.t.download?this.t.download:'<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0V0z"/><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>',title:this.localeValues.menu,class:"apexcharts-menu-icon"});for(let t=0;t<this.elCustomIcons.length;t++)i.push({el:this.elCustomIcons[t],icon:this.t.customIcons[t].icon,title:this.t.customIcons[t].title,index:this.t.customIcons[t].index,class:"apexcharts-toolbar-custom-icon "+this.t.customIcons[t].class});i.forEach((t,e)=>{t.index&&Ns.moveIndexInArray(i,e,t.index)});for(let t=0;t<i.length;t++)ti.setAttrs(i[t].el,{class:i[t].class,title:i[t].title,tabindex:"0",role:"button","aria-label":i[t].title}),i[t].el.innerHTML=i[t].icon,s.appendChild(i[t].el);this.elZoom.parentNode&&this.elZoom.setAttribute("aria-pressed",String(!!t.interact.zoomEnabled)),this.elSelection.parentNode&&this.elSelection.setAttribute("aria-pressed",String(!!t.interact.selectionEnabled)),this.elPan.parentNode&&this.elPan.setAttribute("aria-pressed",String(!!t.interact.panEnabled)),this.elMenuIcon.parentNode&&(this.elMenuIcon.setAttribute("aria-haspopup","true"),this.elMenuIcon.setAttribute("aria-expanded","false")),this._createHamburgerMenu(s),t.interact.zoomEnabled?this.elZoom.classList.add(this.selectedClass):t.interact.panEnabled?this.elPan.classList.add(this.selectedClass):t.interact.selectionEnabled&&this.elSelection.classList.add(this.selectedClass),this.addToolbarEventListeners()}_createHamburgerMenu(t){this.elMenuItems=[],t.appendChild(this.elMenu),ti.setAttrs(this.elMenu,{class:"apexcharts-menu",role:"menu"});const e=[{name:"exportSVG",title:this.localeValues.exportToSVG},{name:"exportPNG",title:this.localeValues.exportToPNG},{name:"exportCSV",title:this.localeValues.exportToCSV}];for(let t=0;t<e.length;t++)this.elMenuItems.push(Bs.createElementNS("http://www.w3.org/1999/xhtml","div")),this.elMenuItems[t].innerHTML=e[t].title,ti.setAttrs(this.elMenuItems[t],{class:`apexcharts-menu-item ${e[t].name}`,title:e[t].title,role:"menuitem",tabindex:"-1"}),this.elMenu.appendChild(this.elMenuItems[t])}addToolbarEventListeners(){var t,e,s,i,a,r,o,n;null==(t=this.elZoomReset)||t.addEventListener("click",this.handleZoomReset.bind(this)),null==(e=this.elSelection)||e.addEventListener("click",this.toggleZoomSelection.bind(this,"selection")),null==(s=this.elZoom)||s.addEventListener("click",this.toggleZoomSelection.bind(this,"zoom")),null==(i=this.elZoomIn)||i.addEventListener("click",this.handleZoomIn.bind(this)),null==(a=this.elZoomOut)||a.addEventListener("click",this.handleZoomOut.bind(this)),null==(r=this.elPan)||r.addEventListener("click",this.togglePanning.bind(this)),null==(o=this.elMenuIcon)||o.addEventListener("click",this.toggleMenu.bind(this)),this.elMenuItems.forEach(t=>{t.classList.contains("exportSVG")?t.addEventListener("click",this.handleDownload.bind(this,"svg")):t.classList.contains("exportPNG")?t.addEventListener("click",this.handleDownload.bind(this,"png")):t.classList.contains("exportCSV")&&t.addEventListener("click",this.handleDownload.bind(this,"csv"))});for(let t=0;t<this.t.customIcons.length;t++)this.elCustomIcons[t].addEventListener("click",this.t.customIcons[t].click.bind(this,this.ctx,this.ctx.w));[this.elZoomReset,this.elSelection,this.elZoom,this.elZoomIn,this.elZoomOut,this.elPan,this.elMenuIcon,...this.elCustomIcons].forEach(t=>{t.addEventListener("keydown",e=>{if("Enter"===e.key||" "===e.key){e.preventDefault();const s=t.className;t.click(),requestAnimationFrame(()=>{const t=this.w.dom.baseEl;if(!t)return;const e=s.split(" ").find(t=>t.startsWith("apexcharts-"));if(!e)return;const i=t.querySelector(`.${e}`);i&&i.focus()})}})}),null==(n=this.elMenuIcon)||n.addEventListener("keydown",t=>{var e;"ArrowDown"!==t.key&&"ArrowUp"!==t.key||(t.preventDefault(),(null==(e=this.elMenu)?void 0:e.classList.contains("apexcharts-menu-open"))||this.toggleMenu(),window.setTimeout(()=>{const e="ArrowDown"===t.key?0:this.elMenuItems.length-1;this.elMenuItems[e]&&this.elMenuItems[e].focus()},20))}),this.elMenuItems.forEach((t,e)=>{t.addEventListener("keydown",s=>{var i;if("ArrowDown"===s.key){s.preventDefault();(this.elMenuItems[e+1]||this.elMenuItems[0]).focus()}else if("ArrowUp"===s.key){s.preventDefault();(this.elMenuItems[e-1]||this.elMenuItems[this.elMenuItems.length-1]).focus()}else"Escape"===s.key||"Tab"===s.key?(this._closeMenu(),null==(i=this.elMenuIcon)||i.focus(),"Tab"===s.key||s.preventDefault()):"Enter"!==s.key&&" "!==s.key||(s.preventDefault(),t.click())})})}toggleZoomSelection(t){this.ctx.getSyncedCharts().forEach(e=>{e.ctx.toolbar.toggleOtherControls();const s="selection"===t?e.ctx.toolbar.elSelection:e.ctx.toolbar.elZoom,i="selection"===t?"selectionEnabled":"zoomEnabled";e.w.globals[i]=!e.w.globals[i],s.classList.contains(e.ctx.toolbar.selectedClass)?s.classList.remove(e.ctx.toolbar.selectedClass):s.classList.add(e.ctx.toolbar.selectedClass),s.setAttribute("aria-pressed",String(e.w.globals[i]))})}getToolbarIconsReference(){const t=this.w;this.elZoom||(this.elZoom=t.dom.baseEl.querySelector(".apexcharts-zoom-icon")),this.elPan||(this.elPan=t.dom.baseEl.querySelector(".apexcharts-pan-icon")),this.elSelection||(this.elSelection=t.dom.baseEl.querySelector(".apexcharts-selection-icon"))}enableZoomPanFromToolbar(t){this.toggleOtherControls(),"pan"===t?this.w.interact.panEnabled=!0:this.w.interact.zoomEnabled=!0;const e="pan"===t?this.elPan:this.elZoom,s="pan"===t?this.elZoom:this.elPan;e&&e.classList.add(this.selectedClass),s&&s.classList.remove(this.selectedClass)}togglePanning(){this.ctx.getSyncedCharts().forEach(t=>{t.ctx.toolbar.toggleOtherControls(),t.w.interact.panEnabled=!t.w.interact.panEnabled,t.ctx.toolbar.elPan.classList.contains(t.ctx.toolbar.selectedClass)?t.ctx.toolbar.elPan.classList.remove(t.ctx.toolbar.selectedClass):t.ctx.toolbar.elPan.classList.add(t.ctx.toolbar.selectedClass),t.ctx.toolbar.elPan.setAttribute("aria-pressed",String(t.w.interact.panEnabled))})}toggleOtherControls(){const t=this.w;t.interact.panEnabled=!1,t.interact.zoomEnabled=!1,t.interact.selectionEnabled=!1,this.getToolbarIconsReference();[this.elPan,this.elSelection,this.elZoom].forEach(t=>{t&&t.classList.remove(this.selectedClass)})}handleZoomIn(){const t=this.w;t.axisFlags.isRangeBar&&(this.minX=t.globals.minY,this.maxX=t.globals.maxY);const e=(this.minX+this.maxX)/2,s=(this.minX+e)/2,i=(this.maxX+e)/2,a=this._getNewMinXMaxX(s,i);t.interact.disableZoomIn||this.zoomUpdateOptions(a.minX,a.maxX)}handleZoomOut(){const t=this.w;if(t.axisFlags.isRangeBar&&(this.minX=t.globals.minY,this.maxX=t.globals.maxY),"datetime"===t.config.xaxis.type&&new Date(this.minX).getUTCFullYear()<1e3)return;const e=(this.minX+this.maxX)/2,s=this.minX-(e-this.minX),i=this.maxX-(e-this.maxX),a=this._getNewMinXMaxX(s,i);t.interact.disableZoomOut||this.zoomUpdateOptions(a.minX,a.maxX)}_getNewMinXMaxX(t,e){const s=this.w.config.xaxis.convertedCatToNumeric;return{minX:s?Math.floor(t):t,maxX:s?Math.floor(e):e}}zoomUpdateOptions(t,e){const s=this.w;if(void 0===t&&void 0===e)return void this.handleZoomReset();if(s.config.xaxis.convertedCatToNumeric&&(t<1&&(t=1,e=s.globals.dataPoints),e-t<2))return;let i={min:t,max:e};const a=this.getBeforeZoomRange(i,void 0);a&&(i=a.xaxis);const r={xaxis:i};if(!s.globals.initialConfig)return;const o=Ns.clone(s.globals.initialConfig.yaxis);s.config.chart.group||(r.yaxis=o),this.w.interact.zoomed=!0,this.ctx.updateHelpers._updateOptions(r,!1,this.w.config.chart.animations.dynamicAnimation.enabled),this.zoomCallback(i,o)}zoomCallback(t,e){"function"==typeof this.ev.zoomed&&(this.ev.zoomed(this.ctx,{xaxis:t,yaxis:e}),this.ctx.events.fireEvent("zoomed",{xaxis:t,yaxis:e}))}getBeforeZoomRange(t,e){let s=null;return"function"==typeof this.ev.beforeZoom&&(s=this.ev.beforeZoom(this,{xaxis:t,yaxis:e})),s}toggleMenu(){window.setTimeout(()=>{var t,e,s;(null==(t=this.elMenu)?void 0:t.classList.contains("apexcharts-menu-open"))?this._closeMenu():(null==(e=this.elMenu)||e.classList.add("apexcharts-menu-open"),null==(s=this.elMenuIcon)||s.setAttribute("aria-expanded","true"))},0)}_closeMenu(){var t,e;null==(t=this.elMenu)||t.classList.remove("apexcharts-menu-open"),null==(e=this.elMenuIcon)||e.setAttribute("aria-expanded","false")}handleDownload(t){const e=this.w,s=new Aa(this.w,this.ctx);switch(t){case"svg":s.exportToSVG();break;case"png":s.exportToPng();break;case"csv":s.exportToCSV({series:e.config.series,columnDelimiter:e.config.chart.toolbar.export.csv.columnDelimiter})}}handleZoomReset(){this.ctx.getSyncedCharts().forEach(t=>{const e=t.w;if(!e.interact.zoomed)return;if(e.globals.lastXAxis.min=e.globals.initialConfig.xaxis.min,e.globals.lastXAxis.max=e.globals.initialConfig.xaxis.max,t.updateHelpers.revertDefaultAxisMinMax(),"function"==typeof e.config.chart.events.beforeResetZoom){const s=e.config.chart.events.beforeResetZoom(t,e);s&&t.updateHelpers.revertDefaultAxisMinMax(s)}"function"==typeof e.config.chart.events.zoomed&&t.ctx.toolbar.zoomCallback({min:e.config.xaxis.min,max:e.config.xaxis.max});const s=t.ctx.series.emptyCollapsedSeries(Ns.clone(e.globals.initialSeries));t.updateHelpers._updateSeries(s,e.config.chart.animations.dynamicAnimation.enabled),e.interact.zoomed=!1})}destroy(){this.elZoom=null,this.elZoomIn=null,this.elZoomOut=null,this.elPan=null,this.elSelection=null,this.elZoomReset=null,this.elMenuIcon=null}}wa.registerFeatures({toolbar:_a,zoomPanSelection:class extends _a{constructor(t,e){super(t,e),this.w=t,this.ctx=e,this.dragged=!1,this.graphics=new ti(this.w),this.eventList=["mousedown","mouseleave","mousemove","touchstart","touchmove","mouseup","touchend","wheel"],this.clientX=0,this.clientY=0,this.startX=0,this.endX=0,this.dragX=0,this.startY=0,this.endY=0,this.dragY=0,this.moveDirection="none",this.debounceTimer=null,this.debounceDelay=100,this.wheelDelay=400}init({xyRatios:t}){const e=this.w,s=this;this.xyRatios=t,this.zoomRect=this.graphics.drawRect(0,0,0,0),this.selectionRect=this.graphics.drawRect(0,0,0,0),this.gridRect=e.dom.baseEl.querySelector(".apexcharts-grid"),this.constraints=new ai(0,0,e.layout.gridWidth,e.layout.gridHeight),this.zoomRect.node.classList.add("apexcharts-zoom-rect"),this.selectionRect.node.classList.add("apexcharts-selection-rect"),e.dom.Paper.add(this.zoomRect),e.dom.Paper.add(this.selectionRect),"x"===e.config.chart.selection.type?this.slDraggableRect=this.selectionRect.draggable({minX:0,minY:0,maxX:e.layout.gridWidth,maxY:e.layout.gridHeight}).on("dragmove.namespace",this.selectionDragging.bind(this,"dragging")):"y"===e.config.chart.selection.type?this.slDraggableRect=this.selectionRect.draggable({minX:0,maxX:e.layout.gridWidth}).on("dragmove.namespace",this.selectionDragging.bind(this,"dragging")):this.slDraggableRect=this.selectionRect.draggable().on("dragmove.namespace",this.selectionDragging.bind(this,"dragging")),this.preselectedSelection(),this.hoverArea=e.dom.baseEl.querySelector(`${e.globals.chartClass} .apexcharts-svg`),this.hoverArea&&(this.hoverArea.classList.add("apexcharts-zoomable"),this.eventList.forEach(e=>{var i;null==(i=this.hoverArea)||i.addEventListener(e,s.svgMouseEvents.bind(s,t),{capture:!1,passive:!0})}),e.config.chart.zoom.enabled&&e.config.chart.zoom.allowMouseWheelZoom&&this.hoverArea.addEventListener("wheel",s.mouseWheelEvent.bind(s),{capture:!1,passive:!1}))}destroy(){this.slDraggableRect&&(this.slDraggableRect.draggable(!1),this.slDraggableRect.off(),this.selectionRect.off()),this.selectionRect=null,this.zoomRect=null,this.gridRect=null}svgMouseEvents(t,e){var s;const i=this.w,a=this.ctx.toolbar,r=i.interact.zoomEnabled?i.config.chart.zoom.type:i.config.chart.selection.type,o=i.config.chart.toolbar.autoSelected;if(e.shiftKey?(this.shiftWasPressed=!0,a.enableZoomPanFromToolbar("pan"===o?"zoom":"pan")):this.shiftWasPressed&&(a.enableZoomPanFromToolbar(o),this.shiftWasPressed=!1),!e.target)return;const n=e.target.classList;let l;e.target.parentNode&&null!==e.target.parentNode&&(l=e.target.parentNode.classList);if(!(n.contains("apexcharts-legend-marker")||n.contains("apexcharts-legend-text")||l&&l.contains("apexcharts-toolbar"))){if(this.clientX="touchmove"===e.type||"touchstart"===e.type?e.touches[0].clientX:"touchend"===e.type?e.changedTouches[0].clientX:e.clientX,this.clientY="touchmove"===e.type||"touchstart"===e.type?e.touches[0].clientY:"touchend"===e.type?e.changedTouches[0].clientY:e.clientY,"mousedown"===e.type&&1===e.which||"touchstart"===e.type){const t=null==(s=this.gridRect)?void 0:s.getBoundingClientRect();if(!t)return;this.startX=this.clientX-t.left-i.globals.barPadForNumericAxis,this.startY=this.clientY-t.top,this.dragged=!1,this.w.interact.mousedown=!0}("mousemove"===e.type&&1===e.which||"touchmove"===e.type)&&(this.dragged=!0,i.interact.panEnabled?(i.interact.selection=null,this.w.interact.mousedown&&this.panDragging({context:this,zoomtype:r,xyRatios:t})):(this.w.interact.mousedown&&i.interact.zoomEnabled||this.w.interact.mousedown&&i.interact.selectionEnabled)&&(this.selection=this.selectionDrawing({context:this,zoomtype:r}))),"mouseup"!==e.type&&"touchend"!==e.type&&"mouseleave"!==e.type||this.handleMouseUp({zoomtype:r}),this.makeSelectionRectDraggable()}}handleMouseUp({zoomtype:t,isResized:e}){var s;const i=this.w,a=null==(s=this.gridRect)?void 0:s.getBoundingClientRect();a&&(this.w.interact.mousedown||e)&&(this.endX=this.clientX-a.left-i.globals.barPadForNumericAxis,this.endY=this.clientY-a.top,this.dragX=Math.abs(this.endX-this.startX),this.dragY=Math.abs(this.endY-this.startY),(i.interact.zoomEnabled||i.interact.selectionEnabled)&&this.selectionDrawn({context:this,zoomtype:t})),i.interact.zoomEnabled&&this.hideSelectionRect(this.selectionRect),this.dragged=!1,this.w.interact.mousedown=!1}mouseWheelEvent(t){const e=this.w;t.preventDefault();const s=Date.now();s-e.interact.lastWheelExecution>this.wheelDelay&&(this.executeMouseWheelZoom(t),e.interact.lastWheelExecution=s),this.debounceTimer&&clearTimeout(this.debounceTimer),this.debounceTimer=setTimeout(()=>{s-e.interact.lastWheelExecution>this.wheelDelay&&(this.executeMouseWheelZoom(t),e.interact.lastWheelExecution=s)},this.debounceDelay)}executeMouseWheelZoom(t){var e;const s=this.w;this.minX=s.axisFlags.isRangeBar?s.globals.minY:s.globals.minX,this.maxX=s.axisFlags.isRangeBar?s.globals.maxY:s.globals.maxX;const i=null==(e=this.gridRect)?void 0:e.getBoundingClientRect();if(!i)return;const a=(t.clientX-i.left)/i.width,r=this.minX,o=this.maxX,n=o-r;let l,h,c;if(t.deltaY<0){l=.5*n;const t=r+a*n;h=t-l/2,c=t+l/2}else l=1.5*n,h=r-l/2,c=o+l/2;if(!s.axisFlags.isRangeBar){h=Math.max(h,s.globals.initialMinX),c=Math.min(c,s.globals.initialMaxX);const t=.01*(s.globals.initialMaxX-s.globals.initialMinX);if(c-h<t){const e=(h+c)/2;h=e-t/2,c=e+t/2}}const d=this._getNewMinXMaxX(h,c);isNaN(d.minX)||isNaN(d.maxX)||this.zoomUpdateOptions(d.minX,d.maxX)}makeSelectionRectDraggable(){const t=this.w;if(!this.selectionRect)return;const e=this.selectionRect.node.getBoundingClientRect();e.width>0&&e.height>0&&(this.selectionRect.select(!1).resize(!1),this.selectionRect.select({createRot:()=>{},updateRot:()=>{},createHandle:(t,e,s,i,a)=>"l"===a||"r"===a?t.circle(8).css({"stroke-width":1,stroke:"#333",fill:"#fff"}):t.circle(0),updateHandle:(t,e)=>t.center(e[0],e[1])}).resize().on("resize",()=>{const e=t.interact.zoomEnabled?t.config.chart.zoom.type:t.config.chart.selection.type;this.handleMouseUp({zoomtype:e,isResized:!0})}))}preselectedSelection(){const t=this.w,e=this.xyRatios;if(!t.interact.zoomEnabled)if(void 0!==t.interact.selection&&null!==t.interact.selection)this.drawSelectionRect(Ds(Es({},t.interact.selection),{translateX:t.layout.translateX,translateY:t.layout.translateY}));else if(void 0!==t.config.chart.selection.xaxis.min&&void 0!==t.config.chart.selection.xaxis.max){let s=(t.config.chart.selection.xaxis.min-t.globals.minX)/e.xRatio,i=t.layout.gridWidth-(t.globals.maxX-t.config.chart.selection.xaxis.max)/e.xRatio-s;t.axisFlags.isRangeBar&&(s=(t.config.chart.selection.xaxis.min-t.globals.yAxisScale[0].niceMin)/e.invertedYRatio,i=(t.config.chart.selection.xaxis.max-t.config.chart.selection.xaxis.min)/e.invertedYRatio);const a={x:s,y:0,width:i,height:t.layout.gridHeight,translateX:t.layout.translateX,translateY:t.layout.translateY,selectionEnabled:!0};this.drawSelectionRect(a),this.makeSelectionRectDraggable(),"function"==typeof t.config.chart.events.selection&&t.config.chart.events.selection(this.ctx,{xaxis:{min:t.config.chart.selection.xaxis.min,max:t.config.chart.selection.xaxis.max},yaxis:{}})}}drawSelectionRect({x:t,y:e,width:s,height:i,translateX:a=0,translateY:r=0}){const o=this.w,n=this.zoomRect,l=this.selectionRect;if(this.dragged||null!==o.interact.selection){const h={transform:"translate("+a+", "+r+")"};o.interact.zoomEnabled&&this.dragged&&(s<0&&(s=1),n.attr({x:t,y:e,width:s,height:i,fill:o.config.chart.zoom.zoomedArea.fill.color,"fill-opacity":o.config.chart.zoom.zoomedArea.fill.opacity,stroke:o.config.chart.zoom.zoomedArea.stroke.color,"stroke-width":o.config.chart.zoom.zoomedArea.stroke.width,"stroke-opacity":o.config.chart.zoom.zoomedArea.stroke.opacity}),ti.setAttrs(n.node,h)),o.interact.selectionEnabled&&(l.attr({x:t,y:e,width:s>0?s:0,height:i>0?i:0,fill:o.config.chart.selection.fill.color,"fill-opacity":o.config.chart.selection.fill.opacity,stroke:o.config.chart.selection.stroke.color,"stroke-width":o.config.chart.selection.stroke.width,"stroke-dasharray":o.config.chart.selection.stroke.dashArray,"stroke-opacity":o.config.chart.selection.stroke.opacity}),ti.setAttrs(l.node,h))}}hideSelectionRect(t){t&&t.attr({x:0,y:0,width:0,height:0})}selectionDrawing({context:t,zoomtype:e}){var s;const i=this.w,a=t,r=null==(s=this.gridRect)?void 0:s.getBoundingClientRect();if(!r)return;const o=a.startX-1,n=a.startY;let l=!1,h=!1;const c=a.clientX-r.left-i.globals.barPadForNumericAxis,d=a.clientY-r.top;let g=c-o,p=d-n,u={translateX:i.layout.translateX,translateY:i.layout.translateY};return Math.abs(g+o)>i.layout.gridWidth?g=i.layout.gridWidth-o:c<0&&(g=o),o>c&&(l=!0,g=Math.abs(g)),n>d&&(h=!0,p=Math.abs(p)),u="x"===e?{x:l?o-g:o,y:0,width:g,height:i.layout.gridHeight}:"y"===e?{x:0,y:h?n-p:n,width:i.layout.gridWidth,height:p}:{x:l?o-g:o,y:h?n-p:n,width:g,height:p},u=Ds(Es({},u),{translateX:i.layout.translateX,translateY:i.layout.translateY}),a.drawSelectionRect(u),a.selectionDragging("resizing"),u}selectionDragging(t,e){var s;const i=this.w;if(!e)return;e.preventDefault();const{handler:a,box:r}=e.detail,o=this.constraints;let{x:n,y:l}=r;n<o.x&&(n=o.x),l<o.y&&(l=o.y),r.x2>o.x2&&(n=o.x2-r.w),r.y2>o.y2&&(l=o.y2-r.h),a.move(n,l);const h=this.xyRatios,c=this.selectionRect;let d=0;"resizing"===t&&(d=30);const g=t=>parseFloat(c.node.getAttribute(t)),p={x:g("x"),y:g("y"),width:g("width"),height:g("height")};i.interact.selection=p,"function"==typeof i.config.chart.events.selection&&i.interact.selectionEnabled&&(clearTimeout(null!=(s=this.w.globals.selectionResizeTimer)?s:void 0),this.w.globals.selectionResizeTimer=window.setTimeout(()=>{var t;const e=null==(t=this.gridRect)?void 0:t.getBoundingClientRect();if(!e)return;const s=c.node.getBoundingClientRect();let a,r,o,n;if(i.axisFlags.isRangeBar)a=i.globals.yAxisScale[0].niceMin+(s.left-e.left)*h.invertedYRatio,r=i.globals.yAxisScale[0].niceMin+(s.right-e.left)*h.invertedYRatio,o=0,n=1;else{if(!i.globals.xAxisScale)return;a=i.globals.xAxisScale.niceMin+(s.left-e.left)*h.xRatio,r=i.globals.xAxisScale.niceMin+(s.right-e.left)*h.xRatio,o=i.globals.yAxisScale[0].niceMin+(e.bottom-s.bottom)*h.yRatio[0],n=i.globals.yAxisScale[0].niceMax-(s.top-e.top)*h.yRatio[0]}const l={xaxis:{min:a,max:r},yaxis:{min:o,max:n}};i.config.chart.events.selection(this.ctx,l),i.config.chart.brush.enabled&&void 0!==i.config.chart.events.brushScrolled&&i.config.chart.events.brushScrolled(this.ctx,l)},d))}selectionDrawn({context:t,zoomtype:e}){var s,i;const a=this.w,r=t,o=this.xyRatios,n=this.ctx.toolbar,l=a.interact.zoomEnabled?r.zoomRect.node.getBoundingClientRect():r.selectionRect.node.getBoundingClientRect(),h=r.gridRect.getBoundingClientRect(),c=l.left-h.left-a.globals.barPadForNumericAxis,d=l.right-h.left-a.globals.barPadForNumericAxis,g=l.top-h.top,p=l.bottom-h.top;let u,f;if(a.axisFlags.isRangeBar)u=a.globals.yAxisScale[0].niceMin+c*o.invertedYRatio,f=a.globals.yAxisScale[0].niceMin+d*o.invertedYRatio;else{const t=null!=(i=null==(s=a.globals.xAxisScale)?void 0:s.niceMin)?i:0;u=t+c*o.xRatio,f=t+d*o.xRatio}const x=[],m=[];if(a.config.yaxis.forEach((t,e)=>{const s=a.globals.seriesYAxisMap[e][0],i=a.globals.yAxisScale[e].niceMax-o.yRatio[s]*g,r=a.globals.yAxisScale[e].niceMax-o.yRatio[s]*p;x.push(i),m.push(r)}),r.dragged&&(r.dragX>10||r.dragY>10)&&u!==f)if(a.interact.zoomEnabled){if(!a.globals.initialConfig)return;let t=Ns.clone(a.globals.initialConfig.yaxis),s=Ns.clone(a.globals.initialConfig.xaxis);if(a.interact.zoomed=!0,a.config.xaxis.convertedCatToNumeric&&(u=Math.floor(u),f=Math.floor(f),u<1&&(u=1,f=a.globals.dataPoints),f-u<2&&(f=u+1)),"xy"!==e&&"x"!==e||(s={min:u,max:f}),"xy"!==e&&"y"!==e||t.forEach((e,s)=>{t[s].min=m[s],t[s].max=x[s]}),n){const e=n.getBeforeZoomRange(s,t);e&&(s=e.xaxis?e.xaxis:s,t=e.yaxis?e.yaxis:t)}const i={xaxis:s};a.config.chart.group||(i.yaxis=t),r.ctx.updateHelpers._updateOptions(i,!1,r.w.config.chart.animations.dynamicAnimation.enabled),"function"==typeof a.config.chart.events.zoomed&&n.zoomCallback(s,t)}else if(a.interact.selectionEnabled){let t=null,s=null;if(s={min:u,max:f},"xy"===e||"y"===e){const e=Ns.clone(a.config.yaxis);t=e,e.forEach((t,s)=>{e[s].min=m[s],e[s].max=x[s]})}a.interact.selection=r.selection,"function"==typeof a.config.chart.events.selection&&a.config.chart.events.selection(r.ctx,{xaxis:s,yaxis:t})}}panDragging({context:t}){var e;const s=this.w,i=t;if(void 0!==s.interact.lastClientPosition.x){const t=s.interact.lastClientPosition.x-i.clientX,a=(null!=(e=s.interact.lastClientPosition.y)?e:0)-i.clientY;Math.abs(t)>Math.abs(a)&&t>0?this.moveDirection="left":Math.abs(t)>Math.abs(a)&&t<0?this.moveDirection="right":Math.abs(a)>Math.abs(t)&&a>0?this.moveDirection="up":Math.abs(a)>Math.abs(t)&&a<0&&(this.moveDirection="down")}s.interact.lastClientPosition={x:i.clientX,y:i.clientY};const a=s.axisFlags.isRangeBar?s.globals.minY:s.globals.minX,r=s.axisFlags.isRangeBar?s.globals.maxY:s.globals.maxX;i.panScrolled(a,r)}panScrolled(t,e){const s=this.w,i=this.xyRatios;if(!s.globals.initialConfig)return;const a=Ns.clone(s.globals.initialConfig.yaxis);let r=i.xRatio,o=s.globals.minX,n=s.globals.maxX;s.axisFlags.isRangeBar&&(r=i.invertedYRatio,o=s.globals.minY,n=s.globals.maxY),"left"===this.moveDirection?(t=o+s.layout.gridWidth/15*r,e=n+s.layout.gridWidth/15*r):"right"===this.moveDirection&&(t=o-s.layout.gridWidth/15*r,e=n-s.layout.gridWidth/15*r),s.axisFlags.isRangeBar||(t<s.globals.initialMinX||e>s.globals.initialMaxX)&&(t=o,e=n);const l={xaxis:{min:t,max:e}};s.config.chart.group||(l.yaxis=a),this.updateScrolledChart(l,t,e)}updateScrolledChart(t,e,s){const i=this.w;if(this.ctx.updateHelpers._updateOptions(t,!1,!1),"function"==typeof i.config.chart.events.scrolled){const t={xaxis:{min:e,max:s}};i.config.chart.events.scrolled(this.ctx,t),this.ctx.events.fireEvent("scrolled",t)}}}});let Sa=class{constructor(t){this.w=t.w,this.annoCtx=t}setOrientations(t,e=null){var s,i;const a=this.w;if("vertical"===t.label.orientation){const r=null!==e?e:0,o=a.dom.baseEl.querySelector(`.apexcharts-xaxis-annotations .apexcharts-xaxis-annotation-label[rel='${r}']`);if(null!==o){const e=o.getBBox();o.setAttribute("x",String(parseFloat(null!=(s=o.getAttribute("x"))?s:"0")-e.height+4));const a="top"===t.label.position?e.width:-e.width;o.setAttribute("y",String(parseFloat(null!=(i=o.getAttribute("y"))?i:"0")+a));const{x:r,y:n}=this.annoCtx.graphics.rotateAroundCenter(o);o.setAttribute("transform",`rotate(-90 ${r} ${n})`)}}}addBackgroundToAnno(t,e){const s=this.w;if(!t||!e.label.text||!String(e.label.text).trim())return null;const i=s.dom.baseEl.querySelector(".apexcharts-grid");if(!i)return null;const a=i.getBoundingClientRect(),r=i.getBBox(),o=a.width/r.width||1,n=t.getBoundingClientRect();let{left:l,right:h,top:c,bottom:d}=e.label.style.padding;"vertical"===e.label.orientation&&([c,d,l,h]=[l,h,c,d]);const g=(n.left-a.left)/o-l,p=(n.top-a.top)/o-c,u=this.annoCtx.graphics.drawRect(g-s.globals.barPadForNumericAxis,p,n.width/o+l+h,n.height/o+c+d,e.label.borderRadius,e.label.style.background,1,e.label.borderWidth,e.label.borderColor,0);return e.id&&u.node.classList.add(e.id),u}annotationsBackground(){const t=this.w,e=(e,s,i)=>{const a=t.dom.baseEl.querySelector(`.apexcharts-${i}-annotations .apexcharts-${i}-annotation-label[rel='${s}']`);if(a){const t=a.parentNode,s=this.addBackgroundToAnno(a,e);s&&(null==t||t.insertBefore(s.node,a),e.label.mouseEnter&&s.node.addEventListener("mouseenter",e.label.mouseEnter.bind(this,e)),e.label.mouseLeave&&s.node.addEventListener("mouseleave",e.label.mouseLeave.bind(this,e)),e.label.click&&s.node.addEventListener("click",e.label.click.bind(this,e)))}};t.config.annotations.xaxis.forEach((t,s)=>e(t,s,"xaxis")),t.config.annotations.yaxis.forEach((t,s)=>e(t,s,"yaxis")),t.config.annotations.points.forEach((t,s)=>e(t,s,"point"))}getY1Y2(t,e){var s,i;const a=this.w,r="y1"===t?e.y:e.y2;let o,n=!1;if(this.annoCtx.invertAxis){const t=a.config.xaxis.convertedCatToNumeric?a.labelData.categoryLabels:a.labelData.labels,i=t.indexOf(r),n=a.dom.baseEl.querySelector(`.apexcharts-yaxis-texts-g text:nth-child(${i+1})`);o=n?parseFloat(null!=(s=n.getAttribute("y"))?s:"0"):(a.layout.gridHeight/t.length-1)*(i+1)-a.globals.barHeight,void 0!==e.seriesIndex&&a.globals.barHeight&&(o-=a.globals.barHeight/2*(a.seriesData.series.length-1)-a.globals.barHeight*e.seriesIndex)}else{const t=a.globals.seriesYAxisMap[e.yAxisIndex][0],s=a.config.yaxis[e.yAxisIndex].logarithmic?new Ks(this.w).getLogVal(a.config.yaxis[e.yAxisIndex].logBase,r,t)/a.globals.yLogRatio[t]:(r-a.globals.minYArr[t])/(a.globals.yRange[t]/a.layout.gridHeight);o=a.layout.gridHeight-Math.min(Math.max(s,0),a.layout.gridHeight),n=s>a.layout.gridHeight||s<0,!e.marker||void 0!==e.y&&null!==e.y||(o=0),(null==(i=a.config.yaxis[e.yAxisIndex])?void 0:i.reversed)&&(o=s)}return"string"==typeof r&&r.includes("px")&&(o=parseFloat(r)),{yP:o,clipped:n}}getX1X2(t,e){const s=this.w,i="x1"===t?e.x:e.x2,a=this.annoCtx.invertAxis?s.globals.minY:s.globals.minX,r=this.annoCtx.invertAxis?s.globals.maxY:s.globals.maxX,o=this.annoCtx.invertAxis?s.globals.yRange[0]:s.globals.xRange;let n=!1,l=this.annoCtx.inversedReversedAxis?(r-i)/(o/s.layout.gridWidth):(i-a)/(o/s.layout.gridWidth);return"category"!==s.config.xaxis.type&&!s.config.xaxis.convertedCatToNumeric||this.annoCtx.invertAxis||s.axisFlags.dataFormatXNumeric||s.config.chart.sparkline.enabled||(l=this.getStringX(i)),"string"==typeof i&&i.includes("px")&&(l=parseFloat(i)),null==i&&e.marker&&(l=s.layout.gridWidth),void 0!==e.seriesIndex&&s.globals.barWidth&&!this.annoCtx.invertAxis&&(l-=s.globals.barWidth/2*(s.seriesData.series.length-1)-s.globals.barWidth*e.seriesIndex),"number"!=typeof l&&(l=0,n=!0),parseFloat(l.toFixed(10))>parseFloat(s.layout.gridWidth.toFixed(10))?(l=s.layout.gridWidth,n=!0):l<0&&(l=0,n=!0),{x:l,clipped:n}}getStringX(t){var e;const s=this.w;let i=t;if(s.config.xaxis.convertedCatToNumeric&&s.labelData.categoryLabels.length){const e=String(t);t=s.labelData.categoryLabels.findIndex(t=>String(t)===e)+1}const a=s.labelData.labels.map(t=>Array.isArray(t)?t.join(" "):t).indexOf(t),r=s.dom.baseEl.querySelector(`.apexcharts-xaxis-texts-g text:nth-child(${a+1})`);return r&&(i=parseFloat(null!=(e=r.getAttribute("x"))?e:"0")),i}};class ka{constructor(t){this.w=t.w,this.annoCtx=t,this.invertAxis=this.annoCtx.invertAxis,this.helpers=new Sa(this.annoCtx)}addXaxisAnnotation(t,e,s){const i=this.w,a=this.helpers.getX1X2("x1",t);let r=a.x;const o=a.clipped;let n,l=!0;const h=t.label.text,c=t.strokeDashArray;if(Ns.isNumber(r)){if(null===t.x2||void 0===t.x2){if(!o){const s=this.annoCtx.graphics.drawLine(r+t.offsetX,0+t.offsetY,r+t.offsetX,i.layout.gridHeight+t.offsetY,t.borderColor,c,t.borderWidth);e.appendChild(s.node),t.id&&s.node.classList.add(t.id)}}else{const s=this.helpers.getX1X2("x2",t);if(n=s.x,l=s.clipped,n<r){const t=r;r=n,n=t}const a=this.annoCtx.graphics.drawRect(r+t.offsetX,0+t.offsetY,n-r,i.layout.gridHeight+t.offsetY,0,t.fillColor,t.opacity,1,t.borderColor,c);a.node.classList.add("apexcharts-annotation-rect"),a.attr("clip-path",`url(#gridRectMask${i.globals.cuid})`),e.appendChild(a.node),t.id&&a.node.classList.add(t.id)}if(!o||!l){const a=this.annoCtx.graphics.getTextRects(h,t.label.style.fontSize),o="top"===t.label.position?4:"center"===t.label.position?i.layout.gridHeight/2+("vertical"===t.label.orientation?a.width/2:0):i.layout.gridHeight,n=this.annoCtx.graphics.drawText({x:r+t.label.offsetX,y:o+t.label.offsetY-("vertical"===t.label.orientation?"top"===t.label.position?a.width/2-12:-a.width/2:0),text:h,textAnchor:t.label.textAnchor,fontSize:t.label.style.fontSize,fontFamily:t.label.style.fontFamily,fontWeight:t.label.style.fontWeight,foreColor:t.label.style.color,cssClass:`apexcharts-xaxis-annotation-label ${t.label.style.cssClass} ${t.id?t.id:""}`});n.attr({rel:s}),e.appendChild(n.node),this.annoCtx.helpers.setOrientations(t,s)}}}drawXAxisAnnotations(){const t=this.w,e=this.annoCtx.graphics.group({class:"apexcharts-xaxis-annotations"});return t.config.annotations.xaxis.map((t,s)=>{this.addXaxisAnnotation(t,e.node,s)}),e}}class Ea{constructor(t){this.w=t.w,this.annoCtx=t,this.helpers=new Sa(this.annoCtx),this.axesUtils=new ci(this.annoCtx.w,{theme:this.annoCtx.theme,timeScale:this.annoCtx.timeScale})}addYaxisAnnotation(t,e,s){const i=this.w,a=t.strokeDashArray;let r=this.helpers.getY1Y2("y1",t),o=r.yP;const n=r.clipped;let l,h=!0,c=!1;const d=t.label.text;if(null===t.y2||void 0===t.y2){if(!n){c=!0;const s=this.annoCtx.graphics.drawLine(0+t.offsetX,o+t.offsetY,this._getYAxisAnnotationWidth(t),o+t.offsetY,t.borderColor,a,t.borderWidth);e.appendChild(s.node),t.id&&s.node.classList.add(t.id)}}else{if(r=this.helpers.getY1Y2("y2",t),l=r.yP,h=r.clipped,l>o){const t=o;o=l,l=t}if(!n||!h){c=!0;const s=this.annoCtx.graphics.drawRect(0+t.offsetX,l+t.offsetY,this._getYAxisAnnotationWidth(t),o-l,0,t.fillColor,t.opacity,1,t.borderColor,a);s.node.classList.add("apexcharts-annotation-rect"),s.attr("clip-path",`url(#gridRectMask${i.globals.cuid})`),e.appendChild(s.node),t.id&&s.node.classList.add(t.id)}}if(c){const a="right"===t.label.position?i.layout.gridWidth:"center"===t.label.position?i.layout.gridWidth/2:0,r=this.annoCtx.graphics.drawText({x:a+t.label.offsetX,y:(null!=l?l:o)+t.label.offsetY-3,text:d,textAnchor:t.label.textAnchor,fontSize:t.label.style.fontSize,fontFamily:t.label.style.fontFamily,fontWeight:t.label.style.fontWeight,foreColor:t.label.style.color,cssClass:`apexcharts-yaxis-annotation-label ${t.label.style.cssClass} ${t.id?t.id:""}`});r.attr({rel:s}),e.appendChild(r.node)}}_getYAxisAnnotationWidth(t){const e=this.w;let s=e.layout.gridWidth;return s=t.width.indexOf("%")>-1?e.layout.gridWidth*parseInt(t.width,10)/100:parseInt(t.width,10),s+t.offsetX}drawYAxisAnnotations(){const t=this.w,e=this.annoCtx.graphics.group({class:"apexcharts-yaxis-annotations"});return t.config.annotations.yaxis.forEach((t,s)=>{t.yAxisIndex=this.axesUtils.translateYAxisIndex(t.yAxisIndex),this.axesUtils.isYAxisHidden(t.yAxisIndex)&&this.axesUtils.yAxisAllSeriesCollapsed(t.yAxisIndex)||this.addYaxisAnnotation(t,e.node,s)}),e}}class Da{constructor(t){this.w=t.w,this.annoCtx=t,this.helpers=new Sa(this.annoCtx)}addPointAnnotation(t,e,s){if(this.w.globals.collapsedSeriesIndices.indexOf(t.seriesIndex)>-1)return;const i=this.helpers.getX1X2("x1",t),a=i.x,r=i.clipped,o=this.helpers.getY1Y2("y1",t),n=o.yP,l=o.clipped;if(Ns.isNumber(a)&&!l&&!r){const i={pSize:t.marker.size,pointStrokeWidth:t.marker.strokeWidth,pointFillColor:t.marker.fillColor,pointStrokeColor:t.marker.strokeColor,shape:t.marker.shape,pRadius:t.marker.radius,class:`apexcharts-point-annotation-marker ${t.marker.cssClass} ${t.id?t.id:""}`};let r=this.annoCtx.graphics.drawMarker(a+t.marker.offsetX,n+t.marker.offsetY,i);e.appendChild(r.node);const o=t.label.text?t.label.text:"",l=this.annoCtx.graphics.drawText({x:a+t.label.offsetX,y:n+t.label.offsetY-t.marker.size-parseFloat(t.label.style.fontSize)/1.6,text:o,textAnchor:t.label.textAnchor,fontSize:t.label.style.fontSize,fontFamily:t.label.style.fontFamily,fontWeight:t.label.style.fontWeight,foreColor:t.label.style.color,cssClass:`apexcharts-point-annotation-label ${t.label.style.cssClass} ${t.id?t.id:""}`});if(l.attr({rel:s}),e.appendChild(l.node),t.customSVG.SVG){const s=this.annoCtx.graphics.group({class:"apexcharts-point-annotations-custom-svg "+t.customSVG.cssClass});s.attr({transform:`translate(${a+t.customSVG.offsetX}, ${n+t.customSVG.offsetY})`}),s.node.innerHTML=t.customSVG.SVG,e.appendChild(s.node)}if(t.image.path){const e=t.image.width?t.image.width:20,s=t.image.height?t.image.height:20;r=this.annoCtx.addImage({x:a+t.image.offsetX-e/2,y:n+t.image.offsetY-s/2,width:e,height:s,path:t.image.path,appendTo:".apexcharts-point-annotations"})}t.mouseEnter&&r.node.addEventListener("mouseenter",t.mouseEnter.bind(this,t)),t.mouseLeave&&r.node.addEventListener("mouseleave",t.mouseLeave.bind(this,t)),t.click&&r.node.addEventListener("click",t.click.bind(this,t))}}drawPointAnnotations(){const t=this.w,e=this.annoCtx.graphics.group({class:"apexcharts-point-annotations"});return t.config.annotations.points.map((t,s)=>{this.addPointAnnotation(t,e.node,s)}),e}}wa.registerFeatures({annotations:class{constructor(t,{theme:e=null,timeScale:s=null}={}){this.w=t,this.theme=e,this.timeScale=s,this.invertAxis=void 0,this.inversedReversedAxis=void 0,this.graphics=new ti(this.w),this.w.globals.isBarHorizontal&&(this.invertAxis=!0),this.helpers=new Sa(this),this.xAxisAnnotations=new ka(this),this.yAxisAnnotations=new Ea(this),this.pointsAnnotations=new Da(this),this.w.globals.isBarHorizontal&&this.w.config.yaxis[0].reversed&&(this.inversedReversedAxis=!0),this.xDivision=this.w.layout.gridWidth/this.w.globals.dataPoints}drawAxesAnnotations(){const t=this.w;if(t.globals.axisCharts&&t.globals.dataPoints){const e=this.yAxisAnnotations.drawYAxisAnnotations(),s=this.xAxisAnnotations.drawXAxisAnnotations(),i=this.pointsAnnotations.drawPointAnnotations(),a=t.config.chart.animations.enabled,r=[e,s,i],o=[s.node,e.node,i.node];for(let e=0;e<3;e++)t.dom.elGraphical.add(r[e]),!a||t.globals.resized||t.globals.dataChanged||"scatter"!==t.config.chart.type&&"bubble"!==t.config.chart.type&&t.globals.dataPoints>1&&o[e].classList.add("apexcharts-element-hidden"),t.globals.delayedElements.push({el:o[e],index:0});this.helpers.annotationsBackground()}}drawImageAnnos(){this.w.config.annotations.images.map(t=>{this.addImage(t)})}drawTextAnnos(){this.w.config.annotations.texts.map(t=>{this.addText(t)})}addXaxisAnnotation(t,e,s){this.xAxisAnnotations.addXaxisAnnotation(t,e,s)}addYaxisAnnotation(t,e,s){this.yAxisAnnotations.addYaxisAnnotation(t,e,s)}addPointAnnotation(t,e,s){this.pointsAnnotations.addPointAnnotation(t,e,s)}addText(t){const{x:e,y:s,text:i,textAnchor:a,foreColor:r,fontSize:o,fontFamily:n,fontWeight:l,cssClass:h,backgroundColor:c,borderWidth:d,strokeDashArray:g,borderRadius:p,borderColor:u,appendTo:f=".apexcharts-svg",paddingLeft:x=4,paddingRight:m=4,paddingBottom:b=2,paddingTop:y=2}=t,w=this.w,v=this.graphics.drawText({x:e,y:s,text:i,textAnchor:a||"start",fontSize:o||"12px",fontWeight:l||"regular",fontFamily:n||w.config.chart.fontFamily,foreColor:r||w.config.chart.foreColor,cssClass:h}),A=w.dom.baseEl.querySelector(f);A&&A.appendChild(v.node);const C=v.bbox();if(i){const t=this.graphics.drawRect(C.x-x,C.y-y,C.width+x+m,C.height+b+y,p,c||"transparent",1,d,u,g);A.insertBefore(t.node,v.node)}}addImage(t){const e=this.w,{path:s,x:i=0,y:a=0,width:r=20,height:o=20,appendTo:n=".apexcharts-svg"}=t,l=e.dom.Paper.image(s);l.size(r,o).move(i,a);const h=e.dom.baseEl.querySelector(n);return h&&h.appendChild(l.node),l}addXaxisAnnotationExternal(t,e,s){return this.addAnnotationExternal({params:t,pushToMemory:e,context:s,type:"xaxis",contextMethod:s.addXaxisAnnotation}),s}addYaxisAnnotationExternal(t,e,s){return this.addAnnotationExternal({params:t,pushToMemory:e,context:s,type:"yaxis",contextMethod:s.addYaxisAnnotation}),s}addPointAnnotationExternal(t,e,s){return void 0===this.invertAxis&&(this.invertAxis=s.w.globals.isBarHorizontal),this.addAnnotationExternal({params:t,pushToMemory:e,context:s,type:"point",contextMethod:s.addPointAnnotation}),s}addAnnotationExternal({params:t,pushToMemory:e,context:s,type:i,contextMethod:a}){const r=s,o=r.w,n=o.dom.baseEl.querySelector(`.apexcharts-${i}-annotations`),l=n.childNodes.length+1,h=new Gs,c=Object.assign({},"xaxis"===i?h.xAxisAnnotation:"yaxis"===i?h.yAxisAnnotation:h.pointAnnotation),d=Ns.extend(c,t);switch(i){case"xaxis":this.addXaxisAnnotation(d,n,l);break;case"yaxis":this.addYaxisAnnotation(d,n,l);break;case"point":this.addPointAnnotation(d,n,l)}const g=o.dom.baseEl.querySelector(`.apexcharts-${i}-annotations .apexcharts-${i}-annotation-label[rel='${l}']`),p=this.helpers.addBackgroundToAnno(g,d);return p&&n.insertBefore(p.node,g),e&&o.globals.memory.methodsToExec.push({context:r,id:d.id?d.id:Ns.randomId(),method:a,label:"addAnnotation",params:t}),s}clearAnnotations(t){const e=t.w,s=e.dom.baseEl.querySelectorAll(".apexcharts-yaxis-annotations, .apexcharts-xaxis-annotations, .apexcharts-point-annotations");for(let t=e.globals.memory.methodsToExec.length-1;t>=0;t--)"addText"!==e.globals.memory.methodsToExec[t].label&&"addAnnotation"!==e.globals.memory.methodsToExec[t].label||e.globals.memory.methodsToExec.splice(t,1);Array.prototype.forEach.call(s,t=>{for(;t.firstChild;)t.removeChild(t.firstChild)})}removeAnnotation(t,e){const s=t.w,i=s.dom.baseEl.querySelectorAll(`.${e}`);i&&(s.globals.memory.methodsToExec.map((t,i)=>{t.id===e&&s.globals.memory.methodsToExec.splice(i,1)}),Object.keys(s.config.annotations).forEach(t=>{const i=s.config.annotations[t];Array.isArray(i)&&(s.config.annotations[t]=i.filter(t=>t.id!==e))}),Array.prototype.forEach.call(i,t=>{t.parentElement.removeChild(t)}))}}});wa.registerFeatures({keyboardNavigation:class{constructor(t,e){this.w=t,this.ctx=e,this.seriesIndex=0,this.dataPointIndex=0,this.active=!1,this._focusedEl=null,this._hoveredBarEl=null,this._enlargedScatterMarker=null,this._onKeyDown=this._onKeyDown.bind(this),this._onFocus=this._onFocus.bind(this),this._onBlur=this._onBlur.bind(this),this._onLegendClick=this._onLegendClick.bind(this)}init(){const t=this.w.dom.Paper.node;t&&(t.setAttribute("tabindex","0"),t.addEventListener("focus",this._onFocus),t.addEventListener("blur",this._onBlur),t.addEventListener("keydown",this._onKeyDown,{passive:!1}),this.ctx.events.addEventListener("legendClick",this._onLegendClick))}destroy(){const t=this.w,e=t.dom.Paper&&t.dom.Paper.node;e&&(e.removeEventListener("focus",this._onFocus),e.removeEventListener("blur",this._onBlur),e.removeEventListener("keydown",this._onKeyDown),this.ctx.events.removeEventListener("legendClick",this._onLegendClick))}handleKey(t){}_onFocus(){this._isNavEnabled()&&(this.active=!0,this._clampCursor(),this._snapToVisibleRange(),this._showCurrentPoint())}_onBlur(){this.active=!1,this._hideFocus()}_onLegendClick(){this.active&&(this.active=!1,this._hideFocus())}_onKeyDown(t){if(this._isNavEnabled()&&this.active)switch(t.key){case"ArrowRight":t.preventDefault(),this._move(0,1);break;case"ArrowLeft":t.preventDefault(),this._move(0,-1);break;case"ArrowUp":t.preventDefault(),this._move(-1,0);break;case"ArrowDown":t.preventDefault(),this._move(1,0);break;case"Home":t.preventDefault(),this.dataPointIndex=0,this._skipNullForward(),this._showCurrentPoint();break;case"End":t.preventDefault(),this.dataPointIndex=this._getDataPointCount(this.seriesIndex)-1,this._skipNullBackward(),this._showCurrentPoint();break;case"Enter":case" ":t.preventDefault(),this._fireClick();break;case"Escape":t.preventDefault(),this.active=!1,this._hideFocus()}}_move(t,e){const s=this.w,i=s.config.chart.accessibility.keyboard.navigation.wrapAround;if(0!==t){const e=this.w.globals.tooltip;if(e&&e.tConfig&&e.tConfig.shared){const t=this.dataPointIndex;if(e.tooltipUtil&&e.tooltipUtil.isXoverlap(t)&&e.tooltipUtil.isInitialSeriesSameLen())return}const a=this._getSeriesCount();let r=this.seriesIndex+t,o=0;for(;o<a&&(r<0&&(r=i?a-1:0),r>=a&&(r=i?0:a-1),s.globals.collapsedSeriesIndices.includes(r));)r+=t,o++;this.seriesIndex=r;const n=this._getDataPointCount(r);this.dataPointIndex>=n&&(this.dataPointIndex=n-1)}if(0!==e){const t=this._getDataPointCount(this.seriesIndex);let s=this.dataPointIndex+e;s<0&&(s=i?t-1:0),s>=t&&(s=i?0:t-1),this.dataPointIndex=s,e>0?this._skipNullForward():this._skipNullBackward(),this._isDataPointVisible(this.seriesIndex,this.dataPointIndex)||this._snapToVisibleRangeInDirection(e)}this._showCurrentPoint()}_skipNullForward(){const t=this.w,e=this.seriesIndex,s=this._getDataPointCount(e);let i=this.dataPointIndex,a=0;if(Array.isArray(t.seriesData.series[e])){for(;a<s&&null===t.seriesData.series[e][i];)i=(i+1)%s,a++;this.dataPointIndex=i}}_skipNullBackward(){const t=this.w,e=this.seriesIndex,s=this._getDataPointCount(e);let i=this.dataPointIndex,a=0;if(Array.isArray(t.seriesData.series[e])){for(;a<s&&null===t.seriesData.series[e][i];)i=(i-1+s)%s,a++;this.dataPointIndex=i}}_showCurrentPoint(){const{seriesIndex:t,dataPointIndex:e}=this,s=this.w,i=s.globals.tooltip;i&&i.ttItems&&(s.interact.capturedSeriesIndex=t,s.interact.capturedDataPointIndex=e,this._applyFocusClass(t,e),this._showTooltip(t,e,i))}_hideFocus(){const t=this.w,e=t.globals.tooltip;if(this._removeFocusClass(),this._leaveHoveredBar(),!e)return;e.marker&&e.marker.resetPointsSize(),this._enlargedScatterMarker=null;const s=e.getElTooltip();s&&(s.classList.remove("apexcharts-active"),t.config.chart.accessibility.enabled&&t.config.chart.accessibility.announcements.enabled&&s.setAttribute("aria-hidden","true")),t.dom.baseEl.classList.remove("apexcharts-tooltip-active");const i=e.getElXCrosshairs();i&&i.classList.remove("apexcharts-active")}_showTooltip(t,e,s){const i=this.w,a=i.config.chart.type,r=s.getElTooltip();if(!r)return;const o=s.getCachedDimensions();s.tooltipRect={x:0,y:0,ttWidth:o.ttWidth||0,ttHeight:o.ttHeight||0},this._setSyntheticEvent(t,e,s),i.dom.baseEl.classList.add("apexcharts-tooltip-active"),r.classList.add("apexcharts-active"),i.config.chart.accessibility.enabled&&i.config.chart.accessibility.announcements.enabled&&r.removeAttribute("aria-hidden"),"pie"===a||"donut"===a||"polarArea"===a?this._showTooltipNonAxis(t,e,s,r):"radialBar"===a?this._showTooltipRadialBar(t,e,s,r):"heatmap"===a||"treemap"===a?this._showTooltipHeatTree(t,e,s,r,a):"bar"===a||"candlestick"===a||"boxPlot"===a||"rangeBar"===a?this._showTooltipBar(t,e,s):this._showTooltipAxisLine(t,e,s)}_setSyntheticEvent(t,e,s){const i=this.w,a=i.config.chart.type;let r=0,o=0;const n=this._getFocusableElement(t,e);if(n){const t=n.getBoundingClientRect();r=t.left+t.width/2,o=t.top+t.height/2}else if(i.globals.pointsArray&&i.globals.pointsArray[t]&&i.globals.pointsArray[t][e]){const a=i.globals.pointsArray[t][e],n=s.getElGrid&&s.getElGrid();if(n){const t=n.getBoundingClientRect();r=t.left+(a[0]||0),o=t.top+(a[1]||0)}}else{const t=i.dom.Paper&&i.dom.Paper.node;if(t){const e=t.getBoundingClientRect();r=e.left+e.width/2,o=e.top+e.height/2}}if(("line"===a||"area"===a||"rangeArea"===a||"scatter"===a||"bubble"===a||"radar"===a)&&i.globals.pointsArray&&i.globals.pointsArray[t]&&i.globals.pointsArray[t][e]){const a=i.globals.pointsArray[t][e],n=s.getElGrid&&s.getElGrid();if(n){const t=n.getBoundingClientRect();r=t.left+(a[0]||0),o=t.top+(a[1]||0)}}s.e={type:"mousemove",clientX:r,clientY:o}}_showTooltipBar(t,e,s){var i,a,r,o;const n=this.w,l=s.tConfig.shared&&(s.tooltipUtil.isXoverlap(e)||n.globals.isBarHorizontal)&&s.tooltipUtil.isInitialSeriesSameLen(),h=null==(o=null==(r=null==(a=null==(i=n.rangeData.seriesRange)?void 0:i[t])?void 0:a[e])?void 0:r.y)?void 0:o[0];s.tooltipLabels.drawSeriesTexts(Ds(Es(Es({ttItems:s.ttItems,i:t,j:e},void 0!==(null==h?void 0:h.y1)&&{y1:h.y1}),void 0!==(null==h?void 0:h.y2)&&{y2:h.y2}),{shared:l}));const c=`.apexcharts-series[data\\:realIndex='${t}']`,d=n.dom.Paper.findOne(`${c} path[j='${e}'], ${c} circle[j='${e}'], ${c} rect[j='${e}']`);if(d){this._leaveHoveredBar();new ti(this.w,this.ctx).pathMouseEnter(d,null),this._hoveredBarEl=d}if(n.globals.isBarHorizontal){const t=d&&d.node;if(t){const e=n.dom.elWrap.getBoundingClientRect(),i=t.getBoundingClientRect(),a=i.left-e.left,r=i.top-e.top,o=i.height,l=i.width,h=s.tooltipRect.ttWidth||0,c=r+o/2-(s.tooltipRect.ttHeight||0)/2;let d=a+l;a<(s.xyRatios&&null!=s.xyRatios.baseLineInvertedY?s.xyRatios.baseLineInvertedY:e.width/2)&&(d=a-h);const g=s.getElTooltip();g&&(g.style.left=d+"px",g.style.top=c+"px")}}else s.tooltipPosition.moveStickyTooltipOverBars(e,t)}_showTooltipAxisLine(t,e,s){const i=this.w,a=i.config.chart.type,r=s.tConfig.shared&&s.tooltipUtil.isXoverlap(e)&&s.tooltipUtil.isInitialSeriesSameLen();s.tooltipLabels.drawSeriesTexts({ttItems:s.ttItems,i:t,j:e,shared:r});const o="scatter"===a||"bubble"===a,n=i.globals.markers.largestSize>0;o?this._showScatterBubblePoint(t,e,s):n?r?s.marker.enlargePoints(e):s.tooltipPosition.moveDynamicPointOnHover(e,t):r?s.tooltipPosition.moveDynamicPointsOnHover(e):s.tooltipPosition.moveDynamicPointOnHover(e,t)}_showScatterBubblePoint(t,e,s){const i=this.w.dom.baseEl;this._enlargedScatterMarker&&(s.marker.oldPointSize(this._enlargedScatterMarker),this._enlargedScatterMarker=null);const a=i.querySelector(`.apexcharts-series[data\\:realIndex='${t}']`);if(!a)return;const r=a.querySelector(`.apexcharts-marker[rel='${e}']`);r&&(s.marker.enlargeCurrentPoint(e,r),this._enlargedScatterMarker=r)}_showTooltipNonAxis(t,e,s,i){var a,r;const o=this.w;s.tooltipLabels.drawSeriesTexts({ttItems:s.ttItems,i:e,shared:!1});const n=i.getBoundingClientRect(),l=n.width||s.tooltipRect.ttWidth||0,h=n.height||s.tooltipRect.ttHeight||0,c=o.dom.baseEl.querySelector(`.apexcharts-pie-area[j='${e}']`);if(c){const t=parseFloat(null!=(a=c.getAttribute("data:cx"))?a:""),e=parseFloat(null!=(r=c.getAttribute("data:cy"))?r:"");if(!isNaN(t)&&!isNaN(e)){const s=o.dom.Paper.node.getBoundingClientRect(),a=o.dom.elWrap.getBoundingClientRect(),r=s.left-a.left,n=s.top-a.top;i.style.left=r+t-l/2+"px",i.style.top=n+e-h-10+"px"}}}_showTooltipRadialBar(t,e,s,i){var a;const r=this.w;s.tooltipLabels.drawSeriesTexts({ttItems:s.ttItems,i:t,shared:!1});const{ttWidth:o=0,ttHeight:n=0}=s.getCachedDimensions(),l=r.dom.baseEl.querySelector(`.apexcharts-radialbar-series[data\\:realIndex='${t}'] path`);if(l){const e=parseFloat(null!=(a=l.getAttribute("data:angle"))?a:"")||0,s=(r.config.plotOptions.radialBar.startAngle||0)+e/2,h=r.layout.gridWidth/2,c=r.layout.gridHeight/2,d=r.globals.radialSize||Math.min(r.layout.gridWidth,r.layout.gridHeight)/2,g=r.seriesData.series.length,p=d/Math.max(g,1),u=d-t*p,f=(u+(u-p))/2,x=Ns.polarToCartesian(h,c,f,s),m=x.x+(r.layout.translateX||0),b=x.y+(r.layout.translateY||0);i.style.left=m-o/2+"px",i.style.top=b-n-10+"px"}}_showTooltipHeatTree(t,e,s,i,a){var r,o;const n=this.w;s.tooltipLabels.drawSeriesTexts({ttItems:s.ttItems,i:t,j:e,shared:!1});const l=i.getBoundingClientRect(),h=l.width||s.tooltipRect.ttWidth||0,c=l.height||s.tooltipRect.ttHeight||0,d="heatmap"===a?"apexcharts-heatmap-rect":"apexcharts-treemap-rect",g=n.dom.baseEl.querySelector(`.${d}[i='${t}'][j='${e}']`);if(g){const t=n.dom.elWrap.getBoundingClientRect(),e=g.getBoundingClientRect(),a=e.left-t.left,l=e.top-t.top,d=e.width,p=e.height,u=parseFloat(null!=(r=g.getAttribute("cx"))?r:""),f=parseFloat(null!=(o=g.getAttribute("width"))?o:"");s.tooltipPosition.moveXCrosshairs(u+f/2);let x=a+d+h/2;const m=l+p/2-c/2;a+d>n.layout.gridWidth/2&&(x=a-h/2),i.style.left=x+"px",i.style.top=m+"px"}}_applyFocusClass(t,e){this._removeFocusClass();const s=this._getFocusableElement(t,e);s&&(s.classList.add("apexcharts-keyboard-focused"),this._focusedEl=s)}_removeFocusClass(){this._focusedEl&&(this._focusedEl.classList.remove("apexcharts-keyboard-focused"),this._focusedEl=null)}_leaveHoveredBar(){if(this._hoveredBarEl){new ti(this.w,this.ctx).pathMouseLeave(this._hoveredBarEl,null),this._hoveredBarEl=null}}_getFocusableElement(t,e){const s=this.w,i=s.config.chart.type,a=s.dom.baseEl;if("pie"===i||"donut"===i||"polarArea"===i)return a.querySelector(`.apexcharts-pie-area[j='${e}']`);if("heatmap"===i)return a.querySelector(`.apexcharts-heatmap-rect[i='${t}'][j='${e}']`);if("treemap"===i)return a.querySelector(`.apexcharts-treemap-rect[i='${t}'][j='${e}']`);if("radialBar"===i)return a.querySelector(`.apexcharts-radialbar-series[data\\:realIndex='${t}'] path`);if("bar"===i||"candlestick"===i||"boxPlot"===i||"rangeBar"===i)return a.querySelector(`.apexcharts-series[data\\:realIndex='${t}'] path[j='${e}']`);return a.querySelector(`.apexcharts-series[data\\:realIndex='${t}'] .apexcharts-marker[rel='${e}']`)||null}_fireClick(){const t=this.w.globals.tooltip;if(!t)return;t.markerClick({type:"mouseup",clientX:0,clientY:0},this.seriesIndex,this.dataPointIndex)}_isNavEnabled(){const t=this.w.config.chart.accessibility;return t.enabled&&t.keyboard.enabled&&t.keyboard.navigation.enabled}_getSeriesCount(){const t=this.w,e=t.config.chart.type;return"pie"===e||"donut"===e||"polarArea"===e?1:t.seriesData.series.length}_getDataPointCount(t){const e=this.w,s=e.config.chart.type;if("pie"===s||"donut"===s||"polarArea"===s)return e.seriesData.series.length;const i=e.seriesData.series;return i[t]&&Array.isArray(i[t])?i[t].length:0}_clampCursor(){const t=this._getSeriesCount();this.seriesIndex>=t&&(this.seriesIndex=t-1),this.seriesIndex<0&&(this.seriesIndex=0);const e=this._getDataPointCount(this.seriesIndex);this.dataPointIndex>=e&&(this.dataPointIndex=e-1),this.dataPointIndex<0&&(this.dataPointIndex=0)}_snapToVisibleRange(){const t=this.w,e=t.globals,s=this.seriesIndex;if(!t.interact.zoomed)return;const i=t.seriesData.seriesX&&t.seriesData.seriesX[s];if(!i||!i.length)return;const a=e.minX,r=e.maxX;if(void 0===a||void 0===r)return;const o=i[this.dataPointIndex];if(o>=a&&o<=r)return;const n=i.length;for(let t=0;t<n;t++)if(i[t]>=a&&i[t]<=r)return void(this.dataPointIndex=t)}_snapToVisibleRangeInDirection(t){const e=this.w,s=e.globals,i=this.seriesIndex,a=e.seriesData.seriesX&&e.seriesData.seriesX[i];if(!a||!a.length)return;const r=s.minX,o=s.maxX;if(void 0===r||void 0===o)return;const n=a.length;if(t>=0){for(let t=0;t<n;t++)if(a[t]>=r&&a[t]<=o)return void(this.dataPointIndex=t)}else for(let t=n-1;t>=0;t--)if(a[t]>=r&&a[t]<=o)return void(this.dataPointIndex=t)}_isDataPointVisible(t,e){const s=this.w,i=s.globals;if(!s.interact.zoomed)return!0;const a=s.seriesData.seriesX&&s.seriesData.seriesX[t];if(!a)return!0;const r=a[e];return void 0===r||r>=i.minX&&r<=i.maxX}}});class La{constructor(t){this.w=t.w,this.barCtx=t,this.totalFormatter=this.w.config.plotOptions.bar.dataLabels.total.formatter,this.totalFormatter||(this.totalFormatter=this.w.config.dataLabels.formatter)}handleBarDataLabels(t){const{x:e,y:s,y1:i,y2:a,i:r,j:o,realIndex:n,columnGroupIndex:l,series:h,barHeight:c,barWidth:d,barXPosition:g,barYPosition:p,visibleSeries:u}=t,f=this.w,x=new ti(this.barCtx.w),m=Array.isArray(this.barCtx.strokeWidth)?this.barCtx.strokeWidth[n]:this.barCtx.strokeWidth;let b,y;f.axisFlags.isXNumeric&&!f.globals.isBarHorizontal?(b=e+d*(u+1),y=s+c*(u+1)-m):(b=e+d*u,y=s+c*u);let w=null,v=null,A=e,C=s,_={};const S=f.config.dataLabels,k=this.barCtx.barOptions.dataLabels,E=this.barCtx.barOptions.dataLabels.total;void 0!==p&&this.barCtx.isRangeBar&&(y=p,C=p),void 0!==g&&this.barCtx.isVerticalGroupedRangeBar&&(b=g,A=g);const D=S.offsetX,L=S.offsetY;let P={width:0,height:0};if(f.config.dataLabels.enabled){const t=f.seriesData.series[r][o];P=x.getTextRects(f.config.dataLabels.formatter?f.config.dataLabels.formatter(t,Ds(Es({},f),{seriesIndex:r,dataPointIndex:o,w:f})):f.formatters.yLabelFormatters[0](t),parseFloat(S.style.fontSize).toString())}const M={x:e,y:s,i:r,j:o,realIndex:n,columnGroupIndex:l,bcx:b,bcy:y,barHeight:c,barWidth:d,textRects:P,strokeWidth:m,dataLabelsX:A,dataLabelsY:C,dataLabelsConfig:S,barDataLabelsConfig:k,barTotalDataLabelsConfig:E,offX:D,offY:L};return _=this.barCtx.isHorizontal?this.calculateBarsDataLabelsPosition(M):this.calculateColumnsDataLabelsPosition(M),w=this.drawCalculatedDataLabels({x:_.dataLabelsX,y:_.dataLabelsY,val:this.barCtx.isRangeBar?[i,a]:"100%"===f.config.chart.stackType?h[n][o]:f.seriesData.series[n][o],i:n,j:o,barWidth:d,barHeight:c,textRects:P,dataLabelsConfig:S}),f.config.chart.stacked&&E.enabled&&(v=this.drawTotalDataLabels({x:_.totalDataLabelsX,y:_.totalDataLabelsY,barWidth:d,barHeight:c,realIndex:n,textAnchor:_.totalDataLabelsAnchor,val:this.getStackedTotalDataLabel({realIndex:n,j:o}),dataLabelsConfig:S,barTotalDataLabelsConfig:E})),{dataLabelsPos:_,dataLabels:w,totalDataLabels:v}}getStackedTotalDataLabel({realIndex:t,j:e}){const s=this.w;let i=this.barCtx.stackedSeriesTotals[e];return this.totalFormatter&&(i=this.totalFormatter(i,Ds(Es({},s),{seriesIndex:t,dataPointIndex:e,w:s}))),i}calculateColumnsDataLabelsPosition(t){const e=this.w;let s,i,{i:a,j:r,realIndex:o,y:n,bcx:l,barWidth:h,barHeight:c,textRects:d,dataLabelsX:g,dataLabelsY:p,dataLabelsConfig:u,barDataLabelsConfig:f,barTotalDataLabelsConfig:x,strokeWidth:m,offX:b,offY:y}=t;const w=l;c=Math.abs(c);const v="vertical"===e.config.plotOptions.bar.dataLabels.orientation,{zeroEncounters:A}=this.barCtx.barHelpers.getZeroValueEncounters({i:a,j:r});l-=m/2;const C=e.layout.gridWidth/e.globals.dataPoints;if(this.barCtx.isVerticalGroupedRangeBar?g+=h/2:(g=e.axisFlags.isXNumeric?l-h/2+b:l-C+h/2+b,!e.config.chart.stacked&&A>0&&e.config.plotOptions.bar.hideZeroBarsWhenGrouped&&(g-=h*A)),v){const t=2;g=g+d.height/2-m/2-t}const _=e.seriesData.series[a][r]<0;let S=n;switch(this.barCtx.isReversed&&(S=n+(_?c:-c)),f.position){case"center":p=v?_?S-c/2+y:S+c/2-y:_?S-c/2+d.height/2+y:S+c/2+d.height/2-y;break;case"bottom":p=v?_?S-c+y:S+c-y:_?S-c+d.height+m+y:S+c-d.height/2+m-y;break;case"top":p=v?_?S+y:S-y:_?S-d.height/2-y:S+d.height+y}let k=S;if(e.labelData.seriesGroups.forEach(t=>{var e;null==(e=this.barCtx[t.join(",")])||e.prevY.forEach(t=>{k=_?Math.max(t[r],k):Math.min(t[r],k)})}),this.barCtx.lastActiveBarSerieIndex===o&&x.enabled){const t=18,a=new ti(this.barCtx.w).getTextRects(this.getStackedTotalDataLabel({realIndex:o,j:r}),u.fontSize);s=_?k-a.height/2-y-x.offsetY+t:k+a.height+y+x.offsetY-t;const n=C;i=w+(e.axisFlags.isXNumeric?-h*e.globals.barGroups.length/2:e.globals.barGroups.length*h/2-(e.globals.barGroups.length-1)*h-n)+x.offsetX}return e.config.chart.stacked||(p<0?p=0+m:p+d.height/3>e.layout.gridHeight&&(p=e.layout.gridHeight-m)),{bcx:l,bcy:n,dataLabelsX:g,dataLabelsY:p,totalDataLabelsX:i,totalDataLabelsY:s,totalDataLabelsAnchor:"middle"}}calculateBarsDataLabelsPosition(t){const e=this.w;let{x:s,i:i,j:a,realIndex:r,bcy:o,barHeight:n,barWidth:l,textRects:h,dataLabelsX:c,strokeWidth:d,dataLabelsConfig:g,barDataLabelsConfig:p,barTotalDataLabelsConfig:u,offX:f,offY:x}=t;const m=e.layout.gridHeight/e.globals.dataPoints,{zeroEncounters:b}=this.barCtx.barHelpers.getZeroValueEncounters({i:i,j:a});l=Math.abs(l);let y,w,v=o-(this.barCtx.isRangeBar?0:m)+n/2+h.height/2+x-3;!e.config.chart.stacked&&b>0&&e.config.plotOptions.bar.hideZeroBarsWhenGrouped&&(v-=n*b);let A="start";const C=e.seriesData.series[i][a]<0;let _=s;switch(this.barCtx.isReversed&&(_=s+(C?-l:l),A=C?"start":"end"),p.position){case"center":c=C?_+l/2-f:Math.max(h.width/2,_-l/2)+f;break;case"bottom":c=C?_+l-d-f:_-l+d+f;break;case"top":c=C?_-d-f:_-d+f}let S=_;if(e.labelData.seriesGroups.forEach(t=>{var e;null==(e=this.barCtx[t.join(",")])||e.prevX.forEach(t=>{S=C?Math.min(t[a],S):Math.max(t[a],S)})}),this.barCtx.lastActiveBarSerieIndex===r&&u.enabled){const t=new ti(this.barCtx.w).getTextRects(this.getStackedTotalDataLabel({realIndex:r,j:a}),g.fontSize);C?(y=S-d-f-u.offsetX,A="end"):y=S+f+u.offsetX+(this.barCtx.isReversed?-(l+d):d),w=v-h.height/2+t.height/2+u.offsetY+d,e.globals.barGroups.length>1&&(w-=e.globals.barGroups.length/2*(n/2))}return e.config.chart.stacked||("start"===g.textAnchor?c-h.width<0?c=C?h.width+d:d:c+h.width>e.layout.gridWidth&&(c=C?e.layout.gridWidth-d:e.layout.gridWidth-h.width-d):"middle"===g.textAnchor?c-h.width/2<0?c=h.width/2+d:c+h.width/2>e.layout.gridWidth&&(c=e.layout.gridWidth-h.width/2-d):"end"===g.textAnchor&&(c<1?c=h.width+d:c+1>e.layout.gridWidth&&(c=e.layout.gridWidth-h.width-d))),{bcx:s,bcy:o,dataLabelsX:c,dataLabelsY:v,totalDataLabelsX:y,totalDataLabelsY:w,totalDataLabelsAnchor:A}}drawCalculatedDataLabels({x:t,y:e,val:s,i:i,j:a,textRects:r,barHeight:o,barWidth:n,dataLabelsConfig:l}){const h=this.w;let c="rotate(0)";"vertical"===h.config.plotOptions.bar.dataLabels.orientation&&(c=`rotate(-90, ${t}, ${e})`);const d=new li(this.barCtx.w,this.barCtx.ctx),g=new ti(this.barCtx.w),p=l.formatter;let u=null;const f=h.globals.collapsedSeriesIndices.indexOf(i)>-1;if(l.enabled&&!f){u=g.group({class:"apexcharts-data-labels",transform:c});let f="";void 0!==s&&(f=p(s,Ds(Es({},h),{seriesIndex:i,dataPointIndex:a,w:h}))),!s&&h.config.plotOptions.bar.hideZeroBarsWhenGrouped&&(f="");const x=h.seriesData.series[i][a]<0,m=h.config.plotOptions.bar.dataLabels.position;if("vertical"===h.config.plotOptions.bar.dataLabels.orientation&&("top"===m&&(l.textAnchor=x?"end":"start"),"center"===m&&(l.textAnchor="middle"),"bottom"===m&&(l.textAnchor=x?"end":"start")),this.barCtx.isRangeBar&&this.barCtx.barOptions.dataLabels.hideOverflowingLabels){n<g.getTextRects(f,parseFloat(l.style.fontSize).toString()).width&&(f="")}h.config.chart.stacked&&this.barCtx.barOptions.dataLabels.hideOverflowingLabels&&(this.barCtx.isHorizontal?r.width/1.6>Math.abs(n)&&(f=""):r.height/1.6>Math.abs(o)&&(f=""));const b=Es({},l);this.barCtx.isHorizontal&&s<0&&("start"===l.textAnchor?b.textAnchor="end":"end"===l.textAnchor&&(b.textAnchor="start")),d.plotDataLabelsText({x:t,y:e,text:f,i:i,j:a,parent:u,dataLabelsConfig:b,alwaysDrawDataLabel:!0,offsetCorrection:!0})}return u}drawTotalDataLabels({x:t,y:e,val:s,realIndex:i,textAnchor:a,barTotalDataLabelsConfig:r}){const o=new ti(this.barCtx.w);let n;return r.enabled&&void 0!==t&&void 0!==e&&this.barCtx.lastActiveBarSerieIndex===i&&(n=o.drawText({x:t,y:e,foreColor:r.style.color,text:s,textAnchor:a,fontFamily:r.style.fontFamily,fontSize:r.style.fontSize,fontWeight:r.style.fontWeight})),n}}let Pa=class{constructor(t){this.w=t.w,this.barCtx=t}initVariables(t){const e=this.w;this.barCtx.series=t,this.barCtx.totalItems=0,this.barCtx.seriesLen=0,this.barCtx.visibleI=-1,this.barCtx.visibleItems=1;for(let s=0;s<t.length;s++)if(t[s].length>0&&(this.barCtx.seriesLen=this.barCtx.seriesLen+1,this.barCtx.totalItems+=t[s].length),e.axisFlags.isXNumeric)for(let i=0;i<t[s].length;i++)e.seriesData.seriesX[s][i]>e.globals.minX&&e.seriesData.seriesX[s][i]<e.globals.maxX&&this.barCtx.visibleItems++;else this.barCtx.visibleItems=e.globals.dataPoints;this.arrBorderRadius=this.createBorderRadiusArr(e.seriesData.series),Ns.isSafari()&&(this.arrBorderRadius=this.arrBorderRadius.map(t=>t.map(t=>"none"))),0===this.barCtx.seriesLen&&(this.barCtx.seriesLen=1),this.barCtx.zeroSerieses=[],e.globals.comboCharts||this.checkZeroSeries({series:t})}initialPositions(t){const e=this.w;let s,i,a,r,o,n,l,h,c=e.globals.dataPoints;this.barCtx.isRangeBar&&(c=e.labelData.labels.length);let d=this.barCtx.seriesLen;if(e.config.plotOptions.bar.rangeBarGroupRows&&(d=1),this.barCtx.isHorizontal)a=e.layout.gridHeight/c,o=a/d,e.axisFlags.isXNumeric&&(a=e.layout.gridHeight/this.barCtx.totalItems,o=a/this.barCtx.seriesLen),o=o*parseInt(this.barCtx.barOptions.barHeight,10)/100,-1===String(this.barCtx.barOptions.barHeight).indexOf("%")&&(o=parseInt(this.barCtx.barOptions.barHeight,10)),h=this.barCtx.baseLineInvertedY+e.globals.padHorizontal+(this.barCtx.isReversed?e.layout.gridWidth:0)-(this.barCtx.isReversed?2*this.barCtx.baseLineInvertedY:0),this.barCtx.isFunnel&&(h=e.layout.gridWidth/2),i=(a-o*this.barCtx.seriesLen)/2;else{if(r=e.layout.gridWidth/this.barCtx.visibleItems,e.config.xaxis.convertedCatToNumeric&&(r=e.layout.gridWidth/e.globals.dataPoints),n=r/d*parseInt(this.barCtx.barOptions.columnWidth,10)/100,e.axisFlags.isXNumeric){const t=this.barCtx.xRatio;e.globals.minXDiff&&.5!==e.globals.minXDiff&&e.globals.minXDiff/t>0&&(r=e.globals.minXDiff/t),n=r/d*parseInt(this.barCtx.barOptions.columnWidth,10)/100,n<1&&(n=1)}if(-1===String(this.barCtx.barOptions.columnWidth).indexOf("%")&&(n=parseInt(this.barCtx.barOptions.columnWidth,10)),l=e.layout.gridHeight-this.barCtx.baseLineY[this.barCtx.translationsIndex]-(this.barCtx.isReversed?e.layout.gridHeight:0)+(this.barCtx.isReversed?2*this.barCtx.baseLineY[this.barCtx.translationsIndex]:0),e.axisFlags.isXNumeric){s=this.barCtx.getBarXForNumericXAxis({x:s,j:0,realIndex:t,barWidth:n}).x}else s=e.globals.padHorizontal+Ns.noExponents(r-n*this.barCtx.seriesLen)/2}return e.globals.barHeight=o,e.globals.barWidth=n,{x:s,y:i,yDivision:a,xDivision:r,barHeight:o,barWidth:n,zeroH:l,zeroW:h}}initializeStackedPrevVars(t){t.w.labelData.seriesGroups.forEach(e=>{t[e]||(t[e]={}),t[e].prevY=[],t[e].prevX=[],t[e].prevYF=[],t[e].prevXF=[],t[e].prevYVal=[],t[e].prevXVal=[]})}initializeStackedXYVars(t){t.w.labelData.seriesGroups.forEach(e=>{t[e]||(t[e]={}),t[e].xArrj=[],t[e].xArrjF=[],t[e].xArrjVal=[],t[e].yArrj=[],t[e].yArrjF=[],t[e].yArrjVal=[]})}getPathFillColor(t,e,s,i){var a,r,o,n;const l=this.w,h=new ri(this.barCtx.w);let c=null;const d=this.barCtx.barOptions.distributed?s:e;let g=!1;if(this.barCtx.barOptions.colors.ranges.length>0){this.barCtx.barOptions.colors.ranges.map(i=>{t[e][s]>=i.from&&t[e][s]<=i.to&&(c=i.color,g=!0)})}return{color:h.fillPath({seriesNumber:this.barCtx.barOptions.distributed?d:i,dataPointIndex:s,color:c,value:t[e][s],fillConfig:null==(a=l.config.series[e].data[s])?void 0:a.fill,fillType:(null==(o=null==(r=l.config.series[e].data[s])?void 0:r.fill)?void 0:o.type)?null==(n=l.config.series[e].data[s])?void 0:n.fill.type:Array.isArray(l.config.fill.type)?l.config.fill.type[i]:l.config.fill.type}),useRangeColor:g}}getStrokeWidth(t,e,s){let i=0;const a=this.w;return void 0===this.barCtx.series[t][e]||null===this.barCtx.series[t][e]||"bar"===a.config.chart.type&&!this.barCtx.series[t][e]?this.barCtx.isNullValue=!0:this.barCtx.isNullValue=!1,a.config.stroke.show&&(this.barCtx.isNullValue||(i=Array.isArray(this.barCtx.strokeWidth)?this.barCtx.strokeWidth[s]:this.barCtx.strokeWidth)),i}createBorderRadiusArr(t){var e;const s=this.w,i=!this.w.config.chart.stacked||s.config.plotOptions.bar.borderRadius<=0,a=t.length,r=0|(null==(e=t[0])?void 0:e.length),o=Array.from({length:a},()=>Array(r).fill(i?"top":"none"));if(i)return o;const n=this.w.config.chart.type;for(let e=0;e<r;e++){const s=[],i=[];let l=0;for(let r=0;r<a;r++){const a=t[r][e];a>0?(s.push(r),l++):a<0&&(i.push(r),l++)}if(s.length>0&&0===i.length)if(1===s.length)o[s[0]][e]="bar"===n&&1===r?"top":"both";else{const t=s[0],i=s[s.length-1];for(const a of s)o[a][e]=a===t?"bar"===n&&1===r?"top":"bottom":a===i?"top":"none"}else if(i.length>0&&0===s.length)if(1===i.length)o[i[0]][e]="both";else{const t=Math.max(...i),s=Math.min(...i);for(const a of i)o[a][e]=a===t?"bottom":a===s?"top":"none"}else if(s.length>0&&i.length>0){const t=s[s.length-1];for(const i of s)o[i][e]=i===t?"top":"none";const a=Math.max(...i);for(const t of i)o[t][e]=t===a?"bottom":"none"}else if(1===l){o[s[0]||i[0]][e]="both"}}return o}barBackground({j:t,i:e,x1:s,x2:i,y1:a,y2:r,elSeries:o}){const n=this.w,l=new ti(this.barCtx.w),h=new vi(this.barCtx.w).getActiveConfigSeriesIndex();if(this.barCtx.barOptions.colors.backgroundBarColors.length>0&&h===e){t>=this.barCtx.barOptions.colors.backgroundBarColors.length&&(t%=this.barCtx.barOptions.colors.backgroundBarColors.length);const e=this.barCtx.barOptions.colors.backgroundBarColors[t],h=l.drawRect(void 0!==s?s:0,void 0!==a?a:0,void 0!==i?i:n.layout.gridWidth,void 0!==r?r:n.layout.gridHeight,this.barCtx.barOptions.colors.backgroundBarRadius,e,this.barCtx.barOptions.colors.backgroundBarOpacity);o.add(h),h.node.classList.add("apexcharts-backgroundBar")}}getColumnPaths({barWidth:t,barXPosition:e,y1:s,y2:i,strokeWidth:a,isReversed:r,series:o,seriesGroup:n,realIndex:l,i:h,j:c,w:d}){var g;const p=new ti(this.barCtx.w);(a=Array.isArray(a)?a[l]:a)||(a=0);let u=t,f=e;(null==(g=d.config.series[l].data[c])?void 0:g.columnWidthOffset)&&(f=e-d.config.series[l].data[c].columnWidthOffset/2,u=t+d.config.series[l].data[c].columnWidthOffset);const x=a/2,m=f+x,b=f+u-x,y=(o[h][c]>=0?1:-1)*(r?-1:1);s+=.001-x*y,i+=.001+x*y;let w=p.move(m,s),v=p.move(m,s);const A=p.line(b,s);if(d.globals.previousPaths.length>0&&(v=this.barCtx.getPreviousPath(l,c,!1)),w=w+p.line(m,i)+p.line(b,i)+A+("around"===d.config.plotOptions.bar.borderRadiusApplication||"both"===this.arrBorderRadius[l][c]?" Z":" z"),v=v+p.line(m,s)+A+A+A+A+A+p.line(m,s)+("around"===d.config.plotOptions.bar.borderRadiusApplication||"both"===this.arrBorderRadius[l][c]?" Z":" z"),"none"!==this.arrBorderRadius[l][c]&&(w=p.roundPathCorners(w,d.config.plotOptions.bar.borderRadius)),d.config.chart.stacked){let t=this.barCtx;t=this.barCtx[n],t.yArrj.push(i-x*y),t.yArrjF.push(Math.abs(s-i+a*y)),t.yArrjVal.push(this.barCtx.series[h][c])}return{pathTo:w,pathFrom:v}}getBarpaths({barYPosition:t,barHeight:e,x1:s,x2:i,strokeWidth:a,isReversed:r,series:o,seriesGroup:n,realIndex:l,i:h,j:c,w:d}){var g;const p=new ti(this.barCtx.w);(a=Array.isArray(a)?a[l]:a)||(a=0);let u=t,f=e;(null==(g=d.config.series[l].data[c])?void 0:g.barHeightOffset)&&(u=t-d.config.series[l].data[c].barHeightOffset/2,f=e+d.config.series[l].data[c].barHeightOffset);const x=a/2,m=u+x,b=u+f-x,y=(o[h][c]>=0?1:-1)*(r?-1:1);s+=.001+x*y,i+=.001-x*y;let w=p.move(s,m),v=p.move(s,m);d.globals.previousPaths.length>0&&(v=this.barCtx.getPreviousPath(l,c,!1));const A=p.line(s,b);if(w=w+p.line(i,m)+p.line(i,b)+A+("around"===d.config.plotOptions.bar.borderRadiusApplication||"both"===this.arrBorderRadius[l][c]?" Z":" z"),v=v+p.line(s,m)+A+A+A+A+A+p.line(s,m)+("around"===d.config.plotOptions.bar.borderRadiusApplication||"both"===this.arrBorderRadius[l][c]?" Z":" z"),"none"!==this.arrBorderRadius[l][c]&&(w=p.roundPathCorners(w,d.config.plotOptions.bar.borderRadius)),d.config.chart.stacked){let t=this.barCtx;t=this.barCtx[n],t.xArrj.push(i+x*y),t.xArrjF.push(Math.abs(s-i-a*y)),t.xArrjVal.push(this.barCtx.series[h][c])}return{pathTo:w,pathFrom:v}}checkZeroSeries({series:t}){const e=this.w;for(let s=0;s<t.length;s++){let i=0;for(let a=0;a<t[e.globals.maxValsInArrayIndex].length;a++)i+=t[s][a];0===i&&this.barCtx.zeroSerieses.push(s)}}getXForValue(t,e,s=!0){let i=s?e:null;return null!=t&&(i=e+t/this.barCtx.invertedYRatio-2*(this.barCtx.isReversed?t/this.barCtx.invertedYRatio:0)),i}getYForValue(t,e,s,i=!0){let a=i?e:null;return null!=t&&(a=e-t/this.barCtx.yRatio[s]+2*(this.barCtx.isReversed?t/this.barCtx.yRatio[s]:0)),a}getGoalValues(t,e,s,i,a,r){const o=this.w,n=[],l=(i,a)=>{n.push({[t]:"x"===t?this.getXForValue(i,e,!1):this.getYForValue(i,s,r,!1),attrs:a})};if(o.seriesData.seriesGoals[i]&&o.seriesData.seriesGoals[i][a]&&Array.isArray(o.seriesData.seriesGoals[i][a])&&o.seriesData.seriesGoals[i][a].forEach(t=>{l(t.value,t)}),this.barCtx.barOptions.isDumbbell&&o.rangeData.seriesRange.length){const e=this.barCtx.barOptions.dumbbellColors?this.barCtx.barOptions.dumbbellColors:o.globals.colors,s={strokeHeight:"x"===t?0:o.globals.markers.size[i],strokeWidth:"x"===t?o.globals.markers.size[i]:0,strokeDashArray:0,strokeLineCap:"round",strokeColor:Array.isArray(e[i])?e[i][0]:e[i]};l(o.rangeData.seriesRangeStart[i][a],s),l(o.rangeData.seriesRangeEnd[i][a],Ds(Es({},s),{strokeColor:Array.isArray(e[i])?e[i][1]:e[i]}))}return n}drawGoalLine({barXPosition:t,barYPosition:e,goalX:s,goalY:i,barWidth:a,barHeight:r}){const o=new ti(this.barCtx.w),n=o.group({className:"apexcharts-bar-goals-groups"});n.node.classList.add("apexcharts-element-hidden"),this.barCtx.w.globals.delayedElements.push({el:n.node}),n.attr("clip-path",`url(#gridRectMarkerMask${this.barCtx.w.globals.cuid})`);let l=null;return this.barCtx.isHorizontal?Array.isArray(s)&&s.forEach(t=>{if(t.x>=-1&&t.x<=o.w.layout.gridWidth+1){const s=void 0!==t.attrs.strokeHeight?t.attrs.strokeHeight:r/2,i=e+s+r/2;l=o.drawLine(t.x,i-2*s,t.x,i,t.attrs.strokeColor?t.attrs.strokeColor:void 0,t.attrs.strokeDashArray,t.attrs.strokeWidth?t.attrs.strokeWidth:2,t.attrs.strokeLineCap),n.add(l)}}):Array.isArray(i)&&i.forEach(e=>{if(e.y>=-1&&e.y<=o.w.layout.gridHeight+1){const s=void 0!==e.attrs.strokeWidth?e.attrs.strokeWidth:a/2,i=t+s+a/2;l=o.drawLine(i-2*s,e.y,i,e.y,e.attrs.strokeColor?e.attrs.strokeColor:void 0,e.attrs.strokeDashArray,e.attrs.strokeHeight?e.attrs.strokeHeight:2,e.attrs.strokeLineCap),n.add(l)}}),n}drawBarShadow({prevPaths:t,currPaths:e,color:s,realIndex:i,j:a}){const r=this.w,{x:o,x1:n,barYPosition:l}=t,{x:h,x1:c,barYPosition:d}=e,g=l+e.barHeight,p=new ti(this.barCtx.w),u=new Ns,f=p.move(n,g)+p.line(o,g)+p.line(h,d)+p.line(c,d)+p.line(n,g)+("around"===r.config.plotOptions.bar.borderRadiusApplication||"both"===this.arrBorderRadius[i][a]?" Z":" z");return p.drawPath({d:f,fill:u.shadeColor(.5,Ns.rgb2hex(s)),stroke:"none",strokeWidth:0,fillOpacity:1,classes:"apexcharts-bar-shadow apexcharts-decoration-element"})}getZeroValueEncounters({i:t,j:e}){var s;const i=this.w;let a=0,r=0;return(i.config.plotOptions.bar.horizontal?i.seriesData.series.map((t,e)=>e):(null==(s=i.globals.columnSeries)?void 0:s.i.map(t=>t))||[]).forEach(s=>{const o=i.globals.seriesPercent[s][e];o&&a++,s<t&&0===o&&r++}),{nonZeroColumns:a,zeroEncounters:r}}getGroupIndex(t){const e=this.w,s=e.labelData.seriesGroups.findIndex(s=>s.indexOf(e.seriesData.seriesNames[t])>-1),i=this.barCtx.columnGroupIndices;let a=i.indexOf(s);return a<0&&(i.push(s),a=i.length-1),{groupIndex:s,columnGroupIndex:a}}};class Ma{constructor(t,e,s){this.ctx=e,this.w=t,this.barOptions=t.config.plotOptions.bar,this.isHorizontal=this.barOptions.horizontal,this.strokeWidth=t.config.stroke.width,this.isNullValue=!1,this.isRangeBar=t.rangeData.seriesRange.length&&this.isHorizontal,this.isVerticalGroupedRangeBar=!t.globals.isBarHorizontal&&t.rangeData.seriesRange.length&&t.config.plotOptions.bar.rangeBarGroupRows,this.isFunnel=this.barOptions.isFunnel,this.xyRatios=s,this.xRatio=0,this.yRatio=[],this.invertedXRatio=0,this.invertedYRatio=0,this.baseLineY=[],this.baseLineInvertedY=0,null!==this.xyRatios&&(this.xRatio=s.xRatio,this.yRatio=s.yRatio,this.invertedXRatio=s.invertedXRatio,this.invertedYRatio=s.invertedYRatio,this.baseLineY=s.baseLineY,this.baseLineInvertedY=s.baseLineInvertedY),this.yaxisIndex=0,this.translationsIndex=0,this.seriesLen=0,this.pathArr=[],this.series=[],this.elSeries=null,this.visibleI=0,this.isReversed=!1;const i=new vi(this.w);this.lastActiveBarSerieIndex=i.getActiveConfigSeriesIndex("desc",["bar","column"]),this.columnGroupIndices=[];const a=i.getBarSeriesIndices(),r=new Ks(this.w);this.stackedSeriesTotals=r.getStackedSeriesTotals(this.w.config.series.map((t,e)=>-1===a.indexOf(e)?e:-1).filter(t=>-1!==t)),this.barHelpers=new Pa(this)}draw(t,e){var s;const i=this.w,a=new ti(this.w),r=new Ks(this.w);t=r.getLogSeries(t),this.series=t,this.yRatio=r.getLogYRatios(this.yRatio),this.barHelpers.initVariables(t);const o=a.group({class:"apexcharts-bar-series apexcharts-plot-series"});i.config.dataLabels.enabled&&this.totalItems>this.barOptions.dataLabels.maxItems&&console.warn("WARNING: DataLabels are enabled but there are too many to display. This may cause performance issue when rendering - ApexCharts");for(let r=0,n=0;r<t.length;r++,n++){let l,h;const c=[],d=[],g=i.globals.comboCharts?e[r]:r,{columnGroupIndex:p}=this.barHelpers.getGroupIndex(g),u=a.group({class:"apexcharts-series",rel:r+1,seriesName:Ns.escapeString(i.seriesData.seriesNames[g]),"data:realIndex":g});vi.addCollapsedClassToSeries(this.w,u,g),t[r].length>0&&(this.visibleI=this.visibleI+1),this.yRatio.length>1&&(this.yaxisIndex=i.globals.seriesYAxisReverseMap[g],this.translationsIndex=g);const f=this.translationsIndex;this.isReversed=i.config.yaxis[this.yaxisIndex]&&i.config.yaxis[this.yaxisIndex].reversed;const x=this.barHelpers.initialPositions(g),{y:m,yDivision:b,zeroW:y,x:w,xDivision:v,zeroH:A}=x;let C=x.barHeight,_=x.barWidth;h=m,l=w,this.isHorizontal||d.push(l+(null!=_?_:0)/2);const S=a.group({class:"apexcharts-datalabels","data:realIndex":g});i.globals.delayedElements.push({el:S.node}),S.node.classList.add("apexcharts-element-hidden");const k=a.group({class:"apexcharts-bar-goals-markers"}),E=a.group({class:"apexcharts-bar-shadows"});i.globals.delayedElements.push({el:E.node}),E.node.classList.add("apexcharts-element-hidden");for(let e=0;e<t[r].length;e++){const a=this.barHelpers.getStrokeWidth(r,e,g);let o=null;const x={indexes:{i:r,j:e,realIndex:g,translationsIndex:f,bc:n},x:l,y:h,strokeWidth:a,elSeries:u};this.isHorizontal?(o=this.drawBarPaths(Ds(Es({},x),{barHeight:C,zeroW:y,yDivision:b})),_=this.series[r][e]/this.invertedYRatio):(o=this.drawColumnPaths(Ds(Es({},x),{xDivision:v,barWidth:_,zeroH:A})),C=this.series[r][e]/this.yRatio[f]);const m=this.barHelpers.getPathFillColor(t,r,e,g);if(this.isFunnel&&this.barOptions.isFunnel3d&&this.pathArr.length&&e>0){const t=this.barHelpers.drawBarShadow({color:"string"==typeof m.color&&-1===(null==(s=m.color)?void 0:s.indexOf("url"))?m.color:Ns.hexToRgba(i.globals.colors[r]),prevPaths:this.pathArr[this.pathArr.length-1],currPaths:o,realIndex:g,j:e});if(E.add(t),i.config.chart.dropShadow.enabled){new Qs(this.w).dropShadow(t,i.config.chart.dropShadow,g)}}this.pathArr.push(o);const w=this.barHelpers.drawGoalLine({barXPosition:o.barXPosition,barYPosition:o.barYPosition,goalX:o.goalX,goalY:o.goalY,barHeight:C,barWidth:_});w&&k.add(w),h=o.y,l=o.x,e>0&&d.push(l+(null!=_?_:0)/2),c.push(h),this.renderSeries(Ds(Es({realIndex:g,pathFill:m.color},m.useRangeColor?{lineFill:m.color}:{}),{j:e,i:r,columnGroupIndex:p,pathFrom:o.pathFrom,pathTo:o.pathTo,strokeWidth:a,elSeries:u,x:l,y:h,series:t,barHeight:Math.abs(o.barHeight?o.barHeight:C),barWidth:Math.abs(o.barWidth?o.barWidth:_),elDataLabelsWrap:S,elGoalsMarkers:k,elBarShadows:E,visibleSeries:this.visibleI,type:"bar"}))}i.globals.seriesXvalues[g]=d,i.globals.seriesYvalues[g]=c,o.add(u)}return o}renderSeries({realIndex:t,pathFill:e,lineFill:s,j:i,i:a,columnGroupIndex:r,pathFrom:o,pathTo:n,strokeWidth:l,elSeries:h,x:c,y:d,y1:g,y2:p,series:u,barHeight:f,barWidth:x,barXPosition:m,barYPosition:b,elDataLabelsWrap:y,elGoalsMarkers:w,elBarShadows:v,visibleSeries:A,type:C,classes:_}){const S=this.w,k=new ti(this.w,this.ctx);let E=!1;if(h._bindingsDelegated||(h._bindingsDelegated=!0,k.setupEventDelegation(h,`.apexcharts-${C}-area`)),!s){let e=function(t){const e=S.config.stroke.colors;let s;return Array.isArray(e)&&e.length>0&&(s=e[t],s||(s=""),"function"==typeof s)?s({value:S.seriesData.series[t][i],dataPointIndex:i,w:S}):s};const a="function"==typeof S.globals.stroke.colors[t]?e(t):S.globals.stroke.colors[t];s=this.barOptions.distributed?S.globals.stroke.colors[i]:a}const D=new La(this).handleBarDataLabels({x:c,y:d,y1:g,y2:p,i:a,j:i,series:u,realIndex:t,columnGroupIndex:r,barHeight:f,barWidth:x,barXPosition:m,barYPosition:b,visibleSeries:A});S.globals.isBarHorizontal||(D.dataLabelsPos.dataLabelsX+Math.max(x,S.globals.barPadForNumericAxis)<0||D.dataLabelsPos.dataLabelsX-Math.max(x,S.globals.barPadForNumericAxis)>S.layout.gridWidth)&&(E=!0),S.config.series[a].data[i]&&S.config.series[a].data[i].strokeColor&&(s=S.config.series[a].data[i].strokeColor),this.isNullValue&&(e="none");const L=i/S.config.chart.animations.animateGradually.delay*(S.config.chart.animations.speed/S.globals.dataPoints)/2.4;if(!E){const r=k.renderPaths({i:a,j:i,realIndex:t,pathFrom:o,pathTo:n,stroke:s,strokeWidth:l,strokeLineCap:S.config.stroke.lineCap,fill:e,animationDelay:L,initialSpeed:S.config.chart.animations.speed,dataChangeSpeed:S.config.chart.animations.dynamicAnimation.speed,className:`apexcharts-${C}-area ${_}`,chartType:C,bindEventsOnPaths:!1});r.attr("clip-path",`url(#gridRectBarMask${S.globals.cuid})`);const c=S.config.forecastDataPoints;c.count>0&&i>=S.globals.dataPoints-c.count&&(r.node.setAttribute("stroke-dasharray",c.dashArray),r.node.setAttribute("stroke-width",c.strokeWidth),r.node.setAttribute("fill-opacity",c.fillOpacity)),void 0!==g&&void 0!==p&&(r.attr("data-range-y1",g),r.attr("data-range-y2",p));new Qs(this.w).setSelectionFilter(r,t,i),h.add(r),r.attr({cy:D.dataLabelsPos.bcy,cx:D.dataLabelsPos.bcx,j:i,val:S.seriesData.series[a][i],barHeight:f,barWidth:x}),null!==D.dataLabels&&y.add(D.dataLabels),D.totalDataLabels&&y.add(D.totalDataLabels),h.add(y),w&&h.add(w),v&&h.add(v)}return h}drawBarPaths({indexes:t,barHeight:e,strokeWidth:s,zeroW:i,x:a,y:r,yDivision:o,elSeries:n}){const l=this.w,h=t.i,c=t.j;let d;if(l.axisFlags.isXNumeric)d=(r=(l.seriesData.seriesX[h][c]-l.globals.minX)/this.invertedXRatio-e)+e*this.visibleI;else if(l.config.plotOptions.bar.hideZeroBarsWhenGrouped){const{nonZeroColumns:t,zeroEncounters:s}=this.barHelpers.getZeroValueEncounters({i:h,j:c});t>0&&(e=this.seriesLen*e/t),d=r+e*this.visibleI,d-=e*s}else d=r+e*this.visibleI;if(this.isFunnel){const t=null!=i?i:0;i=t-(this.barHelpers.getXForValue(this.series[h][c],t)-t)/2}a=this.barHelpers.getXForValue(this.series[h][c],null!=i?i:0);const g=this.barHelpers.getBarpaths({barYPosition:d,barHeight:e,x1:i,x2:a,strokeWidth:s,isReversed:this.isReversed,series:this.series,realIndex:t.realIndex,i:h,j:c,w:l});return l.axisFlags.isXNumeric||(r+=o),this.barHelpers.barBackground({j:c,i:h,y1:d-e*this.visibleI,y2:e*this.seriesLen,elSeries:n}),{pathTo:g.pathTo,pathFrom:g.pathFrom,x1:i,x:a,y:r,goalX:this.barHelpers.getGoalValues("x",i,null,h,c,0),barYPosition:d,barHeight:e}}drawColumnPaths({indexes:t,x:e,y:s,xDivision:i,barWidth:a,zeroH:r,strokeWidth:o,elSeries:n}){const l=this.w,h=t.realIndex,c=t.translationsIndex,d=t.i,g=t.j,p=t.bc;let u;if(l.axisFlags.isXNumeric){const t=this.getBarXForNumericXAxis({x:e,j:g,realIndex:h,barWidth:a});e=t.x,u=t.barXPosition}else if(l.config.plotOptions.bar.hideZeroBarsWhenGrouped){const{nonZeroColumns:t,zeroEncounters:s}=this.barHelpers.getZeroValueEncounters({i:d,j:g});t>0&&(a=this.seriesLen*a/t),u=e+a*this.visibleI,u-=a*s}else u=e+a*this.visibleI;s=this.barHelpers.getYForValue(this.series[d][g],r,c);const f=this.barHelpers.getColumnPaths({barXPosition:u,barWidth:a,y1:r,y2:s,strokeWidth:o,isReversed:this.isReversed,series:this.series,realIndex:h,i:d,j:g,w:l});return l.axisFlags.isXNumeric||(e+=i),this.barHelpers.barBackground({bc:p,j:g,i:d,x1:u-o/2-a*this.visibleI,x2:a*this.seriesLen+o/2,elSeries:n}),{pathTo:f.pathTo,pathFrom:f.pathFrom,x:e,y:s,goalY:this.barHelpers.getGoalValues("y",null,r,d,g,c),barXPosition:u,barWidth:a}}getBarXForNumericXAxis({x:t,barWidth:e,realIndex:s,j:i}){const a=this.w;let r=s;return a.seriesData.seriesX[s].length||(r=a.globals.maxValsInArrayIndex),Ns.isNumber(a.seriesData.seriesX[r][i])&&(t=(a.seriesData.seriesX[r][i]-a.globals.minX)/this.xRatio-e*this.seriesLen/2),{barXPosition:t+e*this.visibleI,x:t}}getPreviousPath(t,e){const s=this.w;let i="M 0 0";for(let a=0;a<s.globals.previousPaths.length;a++){const r=s.globals.previousPaths[a];r.paths&&r.paths.length>0&&parseInt(r.realIndex,10)===parseInt(String(t),10)&&void 0!==s.globals.previousPaths[a].paths[e]&&(i=s.globals.previousPaths[a].paths[e].d)}return i}}class Ta extends Ma{draw(t,e,s){const i=this.w,a=new ti(this.w),r=i.globals.comboCharts?e:i.config.chart.type,o=new ri(this.w);this.candlestickOptions=this.w.config.plotOptions.candlestick,this.boxOptions=this.w.config.plotOptions.boxPlot,this.isHorizontal=i.config.plotOptions.bar.horizontal,this.isOHLC=this.candlestickOptions&&"ohlc"===this.candlestickOptions.type,this.coreUtils=new Ks(this.w),t=this.coreUtils.getLogSeries(t),this.series=t,this.yRatio=this.coreUtils.getLogYRatios(this.yRatio),this.barHelpers.initVariables(t);const n=a.group({class:`apexcharts-${r}-series apexcharts-plot-series`});for(let e=0;e<t.length;e++){let r,l;this.isBoxPlot="boxPlot"===i.config.chart.type||"boxPlot"===i.config.series[e].type;const h=[],c=[],d=i.globals.comboCharts?s[e]:e,{columnGroupIndex:g}=this.barHelpers.getGroupIndex(d),p=a.group({class:"apexcharts-series",seriesName:Ns.escapeString(i.seriesData.seriesNames[d]),rel:e+1,"data:realIndex":d});vi.addCollapsedClassToSeries(this.w,p,d),t[e].length>0&&(this.visibleI=this.visibleI+1);let u=0;this.yRatio.length>1&&(this.yaxisIndex=i.globals.seriesYAxisReverseMap[d][0],u=d);const f=this.barHelpers.initialPositions(d),{y:x,barHeight:m,yDivision:b,zeroW:y,x:w,barWidth:v,xDivision:A,zeroH:C}=f;l=x,r=w,c.push(r+(null!=v?v:0)/2);const _=a.group({class:"apexcharts-datalabels","data:realIndex":d}),S=a.group({class:"apexcharts-bar-goals-markers"});for(let s=0;s<i.globals.dataPoints;s++){const a=this.barHelpers.getStrokeWidth(e,s,d);let n=null;const f={indexes:{i:e,j:s,realIndex:d,translationsIndex:u},x:r,y:l,strokeWidth:a,elSeries:p};n=this.isHorizontal?this.drawHorizontalBoxPaths(Ds(Es({},f),{yDivision:b,barHeight:m,zeroW:y})):this.drawVerticalBoxPaths(Ds(Es({},f),{xDivision:A,barWidth:v,zeroH:C})),l=n.y,r=n.x;const x=this.barHelpers.drawGoalLine({barXPosition:n.barXPosition,barYPosition:n.barYPosition,goalX:n.goalX,goalY:n.goalY,barHeight:m,barWidth:v});x&&S.add(x),s>0&&c.push(r+(null!=v?v:0)/2),h.push(l),n.pathTo.forEach((h,c)=>{const u=!this.isBoxPlot&&this.candlestickOptions.wick.useFillColor?n.color[c]:i.globals.stroke.colors[e],f=o.fillPath({seriesNumber:d,dataPointIndex:s,color:n.color[c],value:t[e][s]});this.renderSeries({realIndex:d,pathFill:f,lineFill:u,j:s,i:e,pathFrom:n.pathFrom,pathTo:h,strokeWidth:a,elSeries:p,x:r,y:l,series:t,columnGroupIndex:g,barHeight:m,barWidth:v,elDataLabelsWrap:_,elGoalsMarkers:S,visibleSeries:this.visibleI,type:i.config.chart.type})})}i.globals.seriesXvalues[d]=c,i.globals.seriesYvalues[d]=h,n.add(p)}return n}drawVerticalBoxPaths({indexes:t,x:e,xDivision:s,barWidth:i,zeroH:a,strokeWidth:r}){var o,n;const l=this.w,h=new ti(this.w),c=t.i,d=t.j,{colors:g}=l.config.plotOptions.candlestick,{colors:p}=this.boxOptions,u=t.realIndex,f=t=>Array.isArray(t)?t[u]:t,x=f(g.upward),m=f(g.downward),b=this.yRatio[t.translationsIndex],y=this.getOHLCValue(u,d);let w=a,v=a,A=y.o<y.c?[x]:[m];this.isBoxPlot&&(A=[f(p.lower),f(p.upper)]);let C=Math.min(y.o,y.c),_=Math.max(y.o,y.c),S=y.m;l.axisFlags.isXNumeric&&(e=(l.seriesData.seriesX[u][d]-l.globals.minX)/this.xRatio-i/2);const k=e+i*this.visibleI;let E;void 0===(null==(o=this.series[c])?void 0:o[d])||null===(null==(n=this.series[c])?void 0:n[d])?(C=a,_=a):(C=a-C/b,_=a-_/b,w=a-y.h/b,v=a-y.l/b,S=a-y.m/b);let D=h.move(k+i/2,C);if(l.globals.previousPaths.length>0&&(D=this.getPreviousPath(u,d)),this.isOHLC){const t=k+i/2,e=a-y.o/b,s=a-y.c/b;E=[h.move(t,w)+h.line(t,v)+h.move(t,e)+h.line(k,e)+h.move(t,s)+h.line(k+i,s)]}else E=this.isBoxPlot?[h.move(k,C)+h.line(k+i/2,C)+h.line(k+i/2,w)+h.line(k+i/4,w)+h.line(k+i-i/4,w)+h.line(k+i/2,w)+h.line(k+i/2,C)+h.line(k+i,C)+h.line(k+i,S)+h.line(k,S)+h.line(k,C+r/2),h.move(k,S)+h.line(k+i,S)+h.line(k+i,_)+h.line(k+i/2,_)+h.line(k+i/2,v)+h.line(k+i-i/4,v)+h.line(k+i/4,v)+h.line(k+i/2,v)+h.line(k+i/2,_)+h.line(k,_)+h.line(k,S)+"z"]:[h.move(k,_)+h.line(k+i/2,_)+h.line(k+i/2,w)+h.line(k+i/2,_)+h.line(k+i,_)+h.line(k+i,C)+h.line(k+i/2,C)+h.line(k+i/2,v)+h.line(k+i/2,C)+h.line(k,C)+h.line(k,_-r/2)];return D+=h.move(k,C),l.axisFlags.isXNumeric||(e+=s),{pathTo:E,pathFrom:D,x:e,y:_,goalY:this.barHelpers.getGoalValues("y",null,a,c,d,t.translationsIndex),barXPosition:k,color:A}}drawHorizontalBoxPaths({indexes:t,y:e,yDivision:s,barHeight:i,zeroW:a,strokeWidth:r}){var o,n;const l=this.w,h=new ti(this.w),c=t.i,d=t.j,g=t.realIndex,{colors:p}=l.config.plotOptions.candlestick,{colors:u}=this.boxOptions,f=t=>Array.isArray(t)?t[g]:t,x=this.invertedYRatio,m=this.getOHLCValue(g,d);let b=m.o<m.c?[f(p.upward)]:[f(p.downward)];this.isBoxPlot&&(b=[f(u.lower),f(u.upper)]);let y=a,w=a,v=Math.min(m.o,m.c),A=Math.max(m.o,m.c),C=m.m;l.axisFlags.isXNumeric&&(e=(l.seriesData.seriesX[g][d]-l.globals.minX)/this.invertedXRatio-i/2);const _=e+i*this.visibleI;void 0===(null==(o=this.series[c])?void 0:o[d])||null===(null==(n=this.series[c])?void 0:n[d])?(v=a,A=a):(v=a+v/x,A=a+A/x,y=a+m.h/x,w=a+m.l/x,C=a+m.m/x);let S=h.move(v,_+i/2);l.globals.previousPaths.length>0&&(S=this.getPreviousPath(g,d));const k=[h.move(v,_)+h.line(v,_+i/2)+h.line(y,_+i/2)+h.line(y,_+i/2-i/4)+h.line(y,_+i/2+i/4)+h.line(y,_+i/2)+h.line(v,_+i/2)+h.line(v,_+i)+h.line(C,_+i)+h.line(C,_)+h.line(v+r/2,_),h.move(C,_)+h.line(C,_+i)+h.line(A,_+i)+h.line(A,_+i/2)+h.line(w,_+i/2)+h.line(w,_+i-i/4)+h.line(w,_+i/4)+h.line(w,_+i/2)+h.line(A,_+i/2)+h.line(A,_)+h.line(C,_)+"z"];return S+=h.move(v,_),l.axisFlags.isXNumeric||(e+=s),{pathTo:k,pathFrom:S,x:A,y:e,goalX:this.barHelpers.getGoalValues("x",a,null,c,d,0),barYPosition:_,color:b}}getOHLCValue(t,e){const s=this.w,i=this.coreUtils,a=s=>s[t]&&null!=s[t][e]?i.getLogValAtSeriesIndex(s[t][e],t):0,r=a(s.candleData.seriesCandleH),o=a(s.candleData.seriesCandleO),n=a(s.candleData.seriesCandleM),l=a(s.candleData.seriesCandleC),h=a(s.candleData.seriesCandleL);return{o:this.isBoxPlot?r:o,h:this.isBoxPlot?o:r,m:n,l:this.isBoxPlot?l:h,c:this.isBoxPlot?h:l}}}class Ia{constructor(t,e){this.ctx=e,this.w=t}checkColorRange(){const t=this.w;let e=!1;const s=t.config.plotOptions[t.config.chart.type];return s.colorScale.ranges.length>0&&s.colorScale.ranges.map(t=>{t.from<=0&&(e=!0)}),e}getShadeColor(t,e,s,i){const a=this.w;let r=1;const o=a.config.plotOptions[t].shadeIntensity,n=this.determineColor(t,e,s);a.globals.hasNegs||i?r=a.config.plotOptions[t].reverseNegativeShade?n.percent<0?n.percent/100*(1.25*o):(1-n.percent/100)*(1.25*o):n.percent<=0?1-(1+n.percent/100)*o:(1-n.percent/100)*o:(r=1-n.percent/100,"treemap"===t&&(r=(1-n.percent/100)*(1.25*o)));let l=n.color;const h=new Ns;if(a.config.plotOptions[t].enableShades)if("dark"===this.w.config.theme.mode){const t=h.shadeColor(-1*r,n.color);l=Ns.hexToRgba(Ns.isColorHex(t)?t:Ns.rgb2hex(t),a.config.fill.opacity)}else{const t=h.shadeColor(r,n.color);l=Ns.hexToRgba(Ns.isColorHex(t)?t:Ns.rgb2hex(t),a.config.fill.opacity)}return{color:l,colorProps:n}}determineColor(t,e,s){const i=this.w,a=i.seriesData.series[e][s],r=i.config.plotOptions[t];let o=r.colorScale.inverse?s:e;r.distributed&&"treemap"===i.config.chart.type&&(o=s);let n=i.globals.colors[o],l=null,h=Math.min(...i.seriesData.series[e]),c=Math.max(...i.seriesData.series[e]);r.distributed||"heatmap"!==t||(h=i.globals.minY,c=i.globals.maxY),void 0!==r.colorScale.min&&(h=r.colorScale.min<i.globals.minY?r.colorScale.min:i.globals.minY,c=r.colorScale.max>i.globals.maxY?r.colorScale.max:i.globals.maxY);const d=Math.abs(c)+Math.abs(h);let g=100*a/(0===d?d-1e-6:d);if(r.colorScale.ranges.length>0){r.colorScale.ranges.map(t=>{if(a>=t.from&&a<=t.to){n=t.color,l=t.foreColor?t.foreColor:null,h=t.from,c=t.to;const e=Math.abs(c)+Math.abs(h);g=100*a/(0===e?e-1e-6:e)}})}return{color:n,foreColor:l,percent:g}}calculateDataLabels({text:t,x:e,y:s,i:i,j:a,colorProps:r,fontSize:o}){const n=this.w.config.dataLabels,l=new ti(this.w),h=new li(this.w,this.ctx);let c=null;if(n.enabled){c=l.group({class:"apexcharts-data-labels"});const d=n.offsetX,g=n.offsetY,p=e+d,u=s+parseFloat(n.style.fontSize)/3+g;h.plotDataLabelsText({x:p,y:u,text:t,i:i,j:a,color:r.foreColor,parent:c,fontSize:o,dataLabelsConfig:n})}return c}}class Ha{constructor(t){this.w=t.w,this.lineCtx=t}sameValueSeriesFix(t,e){const s=this.w;if("gradient"===s.config.fill.type||"gradient"===s.config.fill.type[t]){if(new Ks(this.lineCtx.w).seriesHaveSameValues(t)){const s=e[t].slice();s[s.length-1]=s[s.length-1]+1e-6,e[t]=s}}return e}calculatePoints({series:t,realIndex:e,x:s,y:i,i:a,j:r,prevY:o}){const n=this.w,l=[],h=[];let c=this.lineCtx.categoryAxisCorrection+n.config.markers.offsetX;return n.axisFlags.isXNumeric&&(c=(n.seriesData.seriesX[e][0]-n.globals.minX)/this.lineCtx.xRatio+n.config.markers.offsetX),0===r&&(l.push(c),h.push(Ns.isNumber(t[a][0])?o+n.config.markers.offsetY:null)),l.push(s+n.config.markers.offsetX),h.push(Ns.isNumber(t[a][r+1])?i+n.config.markers.offsetY:null),{x:l,y:h}}checkPreviousPaths({pathFromLine:t,pathFromArea:e,realIndex:s}){const i=this.w;for(let a=0;a<i.globals.previousPaths.length;a++){const r=i.globals.previousPaths[a];("line"===r.type||"area"===r.type)&&r.paths.length>0&&parseInt(r.realIndex,10)===parseInt(s,10)&&("line"===r.type?(this.lineCtx.appendPathFrom=!1,t=i.globals.previousPaths[a].paths[0].d):"area"===r.type&&(this.lineCtx.appendPathFrom=!1,e=i.globals.previousPaths[a].paths[0].d,i.config.stroke.show&&i.globals.previousPaths[a].paths[1]&&(t=i.globals.previousPaths[a].paths[1].d)))}return{pathFromLine:t,pathFromArea:e}}determineFirstPrevY({i:t,realIndex:e,series:s,prevY:i,lineYPosition:a,translationsIndex:r}){var o,n,l;const h=this.w,c=h.config.chart.stacked&&!h.globals.comboCharts||h.config.chart.stacked&&h.globals.comboCharts&&(!this.w.config.chart.stackOnlyBar||"bar"===(null==(o=this.w.config.series[e])?void 0:o.type)||"column"===(null==(n=this.w.config.series[e])?void 0:n.type));if(void 0!==(null==(l=s[t])?void 0:l[0]))i=(a=c&&t>0?this.lineCtx.prevSeriesY[t-1][0]:this.lineCtx.zeroY)-s[t][0]/this.lineCtx.yRatio[r]+2*(this.lineCtx.isReversed?s[t][0]/this.lineCtx.yRatio[r]:0);else if(c&&t>0&&void 0===s[t][0])for(let e=t-1;e>=0;e--)if(null!==s[e][0]&&void 0!==s[e][0]){i=a=this.lineCtx.prevSeriesY[e][0];break}return{prevY:i,lineYPosition:a}}}const Fa=t=>{const e=function(t){const e=[];let s=t[0],i=t[1],a=e[0]=Ba(s,i),r=1;for(let o=t.length-1;r<o;r++)s=i,i=t[r+1],e[r]=.5*(a+(a=Ba(s,i)));return e[r]=a,e}(t),s=t.length-1,i=[];let a,r,o,n;for(let i=0;i<s;i++)o=Ba(t[i],t[i+1]),Math.abs(o)<1e-6?e[i]=e[i+1]=0:(a=e[i]/o,r=e[i+1]/o,n=a*a+r*r,n>9&&(n=3*o/Math.sqrt(n),e[i]=n*a,e[i+1]=n*r));for(let a=0;a<=s;a++)n=(t[Math.min(s,a+1)][0]-t[Math.max(0,a-1)][0])/(6*(1+e[a]*e[a])),i.push([n||0,e[a]*n||0]);return i},Ra={points(t){const e=Fa(t),s=t[1],i=t[0],a=[],r=e[1],o=e[0];a.push(i,[i[0]+o[0],i[1]+o[1],s[0]-r[0],s[1]-r[1],s[0],s[1]]);for(let s=2,i=e.length;s<i;s++){const i=t[s],r=e[s];a.push([i[0]-r[0],i[1]-r[1],i[0],i[1]])}return a},slice(t,e,s){const i=t.slice(e,s);if(e){if(s-e>1&&i[1].length<6){const t=i[0].length;i[1]=[2*i[0][t-2]-i[0][t-4],2*i[0][t-1]-i[0][t-3]].concat(i[1])}i[0]=i[0].slice(-2)}return i}};function Ba(t,e){return(e[1]-t[1])/(e[0]-t[0])}class Na{constructor(t,e,s,i){this.ctx=e,this.w=t,this.xyRatios=s,this.xRatio=0,this.yRatio=[],this.zRatio=0,this.baseLineY=[],this.pointsChart=!("bubble"!==this.w.config.chart.type&&"scatter"!==this.w.config.chart.type)||i,this.scatter=new ni(this.w,this.ctx),this.noNegatives=this.w.globals.minX===Number.MAX_VALUE,this.lineHelpers=new Ha(this),this.markers=new oi(this.w,this.ctx),this.prevSeriesY=[],this.categoryAxisCorrection=0,this.yaxisIndex=0,this.xDivision=0,this.zeroY=0,this.areaBottomY=0,this.strokeWidth=0,this.isReversed=!1,this.appendPathFrom=!1,this.elSeries=null,this.elPointsMain=null,this.elDataLabelsWrap=null}draw(t,e,s,i){var a;const r=this.w,o=new ti(this.w),n=r.globals.comboCharts?e:r.config.chart.type,l=o.group({class:`apexcharts-${n}-series apexcharts-plot-series`}),h=new Ks(this.w);this.yRatio=this.xyRatios.yRatio,this.zRatio=this.xyRatios.zRatio,this.xRatio=this.xyRatios.xRatio,this.baseLineY=this.xyRatios.baseLineY,t=h.getLogSeries(t),this.yRatio=h.getLogYRatios(this.yRatio),this.prevSeriesY=[];const c=[];for(let e=0;e<t.length;e++){t=this.lineHelpers.sameValueSeriesFix(e,t);const a=r.globals.comboCharts?s[e]:e,o=this.yRatio.length>1?a:0;this._initSerieVariables(t,e,a);const l=[],h=[],d=[];let g=r.globals.padHorizontal+this.categoryAxisCorrection;const p=1,u=[],f=[];vi.addCollapsedClassToSeries(this.w,this.elSeries,a),r.axisFlags.isXNumeric&&r.seriesData.seriesX.length>0&&(g=(r.seriesData.seriesX[a][0]-r.globals.minX)/this.xRatio),d.push(g);const x=g;let m;const b=x;let y=this.zeroY,w=this.zeroY;const v=0;y=this.lineHelpers.determineFirstPrevY({i:e,realIndex:a,series:t,prevY:y,lineYPosition:v,translationsIndex:o}).prevY,"monotoneCubic"===r.config.stroke.curve&&null===t[e][0]?l.push(null):l.push(y);const A=y;let C;"rangeArea"===n&&(C=this.lineHelpers.determineFirstPrevY({i:e,realIndex:a,series:i,prevY:w,lineYPosition:v,translationsIndex:o}),w=C.prevY,m=w,h.push(null!==l[0]?w:null));const _=this._calculatePathsFrom({type:n,series:t,i:e,realIndex:a,translationsIndex:o,prevX:b,prevY:y,prevY2:w}),S=[l[0]],k=[h[0]],E={type:n,series:t,realIndex:a,translationsIndex:o,i:e,x:g,y:p,pX:x,pY:A,pathsFrom:_,linePaths:u,areaPaths:f,seriesIndex:s,lineYPosition:v,xArrj:d,yArrj:l,y2Arrj:h,seriesRangeEnd:i},D=this._iterateOverDataPoints(Ds(Es({},E),{iterations:"rangeArea"===n?t[e].length-1:void 0,isRangeStart:!0}));if("rangeArea"===n){const t=this._calculatePathsFrom({series:i,i:e,realIndex:a,prevX:b,prevY:w}),s=this._iterateOverDataPoints(Ds(Es({},E),{series:i,xArrj:[g],yArrj:S,y2Arrj:k,pY:m,areaPaths:D.areaPaths,pathsFrom:t,iterations:i[e].length-1,isRangeStart:!1})),r=D.linePaths.length/2;for(let t=0;t<r;t++)D.linePaths[t]=s.linePaths[t+r]+D.linePaths[t];D.linePaths.splice(r),D.pathFromLine=s.pathFromLine+D.pathFromLine}else D.pathFromArea+="z";this._handlePaths({type:n,realIndex:a,i:e,paths:D}),this.elSeries.add(this.elPointsMain),this.elSeries.add(this.elDataLabelsWrap),c.push(this.elSeries)}if(void 0!==(null==(a=r.config.series[0])?void 0:a.zIndex)&&c.sort((t,e)=>Number(t.node.getAttribute("zIndex"))-Number(e.node.getAttribute("zIndex"))),r.config.chart.stacked)for(let t=c.length-1;t>=0;t--)l.add(c[t]);else for(let t=0;t<c.length;t++)l.add(c[t]);return l}_initSerieVariables(t,e,s){const i=this.w,a=new ti(this.w);this.xDivision=i.layout.gridWidth/(i.globals.dataPoints-("on"===i.config.xaxis.tickPlacement?1:0)),this.strokeWidth=Array.isArray(i.config.stroke.width)?i.config.stroke.width[s]:i.config.stroke.width;let r=0;this.yRatio.length>1&&(this.yaxisIndex=i.globals.seriesYAxisReverseMap[s],r=s),this.isReversed=i.config.yaxis[this.yaxisIndex]&&i.config.yaxis[this.yaxisIndex].reversed,this.zeroY=i.layout.gridHeight-this.baseLineY[r]-(this.isReversed?i.layout.gridHeight:0)+(this.isReversed?2*this.baseLineY[r]:0),this.areaBottomY=this.zeroY,(this.zeroY>i.layout.gridHeight||"end"===i.config.plotOptions.area.fillTo)&&(this.areaBottomY=i.layout.gridHeight),this.categoryAxisCorrection=this.xDivision/2;const o=i.config.series[s];if(this.elSeries=a.group({class:"apexcharts-series",zIndex:void 0!==o.zIndex?o.zIndex:s,seriesName:Ns.escapeString(i.seriesData.seriesNames[s])}),this.elPointsMain=a.group({class:"apexcharts-series-markers-wrap","data:realIndex":s}),i.globals.hasNullValues){const t=this.markers.plotChartMarkers({pointsPos:{x:[0],y:[i.layout.gridHeight+i.globals.markers.largestSize]},seriesIndex:e,j:0,pSize:.1,alwaysDrawMarker:!0,isVirtualPoint:!0});null!==t&&this.elPointsMain.add(t)}this.elDataLabelsWrap=a.group({class:"apexcharts-datalabels","data:realIndex":s});const n=t[e].length===i.globals.dataPoints;this.elSeries.attr({"data:longestSeries":n,rel:e+1,"data:realIndex":s}),this.appendPathFrom=!0}_calculatePathsFrom({type:t,series:e,i:s,realIndex:i,translationsIndex:a,prevX:r,prevY:o,prevY2:n}){const l=this.w,h=new ti(this.w);let c,d,g,p;if(null===e[s][0]){for(let t=0;t<e[s].length;t++)if(null!==e[s][t]){r=this.xDivision*t,o=this.zeroY-e[s][t]/this.yRatio[a],c=h.move(r,o),d=h.move(r,this.areaBottomY);break}}else c=h.move(r,o),"rangeArea"===t&&(c=h.move(r,n)+h.line(r,o)),d=h.move(r,this.areaBottomY)+h.line(r,o);if(g=h.move(0,this.areaBottomY)+h.line(0,this.areaBottomY),p=h.move(0,this.areaBottomY)+h.line(0,this.areaBottomY),l.globals.previousPaths.length>0){const t=this.lineHelpers.checkPreviousPaths({pathFromLine:g,pathFromArea:p,realIndex:i});g=t.pathFromLine,p=t.pathFromArea}return{prevX:r,prevY:o,linePath:c,areaPath:d,pathFromLine:g,pathFromArea:p}}_handlePaths({type:t,realIndex:e,i:s,paths:i}){const a=this.w,r=new ti(this.w),o=new ri(this.w);this.prevSeriesY.push(i.yArrj),a.globals.seriesXvalues[e]=i.xArrj,a.globals.seriesYvalues[e]=i.yArrj;const n=a.config.forecastDataPoints;if(n.count>0&&"rangeArea"!==t){const t=a.globals.seriesXvalues[e][a.globals.seriesXvalues[e].length-n.count-1],s=r.drawRect(t,0,a.layout.gridWidth,a.layout.gridHeight,0);a.dom.elForecastMask.appendChild(s.node);const i=r.drawRect(0,0,t,a.layout.gridHeight,0);a.dom.elNonForecastMask.appendChild(i.node)}this.pointsChart||a.globals.delayedElements.push({el:this.elPointsMain.node,index:e});const l={i:s,realIndex:e,animationDelay:s,initialSpeed:a.config.chart.animations.speed,dataChangeSpeed:a.config.chart.animations.dynamicAnimation.speed,className:`apexcharts-${t}`};if("area"===t){const t=o.fillPath({seriesNumber:e});for(let e=0;e<i.areaPaths.length;e++){const s=r.renderPaths(Ds(Es({},l),{pathFrom:i.pathFromArea,pathTo:i.areaPaths[e],stroke:"none",strokeWidth:0,strokeLineCap:null,fill:t}));this.elSeries.add(s)}}if(a.config.stroke.show&&!this.pointsChart){let h=null;if("line"===t)h=o.fillPath({seriesNumber:e,i:s});else if("solid"===a.config.stroke.fill.type)h=a.globals.stroke.colors[e];else{const t=a.config.fill;a.config.fill=a.config.stroke.fill,h=o.fillPath({seriesNumber:e,i:s}),a.config.fill=t}for(let s=0;s<i.linePaths.length;s++){let c=h;"rangeArea"===t&&(c=o.fillPath({seriesNumber:e}));const d=Ds(Es({},l),{pathFrom:i.pathFromLine,pathTo:i.linePaths[s],stroke:h,strokeWidth:this.strokeWidth,strokeLineCap:a.config.stroke.lineCap,fill:"rangeArea"===t?c:"none"}),g=r.renderPaths(d);if(this.elSeries.add(g),g.attr("fill-rule","evenodd"),n.count>0&&"rangeArea"!==t){const t=r.renderPaths(d);t.node.setAttribute("stroke-dasharray",n.dashArray),n.strokeWidth&&t.node.setAttribute("stroke-width",n.strokeWidth),this.elSeries.add(t),t.attr("clip-path",`url(#forecastMask${a.globals.cuid})`),g.attr("clip-path",`url(#nonForecastMask${a.globals.cuid})`)}}}}_iterateOverDataPoints({type:t,series:e,iterations:s,realIndex:i,translationsIndex:a,i:r,x:o,y:n,pX:l,pY:h,pathsFrom:c,linePaths:d,areaPaths:g,seriesIndex:p,lineYPosition:u,xArrj:f,yArrj:x,y2Arrj:m,isRangeStart:b,seriesRangeEnd:y}){var w,v;const A=this.w,C=new ti(this.w),_=this.yRatio;let{prevY:S,linePath:k,areaPath:E,pathFromLine:D,pathFromArea:L}=c;const P=Ns.isNumber(A.globals.minYArr[i])?A.globals.minYArr[i]:A.globals.minY;s||(s=A.globals.dataPoints>1?A.globals.dataPoints-1:A.globals.dataPoints);const M=(t,e)=>e-t/_[a]+2*(this.isReversed?t/_[a]:0);let T=n;const I=A.config.chart.stacked&&!A.globals.comboCharts||A.config.chart.stacked&&A.globals.comboCharts&&(!this.w.config.chart.stackOnlyBar||"bar"===(null==(w=this.w.config.series[i])?void 0:w.type)||"column"===(null==(v=this.w.config.series[i])?void 0:v.type));let H=A.config.stroke.curve;Array.isArray(H)&&(H=Array.isArray(p)?H[p[r]]:H[r]);let F,R=0;for(let a=0;a<s&&0!==e[r].length;a++){const c=void 0===e[r][a+1]||null===e[r][a+1];if(A.axisFlags.isXNumeric){let t=A.seriesData.seriesX[i][a+1];void 0===A.seriesData.seriesX[i][a+1]&&(t=A.seriesData.seriesX[i][s-1]),o=(t-A.globals.minX)/this.xRatio}else o+=this.xDivision;if(I)if(r>0&&A.globals.collapsedSeries.length<A.config.series.length-1){const t=t=>{for(let e=t;e>0;e--){if(!(A.globals.collapsedSeriesIndices.indexOf((null==p?void 0:p[e])||e)>-1))return e;e--}return 0};u=this.prevSeriesY[t(r-1)][a+1]}else u=this.zeroY;else u=this.zeroY;c?n=M(P,u):(n=M(e[r][a+1],u),"rangeArea"===t&&(T=M(y[r][a+1],u))),f.push(null===e[r][a+1]?null:o),!c||"smooth"!==A.config.stroke.curve&&"monotoneCubic"!==A.config.stroke.curve?(x.push(n),m.push(T)):(x.push(null),m.push(null));const w=this.lineHelpers.calculatePoints({series:e,x:o,y:n,realIndex:i,i:r,j:a,prevY:S}),v=this._createPaths({type:t,series:e,i:r,j:a,x:o,y:n,y2:T,xArrj:f,yArrj:x,y2Arrj:m,pX:l,pY:h,pathState:R,segmentStartX:F,linePath:k,areaPath:E,linePaths:d,areaPaths:g,curve:H,isRangeStart:b});g=v.areaPaths,d=v.linePaths,l=v.pX,h=v.pY,R=v.pathState,F=v.segmentStartX,E=v.areaPath,k=v.linePath,!this.appendPathFrom||A.globals.hasNullValues||"monotoneCubic"===H&&"rangeArea"===t||(D+=C.line(o,this.areaBottomY),L+=C.line(o,this.areaBottomY)),this.handleNullDataPoints(e,w,r,a,i),this._handleMarkersAndLabels({type:t,pointsPos:w,i:r,j:a,realIndex:i,isRangeStart:b})}return{yArrj:x,xArrj:f,pathFromArea:L,areaPaths:g,pathFromLine:D,linePaths:d,linePath:k,areaPath:E}}_handleMarkersAndLabels({type:t,pointsPos:e,isRangeStart:s,i:i,j:a,realIndex:r}){const o=this.w,n=new li(this.w,this.ctx);if(this.pointsChart)this.scatter.draw(this.elSeries,a,{realIndex:r,pointsPos:e,zRatio:this.zRatio,elParent:this.elPointsMain});else{o.seriesData.series[i].length>1&&this.elPointsMain.node.classList.add("apexcharts-element-hidden");const t=this.markers.plotChartMarkers({pointsPos:e,seriesIndex:r,j:a+1});null!==t&&this.elPointsMain.add(t)}const l=n.drawDataLabel({type:t,isRangeStart:s,pos:e,i:r,j:a+1});null!==l&&this.elDataLabelsWrap.add(l)}_createPaths({type:t,series:e,i:s,j:i,x:a,y:r,xArrj:o,yArrj:n,y2:l,y2Arrj:h,pX:c,pY:d,pathState:g,segmentStartX:p,linePath:u,areaPath:f,linePaths:x,areaPaths:m,curve:b,isRangeStart:y}){const w=new ti(this.w),v=this.areaBottomY,A="rangeArea"===t,C="rangeArea"===t&&y;switch(b){case"monotoneCubic":{const t=y?n:h,a=(t,e)=>t.map((t,s)=>[t,e[s]]).filter(t=>null!==t[1]),r=t=>{const e=[];let s=0;return t.forEach(t=>{null!==t?s++:s>0&&(e.push(s),s=0)}),s>0&&e.push(s),e},l=(t,e)=>{const s=r(t),i=[];for(let t=0,a=0;t<s.length;a+=s[t++])i[t]=Ra.slice(e,a,a+s[t]);return i};switch(g){case 0:if(null===t[i+1])break;g=1;case 1:if(!(A?o.length===e[s].length:i===e[s].length-2))break;case 2:{const e=y?o:o.slice().reverse(),s=y?t:t.slice().reverse(),i=a(e,s),r=i.length>1?Ra.points(i):i;let n=[];A&&(C?m=i:n=m.reverse());let h=0,c=0;if(l(s,r).forEach(t=>{h++;const e=(t=>{let e="";for(let s=0;s<t.length;s++){const i=t[s],a=i.length;a>4?(e+=`C${i[0]}, ${i[1]}`,e+=`, ${i[2]}, ${i[3]}`,e+=`, ${i[4]}, ${i[5]}`):a>2&&(e+=`S${i[0]}, ${i[1]}`,e+=`, ${i[2]}, ${i[3]}`)}return e})(t),s=c;c+=t.length;const a=c-1;C?u=w.move(i[s][0],i[s][1])+e:A?u=w.move(n[s][0],n[s][1])+w.line(i[s][0],i[s][1])+e+w.line(n[a][0],n[a][1]):(u=w.move(i[s][0],i[s][1])+e,f=u+w.line(i[a][0],v)+w.line(i[s][0],v)+"z",m.push(f)),x.push(u)}),A&&h>1&&!C){const t=x.slice(h).reverse();x.splice(h),t.forEach(t=>x.push(t))}g=0;break}}break}case"smooth":{const t=.35*(a-c);if(null===e[s][i])g=0;else switch(g){case 0:if(p=c,u=C?w.move(c,h[i])+w.line(c,d):w.move(c,d),f=w.move(c,d),null===e[s][i+1]||void 0===e[s][i+1]){x.push(u),m.push(f);break}if(g=1,i<e[s].length-2){const e=w.curve(c+t,d,a-t,r,a,r);u+=e,f+=e;break}case 1:if(null===e[s][i+1])u+=C?w.line(c,l):w.move(c,d),f+=w.line(c,v)+w.line(p,v)+"z",x.push(u),m.push(f),g=-1;else{const o=w.curve(c+t,d,a-t,r,a,r);u+=o,f+=o,i>=e[s].length-2&&(C&&(u+=w.curve(a,r,a,r,a,l)+w.move(a,l)),f+=w.curve(a,r,a,r,a,v)+w.line(p,v)+"z",x.push(u),m.push(f),g=-1)}}c=a,d=r;break}default:{const t=(t,e,s)=>{let i="";switch(t){case"stepline":i=w.line(e,null,"H")+w.line(null,s,"V");break;case"linestep":i=w.line(null,s,"V")+w.line(e,null,"H");break;case"straight":i=w.line(e,s)}return i};if(null===e[s][i])g=0;else switch(g){case 0:if(p=c,u=C?w.move(c,h[i])+w.line(c,d):w.move(c,d),f=w.move(c,d),null===e[s][i+1]||void 0===e[s][i+1]){x.push(u),m.push(f);break}if(g=1,i<e[s].length-2){const e=t(b,a,r);u+=e,f+=e;break}case 1:if(null===e[s][i+1])u+=C?w.line(c,l):w.move(c,d),f+=w.line(c,v)+w.line(p,v)+"z",x.push(u),m.push(f),g=-1;else{const o=t(b,a,r);u+=o,f+=o,i>=e[s].length-2&&(C&&(u+=w.line(a,l)),f+=w.line(a,v)+w.line(p,v)+"z",x.push(u),m.push(f),g=-1)}}c=a,d=r;break}}return{linePaths:x,areaPaths:m,pX:c,pY:d,pathState:g,segmentStartX:p,linePath:u,areaPath:f}}handleNullDataPoints(t,e,s,i,a){const r=this.w;if(null===t[s][i]&&r.config.markers.showNullDataPoints||1===t[s].length){let t=this.strokeWidth-r.config.markers.strokeWidth/2;t>0||(t=0);const s=this.markers.plotChartMarkers({pointsPos:e,seriesIndex:a,j:i+1,pSize:t,alwaysDrawMarker:!0});null!==s&&this.elPointsMain.add(s)}}}class za{constructor(t){this.w=t}drawYAxisTexts(t,e,s,i){const a=this.w,r=a.config.yaxis[0],o=a.formatters.yLabelFormatters[0];return new ti(this.w).drawText({x:t+r.labels.offsetX,y:e+r.labels.offsetY,text:o(i,s),textAnchor:"middle",fontSize:r.labels.style.fontSize,fontFamily:r.labels.style.fontFamily,foreColor:Array.isArray(r.labels.style.colors)?r.labels.style.colors[s]:r.labels.style.colors})}}class Oa{constructor(t,e){this.ctx=e,this.w=t,this.chartType=this.w.config.chart.type,this.initialAnim=this.w.config.chart.animations.enabled,this.dynamicAnim=this.initialAnim&&this.w.config.chart.animations.dynamicAnimation.enabled,this.animBeginArr=[0],this.animDur=0,this.donutDataLabels=this.w.config.plotOptions.pie.donut.labels,this.lineColorArr=void 0!==t.globals.stroke.colors?t.globals.stroke.colors:t.globals.colors,this.defaultSize=Math.min(t.layout.gridWidth,t.layout.gridHeight),this.centerY=this.defaultSize/2,this.centerX=t.layout.gridWidth/2,"radialBar"===t.config.chart.type?this.fullAngle=360:this.fullAngle=Math.abs(t.config.plotOptions.pie.endAngle-t.config.plotOptions.pie.startAngle),this.initialAngle=t.config.plotOptions.pie.startAngle%this.fullAngle,t.globals.radialSize=this.defaultSize/2.05-t.config.stroke.width-(t.config.chart.sparkline.enabled?0:t.config.chart.dropShadow.blur),this.donutSize=t.globals.radialSize*parseInt(t.config.plotOptions.pie.donut.size,10)/100;const s=t.config.plotOptions.pie.customScale,i=t.layout.gridWidth/2,a=t.layout.gridHeight/2;this.translateX=i-i*s,this.translateY=a-a*s,this.dataLabelsGroup=new ti(this.w).group({class:"apexcharts-datalabels-group",transform:`translate(${this.translateX}, ${this.translateY}) scale(${s})`}),this.maxY=0,this.sliceLabels=[],this.sliceSizes=[],this.prevSectorAngleArr=[]}draw(t){const e=this.w,s=new ti(this.w),i=s.group({class:"apexcharts-pie"});if(e.globals.noData)return i;let a=0;for(let e=0;e<t.length;e++)a+=Ns.negToZero(t[e]);const r=[],o=s.group();0===a&&(a=1e-5),t.forEach(t=>{this.maxY=Math.max(this.maxY,t)}),e.config.yaxis[0].max&&(this.maxY=e.config.yaxis[0].max),"back"===e.config.grid.position&&"polarArea"===this.chartType&&this.drawPolarElements(i);for(let s=0;s<t.length;s++){const i=this.fullAngle*Ns.negToZero(t[s])/a;r.push(i),"polarArea"===this.chartType?(r[s]=this.fullAngle/t.length,this.sliceSizes.push(e.globals.radialSize*t[s]/this.maxY)):this.sliceSizes.push(e.globals.radialSize)}if(e.globals.dataChanged){let t,s=0;for(let t=0;t<e.globals.previousPaths.length;t++)s+=Ns.negToZero(e.globals.previousPaths[t]);for(let i=0;i<e.globals.previousPaths.length;i++)t=this.fullAngle*Ns.negToZero(e.globals.previousPaths[i])/s,this.prevSectorAngleArr.push(t)}if(this.donutSize<0&&(this.donutSize=0),"donut"===this.chartType){const t=s.drawCircle(this.donutSize);t.attr({cx:this.centerX,cy:this.centerY,fill:e.config.plotOptions.pie.donut.background?e.config.plotOptions.pie.donut.background:"transparent"}),o.add(t)}const n=this.drawArcs(r,t);if(this.sliceLabels.forEach(t=>{n.add(t)}),o.attr({transform:`translate(${this.translateX}, ${this.translateY}) scale(${e.config.plotOptions.pie.customScale})`}),o.add(n),i.add(o),this.donutDataLabels.show){const t=this.renderInnerDataLabels(this.dataLabelsGroup,this.donutDataLabels,{hollowSize:this.donutSize,centerX:this.centerX,centerY:this.centerY,opacity:this.donutDataLabels.show});i.add(t)}return"front"===e.config.grid.position&&"polarArea"===this.chartType&&this.drawPolarElements(i),i}drawArcs(t,e){const s=this.w,i=new Qs(this.w),a=new ti(this.w),r=new ri(this.w),o=a.group({class:"apexcharts-slices"});let n=this.initialAngle,l=this.initialAngle,h=this.initialAngle,c=this.initialAngle;this.strokeWidth=s.config.stroke.show?s.config.stroke.width:0;for(let d=0;d<t.length;d++){const g=a.group({class:"apexcharts-series apexcharts-pie-series",seriesName:Ns.escapeString(s.seriesData.seriesNames[d]),rel:d+1,"data:realIndex":d});o.add(g),n=h,l=c,h=n+t[d],c=l+this.prevSectorAngleArr[d];const p=h<n?this.fullAngle+h-n:h-n,u=r.fillPath({seriesNumber:d,size:this.sliceSizes[d],value:e[d]}),f=this.getChangedPath(l,c),x=a.drawPath({d:f,stroke:Array.isArray(this.lineColorArr)?this.lineColorArr[d]:this.lineColorArr,strokeWidth:0,fill:u,fillOpacity:s.config.fill.opacity,classes:`apexcharts-pie-area apexcharts-${this.chartType.toLowerCase()}-slice-${d}`});if(x.attr({index:0,j:d}),i.setSelectionFilter(x,0,d),s.config.chart.dropShadow.enabled){const t=s.config.chart.dropShadow;i.dropShadow(x,t,d)}this.addListeners(x,this.donutDataLabels);let m={x:0,y:0};const b=(n+p/2)%this.fullAngle;let y={x:this.centerX,y:this.centerY};"pie"===this.chartType||"polarArea"===this.chartType?(m=Ns.polarToCartesian(this.centerX,this.centerY,s.globals.radialSize/1.25+s.config.plotOptions.pie.dataLabels.offset,b),y=Ns.polarToCartesian(this.centerX,this.centerY,s.globals.radialSize/2,b)):"donut"===this.chartType&&(m=Ns.polarToCartesian(this.centerX,this.centerY,(s.globals.radialSize+this.donutSize)/2+s.config.plotOptions.pie.dataLabels.offset,b),y=Ns.polarToCartesian(this.centerX,this.centerY,(s.globals.radialSize+this.donutSize)/2,b)),ti.setAttrs(x.node,{"data:angle":p,"data:startAngle":n,"data:strokeWidth":this.strokeWidth,"data:value":e[d],"data:cx":y.x,"data:cy":y.y}),g.add(x);let w=0;if(!this.initialAnim||s.globals.resized||s.globals.dataChanged?this.animBeginArr.push(0):(w=p/this.fullAngle*s.config.chart.animations.speed,0===w&&(w=1),this.animDur=w+this.animDur,this.animBeginArr.push(this.animDur)),this.dynamicAnim&&s.globals.dataChanged?this.animatePaths(x,{size:this.sliceSizes[d],endAngle:h,startAngle:n,prevStartAngle:l,prevEndAngle:c,animateStartingPos:!0,i:d,animBeginArr:this.animBeginArr,shouldSetPrevPaths:!0,dur:s.config.chart.animations.dynamicAnimation.speed}):this.animatePaths(x,{size:this.sliceSizes[d],endAngle:h,startAngle:n,i:d,totalItems:t.length-1,animBeginArr:this.animBeginArr,dur:w}),s.config.plotOptions.pie.expandOnClick&&"polarArea"!==this.chartType&&x.node.addEventListener("mouseup",this.pieClicked.bind(this,d)),void 0!==s.interact.selectedDataPoints[0]&&s.interact.selectedDataPoints[0].indexOf(d)>-1&&this.pieClicked(d),s.config.dataLabels.enabled){const e=m.x,r=m.y;let o=100*p/this.fullAngle+"%";if(0!==p&&s.config.plotOptions.pie.dataLabels.minAngleToShowLabel<t[d]){const t=s.config.dataLabels.formatter;void 0!==t&&(o=t(s.globals.seriesPercent[d][0],{seriesIndex:d,w:s}));const n=s.globals.dataLabels.style.colors[d],l=a.group({class:"apexcharts-datalabels"}),h=a.drawText({x:e,y:r,text:o,textAnchor:"middle",fontSize:s.config.dataLabels.style.fontSize,fontFamily:s.config.dataLabels.style.fontFamily,fontWeight:s.config.dataLabels.style.fontWeight,foreColor:n});if(l.add(h),s.config.dataLabels.dropShadow.enabled){const t=s.config.dataLabels.dropShadow;i.dropShadow(h,t)}h.node.classList.add("apexcharts-pie-label"),s.config.chart.animations.animate&&!1===s.globals.resized&&(h.node.classList.add("apexcharts-pie-label-delay"),h.node.style.animationDelay=s.config.chart.animations.speed/940+"s"),this.sliceLabels.push(l)}}}return o}addListeners(t,e){const s=new ti(this.w);t.node.addEventListener("mouseenter",s.pathMouseEnter.bind(this,t)),t.node.addEventListener("mouseleave",s.pathMouseLeave.bind(this,t)),t.node.addEventListener("mouseleave",this.revertDataLabelsInner.bind(this)),t.node.addEventListener("mousedown",s.pathMouseDown.bind(this,t)),this.donutDataLabels.total.showAlways||(t.node.addEventListener("mouseenter",this.printDataLabelsInner.bind(this,t.node,e)),t.node.addEventListener("mousedown",this.printDataLabelsInner.bind(this,t.node,e)))}animatePaths(t,e){const s=this.w;let i=e.endAngle<e.startAngle?this.fullAngle+e.endAngle-e.startAngle:e.endAngle-e.startAngle,a=i,r=e.startAngle;const o=e.startAngle;void 0!==e.prevStartAngle&&void 0!==e.prevEndAngle&&(r=e.prevEndAngle,a=e.prevEndAngle<e.prevStartAngle?this.fullAngle+e.prevEndAngle-e.prevStartAngle:e.prevEndAngle-e.prevStartAngle),e.i===s.config.series.length-1&&(i+o>this.fullAngle?e.endAngle=e.endAngle-(i+o):i+o<this.fullAngle&&(e.endAngle=e.endAngle+(this.fullAngle-(i+o)))),i===this.fullAngle&&(i=this.fullAngle-.01),this.animateArc(t,r,o,i,a,e)}animateArc(t,e,s,i,a,r){const o=this,n=this.w,l=new Js(this.w),h=r.size;let c;(isNaN(e)||isNaN(a))&&(e=s,a=i,r.dur=0);let d=i,g=s;const p=e<s?this.fullAngle+e-s:e-s;n.globals.dataChanged&&r.shouldSetPrevPaths&&r.prevEndAngle&&(c=o.getPiePath({me:o,startAngle:r.prevStartAngle,angle:r.prevEndAngle<r.prevStartAngle?this.fullAngle+r.prevEndAngle-r.prevStartAngle:r.prevEndAngle-r.prevStartAngle,size:h}),t.attr({d:c})),0!==r.dur?t.animate(r.dur,r.animBeginArr[r.i]).after(function(){"pie"!==o.chartType&&"donut"!==o.chartType&&"polarArea"!==o.chartType||this.animate(n.config.chart.animations.dynamicAnimation.speed).attr({"stroke-width":o.strokeWidth}),r.i===n.config.series.length-1&&l.animationCompleted(t)}).during(n=>{d=p+(i-p)*n,r.animateStartingPos&&(d=a+(i-a)*n,g=e-a+(s-(e-a))*n),c=o.getPiePath({me:o,startAngle:g,angle:d,size:h}),t.node.setAttribute("data:pathOrig",c),t.attr({d:c})}):(c=o.getPiePath({me:o,startAngle:g,angle:i,size:h}),r.isTrack||(n.globals.animationEnded=!0),t.node.setAttribute("data:pathOrig",c),t.attr({d:c,"stroke-width":o.strokeWidth}))}pieClicked(t){const e=this.w,s=this,i=s.sliceSizes[t]+(e.config.plotOptions.pie.expandOnClick?4:0),a=e.dom.Paper.findOne(`.apexcharts-${s.chartType.toLowerCase()}-slice-${t}`);if("true"===a.attr("data:pieClicked")){a.attr({"data:pieClicked":"false"}),this.revertDataLabelsInner();const t=a.attr("data:pathOrig");return void a.attr({d:t})}{const s=e.dom.baseEl.getElementsByClassName("apexcharts-pie-area");Array.prototype.forEach.call(s,t=>{t.setAttribute("data:pieClicked","false");const e=t.getAttribute("data:pathOrig");e&&t.setAttribute("d",e)}),e.interact.capturedDataPointIndex=t,a.attr("data:pieClicked","true")}const r=parseInt(a.attr("data:startAngle"),10),o=parseInt(a.attr("data:angle"),10),n=s.getPiePath({me:s,startAngle:r,angle:o,size:i});360!==o&&a.plot(n)}getChangedPath(t,e){let s="";return this.dynamicAnim&&this.w.globals.dataChanged&&(s=this.getPiePath({me:this,startAngle:t,angle:e-t,size:this.size})),s}getPiePath({me:t,startAngle:e,angle:s,size:i}){let a;const r=new ti(this.w),o=e,n=Math.PI*(o-90)/180;let l=s+e;Math.ceil(l)>=this.fullAngle+this.w.config.plotOptions.pie.startAngle%this.fullAngle&&(l=this.fullAngle+this.w.config.plotOptions.pie.startAngle%this.fullAngle-.01),Math.ceil(l)>this.fullAngle&&(l-=this.fullAngle);const h=Math.PI*(l-90)/180,c=t.centerX+i*Math.cos(n),d=t.centerY+i*Math.sin(n),g=t.centerX+i*Math.cos(h),p=t.centerY+i*Math.sin(h),u=Ns.polarToCartesian(t.centerX,t.centerY,t.donutSize,l),f=Ns.polarToCartesian(t.centerX,t.centerY,t.donutSize,o),x=s>180?1:0,m=["M",c,d,"A",i,i,0,x,1,g,p];return a="donut"===t.chartType?[...m,"L",u.x,u.y,"A",t.donutSize,t.donutSize,0,x,0,f.x,f.y,"L",c,d,"z"].join(" "):"pie"===t.chartType||"polarArea"===t.chartType?[...m,"L",t.centerX,t.centerY,"L",c,d].join(" "):[...m].join(" "),r.roundPathCorners(a,2*this.strokeWidth)}drawPolarElements(t){const e=this.w,s=new pi(this.w),i=new ti(this.w),a=new za(this.w),r=i.group(),o=i.group(),n=s.niceScale(0,Math.ceil(this.maxY),0),l=n.result.reverse(),h=n.result.length;this.maxY=n.niceMax;let c=e.globals.radialSize;const d=c/(h-1);for(let t=0;t<h-1;t++){const s=i.drawCircle(c);if(s.attr({cx:this.centerX,cy:this.centerY,fill:"none","stroke-width":e.config.plotOptions.polarArea.rings.strokeWidth,stroke:e.config.plotOptions.polarArea.rings.strokeColor}),e.config.yaxis[0].show){const s=a.drawYAxisTexts(this.centerX,this.centerY-c+parseInt(e.config.yaxis[0].labels.style.fontSize,10)/2,t,l[t]);o.add(s)}r.add(s),c-=d}this.drawSpokes(t),t.add(r),t.add(o)}renderInnerDataLabels(t,e,s){const i=this.w,a=new ti(this.w),r=e.total.show;t.node.innerHTML="",t.node.style.opacity=s.opacity;const o=s.centerX,n=this.donutDataLabels.total.label?s.centerY:s.centerY-s.centerY/6;let l,h;l=void 0===e.name.color?i.globals.colors[0]:e.name.color;let c=e.name.fontSize,d=e.name.fontFamily,g=e.name.fontWeight;h=void 0===e.value.color?i.config.chart.foreColor:e.value.color;const p=e.value.formatter;let u="",f="";if(r?(l=e.total.color,c=e.total.fontSize,d=e.total.fontFamily,g=e.total.fontWeight,f=this.donutDataLabels.total.label?e.total.label:"",u=e.total.formatter(i)):1===i.seriesData.series.length&&(u=p(i.seriesData.series[0],i),f=i.seriesData.seriesNames[0]),f&&(f=e.name.formatter(f,e.total.show,i)),e.name.show){const s=a.drawText({x:o,y:n+parseFloat(e.name.offsetY),text:f,textAnchor:"middle",foreColor:l,fontSize:c,fontWeight:g,fontFamily:d});s.node.classList.add("apexcharts-datalabel-label"),t.add(s)}if(e.value.show){const s=e.name.show?parseFloat(e.value.offsetY)+16:e.value.offsetY,i=a.drawText({x:o,y:n+s,text:u,textAnchor:"middle",foreColor:h,fontWeight:e.value.fontWeight,fontSize:e.value.fontSize,fontFamily:e.value.fontFamily});i.node.classList.add("apexcharts-datalabel-value"),t.add(i)}return t}printInnerLabels(t,e,s,i){const a=this.w;let r;i?r=void 0===t.name.color?a.globals.colors[parseInt(i.parentNode.getAttribute("rel"),10)-1]:t.name.color:a.seriesData.series.length>1&&t.total.show&&(r=t.total.color);const o=a.dom.baseEl.querySelector(".apexcharts-datalabel-label"),n=a.dom.baseEl.querySelector(".apexcharts-datalabel-value");s=(0,t.value.formatter)(s,a),i||"function"!=typeof t.total.formatter||(s=t.total.formatter(a));const l=e===t.total.label;if(e=this.donutDataLabels.total.label?t.name.formatter(e,l,a):"",null!==o&&(o.textContent=e),null!==n&&(n.textContent=s),null!==o){o.style.fill=r}}printDataLabelsInner(t,e){const s=this.w,i=t.getAttribute("data:value"),a=s.seriesData.seriesNames[parseInt(t.parentNode.getAttribute("rel"),10)-1];s.seriesData.series.length>1&&this.printInnerLabels(e,a,i,t);const r=s.dom.baseEl.querySelector(".apexcharts-datalabels-group");if(null!==r){r.style.opacity="1"}}drawSpokes(t){const e=this.w,s=new ti(this.w),i=e.config.plotOptions.polarArea.spokes;if(0===i.strokeWidth)return;const a=[],r=360/e.seriesData.series.length;for(let t=0;t<e.seriesData.series.length;t++)a.push(Ns.polarToCartesian(this.centerX,this.centerY,e.globals.radialSize,e.config.plotOptions.pie.startAngle+r*t));a.forEach((e,a)=>{const r=s.drawLine(e.x,e.y,this.centerX,this.centerY,Array.isArray(i.connectorColors)?i.connectorColors[a]:i.connectorColors);t.add(r)})}revertDataLabelsInner(){const t=this.w;if(this.donutDataLabels.show){const e=t.dom.Paper.findOne(".apexcharts-datalabels-group"),s=this.renderInnerDataLabels(e,this.donutDataLabels,{hollowSize:this.donutSize,centerX:this.centerX,centerY:this.centerY,opacity:this.donutDataLabels.show});t.dom.Paper.findOne(".apexcharts-radialbar, .apexcharts-pie").add(s)}}}function Xa(t,e){let s=0;for(let e=0;e<t.length;e++)s+=t[e];const i=e/s,a=new Array(t.length);for(let e=0;e<t.length;e++)a[e]=t[e]*i;return a}function Ya(t,e,s,i){const a=i*i,r=s*s;return Math.max(a*e/r,r/(a*t))}function $a(t,e,s,i,a,r){if(0===t)return!0;return Ya(e,s,i,r)>=Ya(Math.min(e,a),Math.max(s,a),i+a,r)}function Wa(t,e,s,i,a,r,o,n){if(o>=n){const o=i/n;let l=r;for(let i=0;i<s;i++){const s=e[i]/o;t.push([a,l,a+o,l+s]),l+=s}}else{const n=i/o;let l=a;for(let i=0;i<s;i++){const s=e[i]/n;t.push([l,r,l+s,r+n]),l+=s}}}function Ga(t,e,s,i,a){const r=[],o=t.length;if(0===o)return r;const n=new Array(o);let l=0,h=0,c=1/0,d=-1/0,g=0;for(;g<o;){const o=Math.min(i,a),p=t[g];if($a(l,c,d,h,p,o))n[l]=p,l++,h+=p,p<c&&(c=p),p>d&&(d=p),g++;else{if(Wa(r,n,l,h,e,s,i,a),i>=a){const t=h/a;e+=t,i-=t}else{const t=h/i;s+=t,a-=t}l=0,h=0,c=1/0,d=-1/0}}return l>0&&Wa(r,n,l,h,e,s,i,a),r}const Ua={generate:function(t,e,s){const i=t.length,a=new Array(i);for(let e=0;e<i;e++){let s=0;const i=t[e];for(let t=0;t<i.length;t++)s+=i[t];a[e]=s}const r=Ga(Xa(a,e*s),0,0,e,s),o=new Array(i);for(let e=0;e<i;e++){const s=r[e],i=s[0],a=s[1],n=s[2]-i,l=s[3]-a;o[e]=Ga(Xa(t[e],n*l),i,a,n,l)}return o}};wa.use({line:Na,area:Na,scatter:Na,bubble:Na,rangeArea:Na,bar:Ma,column:Ma,barStacked:class extends Ma{draw(t,e){const s=this.w;this.graphics=new ti(this.w),this.bar=new Ma(this.w,this.ctx,this.xyRatios);const i=new Ks(this.w);t=i.getLogSeries(t),this.yRatio=i.getLogYRatios(this.yRatio),this.barHelpers.initVariables(t),"100%"===s.config.chart.stackType&&(t=s.globals.comboCharts?e.map(t=>s.globals.seriesPercent[t]):s.globals.seriesPercent.slice()),this.series=t,this.barHelpers.initializeStackedPrevVars(this);const a=this.graphics.group({class:"apexcharts-bar-series apexcharts-plot-series"});let r=0,o=0;for(let i=0,n=0;i<t.length;i++,n++){const l=s.globals.comboCharts?e[i]:i,{groupIndex:h,columnGroupIndex:c}=this.barHelpers.getGroupIndex(l);this.groupCtx=this[s.labelData.seriesGroups[h]];const d=[],g=[];let p=0;this.yRatio.length>1&&(this.yaxisIndex=s.globals.seriesYAxisReverseMap[l][0],p=l),this.isReversed=s.config.yaxis[this.yaxisIndex]&&s.config.yaxis[this.yaxisIndex].reversed;let u=this.graphics.group({class:"apexcharts-series",seriesName:Ns.escapeString(s.seriesData.seriesNames[l]),rel:i+1,"data:realIndex":l});vi.addCollapsedClassToSeries(this.w,u,l);const f=this.graphics.group({class:"apexcharts-datalabels","data:realIndex":l}),x=this.graphics.group({class:"apexcharts-bar-goals-markers"}),m=this.initialPositions(r,o,void 0,void 0,void 0,void 0,p),{xDivision:b,yDivision:y,zeroH:w,zeroW:v}=m;let A=m.barHeight,C=m.barWidth;o=m.y,r=m.x,s.globals.barHeight=A,s.globals.barWidth=C,this.barHelpers.initializeStackedXYVars(this),1===this.groupCtx.prevY.length&&this.groupCtx.prevY[0].every(t=>isNaN(t))&&(this.groupCtx.prevY[0]=this.groupCtx.prevY[0].map(()=>w),this.groupCtx.prevYF[0]=this.groupCtx.prevYF[0].map(()=>0));for(let e=0;e<s.globals.dataPoints;e++){const a=this.barHelpers.getStrokeWidth(i,e,l),m={indexes:{i:i,j:e,realIndex:l,translationsIndex:p,bc:n},strokeWidth:a,x:r,y:o,elSeries:u,columnGroupIndex:c,seriesGroup:s.labelData.seriesGroups[h]};let _=null;this.isHorizontal?(_=this.drawStackedBarPaths(Ds(Es({},m),{zeroW:v,barHeight:A,yDivision:y})),C=this.series[i][e]/this.invertedYRatio):(_=this.drawStackedColumnPaths(Ds(Es({},m),{xDivision:b,barWidth:C,zeroH:w})),A=this.series[i][e]/this.yRatio[p]);const S=this.barHelpers.drawGoalLine({barXPosition:_.barXPosition,barYPosition:_.barYPosition,goalX:_.goalX,goalY:_.goalY,barHeight:A,barWidth:C});S&&x.add(S),o=_.y,r=_.x,d.push(r),g.push(o);const k=this.barHelpers.getPathFillColor(t,i,e,l);let E="";const D=s.globals.isBarHorizontal?"apexcharts-flip-x":"apexcharts-flip-y";("bottom"===this.barHelpers.arrBorderRadius[l][e]&&s.seriesData.series[l][e]>0||"top"===this.barHelpers.arrBorderRadius[l][e]&&s.seriesData.series[l][e]<0)&&(E=D),u=this.renderSeries(Ds(Es({realIndex:l,pathFill:k.color},k.useRangeColor?{lineFill:k.color}:{}),{j:e,i:i,columnGroupIndex:c,pathFrom:_.pathFrom,pathTo:_.pathTo,strokeWidth:a,elSeries:u,x:r,y:o,series:t,barHeight:A,barWidth:C,elDataLabelsWrap:f,elGoalsMarkers:x,type:"bar",visibleSeries:c,classes:E}))}s.globals.seriesXvalues[l]=d,s.globals.seriesYvalues[l]=g,this.groupCtx.prevY.push(this.groupCtx.yArrj),this.groupCtx.prevYF.push(this.groupCtx.yArrjF),this.groupCtx.prevYVal.push(this.groupCtx.yArrjVal),this.groupCtx.prevX.push(this.groupCtx.xArrj),this.groupCtx.prevXF.push(this.groupCtx.xArrjF),this.groupCtx.prevXVal.push(this.groupCtx.xArrjVal),a.add(u)}return a}initialPositions(t,e,s,i,a,r,o){const n=this.w;let l,h;if(this.isHorizontal){i=n.layout.gridHeight/n.globals.dataPoints;const t=n.config.plotOptions.bar.barHeight;l=-1===String(t).indexOf("%")?parseInt(t,10):i*parseInt(t,10)/100,r=n.globals.padHorizontal+(this.isReversed?n.layout.gridWidth-this.baseLineInvertedY:this.baseLineInvertedY),e=(i-l)/2}else{h=s=n.layout.gridWidth/n.globals.dataPoints;const e=n.config.plotOptions.bar.columnWidth;n.axisFlags.isXNumeric&&n.globals.dataPoints>1?h=(s=n.globals.minXDiff/this.xRatio)*parseInt(this.barOptions.columnWidth,10)/100:-1===String(e).indexOf("%")?h=parseInt(e,10):h*=parseInt(e,10)/100,a=this.isReversed?this.baseLineY[o]:n.layout.gridHeight-this.baseLineY[o],t=n.globals.padHorizontal+(s-h)/2}const c=n.globals.barGroups.length||1;return{x:t,y:e,yDivision:i,xDivision:s,barHeight:(null!=l?l:0)/c,barWidth:(null!=h?h:0)/c,zeroH:a,zeroW:r}}drawStackedBarPaths({indexes:t,barHeight:e,strokeWidth:s,zeroW:i,x:a,y:r,columnGroupIndex:o,seriesGroup:n,yDivision:l,elSeries:h}){var c,d,g,p,u;const f=this.w,x=r+o*e;let m;const b=t.i,y=t.j,w=t.realIndex,v=t.translationsIndex;let A=0;for(let t=0;t<this.groupCtx.prevXF.length;t++)A+=this.groupCtx.prevXF[t][y];let C=b;if(f.config.series[w].name&&(C=n.indexOf(f.config.series[w].name)),C>0){let t=i;this.groupCtx.prevXVal[C-1][y]<0?t=(null==(c=this.series[b])?void 0:c[y])>=0?this.groupCtx.prevX[C-1][y]+A-2*(this.isReversed?A:0):this.groupCtx.prevX[C-1][y]:this.groupCtx.prevXVal[C-1][y]>=0&&(t=(null==(d=this.series[b])?void 0:d[y])>=0?this.groupCtx.prevX[C-1][y]:this.groupCtx.prevX[C-1][y]-A+2*(this.isReversed?A:0)),m=t}else m=i;a=null===(null==(g=this.series[b])?void 0:g[y])?m:m+(null==(p=this.series[b])?void 0:p[y])/this.invertedYRatio-2*(this.isReversed?(null==(u=this.series[b])?void 0:u[y])/this.invertedYRatio:0);const _=this.barHelpers.getBarpaths({barYPosition:x,barHeight:e,x1:m,x2:a,strokeWidth:s,isReversed:this.isReversed,series:this.series,realIndex:t.realIndex,seriesGroup:n,i:b,j:y,w:f});return this.barHelpers.barBackground({j:y,i:b,y1:x,y2:e,elSeries:h}),r+=l,{pathTo:_.pathTo,pathFrom:_.pathFrom,goalX:this.barHelpers.getGoalValues("x",i,null,b,y,v),barXPosition:m,barYPosition:x,x:a,y:r}}drawStackedColumnPaths({indexes:t,x:e,y:s,xDivision:i,barWidth:a,zeroH:r,columnGroupIndex:o,seriesGroup:n,elSeries:l}){var h,c,d,g,p,u,f,x,m;const b=this.w,y=t.i,w=t.j,v=t.bc,A=t.realIndex,C=t.translationsIndex;if(b.axisFlags.isXNumeric){let t=b.seriesData.seriesX[A][w];t||(t=0),e=(t-b.globals.minX)/this.xRatio-a/2*b.globals.barGroups.length}const _=e+o*a;let S,k=0;for(let t=0;t<this.groupCtx.prevYF.length;t++)k+=isNaN(this.groupCtx.prevYF[t][w])?0:this.groupCtx.prevYF[t][w];let E=y;if(n&&(E=n.indexOf(b.seriesData.seriesNames[A])),E>0&&!b.axisFlags.isXNumeric||E>0&&b.axisFlags.isXNumeric&&b.seriesData.seriesX[A-1][w]===b.seriesData.seriesX[A][w]){let t,e;const s=Math.min(this.yRatio.length+1,A+1);if(void 0!==this.groupCtx.prevY[E-1]&&this.groupCtx.prevY[E-1].length)for(let t=1;t<s;t++)if(!isNaN(null==(h=this.groupCtx.prevY[E-t])?void 0:h[w])){e=this.groupCtx.prevY[E-t][w];break}for(let i=1;i<s;i++){if((null==(c=this.groupCtx.prevYVal[E-i])?void 0:c[w])<0){t=(null==(d=this.series[y])?void 0:d[w])>=0?e-k+2*(this.isReversed?k:0):e;break}if((null==(g=this.groupCtx.prevYVal[E-i])?void 0:g[w])>=0){t=(null==(p=this.series[y])?void 0:p[w])>=0?e:e+k-2*(this.isReversed?k:0);break}}void 0===t&&(t=b.layout.gridHeight),S=(null==(u=this.groupCtx.prevYF[0])?void 0:u.every(t=>0===t))&&this.groupCtx.prevYF.slice(1,E).every(t=>t.every(t=>isNaN(t)))?r:t}else S=r;s=(null==(f=this.series[y])?void 0:f[w])?S-(null==(x=this.series[y])?void 0:x[w])/this.yRatio[C]+2*(this.isReversed?(null==(m=this.series[y])?void 0:m[w])/this.yRatio[C]:0):S;const D=this.barHelpers.getColumnPaths({barXPosition:_,barWidth:a,y1:S,y2:s,yRatio:this.yRatio[C],strokeWidth:this.strokeWidth,isReversed:this.isReversed,series:this.series,seriesGroup:n,realIndex:t.realIndex,i:y,j:w,w:b});return this.barHelpers.barBackground({bc:v,j:w,i:y,x1:_,x2:a,elSeries:l}),{pathTo:D.pathTo,pathFrom:D.pathFrom,goalY:this.barHelpers.getGoalValues("y",null,r,y,w,0),barXPosition:_,x:b.axisFlags.isXNumeric?e:e+i,y:s}}},rangeBar:class extends Ma{draw(t,e){var s,i,a,r,o,n,l,h,c;const d=this.w,g=new ti(this.w);this.rangeBarOptions=this.w.config.plotOptions.rangeBar,this.series=t,this.seriesRangeStart=d.rangeData.seriesRangeStart,this.seriesRangeEnd=d.rangeData.seriesRangeEnd,this.barHelpers.initVariables(t);const p=g.group({class:"apexcharts-rangebar-series apexcharts-plot-series"});for(let u=0;u<t.length;u++){let f,x;const m=d.globals.comboCharts?e[u]:u,{columnGroupIndex:b}=this.barHelpers.getGroupIndex(m),y=g.group({class:"apexcharts-series",seriesName:Ns.escapeString(d.seriesData.seriesNames[m]),rel:u+1,"data:realIndex":m});vi.addCollapsedClassToSeries(this.w,y,m),t[u].length>0&&(this.visibleI=this.visibleI+1);let w=0;this.yRatio.length>1&&(this.yaxisIndex=d.globals.seriesYAxisReverseMap[m][0],w=m);const v=this.barHelpers.initialPositions(m),{y:A,zeroW:C,x:_,zeroH:S}=v;let k=null!=(s=v.barWidth)?s:0,E=null!=(i=v.barHeight)?i:0;const D=null!=(a=v.yDivision)?a:0,L=null!=(r=v.xDivision)?r:0;x=A,f=_;const P=g.group({class:"apexcharts-datalabels","data:realIndex":m}),M=g.group({class:"apexcharts-rangebar-goals-markers"});for(let e=0;e<d.globals.dataPoints;e++){const s=this.barHelpers.getStrokeWidth(u,e,m),i=this.seriesRangeStart[u][e],a=this.seriesRangeEnd[u][e];let r=null,g=null,p=null;const A={x:f,y:x,strokeWidth:s,elSeries:y};let _=this.seriesLen;if(d.config.plotOptions.bar.rangeBarGroupRows&&(_=1),void 0===(null==(o=d.config.series[u].data)?void 0:o[e]))break;if(this.isHorizontal){p=x+E*this.visibleI;const t=(D-E*_)/2;if(null==(l=null==(n=d.config.series[u].data)?void 0:n[e])?void 0:l.x){const s=this.detectOverlappingBars({i:u,j:e,barYPosition:p,srty:t,barHeight:E,yDivision:D,initPositions:v});E=s.barHeight,p=s.barYPosition}r=this.drawRangeBarPaths(Es({indexes:{i:u,j:e,realIndex:m},barHeight:E,barYPosition:p,zeroW:C,yDivision:D,y1:i,y2:a},A)),k=r.barWidth}else{d.axisFlags.isXNumeric&&(f=(d.seriesData.seriesX[u][e]-d.globals.minX)/this.xRatio-k/2),g=f+k*this.visibleI;const t=(L-k*_)/2;if(null==(c=null==(h=d.config.series[u].data)?void 0:h[e])?void 0:c.x){const s=this.detectOverlappingBars({i:u,j:e,barXPosition:g,srtx:t,barWidth:k,xDivision:L,initPositions:v});k=s.barWidth,g=s.barXPosition}r=this.drawRangeColumnPaths(Es({indexes:{i:u,j:e,realIndex:m,translationsIndex:w},barWidth:k,barXPosition:g,zeroH:S,xDivision:L},A)),E=r.barHeight}const T=this.barHelpers.drawGoalLine({barXPosition:r.barXPosition,barYPosition:p,goalX:r.goalX,goalY:r.goalY,barHeight:E,barWidth:k});T&&M.add(T),x=r.y,f=r.x;const I=this.barHelpers.getPathFillColor(t,u,e,m);this.renderSeries({realIndex:m,pathFill:I.color,lineFill:I.useRangeColor?I.color:d.globals.stroke.colors[m],j:e,i:u,x:f,y:x,y1:i,y2:a,pathFrom:r.pathFrom,pathTo:r.pathTo,strokeWidth:s,elSeries:y,series:t,barHeight:E,barWidth:k,barXPosition:g,barYPosition:p,columnGroupIndex:b,elDataLabelsWrap:P,elGoalsMarkers:M,visibleSeries:this.visibleI,type:"rangebar"})}p.add(y)}return p}detectOverlappingBars({i:t,j:e,barYPosition:s,barXPosition:i,srty:a,srtx:r,barHeight:o,barWidth:n,yDivision:l,xDivision:h,initPositions:c}){var d,g,p,u;const f=this.w;let x=[];const m=null==(g=null==(d=f.config.series[t].data)?void 0:d[e])?void 0:g.rangeName,b=null==(u=null==(p=f.config.series[t].data)?void 0:p[e])?void 0:u.x,y=Array.isArray(b)?b.join(" "):b,w=f.labelData.labels.map(t=>Array.isArray(t)?t.join(" "):t).indexOf(y),v=f.rangeData.seriesRange[t].findIndex(t=>{var e;return t.x===y&&(null==(e=t.overlaps)?void 0:e.size)>0});return this.isHorizontal?(s=f.config.plotOptions.bar.rangeBarGroupRows?a+l*w:a+o*this.visibleI+l*w,v>-1&&!f.config.plotOptions.bar.rangeBarOverlap&&(x=Array.from(f.rangeData.seriesRange[t][v].overlaps),x.indexOf(m)>-1&&(s=(o=c.barHeight/x.length)*this.visibleI+l*(100-parseInt(this.barOptions.barHeight,10))/100/2+o*(this.visibleI+x.indexOf(m))+l*w))):(w>-1&&!f.labelData.timescaleLabels.length&&(i=f.config.plotOptions.bar.rangeBarGroupRows?r+h*w:r+n*this.visibleI+h*w),v>-1&&!f.config.plotOptions.bar.rangeBarOverlap&&(x=Array.from(f.rangeData.seriesRange[t][v].overlaps),x.indexOf(m)>-1&&(i=(n=c.barWidth/x.length)*this.visibleI+h*(100-parseInt(this.barOptions.barWidth,10))/100/2+n*(this.visibleI+x.indexOf(m))+h*w))),{barYPosition:s,barXPosition:i,barHeight:o,barWidth:n}}drawRangeColumnPaths({indexes:t,x:e,xDivision:s,barWidth:i,barXPosition:a,zeroH:r}){var o,n;const l=this.w,{i:h,j:c,realIndex:d,translationsIndex:g}=t,p=this.yRatio[g],u=this.getRangeValue(d,c);let f=Math.min(u.start,u.end),x=Math.max(u.start,u.end);void 0===(null==(o=this.series[h])?void 0:o[c])||null===(null==(n=this.series[h])?void 0:n[c])?f=r:(f=r-f/p,x=r-x/p);const m=Math.abs(x-f),b=this.barHelpers.getColumnPaths({barXPosition:a,barWidth:i,y1:f,y2:x,strokeWidth:this.strokeWidth,series:this.seriesRangeEnd,realIndex:d,i:d,j:c,w:l});if(l.axisFlags.isXNumeric){const t=this.getBarXForNumericXAxis({x:e,j:c,realIndex:d,barWidth:i});e=t.x,a=t.barXPosition}else e+=s;return{pathTo:b.pathTo,pathFrom:b.pathFrom,barHeight:m,x:e,y:u.start<0&&u.end<0?f:x,goalY:this.barHelpers.getGoalValues("y",null,r,h,c,g),barXPosition:a}}preventBarOverflow(t){const e=this.w;return t<0&&(t=0),t>e.layout.gridWidth&&(t=e.layout.gridWidth),t}drawRangeBarPaths({indexes:t,y:e,y1:s,y2:i,yDivision:a,barHeight:r,barYPosition:o,zeroW:n}){const l=this.w,{realIndex:h,j:c}=t,d=this.preventBarOverflow(n+s/this.invertedYRatio),g=this.preventBarOverflow(n+i/this.invertedYRatio),p=this.getRangeValue(h,c),u=Math.abs(g-d),f=this.barHelpers.getBarpaths({barYPosition:o,barHeight:r,x1:d,x2:g,strokeWidth:this.strokeWidth,series:this.seriesRangeEnd,i:h,realIndex:h,j:c,w:l});return l.axisFlags.isXNumeric||(e+=a),{pathTo:f.pathTo,pathFrom:f.pathFrom,barWidth:u,x:p.start<0&&p.end<0?d:g,goalX:this.barHelpers.getGoalValues("x",n,null,h,c,0),y:e}}getRangeValue(t,e){const s=this.w;return{start:s.rangeData.seriesRangeStart[t][e],end:s.rangeData.seriesRangeEnd[t][e]}}},candlestick:Ta,boxPlot:Ta,pie:Oa,donut:Oa,polarArea:Oa,radialBar:class extends Oa{constructor(t,e){super(t,e),this.ctx=e,this.w=t,this.animBeginArr=[0],this.animDur=0,this.startAngle=t.config.plotOptions.radialBar.startAngle,this.endAngle=t.config.plotOptions.radialBar.endAngle,this.totalAngle=Math.abs(t.config.plotOptions.radialBar.endAngle-t.config.plotOptions.radialBar.startAngle),this.trackStartAngle=t.config.plotOptions.radialBar.track.startAngle,this.trackEndAngle=t.config.plotOptions.radialBar.track.endAngle,this.barLabels=this.w.config.plotOptions.radialBar.barLabels,this.donutDataLabels=this.w.config.plotOptions.radialBar.dataLabels,this.radialDataLabels=this.donutDataLabels,this.trackStartAngle||(this.trackStartAngle=this.startAngle),this.trackEndAngle||(this.trackEndAngle=this.endAngle),360===this.endAngle&&(this.endAngle=359.99),this.margin=parseInt(t.config.plotOptions.radialBar.track.margin,10),this.onBarLabelClick=this.onBarLabelClick.bind(this)}draw(t){const e=this.w,s=new ti(this.w),i=s.group({class:"apexcharts-radialbar"});if(e.globals.noData)return i;const a=s.group(),r=this.defaultSize/2,o=e.layout.gridWidth/2;let n=this.defaultSize/2.05;e.config.chart.sparkline.enabled||(n=n-e.config.stroke.width-e.config.chart.dropShadow.blur);const l=e.globals.fill.colors;if(e.config.plotOptions.radialBar.track.show){const e=this.drawTracks({size:n,centerX:o,centerY:r,colorArr:l,series:t});a.add(e)}const h=this.drawArcs({size:n,centerX:o,centerY:r,colorArr:l,series:t});let c=360;e.config.plotOptions.radialBar.startAngle<0&&(c=this.totalAngle);const d=(360-c)/360;if(e.globals.radialSize=n-n*d,this.radialDataLabels.value.show){const t=Math.max(this.radialDataLabels.value.offsetY,this.radialDataLabels.name.offsetY);e.globals.radialSize+=t*d}return a.add(h.g),"front"===e.config.plotOptions.radialBar.hollow.position&&(h.g.add(h.elHollow),h.dataLabels&&h.g.add(h.dataLabels)),i.add(a),i}drawTracks(t){const e=this.w,s=new ti(this.w),i=s.group({class:"apexcharts-tracks"}),a=new Qs(this.w),r=new ri(this.w),o=this.getStrokeWidth(t);t.size=t.size-o/2;for(let n=0;n<t.series.length;n++){const l=s.group({class:"apexcharts-radialbar-track apexcharts-track"});i.add(l),l.attr({rel:n+1}),t.size=t.size-o-this.margin;const h=e.config.plotOptions.radialBar.track,c=r.fillPath({seriesNumber:0,size:t.size,fillColors:Array.isArray(h.background)?h.background[n]:h.background,solid:!0}),d=this.trackStartAngle;let g=this.trackEndAngle;Math.abs(g)+Math.abs(d)>=360&&(g=360-Math.abs(this.startAngle)-.1);const p=s.drawPath({d:"",stroke:c,strokeWidth:o*parseInt(h.strokeWidth,10)/100,fill:"none",strokeOpacity:h.opacity,classes:"apexcharts-radialbar-area"});if(h.dropShadow.enabled){const t=h.dropShadow;a.dropShadow(p,t)}l.add(p),p.attr("id","apexcharts-radialbarTrack-"+n),this.animatePaths(p,{centerX:t.centerX,centerY:t.centerY,endAngle:g,startAngle:d,size:t.size,i:n,totalItems:2,animBeginArr:0,dur:0,isTrack:!0})}return i}drawArcs(t){const e=this.w,s=new ti(this.w),i=new ri(this.w),a=new Qs(this.w),r=s.group(),o=this.getStrokeWidth(t);t.size=t.size-o/2;let n=e.config.plotOptions.radialBar.hollow.background;const l=t.size-o*t.series.length-this.margin*t.series.length-o*parseInt(e.config.plotOptions.radialBar.track.strokeWidth,10)/100/2,h=l-e.config.plotOptions.radialBar.hollow.margin;void 0!==e.config.plotOptions.radialBar.hollow.image&&(n=this.drawHollowImage(t,r,l,n));const c=this.drawHollow({size:h,centerX:t.centerX,centerY:t.centerY,fill:n||"transparent"});if(e.config.plotOptions.radialBar.hollow.dropShadow.enabled){const t=e.config.plotOptions.radialBar.hollow.dropShadow;a.dropShadow(c,t)}let d=1;!this.radialDataLabels.total.show&&e.seriesData.series.length>1&&(d=0);let g=null;if(this.radialDataLabels.show){const s=e.dom.Paper.findOne(".apexcharts-datalabels-group");g=this.renderInnerDataLabels(s,this.radialDataLabels,{hollowSize:l,centerX:t.centerX,centerY:t.centerY,opacity:d})}"back"===e.config.plotOptions.radialBar.hollow.position&&(r.add(c),g&&r.add(g));let p=!1;e.config.plotOptions.radialBar.inverseOrder&&(p=!0);for(let n=p?t.series.length-1:0;p?n>=0:n<t.series.length;p?n--:n++){const l=s.group({class:"apexcharts-series apexcharts-radial-series",seriesName:Ns.escapeString(e.seriesData.seriesNames[n])});r.add(l),l.attr({rel:n+1,"data:realIndex":n}),vi.addCollapsedClassToSeries(this.w,l,n),t.size=t.size-o-this.margin;const h=i.fillPath({seriesNumber:n,size:t.size,value:t.series[n]}),c=this.startAngle;let d;const g=Ns.negToZero(t.series[n]>100?100:t.series[n])/100;let p,u=Math.round(this.totalAngle*g)+this.startAngle;e.globals.dataChanged&&(d=this.startAngle,p=Math.round(this.totalAngle*Ns.negToZero(e.globals.previousPaths[n])/100)+d);Math.abs(u)+Math.abs(c)>360&&(u-=.01);Math.abs(p)+Math.abs(d)>360&&(p-=.01);const f=u-c,x=Array.isArray(e.config.stroke.dashArray)?e.config.stroke.dashArray[n]:e.config.stroke.dashArray,m=s.drawPath({d:"",stroke:h,strokeWidth:o,fill:"none",fillOpacity:e.config.fill.opacity,classes:"apexcharts-radialbar-area apexcharts-radialbar-slice-"+n,strokeDashArray:x}),b=c+f/2,y=Ns.polarToCartesian(t.centerX,t.centerY,t.size,b);if(ti.setAttrs(m.node,{"data:angle":f,"data:value":t.series[n],"data:cx":y.x,"data:cy":y.y}),e.config.chart.dropShadow.enabled){const t=e.config.chart.dropShadow;a.dropShadow(m,t,n)}if(a.setSelectionFilter(m,0,n),this.addListeners(m,this.radialDataLabels),l.add(m),m.attr({index:0,j:n}),this.barLabels.enabled){const i=Ns.polarToCartesian(t.centerX,t.centerY,t.size,c),a=this.barLabels.formatter(e.seriesData.seriesNames[n],{seriesIndex:n,w:e}),r=["apexcharts-radialbar-label"];this.barLabels.onClick||r.push("apexcharts-no-click");let o=this.barLabels.useSeriesColors?e.globals.colors[n]:e.config.chart.foreColor;o||(o=e.config.chart.foreColor);const h=i.x+this.barLabels.offsetX,d=i.y+this.barLabels.offsetY,g=s.drawText({x:h,y:d,text:a,textAnchor:"end",dominantBaseline:"middle",fontFamily:this.barLabels.fontFamily,fontWeight:this.barLabels.fontWeight,fontSize:this.barLabels.fontSize,foreColor:o,cssClass:r.join(" ")});g.on("click",this.onBarLabelClick),g.attr({rel:n+1}),0!==c&&g.attr({"transform-origin":`${h} ${d}`,transform:`rotate(${c} 0 0)`}),l.add(g)}let w=0;!this.initialAnim||e.globals.resized||e.globals.dataChanged||(w=e.config.chart.animations.speed),e.globals.dataChanged&&(w=e.config.chart.animations.dynamicAnimation.speed),this.animDur=w/(1.2*t.series.length)+this.animDur,this.animBeginArr.push(this.animDur),this.animatePaths(m,{centerX:t.centerX,centerY:t.centerY,endAngle:u,startAngle:c,prevEndAngle:p,prevStartAngle:d,size:t.size,i:n,totalItems:2,animBeginArr:this.animBeginArr,dur:w,shouldSetPrevPaths:!0})}return{g:r,elHollow:c,dataLabels:g}}drawHollow(t){const e=new ti(this.w).drawCircle(2*t.size);return e.attr({class:"apexcharts-radialbar-hollow",cx:t.centerX,cy:t.centerY,r:t.size,fill:t.fill}),e}drawHollowImage(t,e,s,i){const a=this.w,r=new ri(this.w),o=Ns.randomId(),n=a.config.plotOptions.radialBar.hollow.image;if(a.config.plotOptions.radialBar.hollow.imageClipped)r.clippedImgArea({width:s,height:s,image:n,patternID:`pattern${a.globals.cuid}${o}`}),i=`url(#pattern${a.globals.cuid}${o})`;else{const s=a.config.plotOptions.radialBar.hollow.imageWidth,i=a.config.plotOptions.radialBar.hollow.imageHeight;if(void 0===s&&void 0===i){const s=a.dom.Paper.image(n,function(e){this.move(t.centerX-e.width/2+a.config.plotOptions.radialBar.hollow.imageOffsetX,t.centerY-e.height/2+a.config.plotOptions.radialBar.hollow.imageOffsetY)});e.add(s)}else{const r=a.dom.Paper.image(n,function(){this.move(t.centerX-s/2+a.config.plotOptions.radialBar.hollow.imageOffsetX,t.centerY-i/2+a.config.plotOptions.radialBar.hollow.imageOffsetY),this.size(s,i)});e.add(r)}}return i}getStrokeWidth(t){const e=this.w;return t.size*(100-parseInt(e.config.plotOptions.radialBar.hollow.size,10))/100/(t.series.length+1)-this.margin}onBarLabelClick(t){var e;const s=t.target,i=parseInt(null!=(e=s.getAttribute("rel"))?e:"",10)-1,a=this.barLabels.onClick,r=this.w;a&&a(r.seriesData.seriesNames[i],{w:r,seriesIndex:i})}},radar:class{constructor(t,e){this.ctx=e,this.w=t,this.chartType=this.w.config.chart.type,this.initialAnim=this.w.config.chart.animations.enabled,this.dynamicAnim=this.initialAnim&&this.w.config.chart.animations.dynamicAnimation.enabled,this.animDur=0,this.graphics=new ti(this.w),this.lineColorArr=void 0!==t.globals.stroke.colors?t.globals.stroke.colors:t.globals.colors,this.defaultSize=t.globals.svgHeight<t.globals.svgWidth?t.layout.gridHeight:t.layout.gridWidth,this.isLog=t.config.yaxis[0].logarithmic,this.logBase=t.config.yaxis[0].logBase,this.coreUtils=new Ks(this.w),this.maxValue=this.isLog?this.coreUtils.getLogVal(this.logBase,t.globals.maxY,0):t.globals.maxY,this.minValue=this.isLog?this.coreUtils.getLogVal(this.logBase,this.w.globals.minY,0):t.globals.minY,this.polygons=t.config.plotOptions.radar.polygons,this.strokeWidth=t.config.stroke.show?t.config.stroke.width:0,this.size=this.defaultSize/2.1-this.strokeWidth-t.config.chart.dropShadow.blur,t.config.xaxis.labels.show&&(this.size=this.size-t.layout.xAxisLabelsWidth/1.75),void 0!==t.config.plotOptions.radar.size&&(this.size=t.config.plotOptions.radar.size),this.dataRadiusOfPercent=[],this.dataRadius=[],this.angleArr=[],this.dataPointsLen=0,this.disAngle=0,this.yaxisLabelsTextsPos=[]}draw(t){const e=this.w,s=new ri(this.w),i=[],a=new li(this.w,this.ctx);t.length&&(this.dataPointsLen=t[e.globals.maxValsInArrayIndex].length),this.disAngle=2*Math.PI/this.dataPointsLen;const r=e.layout.gridWidth/2,o=e.layout.gridHeight/2,n=r+e.config.plotOptions.radar.offsetX,l=o+e.config.plotOptions.radar.offsetY,h=this.graphics.group({class:"apexcharts-radar-series apexcharts-plot-series",transform:`translate(${n||0}, ${l||0})`});let c=[],d=null,g=null;if(this.yaxisLabels=this.graphics.group({class:"apexcharts-yaxis"}),t.forEach((t,r)=>{const o=t.length===e.globals.dataPoints,n=this.graphics.group().attr({class:"apexcharts-series","data:longestSeries":o,seriesName:Ns.escapeString(e.seriesData.seriesNames[r]),rel:r+1,"data:realIndex":r});this.dataRadiusOfPercent[r]=[],this.dataRadius[r]=[],this.angleArr[r]=[],t.forEach((t,e)=>{const s=Math.abs(this.maxValue-this.minValue);t-=this.minValue,this.isLog&&(t=this.coreUtils.getLogVal(this.logBase,t,0)),this.dataRadiusOfPercent[r][e]=t/s,this.dataRadius[r][e]=this.dataRadiusOfPercent[r][e]*this.size,this.angleArr[r][e]=e*this.disAngle}),c=this.getDataPointsPos(this.dataRadius[r],this.angleArr[r]);const l=this.createPaths(c,{x:0,y:0});d=this.graphics.group({class:"apexcharts-series-markers-wrap apexcharts-element-hidden"}),g=this.graphics.group({class:"apexcharts-datalabels","data:realIndex":r}),e.globals.delayedElements.push({el:d.node,index:r});const h={i:r,realIndex:r,animationDelay:r,initialSpeed:e.config.chart.animations.speed,dataChangeSpeed:e.config.chart.animations.dynamicAnimation.speed,className:"apexcharts-radar",shouldClipToGrid:!1,bindEventsOnPaths:!1,stroke:e.globals.stroke.colors[r],strokeLineCap:e.config.stroke.lineCap};let p=null;e.globals.previousPaths.length>0&&(p=this.getPreviousPath(r));for(let t=0;t<l.linePathsTo.length;t++){const i=this.graphics.renderPaths(Ds(Es({},h),{pathFrom:null===p?l.linePathsFrom[t]:p,pathTo:l.linePathsTo[t],strokeWidth:Array.isArray(this.strokeWidth)?this.strokeWidth[r]:this.strokeWidth,fill:"none",drawShadow:!1}));n.add(i);const a=s.fillPath({seriesNumber:r}),o=this.graphics.renderPaths(Ds(Es({},h),{pathFrom:null===p?l.areaPathsFrom[t]:p,pathTo:l.areaPathsTo[t],strokeWidth:0,fill:a,drawShadow:!1}));if(e.config.chart.dropShadow.enabled){const t=new Qs(this.w),s=e.config.chart.dropShadow;t.dropShadow(o,Object.assign({},s,{noUserSpaceOnUse:!0}),r)}n.add(o)}t.forEach((t,s)=>{const i=new oi(this.w,this.ctx).getMarkerConfig({cssClass:"apexcharts-marker",seriesIndex:r,dataPointIndex:s}),o=this.graphics.drawMarker(c[s].x,c[s].y,i);o.attr("rel",s),o.attr("j",s),o.attr("index",r),o.node.setAttribute("default-marker-size",i.pSize);const l=this.graphics.group({class:"apexcharts-series-markers"});l&&l.add(o),d.add(l),n.add(d);const h=e.config.dataLabels;if(h.enabled){const t=h.formatter(e.seriesData.series[r][s],{seriesIndex:r,dataPointIndex:s,w:e});a.plotDataLabelsText({x:c[s].x,y:c[s].y,text:t,textAnchor:"middle",i:r,j:r,parent:g,offsetCorrection:!1,dataLabelsConfig:Es({},h)})}n.add(g)}),i.push(n)}),this.drawPolygons({parent:h}),e.config.xaxis.labels.show){const t=this.drawXAxisTexts();h.add(t)}return i.forEach(t=>{h.add(t)}),h.add(this.yaxisLabels),h}drawPolygons(t){const e=this.w,{parent:s}=t,i=new za(this.w),a=e.globals.yAxisScale[0].result.reverse(),r=a.length,o=[],n=this.size/(r-1);for(let t=0;t<r;t++)o[t]=n*t;o.reverse();const l=[],h=[];o.forEach((t,e)=>{const s=Ns.getPolygonPos(t,this.dataPointsLen);let i="";s.forEach((t,s)=>{if(0===e){const e=this.graphics.drawLine(t.x,t.y,0,0,Array.isArray(this.polygons.connectorColors)?this.polygons.connectorColors[s]:this.polygons.connectorColors);h.push(e)}0===s&&this.yaxisLabelsTextsPos.push({x:t.x,y:t.y}),i+=t.x+","+t.y+" "}),l.push(i)}),l.forEach((t,i)=>{const a=this.polygons.strokeColors,r=this.polygons.strokeWidth,o=this.graphics.drawPolygon(t,Array.isArray(a)?a[i]:a,Array.isArray(r)?r[i]:r,e.globals.radarPolygons.fill.colors[i]);s.add(o)}),h.forEach(t=>{s.add(t)}),e.config.yaxis[0].show&&this.yaxisLabelsTextsPos.forEach((t,e)=>{const s=i.drawYAxisTexts(t.x,t.y,e,a[e]);this.yaxisLabels.add(s)})}drawXAxisTexts(){const t=this.w,e=t.config.xaxis.labels,s=this.graphics.group({class:"apexcharts-xaxis"}),i=Ns.getPolygonPos(this.size,this.dataPointsLen);return t.labelData.labels.forEach((a,r)=>{const o=t.config.xaxis.labels.formatter,n=new li(this.w,this.ctx);if(i[r]){const l=this.getTextPos(i[r],this.size),h=o(a,{seriesIndex:-1,dataPointIndex:r,w:t});n.plotDataLabelsText({x:l.newX,y:l.newY,text:h,textAnchor:l.textAnchor,i:r,j:r,parent:s,className:"apexcharts-xaxis-label",color:Array.isArray(e.style.colors)&&e.style.colors[r]?e.style.colors[r]:"#a8a8a8",dataLabelsConfig:Es({textAnchor:l.textAnchor,dropShadow:{enabled:!1}},e),offsetCorrection:!1}).on("click",e=>{if("function"==typeof t.config.chart.events.xAxisLabelClick){const s=Object.assign({},t,{labelIndex:r});t.config.chart.events.xAxisLabelClick(e,this.ctx,s)}})}}),s}createPaths(t,e){const s=[];let i=[];const a=[];let r=[];if(t.length){i=[this.graphics.move(e.x,e.y)],r=[this.graphics.move(e.x,e.y)];let o=this.graphics.move(t[0].x,t[0].y),n=this.graphics.move(t[0].x,t[0].y);t.forEach((e,s)=>{o+=this.graphics.line(e.x,e.y),n+=this.graphics.line(e.x,e.y),s===t.length-1&&(o+="Z",n+="Z")}),s.push(o),a.push(n)}return{linePathsFrom:i,linePathsTo:s,areaPathsFrom:r,areaPathsTo:a}}getTextPos(t,e){let s="middle",i=t.x,a=t.y;return Math.abs(t.x)>=10?t.x>0?(s="start",i+=10):t.x<0&&(s="end",i-=10):s="middle",Math.abs(t.y)>=e-10&&(t.y<0?a-=10:t.y>0&&(a+=10)),{textAnchor:s,newX:i,newY:a}}getPreviousPath(t){const e=this.w;let s=null;for(let i=0;i<e.globals.previousPaths.length;i++){const a=e.globals.previousPaths[i];a.paths.length>0&&parseInt(a.realIndex,10)===parseInt(String(t),10)&&void 0!==e.globals.previousPaths[i].paths[0]&&(s=e.globals.previousPaths[i].paths[0].d)}return s}getDataPointsPos(t,e,s=this.dataPointsLen){t=t||[],e=e||[];const i=[];for(let a=0;a<s;a++){const s={};s.x=t[a]*Math.sin(e[a]),s.y=-t[a]*Math.cos(e[a]),i.push(s)}return i}},heatmap:class{constructor(t,e,s){this.ctx=e,this.w=t,this.xRatio=s.xRatio,this.yRatio=s.yRatio,this.dynamicAnim=this.w.config.chart.animations.dynamicAnimation,this.helpers=new Ia(t,e),this.rectRadius=this.w.config.plotOptions.heatmap.radius,this.strokeWidth=this.w.config.stroke.show?this.w.config.stroke.width:0}draw(t){const e=this.w,s=new ti(this.w,this.ctx),i=s.group({class:"apexcharts-heatmap"});i.attr("clip-path",`url(#gridRectMask${e.globals.cuid})`);const a=e.layout.gridWidth/e.globals.dataPoints,r=e.layout.gridHeight/e.seriesData.series.length;let o=0,n=!1;this.negRange=this.helpers.checkColorRange();const l=t.slice();e.config.yaxis[0].reversed&&(n=!0,l.reverse());for(let h=n?0:l.length-1;n?h<l.length:h>=0;n?h++:h--){const n=s.group({class:"apexcharts-series apexcharts-heatmap-series",seriesName:Ns.escapeString(e.seriesData.seriesNames[h]),rel:h+1,"data:realIndex":h});if(vi.addCollapsedClassToSeries(this.w,n,h),s.setupEventDelegation(n,".apexcharts-heatmap-rect"),e.config.chart.dropShadow.enabled){const t=e.config.chart.dropShadow;new Qs(this.w).dropShadow(n,t,h)}let c=0;const d=e.config.plotOptions.heatmap.shadeIntensity;let g=0;for(let i=0;i<e.globals.dataPoints;i++){if(e.seriesData.seriesX.length&&!e.globals.allSeriesHasEqualX&&e.globals.minX+e.globals.minXDiff*i<e.seriesData.seriesX[h][g]){c+=a;continue}if(g>=l[h].length)break;const p=this.helpers.getShadeColor(e.config.chart.type,h,g,this.negRange);let u=p.color;const f=p.colorProps;if("image"===e.config.fill.type){u=new ri(this.w).fillPath({seriesNumber:h,dataPointIndex:g,opacity:e.globals.hasNegs?f.percent<0?1-(1+f.percent/100):d+f.percent/100:f.percent/100,patternID:Ns.randomId(),width:e.config.fill.image.width?e.config.fill.image.width:a,height:e.config.fill.image.height?e.config.fill.image.height:r})}const x=this.rectRadius,m=s.drawRect(c,o,a,r,x);if(m.attr({cx:c,cy:o}),m.node.classList.add("apexcharts-heatmap-rect"),n.add(m),m.attr({fill:u,i:h,index:h,j:g,val:t[h][g],"stroke-width":this.strokeWidth,stroke:e.config.plotOptions.heatmap.useFillColorAsStroke?u:e.globals.stroke.colors[0],color:u}),e.config.chart.animations.enabled&&!e.globals.dataChanged){let t=1;e.globals.resized||(t=e.config.chart.animations.speed),this.animateHeatMap(m,c,o,a,r,t)}if(e.globals.dataChanged){let t=1;if(this.dynamicAnim.enabled&&e.globals.shouldAnimate){t=this.dynamicAnim.speed;let s=e.globals.previousPaths[h]&&e.globals.previousPaths[h][g]&&e.globals.previousPaths[h][g].color;s||(s="rgba(255, 255, 255, 0)"),this.animateHeatColor(m,Ns.isColorHex(s)?s:Ns.rgb2hex(s),Ns.isColorHex(u)?u:Ns.rgb2hex(u),t)}}const b=(0,e.config.dataLabels.formatter)(e.seriesData.series[h][g],{value:e.seriesData.series[h][g],seriesIndex:h,dataPointIndex:g,w:e}),y=this.helpers.calculateDataLabels({text:b,x:c+a/2,y:o+r/2,i:h,j:g,colorProps:f,series:l});null!==y&&n.add(y),c+=a,g++}o+=r,i.add(n)}const h=e.globals.yAxisScale[0].result.slice();return e.config.yaxis[0].reversed?h.unshift(""):h.push(""),e.globals.yAxisScale[0].result=h,i}animateHeatMap(t,e,s,i,a,r){const o=new Js(this.w);o.animateRect(t,{x:e+i/2,y:s+a/2,width:0,height:0},{x:e,y:s,width:i,height:a},r,()=>{o.animationCompleted(t)})}animateHeatColor(t,e,s,i){t.attr({fill:e}).animate(i).attr({fill:s})}},treemap:class{constructor(t,e){this.ctx=e,this.w=t,this.strokeWidth=this.w.config.stroke.width,this.helpers=new Ia(t,e),this.dynamicAnim=this.w.config.chart.animations.dynamicAnimation,this.labels=[]}draw(t){const e=this.w,s=new ti(this.w,this.ctx),i=new ri(this.w),a=s.group({class:"apexcharts-treemap"});if(e.globals.noData)return a;const r=[];t.forEach(t=>{const e=t.map(t=>Math.abs(t));r.push(e)}),this.negRange=this.helpers.checkColorRange(),e.config.series.forEach((t,e)=>{t.data.forEach(t=>{Array.isArray(this.labels[e])||(this.labels[e]=[]),this.labels[e].push(t.x)})});return Ua.generate(r,e.layout.gridWidth,e.layout.gridHeight).forEach((r,o)=>{var n;const l=s.group({class:"apexcharts-series apexcharts-treemap-series",seriesName:Ns.escapeString(e.seriesData.seriesNames[o]),rel:o+1,"data:realIndex":o});if(s.setupEventDelegation(l,".apexcharts-treemap-rect"),e.config.chart.dropShadow.enabled){const t=e.config.chart.dropShadow;new Qs(this.w).dropShadow(a,t,o)}const h=s.group({class:"apexcharts-data-labels"}),c={xMin:1/0,yMin:1/0,xMax:-1/0,yMax:-1/0};r.forEach((a,r)=>{const n=a[0],h=a[1],d=a[2],g=a[3];c.xMin=Math.min(c.xMin,n),c.yMin=Math.min(c.yMin,h),c.xMax=Math.max(c.xMax,d),c.yMax=Math.max(c.yMax,g);const p=this.helpers.getShadeColor(e.config.chart.type,o,r,this.negRange),u=p.color,f=i.fillPath({color:u,seriesNumber:o,dataPointIndex:r}),x=s.drawRect(n,h,d-n,g-h,e.config.plotOptions.treemap.borderRadius,"#fff",1,this.strokeWidth,e.config.plotOptions.treemap.useFillColorAsStroke?u:e.globals.stroke.colors[o]);x.attr({cx:n,cy:h,index:o,i:o,j:r,width:d-n,height:g-h,fill:f}),x.node.classList.add("apexcharts-treemap-rect");let m={x:n+(d-n)/2,y:h+(g-h)/2,width:0,height:0};const b={x:n,y:h,width:d-n,height:g-h};if(e.config.chart.animations.enabled&&!e.globals.dataChanged){let t=1;e.globals.resized||(t=e.config.chart.animations.speed),this.animateTreemap(x,m,b,t)}if(e.globals.dataChanged){let t=1;this.dynamicAnim.enabled&&e.globals.shouldAnimate&&(t=this.dynamicAnim.speed,e.globals.previousPaths[o]&&e.globals.previousPaths[o][r]&&e.globals.previousPaths[o][r].rect&&(m=e.globals.previousPaths[o][r].rect),this.animateTreemap(x,m,b,t))}let y=this.getFontSize(a),w=e.config.dataLabels.formatter(this.labels[o][r],{value:e.seriesData.series[o][r],seriesIndex:o,dataPointIndex:r,w:e});"truncate"===e.config.plotOptions.treemap.dataLabels.format&&(y=parseInt(String(e.config.dataLabels.style.fontSize),10),w=this.truncateLabels(String(w),y,n,h,d,g));let v=null;e.seriesData.series[o][r]&&(v=this.helpers.calculateDataLabels({text:w,x:(n+d)/2,y:(h+g)/2+this.strokeWidth/2+y/3,i:o,j:r,colorProps:p,fontSize:y,series:t})),e.config.dataLabels.enabled&&v&&this.rotateToFitLabel(v,y,w,n,h,d,g),l.add(x),null!==v&&l.add(v)});const d=e.config.plotOptions.treemap.seriesTitle;if(e.config.series.length>1&&d&&d.show){const t=e.config.series[o].name||"";if(t&&c.xMin<1/0&&c.yMin<1/0){const{offsetX:i,offsetY:a,borderColor:r,borderWidth:o,borderRadius:h,style:g}=d,p=g.color||e.config.chart.foreColor,u={left:g.padding.left,right:g.padding.right,top:g.padding.top,bottom:g.padding.bottom},f=s.getTextRects(t,g.fontSize,g.fontFamily),x=f.width+u.left+u.right,m=f.height+u.top+u.bottom,b=c.xMin+(i||0),y=c.yMin+(a||0),w=s.drawRect(b,y,x,m,h,g.background,1,o,r),v=s.drawText({x:b+u.left,y:y+u.top+.75*(null!=(n=null==f?void 0:f.height)?n:0),text:t,fontSize:g.fontSize,fontFamily:g.fontFamily,fontWeight:g.fontWeight,foreColor:p,cssClass:g.cssClass||""});l.add(w),l.add(v)}}l.add(h),a.add(l)}),a}getFontSize(t){const e=this.w;const s=function t(e){let s,i=0;if(Array.isArray(e[0]))for(s=0;s<e.length;s++)i+=t(e[s]);else for(s=0;s<e.length;s++)i+=e[s].length;return i}(this.labels)/function t(e){let s,i=0;if(Array.isArray(e[0]))for(s=0;s<e.length;s++)i+=t(e[s]);else for(s=0;s<e.length;s++)i+=1;return i}(this.labels);return function(t,i){const a=t*i,r=Math.pow(a,.5);return Math.min(r/s,parseInt(e.config.dataLabels.style.fontSize,10))}(t[2]-t[0],t[3]-t[1])}rotateToFitLabel(t,e,s,i,a,r,o){const n=new ti(this.w),l=n.getTextRects(s,String(e));if(l.width+this.w.config.stroke.width+5>r-i&&l.width<=o-a){const e=n.rotateAroundCenter(t.node);t.node.setAttribute("transform",`rotate(-90 ${e.x} ${e.y}) translate(${l.height/3})`)}}truncateLabels(t,e,s,i,a,r){const o=new ti(this.w),n=o.getTextRects(t,String(e)).width+this.w.config.stroke.width+5>a-s&&r-i>a-s?r-i:a-s,l=o.getTextBasedOnMaxWidth({text:t,maxWidth:n,fontSize:e});return t.length!==l.length&&n/e<5?"":l}animateTreemap(t,e,s,i){const a=new Js(this.w);a.animateRect(t,e,s,i,()=>{a.animationCompleted(t)})}}});class ja extends ys{constructor(){super(...arguments),this._chart=null,this._chartInitialized=!1,this._resizeObserver=null,this._prevDarkMode=!1}getGridOptions(){return{columns:12,rows:5,min_rows:5}}getCardSize(){return 3}get _isDark(){return Et(this.hass)}async firstUpdated(){await new Promise(t=>requestAnimationFrame(()=>t())),await this.updateComplete,this._initChart(),this._setupResizeObserver()}connectedCallback(){super.connectedCallback(),this._config&&this.hass&&!this._chartInitialized&&requestAnimationFrame(async()=>{await this.updateComplete,this._initChart(),this._setupResizeObserver(),this._onChartReconnected()})}disconnectedCallback(){this._onChartDisconnecting(),this._resizeObserver?.disconnect(),this._resizeObserver=null,this._chart?.destroy(),this._chart=null,this._chartInitialized=!1,super.disconnectedCallback()}_setupResizeObserver(){if(this._resizeObserver?.disconnect(),!this._chartWrapper)return;let t;this._resizeObserver=new ResizeObserver(()=>{clearTimeout(t),t=setTimeout(()=>window.dispatchEvent(new Event("resize")),100)}),this._resizeObserver.observe(this._chartWrapper)}_updateChartOptions(){this._chart&&this._chart.updateOptions(this._buildChartOptions(),!1,!1)}_buildChartOptions(){return{}}_initChart(){!this._chartInitialized&&this._chartEl&&(this._chart=new wa(this._chartEl,this._buildChartOptions()),this._chart.render(),this._chartInitialized=!0)}_onChartReconnected(){}_onChartDisconnecting(){}_renderManualOverlay(){if(!this._isManualPreset)return U;const t=ms(this.hass);return W`
-      <div class="manual-overlay">
-        <div class="manual-overlay-chip">
-          <ha-icon icon="mdi:hand-back-right"></ha-icon>
-          ${t("common.manual_override")}
+    `;
+    }
+    // ── KPI footer (shared) ──
+    _renderKpiFooter(opts) {
+        if (this._config.show_kpi_footer === false)
+            return A;
+        if (!this._config || !this.hass)
+            return A;
+        const localize = setupCustomlocalize(this.hass);
+        const outdoorEntity = opts?.outdoorClickEntity ?? this._config.outdoor_entity;
+        const outdoorMissing = !this._entityExists(outdoorEntity);
+        const flowMissing = !this._entityExists(this._config.flow_entity);
+        const climateMissing = !this._entityExists(this._config.climate_entity);
+        return b `
+      <div class="kpi-footer">
+        <div class="kpi-block${outdoorMissing ? ' missing' : ''}" @click=${outdoorMissing ? undefined : () => this._openMoreInfo(outdoorEntity)}>
+          <div class="kpi-value">${this._outdoorTempFormatted}</div>
+          <div class="kpi-label">${localize('common.outdoor')}</div>
+        </div>
+        <div class="kpi-divider"></div>
+        <div class="kpi-block${flowMissing ? ' missing' : ''}" @click=${flowMissing ? undefined : () => this._openMoreInfo(this._config.flow_entity)}>
+          ${opts?.adjustingDir && opts?.curveOutput ? b `
+            <div class="kpi-dual">
+              <div class="kpi-value flow">${this._flowTempFormatted}</div>
+              <div class="kpi-target">
+                <ha-icon .icon=${opts.adjustingDir === 'rising' ? 'mdi:arrow-up-thin' : 'mdi:arrow-down-thin'}></ha-icon>
+                ${opts.curveOutput}
+              </div>
+            </div>
+          ` : b `<div class="kpi-value flow">${this._flowTempFormatted}</div>`}
+          <div class="kpi-label">${localize('common.flow')}</div>
+        </div>
+        <div class="kpi-divider"></div>
+        <div class="kpi-block${climateMissing ? ' missing' : ''}" @click=${climateMissing ? undefined : () => this._openMoreInfo(this._config.climate_entity)}>
+          <div class="kpi-value">${this._roomTemp}</div>
+          <div class="kpi-label">${localize('common.room')}</div>
         </div>
       </div>
-    `}static get styles(){return[super.styles,n`
-      :host([manual-override]) #chart {
+    `;
+    }
+    // ── Params footer (shared) ──
+    _getEntityRange(entityId, defaultMin, defaultMax) {
+        if (!entityId)
+            return [defaultMin, defaultMax];
+        const min = this._entityAttr(entityId, 'min');
+        const max = this._entityAttr(entityId, 'max');
+        return [min ?? defaultMin, max ?? defaultMax];
+    }
+    _getEntityStep(entityId, defaultStep) {
+        if (!entityId)
+            return defaultStep;
+        return this._entityAttr(entityId, 'step') ?? defaultStep;
+    }
+    _formatParamNum(value, decimals, options) {
+        return formatNumber(value, this.hass?.locale, { minimumFractionDigits: decimals, maximumFractionDigits: decimals, ...options });
+    }
+    _renderDeltaParamItem(label, entityId, fallback, defaultRange, onClick) {
+        const rawValue = this._resolveEntityNumber(entityId, fallback);
+        const [rawMin, rawMax] = this._getEntityRange(entityId, defaultRange[0], defaultRange[1]);
+        const rawStep = this._getEntityStep(entityId, 1);
+        const displayVal = this._toDisplayDelta(rawValue);
+        const displayMin = this._toDisplayDelta(rawMin);
+        const displayMax = this._toDisplayDelta(rawMax);
+        const displayStep = this._toDisplayDelta(rawStep);
+        const unit = this.hass?.config?.unit_system?.temperature ?? '°C';
+        const formatted = this._formatParamNum(displayVal, 1, { signDisplay: 'always' }) + unit;
+        const valClass = displayVal > 0 ? 'positive' : displayVal < 0 ? 'negative' : '';
+        const color = displayVal >= 0 ? 'var(--success-color, #4caf50)' : 'var(--error-color, #e53935)';
+        const canInteract = !!entityId && !!this.hass;
+        return b `
+      <div class="param-item" @click=${onClick}>
+        <span class="param-label">${label}</span>
+        <span class="param-value ${valClass}">${formatted}</span>
+        <eq-param-bar
+          .min=${displayMin} .max=${displayMax} .step=${displayStep}
+          .value=${displayVal} centered .color=${color} indicator
+          ?interactive=${canInteract}
+          data-entity-id=${entityId}
+          @value-changed=${canInteract ? this._onDeltaParamChanged : A}
+        ></eq-param-bar>
+      </div>
+    `;
+    }
+    _renderParamsFooter(params) {
+        if (this._config.show_params_footer === false)
+            return A;
+        const items = [];
+        if (params.hc) {
+            const entity = params.hc.entity;
+            const value = this._resolveEntityNumber(entity, params.hc.fallback);
+            const [min, max] = this._getEntityRange(entity, 0.5, 3.0);
+            const step = this._getEntityStep(entity, 0.1);
+            const hcClick = () => params.hc.onClick ? params.hc.onClick() : this._openMoreInfo(entity);
+            const canInteract = !!entity && !!this.hass;
+            items.push(b `
+        <div class="param-item" @click=${hcClick}>
+          <span class="param-label">HC</span>
+          <span class="param-value">${this._formatParamNum(value, 2)}</span>
+          <eq-param-bar
+            .min=${min} .max=${max} .step=${step} .value=${value} indicator
+            ?interactive=${canInteract}
+            data-entity-id=${entity}
+            @value-changed=${canInteract ? this._onParamChanged : A}
+          ></eq-param-bar>
+        </div>
+      `);
+        }
+        if (params.n) {
+            const entity = params.n.entity;
+            const value = this._resolveEntityNumber(entity, params.n.fallback);
+            const [min, max] = this._getEntityRange(entity, 1.0, 2.0);
+            const step = this._getEntityStep(entity, 0.01);
+            const nClick = () => params.n.onClick ? params.n.onClick() : this._openMoreInfo(entity);
+            const canInteract = !!entity && !!this.hass;
+            items.push(b `
+        <div class="param-item" @click=${nClick}>
+          <span class="param-label">n</span>
+          <span class="param-value">${this._formatParamNum(value, 2)}</span>
+          <eq-param-bar
+            .min=${min} .max=${max} .step=${step} .value=${value} indicator
+            ?interactive=${canInteract}
+            data-entity-id=${entity}
+            @value-changed=${canInteract ? this._onParamChanged : A}
+          ></eq-param-bar>
+        </div>
+      `);
+        }
+        if (params.shift) {
+            items.push(this._renderDeltaParamItem('Shift', params.shift.entity, params.shift.fallback, [-15, 15], () => params.shift.onClick ? params.shift.onClick() : this._openMoreInfo(params.shift.entity)));
+        }
+        if (params.pid_correction) {
+            items.push(this._renderDeltaParamItem('Σ', params.pid_correction.entity, params.pid_correction.fallback ?? 0, [-10, 10], () => this._openMoreInfo(params.pid_correction.entity)));
+        }
+        if (items.length === 0)
+            return A;
+        return b `<div class="params-footer">${items}</div>`;
+    }
+    _renderTunableParamsFooter(params, onTune) {
+        const inner = this._renderParamsFooter(params);
+        if (inner === A)
+            return A;
+        if (!this._config.tunable)
+            return inner;
+        return b `
+      <div class="params-footer-tunable" @click=${onTune}>
+        ${inner}
+        <ha-icon class="pencil-icon" icon="mdi:pencil"></ha-icon>
+      </div>
+    `;
+    }
+}
+__decorate([
+    r()
+], EquithermBaseCard.prototype, "_showTuningDialog", void 0);
+__decorate([
+    r()
+], EquithermBaseCard.prototype, "_dialogConfig", void 0);
+
+class EquithermEChartCard extends EquithermBaseCard {
+    getGridOptions() {
+        return { columns: 12, rows: 5, min_rows: 5 };
+    }
+    getCardSize() {
+        return 3;
+    }
+    _formatChartTime(timestampMs) {
+        return formatTime(new Date(timestampMs), this.hass.locale);
+    }
+    _formatChartDateTime(timestampMs) {
+        const date = new Date(timestampMs);
+        const weekday = date.toLocaleDateString(this.hass?.locale?.language, { weekday: 'short' });
+        return `${weekday} ${formatTime(date, this.hass.locale)}`;
+    }
+    _updateChartConfig() {
+        if (this._config && this.hass) {
+            this._echartConfig = this._buildEChartOptions();
+        }
+    }
+    updated(changedProps) {
+        super.updated(changedProps);
+        if (changedProps.has('hass')) {
+            const oldHass = changedProps.get('hass');
+            const tempChanged = oldHass &&
+                this.hass?.config?.unit_system?.temperature !== oldHass.config?.unit_system?.temperature;
+            const timeFormatChanged = oldHass &&
+                this.hass?.locale?.time_format !== oldHass.locale?.time_format;
+            if (tempChanged || timeFormatChanged) {
+                this._updateChartConfig();
+            }
+        }
+    }
+    _onChartReconnected() { }
+    _onChartDisconnecting() { }
+    connectedCallback() {
+        super.connectedCallback();
+        if (this._config && this.hass) {
+            this._onChartReconnected();
+        }
+    }
+    disconnectedCallback() {
+        this._onChartDisconnecting();
+        super.disconnectedCallback();
+    }
+    _renderChart() {
+        if (!this._echartConfig)
+            return A;
+        const { options, data } = this._echartConfig;
+        return b `
+      <div class="chart-wrapper">
+        <ha-chart-base
+          .hass=${this.hass}
+          .options=${options}
+          .data=${data}
+          hide-reset-button
+        ></ha-chart-base>
+      </div>
+    `;
+    }
+    static get styles() {
+        return [super.styles, i$5 `
+      :host([manual-override]) .chart-wrapper {
         opacity: 0.18;
         transition: opacity 400ms ease;
         pointer-events: none;
       }
-      :host([manual-override]) .chart-legend {
-        opacity: 0.18;
-        transition: opacity 400ms ease;
+      .chart-wrapper {
+        flex: 1;
+        min-height: 0;
+        position: relative;
       }
-      .manual-overlay {
-        position: absolute;
-        inset: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        pointer-events: none;
-        z-index: 10;
-      }
-      .manual-overlay-chip {
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        padding: 5px 10px;
-        border-radius: 99px;
-        background: color-mix(in srgb, var(--card-background-color, #fff) 80%, transparent);
-        border: 1px solid color-mix(in srgb, var(--divider-color, rgba(0,0,0,0.12)) 60%, transparent);
-        color: var(--secondary-text-color);
-        font-size: 11px;
-        font-weight: 500;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
-      }
-      .manual-overlay-chip ha-icon {
-        --mdc-icon-size: 14px;
-        opacity: 0.7;
-      }
-    `]}}t([ft("#chart")],ja.prototype,"_chartEl",void 0),t([ft(".chart-wrapper")],ja.prototype,"_chartWrapper",void 0);const Va=t=>(t.name_by_user||t.name)?.trim(),qa=t=>{return e=t.entity_id,void 0===(s=t.attributes).friendly_name?(t=>t.slice(t.indexOf(".")+1))(e).replace(/_/g," "):(s.friendly_name??"").toString();var e,s},Za=[" ",": "," - "],Ka=t=>t.toLowerCase()!==t,Ja=(t,e,s)=>{const i=e[t.entity_id];return i?Qa(i,s):qa(t)},Qa=(t,e)=>{const s=t.name||("original_name"in t&&null!=t.original_name?String(t.original_name):void 0),i=t.device_id?e[t.device_id]:void 0;if(!i)return s;const a=Va(i);return a!==s?a&&s&&((t,e)=>{const s=t.toLowerCase(),i=e.toLowerCase();for(const e of Za){const a=`${i}${e}`;if(s.startsWith(a)){const e=t.substring(a.length);if(e.length)return Ka(e.substring(0,e.indexOf(" ")))?e:e[0].toUpperCase()+e.slice(1)}}})(s,a)||s:void 0},tr=(t,e,s,i)=>{const{entities:a,devices:r,areas:o,floors:n}=s;if("string"==typeof e)return e;if(!e)return qa(t);let l=null==(h=e)||Array.isArray(h)?h:[h];var h;if(l.every(t=>"text"===t.type))return l.map(t=>"text"in t?t.text:"").join(" ");const c=((t,e,s)=>!Ja(t,e,s))(t,a,r);if(c){const t=l.some(t=>"device"===t.type);t||(l=l.map(t=>"entity"===t.type?{type:"device"}:t))}const d=er(t,l,a,r,o,n);return 1===d.length?d[0]||"":d.filter(t=>t).join(" ")},er=(t,e,s,i,a,r)=>{const{device:o,area:n,floor:l}=((t,e,s,i,a)=>{const r=e[t.entity_id];if(!r)return{entity:null,device:null,area:null,floor:null};const o=e[r.entity_id],n=r.device_id,l=n?s[n]:void 0,h=r.area_id||l?.area_id,c=h?i[h]:void 0,d=c?.floor_id;return{entity:o||null,device:l||null,area:c||null,floor:(d?a[d]:void 0)||null}})(t,s,i,a,r);return e.map(e=>{switch(e.type){case"entity":return Ja(t,s,i);case"device":return o?Va(o):void 0;case"area":return n?(t=>t.name?.trim())(n):void 0;case"floor":return l?(t=>t.name?.trim())(l):void 0;case"text":return e.text;default:return""}})},sr=n`
+    `];
+    }
+}
+__decorate([
+    r()
+], EquithermEChartCard.prototype, "_echartConfig", void 0);
+
+/**
+ * Abstract base class for all equitherm card editors.
+ *
+ * Extracts the shared boilerplate from every editor in this project:
+ *   - `hass` property
+ *   - `_config` / `_error` reactive state
+ *   - `setConfig()` spread pattern
+ *   - `_valueChanged()` (spread → transform → validate → fireEvent)
+ *   - `_computeLabel` / `_computeHelper` localization helpers
+ *   - Shared `static styles`
+ *   - `render()` with `<ha-form>` template
+ *
+ * Subclasses must implement:
+ *   - `setConfig(config)` — assign config (usually `{ ...config }`)
+ *   - `_getSchema()` — return the ha-form schema array
+ *   - `_validate(config)` — throw on invalid config
+ *
+ * Subclasses may override:
+ *   - `_transformConfig(raw)` — pre-validation transform hook (default: identity)
+ *   - `_getDisplayConfig()` — transform config for display in ha-form (default: identity)
+ */
+class EquithermBaseEditor extends i$2 {
+    constructor() {
+        super(...arguments);
+        this._computeLabel = (schema) => {
+            const localize = setupCustomlocalize(this.hass);
+            const key = `editor.${schema.name}`;
+            const localized = localize(key);
+            const label = localized !== key ? localized : schema.name;
+            return schema.required === false
+                ? `${label} (${localize('editor.optional')})`
+                : label;
+        };
+        this._computeHelper = (schema) => {
+            const localize = setupCustomlocalize(this.hass);
+            const key = `editor.helper.${schema.name}`;
+            const localized = localize(key);
+            return localized !== key ? localized : '';
+        };
+    }
+    /**
+     * Pre-validation transform hook.
+     * Called in `_valueChanged` after merging user input but before `_validate`.
+     * Use this for unit conversions (e.g. imperial → °C) or other transforms.
+     * Default: identity (no-op).
+     */
+    _transformConfig(raw) {
+        return raw;
+    }
+    /**
+     * Transform config for display in ha-form.
+     * Called in `render()` before passing `.data` to `<ha-form>`.
+     * Use this for unit conversions (e.g. °C → imperial) for display.
+     * Default: identity (returns `_config` as-is).
+     */
+    _getDisplayConfig() {
+        return this._config;
+    }
+    _valueChanged(ev) {
+        ev.stopPropagation();
+        if (!this._config)
+            return;
+        const merged = { ...this._config, ...ev.detail.value };
+        const transformed = this._transformConfig(merged);
+        try {
+            this._validate(transformed);
+            this._error = undefined;
+            fireEvent(this, 'config-changed', { config: transformed });
+        }
+        catch (err) {
+            this._error = { base: err.message };
+        }
+    }
+    render() {
+        if (!this.hass || !this._config)
+            return A;
+        return b `
+      <ha-form
+        .hass=${this.hass}
+        .data=${this._getDisplayConfig()}
+        .schema=${this._getSchema()}
+        .computeLabel=${this._computeLabel}
+        .computeHelper=${this._computeHelper}
+        .error=${this._error}
+        @value-changed=${this._valueChanged}
+      ></ha-form>
+    `;
+    }
+}
+EquithermBaseEditor.styles = i$5 `
+    ha-form {
+      display: block;
+    }
+    ha-expandable {
+      margin: 8px 0;
+      --ha-card-border-radius: 8px;
+    }
+  `;
+__decorate([
+    n$1({ attribute: false })
+], EquithermBaseEditor.prototype, "hass", void 0);
+__decorate([
+    r()
+], EquithermBaseEditor.prototype, "_config", void 0);
+__decorate([
+    r()
+], EquithermBaseEditor.prototype, "_error", void 0);
+
+const cardStyle = i$5 `
+  :host {
+    --eq-flow-color: var(--gradient-hot, var(--warning-color, #ff9800));
+  }
   ha-card {
     box-sizing: border-box;
     display: flex;
@@ -324,6 +5568,7 @@ function ia(t){if(!t||"string"!=typeof t)return[["M",0,0]];const e=[],s=/([MmLlH
     height: auto;
     padding: 0;
     overflow: hidden;
+    container-type: inline-size;
     border-radius: var(--ha-card-border-radius, var(--ha-border-radius-lg, 12px));
   }
   ha-card.fill-container {
@@ -354,9 +5599,12 @@ function ia(t){if(!t||"string"!=typeof t)return[["M",0,0]];const e=[],s=/([MmLlH
     display: flex;
     justify-content: center;
     padding: 4px 10px 10px;
-    font-size: var(--ha-font-size-xs, 0.68rem);
+    font-size: var(--ha-font-size-xs, 0.75rem);
     color: var(--secondary-text-color);
     flex-shrink: 0;
+  }
+  .footer-meta--warn {
+    color: var(--warning-color, rgb(var(--rgb-warning)));
   }
   .unavailable {
     --main-color: rgb(var(--rgb-warning));
@@ -364,7 +5612,625 @@ function ia(t){if(!t||"string"!=typeof t)return[["M",0,0]];const e=[],s=/([MmLlH
   .not-found {
     --main-color: rgb(var(--rgb-danger));
   }
-`;function ir(t){const e=window;e.customCards=e.customCards||[];const s=t.type.replace("-card","").replace("equitherm-","");e.customCards.push({...t,preview:!0,documentationURL:`https://github.com/equitherm/lovelace/blob/main/docs/cards/${s}.md`})}class ar extends TypeError{constructor(t,e){let s;const{message:i,explanation:a,...r}=t,{path:o}=t,n=0===o.length?i:`At path: ${o.join(".")} -- ${i}`;super(a??n),null!=a&&(this.cause=n),Object.assign(this,r),this.name=this.constructor.name,this.failures=()=>s??(s=[t,...e()])}}function rr(t){return"object"==typeof t&&null!=t}function or(t){return rr(t)&&!Array.isArray(t)}function nr(t){return"symbol"==typeof t?t.toString():"string"==typeof t?JSON.stringify(t):`${t}`}function lr(t,e,s,i){if(!0===t)return;!1===t?t={}:"string"==typeof t&&(t={message:t});const{path:a,branch:r}=e,{type:o}=s,{refinement:n,message:l=`Expected a value of type \`${o}\`${n?` with refinement \`${n}\``:""}, but received: \`${nr(i)}\``}=t;return{value:i,type:o,refinement:n,key:a[a.length-1],path:a,branch:r,...t,message:l}}function*hr(t,e,s,i){(function(t){return rr(t)&&"function"==typeof t[Symbol.iterator]})(t)||(t=[t]);for(const a of t){const t=lr(a,e,s,i);t&&(yield t)}}function*cr(t,e,s={}){const{path:i=[],branch:a=[t],coerce:r=!1,mask:o=!1}=s,n={path:i,branch:a,mask:o};r&&(t=e.coercer(t,n));let l="valid";for(const i of e.validator(t,n))i.explanation=s.message,l="not_valid",yield[i,void 0];for(let[h,c,d]of e.entries(t,n)){const e=cr(c,d,{path:void 0===h?i:[...i,h],branch:void 0===h?a:[...a,c],coerce:r,mask:o,message:s.message});for(const s of e)s[0]?(l=null!=s[0].refinement?"not_refined":"not_valid",yield[s[0],void 0]):r&&(c=s[1],void 0===h?t=c:t instanceof Map?t.set(h,c):t instanceof Set?t.add(c):rr(t)&&(void 0!==c||h in t)&&(t[h]=c))}if("not_valid"!==l)for(const i of e.refiner(t,n))i.explanation=s.message,l="not_refined",yield[i,void 0];"valid"===l&&(yield[void 0,t])}class dr{constructor(t){const{type:e,schema:s,validator:i,refiner:a,coercer:r=t=>t,entries:o=function*(){}}=t;this.type=e,this.schema=s,this.entries=o,this.coercer=r,this.validator=i?(t,e)=>hr(i(t,e),e,this,t):()=>[],this.refiner=a?(t,e)=>hr(a(t,e),e,this,t):()=>[]}assert(t,e){return gr(t,this,e)}create(t,e){return function(t,e,s){const i=pr(t,e,{coerce:!0,message:s});if(i[0])throw i[0];return i[1]}(t,this,e)}is(t){return function(t,e){const s=pr(t,e);return!s[0]}(t,this)}mask(t,e){return function(t,e,s){const i=pr(t,e,{coerce:!0,mask:!0,message:s});if(i[0])throw i[0];return i[1]}(t,this,e)}validate(t,e={}){return pr(t,this,e)}}function gr(t,e,s){const i=pr(t,e,{message:s});if(i[0])throw i[0]}function pr(t,e,s={}){const i=cr(t,e,s),a=function(t){const{done:e,value:s}=t.next();return e?void 0:s}(i);if(a[0]){const t=new ar(a[0],function*(){for(const t of i)t[0]&&(yield t[0])});return[t,void 0]}return[void 0,a[1]]}function ur(t,e){return new dr({type:t,schema:null,validator:e})}function fr(){return ur("any",()=>!0)}function xr(){return ur("boolean",t=>"boolean"==typeof t)}function mr(){return ur("number",t=>"number"==typeof t&&!isNaN(t)||`Expected a number, but received: ${nr(t)}`)}function br(t){return new dr({...t,validator:(e,s)=>void 0===e||t.validator(e,s),refiner:(e,s)=>void 0===e||t.refiner(e,s)})}function yr(){return ur("string",t=>"string"==typeof t||`Expected a string, but received: ${nr(t)}`)}function wr(t){const e=Object.keys(t);return new dr({type:"type",schema:t,*entries(s){if(rr(s))for(const i of e)yield[i,s[i],t[i]]},validator:t=>or(t)||`Expected an object, but received: ${nr(t)}`,coercer:t=>or(t)?{...t}:t})}const vr=wr({type:yr(),climate_entity:yr(),outdoor_entity:yr(),flow_entity:yr(),curve_output_entity:br(yr()),pid_output_entity:br(yr()),rate_limiting_entity:br(yr()),pid_active_entity:br(yr()),pid_correction_entity:br(yr()),pid_proportional_entity:br(yr()),pid_integral_entity:br(yr()),pid_derivative_entity:br(yr()),vertical:br(xr()),show_last_updated:br(xr()),name:br(fr()),title:br(fr())});function Ar(t){return gr(t,vr),t}const Cr="equitherm",_r=`${Cr}-status-card`,Sr=`${_r}-editor`,kr=["climate"],Er=["sensor"];let Dr=class extends lt{constructor(){super(...arguments),this.label="",this.active=!1}static get styles(){return n`
+`;
+const kpiFooterStyles = i$5 `
+  .kpi-footer {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto 1fr;
+    align-items: center;
+    gap: 8px;
+    padding: 0 10px var(--eq-kpi-padding-bottom, 8px);
+    flex-shrink: 0;
+  }
+  .kpi-block {
+    text-align: center;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 8px;
+    transition: background 0.2s;
+  }
+  .kpi-block:hover { background: var(--secondary-background-color, rgba(0,0,0,0.04)); }
+  .kpi-block.missing { opacity: 0.4; cursor: default; }
+  .kpi-block.missing:hover { background: transparent; }
+  .kpi-value {
+    font-size: var(--eq-kpi-font-size, var(--ha-font-size-xl, 1.4rem));
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    color: var(--primary-text-color);
+    white-space: nowrap;
+  }
+  .kpi-value.flow { color: var(--eq-flow-color); }
+  .kpi-label {
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--secondary-text-color);
+    margin-top: 4px;
+    white-space: nowrap;
+  }
+  .kpi-divider { width: 1px; background: var(--divider-color, rgba(0,0,0,0.12)); height: 32px; }
+  .kpi-dual { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .kpi-target {
+    font-size: 0.75rem;
+    color: var(--secondary-text-color);
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+  .kpi-target ha-icon {
+    --mdc-icon-size: 12px;
+    color: var(--eq-flow-color);
+  }
+  @container (max-width: 260px) {
+    .kpi-footer {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    .kpi-footer .kpi-divider {
+      display: none;
+    }
+  }
+`;
+const paramsFooterStyles = i$5 `
+  .params-footer {
+    display: flex;
+    align-items: stretch;
+    gap: 4px;
+    padding: var(--eq-params-padding, 8px 12px);
+    border-top: 1px solid var(--divider-color, rgba(0,0,0,0.1));
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+  }
+  .params-footer .param-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    flex: 1;
+    min-width: 0;
+    cursor: pointer;
+    border-radius: 8px;
+    padding: 4px 6px;
+    transition: background 0.2s;
+  }
+  .params-footer .param-item:hover {
+    background: var(--secondary-background-color, rgba(0,0,0,0.04));
+  }
+  .params-footer .param-label {
+    font-size: 10px;
+    font-weight: var(--ha-font-weight-medium, 500);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--secondary-text-color);
+    line-height: 1;
+  }
+  .params-footer .param-value {
+    font-size: var(--ha-font-size-s, 0.85rem);
+    font-weight: 600;
+    color: var(--primary-text-color);
+    line-height: 1;
+  }
+  .params-footer .param-value.positive { color: var(--success-color, #4caf50); }
+  .params-footer .param-value.negative { color: var(--error-color, #e53935); }
+`;
+const tunableFooterStyles = i$5 `
+  .params-footer-tunable {
+    display: flex;
+    align-items: stretch;
+    gap: 4px;
+    padding: var(--eq-params-padding, 8px 12px);
+    border-top: 1px solid var(--divider-color, rgba(0,0,0,0.1));
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+    cursor: pointer;
+    position: relative;
+    transition: background 0.2s;
+  }
+  .params-footer-tunable:hover {
+    background: rgba(var(--rgb-primary, 33, 150, 243), 0.06);
+  }
+  .params-footer-tunable .params-footer {
+    border-top: none;
+    padding: 0;
+    flex: 1;
+  }
+  .params-footer-tunable .param-item {
+    pointer-events: none;
+  }
+  .params-footer-tunable .pencil-icon {
+    --mdc-icon-size: 14px;
+    color: var(--secondary-text-color);
+    opacity: 0.5;
+    align-self: center;
+    flex-shrink: 0;
+  }
+  .params-footer-tunable:hover .pencil-icon {
+    opacity: 0.8;
+  }
+`;
+
+function registerCustomCard(params) {
+    const windowWithCards = window;
+    windowWithCards.customCards = windowWithCards.customCards || [];
+    const cardPage = params.type.replace("-card", "").replace("equitherm-", "");
+    windowWithCards.customCards.push({
+        ...params,
+        preview: true,
+        documentationURL: `${"https://github.com/equitherm/lovelace"}/blob/main/docs/cards/${cardPage}.md`,
+    });
+}
+const editorName = (cardName) => `${cardName}-editor`;
+
+/**
+ * A `StructFailure` represents a single specific failure in validation.
+ */
+/**
+ * `StructError` objects are thrown (or returned) when validation fails.
+ *
+ * Validation logic is design to exit early for maximum performance. The error
+ * represents the first error encountered during validation. For more detail,
+ * the `error.failures` property is a generator function that can be run to
+ * continue validation and receive all the failures in the data.
+ */
+class StructError extends TypeError {
+    constructor(failure, failures) {
+        let cached;
+        const { message, explanation, ...rest } = failure;
+        const { path } = failure;
+        const msg = path.length === 0 ? message : `At path: ${path.join('.')} -- ${message}`;
+        super(explanation ?? msg);
+        if (explanation != null)
+            this.cause = msg;
+        Object.assign(this, rest);
+        this.name = this.constructor.name;
+        this.failures = () => {
+            return (cached ?? (cached = [failure, ...failures()]));
+        };
+    }
+}
+
+/**
+ * Check if a value is an iterator.
+ */
+function isIterable(x) {
+    return isObject(x) && typeof x[Symbol.iterator] === 'function';
+}
+/**
+ * Check if a value is a plain object.
+ */
+function isObject(x) {
+    return typeof x === 'object' && x != null;
+}
+/**
+ * Check if a value is a non-array object.
+ */
+function isNonArrayObject(x) {
+    return isObject(x) && !Array.isArray(x);
+}
+/**
+ * Return a value as a printable string.
+ */
+function print(value) {
+    if (typeof value === 'symbol') {
+        return value.toString();
+    }
+    return typeof value === 'string' ? JSON.stringify(value) : `${value}`;
+}
+/**
+ * Shifts (removes and returns) the first value from the `input` iterator.
+ * Like `Array.prototype.shift()` but for an `Iterator`.
+ */
+function shiftIterator(input) {
+    const { done, value } = input.next();
+    return done ? undefined : value;
+}
+/**
+ * Convert a single validation result to a failure.
+ */
+function toFailure(result, context, struct, value) {
+    if (result === true) {
+        return;
+    }
+    else if (result === false) {
+        result = {};
+    }
+    else if (typeof result === 'string') {
+        result = { message: result };
+    }
+    const { path, branch } = context;
+    const { type } = struct;
+    const { refinement, message = `Expected a value of type \`${type}\`${refinement ? ` with refinement \`${refinement}\`` : ''}, but received: \`${print(value)}\``, } = result;
+    return {
+        value,
+        type,
+        refinement,
+        key: path[path.length - 1],
+        path,
+        branch,
+        ...result,
+        message,
+    };
+}
+/**
+ * Convert a validation result to an iterable of failures.
+ */
+function* toFailures(result, context, struct, value) {
+    if (!isIterable(result)) {
+        result = [result];
+    }
+    for (const r of result) {
+        const failure = toFailure(r, context, struct, value);
+        if (failure) {
+            yield failure;
+        }
+    }
+}
+/**
+ * Check a value against a struct, traversing deeply into nested values, and
+ * returning an iterator of failures or success.
+ */
+function* run(value, struct, options = {}) {
+    const { path = [], branch = [value], coerce = false, mask = false } = options;
+    const ctx = { path, branch, mask };
+    if (coerce) {
+        value = struct.coercer(value, ctx);
+    }
+    let status = 'valid';
+    for (const failure of struct.validator(value, ctx)) {
+        failure.explanation = options.message;
+        status = 'not_valid';
+        yield [failure, undefined];
+    }
+    for (let [k, v, s] of struct.entries(value, ctx)) {
+        const ts = run(v, s, {
+            path: k === undefined ? path : [...path, k],
+            branch: k === undefined ? branch : [...branch, v],
+            coerce,
+            mask,
+            message: options.message,
+        });
+        for (const t of ts) {
+            if (t[0]) {
+                status = t[0].refinement != null ? 'not_refined' : 'not_valid';
+                yield [t[0], undefined];
+            }
+            else if (coerce) {
+                v = t[1];
+                if (k === undefined) {
+                    value = v;
+                }
+                else if (value instanceof Map) {
+                    value.set(k, v);
+                }
+                else if (value instanceof Set) {
+                    value.add(v);
+                }
+                else if (isObject(value)) {
+                    if (v !== undefined || k in value)
+                        value[k] = v;
+                }
+            }
+        }
+    }
+    if (status !== 'not_valid') {
+        for (const failure of struct.refiner(value, ctx)) {
+            failure.explanation = options.message;
+            status = 'not_refined';
+            yield [failure, undefined];
+        }
+    }
+    if (status === 'valid') {
+        yield [undefined, value];
+    }
+}
+
+/**
+ * `Struct` objects encapsulate the validation logic for a specific type of
+ * values. Once constructed, you use the `assert`, `is` or `validate` helpers to
+ * validate unknown input data against the struct.
+ */
+class Struct {
+    constructor(props) {
+        const { type, schema, validator, refiner, coercer = (value) => value, entries = function* () { }, } = props;
+        this.type = type;
+        this.schema = schema;
+        this.entries = entries;
+        this.coercer = coercer;
+        if (validator) {
+            this.validator = (value, context) => {
+                const result = validator(value, context);
+                return toFailures(result, context, this, value);
+            };
+        }
+        else {
+            this.validator = () => [];
+        }
+        if (refiner) {
+            this.refiner = (value, context) => {
+                const result = refiner(value, context);
+                return toFailures(result, context, this, value);
+            };
+        }
+        else {
+            this.refiner = () => [];
+        }
+    }
+    /**
+     * Assert that a value passes the struct's validation, throwing if it doesn't.
+     */
+    assert(value, message) {
+        return assert(value, this, message);
+    }
+    /**
+     * Create a value with the struct's coercion logic, then validate it.
+     */
+    create(value, message) {
+        return create(value, this, message);
+    }
+    /**
+     * Check if a value passes the struct's validation.
+     */
+    is(value) {
+        return is(value, this);
+    }
+    /**
+     * Mask a value, coercing and validating it, but returning only the subset of
+     * properties defined by the struct's schema. Masking applies recursively to
+     * props of `object` structs only.
+     */
+    mask(value, message) {
+        return mask(value, this, message);
+    }
+    /**
+     * Validate a value with the struct's validation logic, returning a tuple
+     * representing the result.
+     *
+     * You may optionally pass `true` for the `coerce` argument to coerce
+     * the value before attempting to validate it. If you do, the result will
+     * contain the coerced result when successful. Also, `mask` will turn on
+     * masking of the unknown `object` props recursively if passed.
+     */
+    validate(value, options = {}) {
+        return validate(value, this, options);
+    }
+}
+/**
+ * Assert that a value passes a struct, throwing if it doesn't.
+ */
+function assert(value, struct, message) {
+    const result = validate(value, struct, { message });
+    if (result[0]) {
+        throw result[0];
+    }
+}
+/**
+ * Create a value with the coercion logic of struct and validate it.
+ */
+function create(value, struct, message) {
+    const result = validate(value, struct, { coerce: true, message });
+    if (result[0]) {
+        throw result[0];
+    }
+    else {
+        return result[1];
+    }
+}
+/**
+ * Mask a value, returning only the subset of properties defined by a struct.
+ */
+function mask(value, struct, message) {
+    const result = validate(value, struct, { coerce: true, mask: true, message });
+    if (result[0]) {
+        throw result[0];
+    }
+    else {
+        return result[1];
+    }
+}
+/**
+ * Check if a value passes a struct.
+ */
+function is(value, struct) {
+    const result = validate(value, struct);
+    return !result[0];
+}
+/**
+ * Validate a value against a struct, returning an error if invalid, or the
+ * value (with potential coercion) if valid.
+ */
+function validate(value, struct, options = {}) {
+    const tuples = run(value, struct, options);
+    const tuple = shiftIterator(tuples);
+    if (tuple[0]) {
+        const error = new StructError(tuple[0], function* () {
+            for (const t of tuples) {
+                if (t[0]) {
+                    yield t[0];
+                }
+            }
+        });
+        return [error, undefined];
+    }
+    else {
+        const v = tuple[1];
+        return [undefined, v];
+    }
+}
+/**
+ * Define a new struct type with a custom validation function.
+ */
+function define(name, validator) {
+    return new Struct({ type: name, schema: null, validator });
+}
+
+/**
+ * Ensure that any value passes validation.
+ */
+function any() {
+    return define('any', () => true);
+}
+/**
+ * Ensure that a value is a boolean.
+ */
+function boolean() {
+    return define('boolean', (value) => {
+        return typeof value === 'boolean';
+    });
+}
+/**
+ * Ensure that a value is a number.
+ */
+function number$1() {
+    return define('number', (value) => {
+        return ((typeof value === 'number' && !isNaN(value)) ||
+            `Expected a number, but received: ${print(value)}`);
+    });
+}
+/**
+ * Augment a struct to allow `undefined` values.
+ */
+function optional(struct) {
+    return new Struct({
+        ...struct,
+        validator: (value, ctx) => value === undefined || struct.validator(value, ctx),
+        refiner: (value, ctx) => value === undefined || struct.refiner(value, ctx),
+    });
+}
+/**
+ * Ensure that a value is a string.
+ */
+function string() {
+    return define('string', (value) => {
+        return (typeof value === 'string' ||
+            `Expected a string, but received: ${print(value)}`);
+    });
+}
+/**
+ * Ensure that a value has a set of known properties of specific types.
+ *
+ * Note: Unrecognized properties are allowed and untouched. This is similar to
+ * how TypeScript's structural typing works.
+ */
+function type(schema) {
+    const keys = Object.keys(schema);
+    return new Struct({
+        type: 'type',
+        schema,
+        *entries(value) {
+            if (isObject(value)) {
+                for (const k of keys) {
+                    yield [k, value[k], schema[k]];
+                }
+            }
+        },
+        validator(value) {
+            return (isNonArrayObject(value) ||
+                `Expected an object, but received: ${print(value)}`);
+        },
+        coercer(value) {
+            return isNonArrayObject(value) ? { ...value } : value;
+        },
+    });
+}
+
+// src/cards/status-card/status-card-config.ts
+/** Runtime validation schema for StatusCardConfig */
+const StatusCardConfigStruct = type({
+    type: string(),
+    climate_entity: string(),
+    outdoor_entity: string(),
+    flow_entity: string(),
+    curve_output_entity: optional(string()),
+    pid_output_entity: optional(string()),
+    rate_limiting_entity: optional(string()),
+    pid_active_entity: optional(string()),
+    pid_correction_entity: optional(string()),
+    wws_entity: optional(string()),
+    hc_entity: optional(string()),
+    shift_entity: optional(string()),
+    n_entity: optional(string()),
+    show_last_updated: optional(boolean()),
+    show_params_footer: optional(boolean()),
+    tunable: optional(boolean()),
+    recalculate_service: optional(string()),
+    name: optional(any()),
+});
+/** Validate and apply defaults */
+function validateStatusCardConfig(config) {
+    const c = { ...config };
+    if ('title' in c && !('name' in c))
+        c.name = c.title;
+    delete c.title;
+    assert(c, StatusCardConfigStruct);
+    return c;
+}
+
+const PREFIX_NAME = "equitherm";
+
+const STATUS_CARD_NAME = `${PREFIX_NAME}-status-card`;
+const STATUS_CARD_EDITOR_NAME = editorName(STATUS_CARD_NAME);
+
+const CLIMATE_DOMAINS = ['climate'];
+const SENSOR_DOMAINS = ['sensor'];
+function findClimateEntity(hass) {
+    return Object.keys(hass.states).find(e => CLIMATE_DOMAINS.includes(computeDomain(e)));
+}
+function findWeatherEntity(hass) {
+    return Object.keys(hass.states).find(e => computeDomain(e) === 'weather');
+}
+function findTempSensors(hass) {
+    const states = hass.states;
+    return Object.keys(states).filter(e => {
+        const state = states[e];
+        return SENSOR_DOMAINS.includes(computeDomain(e))
+            && state?.attributes?.device_class === 'temperature';
+    });
+}
+function findOutdoorEntity(hass) {
+    const temps = findTempSensors(hass);
+    return temps.find(e => e.includes('outdoor') || e.includes('outside') || e.includes('exterior')) ?? temps[0];
+}
+function findFlowEntity(hass) {
+    const temps = findTempSensors(hass);
+    return temps.find(e => e.includes('flow') || e.includes('supply') || e.includes('forward')) ?? temps[0];
+}
+function findCurveOutputEntity(hass) {
+    return findTempSensors(hass).find(e => e.includes('curve_output')) ?? '';
+}
+
+/**
+ * @license
+ * Copyright 2018 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */const e=e$1(class extends i$1{constructor(t$1){if(super(t$1),t$1.type!==t.ATTRIBUTE||"class"!==t$1.name||t$1.strings?.length>2)throw Error("`classMap()` can only be used in the `class` attribute and must be the only part in the attribute.")}render(t){return " "+Object.keys(t).filter(s=>t[s]).join(" ")+" "}update(s,[i]){if(void 0===this.st){this.st=new Set,void 0!==s.strings&&(this.nt=new Set(s.strings.join(" ").split(/\s/).filter(t=>""!==t)));for(const t in i)i[t]&&!this.nt?.has(t)&&this.st.add(t);return this.render(i)}const r=s.element.classList;for(const t of this.st)t in i||(r.remove(t),this.st.delete(t));for(const t in i){const s=!!i[t];s===this.st.has(t)||this.nt?.has(t)||(s?(r.add(t),this.st.add(t)):(r.remove(t),this.st.delete(t)));}return E}});
+
+/**
+ * Generic status badge (pill-shaped chip).
+ * Renders a colored label with an optional leading icon.
+ * Colors are inherited from parent via CSS variables.
+ *
+ * Usage:
+ * ```html
+ * <eq-badge-info
+ *   style="--badge-info-color: var(--rgb-state-climate-heat)"
+ *   .label=${'Heating'}
+ *   .active=${true}
+ * ></eq-badge-info>
+ * <eq-badge-info .label=${'PID'} style="--badge-info-color: var(--rgb-success)"></eq-badge-info>
+ * ```
+ */
+let BadgeInfo = class BadgeInfo extends i$2 {
+    constructor() {
+        super(...arguments);
+        /** Display text */
+        this.label = '';
+        /** Enables pulse animation on the icon */
+        this.active = false;
+    }
+    static get styles() {
+        return i$5 `
       :host {
         --badge-info-color: 158, 158, 158;
         display: inline-flex;
@@ -397,623 +6263,1948 @@ function ia(t){if(!t||"string"!=typeof t)return[["M",0,0]];const e=[],s=/([MmLlH
         0%, 100% { opacity: 1; }
         50% { opacity: 0.4; }
       }
-    `}render(){const t=this.icon?W`<ha-icon class="icon" icon=${this.icon}></ha-icon>`:U;return W`
-      <span class=${yt({badge:!0,active:this.active})}>
-        ${t}${this.label}
+    `;
+    }
+    render() {
+        const icon = this.icon
+            ? b `<ha-icon class="icon" icon=${this.icon}></ha-icon>`
+            : A;
+        return b `
+      <span class=${e({ badge: true, active: this.active })}>
+        ${icon}${this.label}
       </span>
-    `}};t([pt()],Dr.prototype,"label",void 0),t([pt()],Dr.prototype,"icon",void 0),t([pt({type:Boolean})],Dr.prototype,"active",void 0),Dr=t([ct("eq-badge-info")],Dr),ir({type:_r,name:"Equitherm Status",description:"Compact heating status tile with temperature displays"});let Lr=class extends ys{constructor(){super(...arguments),this.vertical=!1}getGridOptions(){return this.vertical?this._hasPidDiagnostic?{columns:9,rows:5,min_rows:4}:{columns:6,rows:4,min_rows:4}:{columns:12,rows:3,min_rows:1}}static async getStubConfig(t){const e=t.states,s=Object.keys(e),i=s.find(t=>kr.includes(wt(t))),a=s.filter(t=>{const s=e[t];return Er.includes(wt(t))&&"temperature"===s?.attributes?.device_class}),r=a.find(t=>t.includes("outdoor")||t.includes("outside")||t.includes("exterior"))??a[0],o=a.find(t=>t.includes("flow")||t.includes("supply")||t.includes("forward"))??a[0];return{type:"custom:equitherm-status-card",climate_entity:i,outdoor_entity:r,flow_entity:o}}static async getConfigElement(){return await Promise.resolve().then(function(){return uo}),document.createElement(Sr)}setConfig(t){this._config=Ar(t),this.vertical=this._config.vertical??!1}get _outdoorTemp(){const t=this._entityState(this._config.outdoor_entity);return t?this._formatTemp(parseFloat(t.state),this._entityAttr(this._config.outdoor_entity,"unit_of_measurement")):"—"}get _flowTemp(){const t=this._entityState(this._config.flow_entity);return t?this._formatTemp(parseFloat(t.state),this._entityAttr(this._config.flow_entity,"unit_of_measurement")):"—"}get _curveOutputTemp(){const t=Xt(this._config);if(!t)return"";const e=this._entityState(t);if(!e)return"";const s=parseFloat(e.state);return isNaN(s)?"":this._formatTemp(s,this._entityAttr(t,"unit_of_measurement"))}_readNum(t){const e=this._entityState(t);if(!e)return null;const s=parseFloat(e.state);return isNaN(s)?null:s}_formatNum(t,e=2){if(null===t)return"—";const s=this.hass?.locale?.language;return s?t.toLocaleString(s,{minimumFractionDigits:e,maximumFractionDigits:e}):t.toFixed(e)}get _hasPidDiagnostic(){return!!this._config.pid_correction_entity}static get styles(){return[super.styles,sr,bs,n`
-        ha-card {
-          height: 100%;
-        }
-        .temps {
-          display: grid;
-          grid-template-columns: 1fr auto 1fr auto 1fr;
-          align-items: center;
-          gap: 8px;
-          flex: 1;
-          min-width: 0;
-          padding: 0 10px;
-        }
-        .temp-block {
-          text-align: center;
-          min-width: 0;
-          cursor: pointer;
-          padding: 4px;
-          border-radius: 8px;
-          transition: background 0.2s;
-        }
-        .temp-block:hover {
-          background: var(--secondary-background-color, rgba(0,0,0,0.04));
-        }
-        .temp-value {
-          font-size: var(--ha-font-size-xl, 1.4rem);
-          font-weight: 600;
-          font-variant-numeric: tabular-nums;
-          line-height: 1;
-          color: var(--primary-text-color);
-          white-space: nowrap;
-        }
-        .temp-value.flow { color: var(--gradient-hot); }
-        .temp-label {
-          font-size: 0.68rem;
-          font-weight: 500;
-          letter-spacing: 0.04em;
-          text-transform: uppercase;
-          color: var(--secondary-text-color);
-          margin-top: 4px;
-          white-space: nowrap;
-        }
-        .arrow {
-          color: var(--divider-color, rgba(0,0,0,0.2));
-          font-size: 0.9rem;
-          padding-bottom: calc(0.68rem + 4px);
-        }
-        .divider { width: 1px; background: var(--divider-color, rgba(0,0,0,0.12)); height: 32px; flex-shrink: 0; }
-        .flow-dual { display: flex; flex-direction: column; align-items: center; gap: 2px; }
-        .flow-dual .target { font-size: 0.7rem; color: var(--secondary-text-color); }
+    `;
+    }
+};
+__decorate([
+    n$1()
+], BadgeInfo.prototype, "label", void 0);
+__decorate([
+    n$1()
+], BadgeInfo.prototype, "icon", void 0);
+__decorate([
+    n$1({ type: Boolean })
+], BadgeInfo.prototype, "active", void 0);
+BadgeInfo = __decorate([
+    t$1('eq-badge-info')
+], BadgeInfo);
 
-        /* Layout variations */
-        .temps.vertical {
-          grid-template-columns: 1fr;
-          grid-template-rows: auto auto auto;
-          gap: 12px;
-        }
-        .temps.vertical .arrow,
-        .temps.vertical .divider {
-          display: none;
-        }
+/**
+ * Compute flow temperature using equitherm curve formula
+ * t_flow = t_target + shift + hc × (t_target - t_outdoor)^(1/n)
+ */
+function computeFlowTemperature(params) {
+    const { tTarget, tOutdoor, hc, n, shift, minFlow, maxFlow } = params;
+    // Default values for optional params
+    const min = minFlow ?? 20;
+    const max = maxFlow ?? 70;
+    // Validate all required numeric parameters
+    if (isNaN(tTarget) || isNaN(tOutdoor) || isNaN(hc) || isNaN(n) ||
+        isNaN(shift) || isNaN(min) || isNaN(max)) {
+        return min;
+    }
+    // Validate exponent is positive (required for power operation)
+    if (n <= 0) {
+        return min;
+    }
+    // Handle inverted min/max gracefully
+    const effectiveMin = Math.min(min, max);
+    const effectiveMax = Math.max(min, max);
+    const deltaT = tTarget - tOutdoor;
+    // Warm weather shutdown: no heating demand when outdoor >= target
+    if (deltaT <= 0) {
+        return Math.round(effectiveMin * 10) / 10;
+    }
+    const tFlow = tTarget + shift + hc * Math.pow(deltaT, 1.0 / n);
+    // Clamp to min/max
+    const clamped = Math.max(effectiveMin, Math.min(effectiveMax, tFlow));
+    // Round to 0.1°C precision - aligns with OpenTherm convention
+    return Math.round(clamped * 10) / 10;
+}
 
-        /* PID diagnostic */
-        .pid-row {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 6px;
-          padding: 6px 10px 8px;
-          font-variant-numeric: tabular-nums;
-          flex-shrink: 0;
-        }
-        .pid-row .sep {
-          color: var(--divider-color, rgba(0,0,0,0.25));
-          font-size: 10px;
-        }
-        .pid-row .divider-v {
-          width: 1px;
-          height: 12px;
-          background: var(--divider-color, rgba(0,0,0,0.2));
-          flex-shrink: 0;
-          margin: 0 2px;
-        }
-        .pid-row .term {
-          cursor: pointer;
-          border-radius: 4px;
-          padding: 1px 3px;
-          transition: background 0.2s;
-          white-space: nowrap;
-        }
-        .pid-row .term:hover {
-          background: var(--secondary-background-color, rgba(0,0,0,0.04));
-        }
-        .pid-row .correction {
-          border-radius: 10px;
-          padding: 2px 7px;
-          transition: background 0.2s;
-        }
-        .pid-row .correction:hover {
-          filter: brightness(0.94);
-        }
-        .pid-row .correction.positive { background: rgba(76,175,80,0.13); }
-        .pid-row .correction.negative { background: rgba(229,57,53,0.13); }
-        .pid-row .correction.neutral  { background: var(--secondary-background-color, rgba(0,0,0,0.06)); }
-        .pid-row .lbl {
-          font-size: 10px;
-          font-weight: var(--ha-font-weight-medium, 500);
-          color: var(--secondary-text-color);
-        }
-        .pid-row .val {
-          font-size: var(--ha-font-size-s, 0.8rem);
-          font-weight: 600;
-          color: var(--primary-text-color);
-        }
-        .pid-row .correction .val {
-          font-size: var(--ha-font-size-m, 1rem);
-          font-weight: 700;
-        }
-        .pid-row .val.positive { color: var(--success-color, #4caf50); }
-        .pid-row .val.negative { color: var(--error-color, #e53935); }
+/**
+ * Generate points along the heating curve for chart rendering.
+ * Uses 0.1° step size for smooth hover interpolation.
+ */
+function buildCurveSeries(params, tOutMin, tOutMax) {
+    const step = 0.1;
+    const points = Math.round((tOutMax - tOutMin) / step) + 1;
+    return Array.from({ length: points }, (_, i) => {
+        const x = tOutMin + i * step;
+        const y = computeFlowTemperature({ ...params, tOutdoor: x });
+        return { x, y: parseFloat(y.toFixed(1)) };
+    });
+}
+/**
+ * Find the flow temp for a given outdoor temp on the curve.
+ */
+function flowAtOutdoor(params, tOutdoor) {
+    return computeFlowTemperature({ ...params, tOutdoor });
+}
 
-        .pid-row.vertical .term:not(.correction),
-        .pid-row.vertical .sep,
-        .pid-row.vertical .divider-v { display: none; }
-      `]}render(){if(!this._config||!this.hass)return U;const t=ms(this.hass),e=this._config.vertical??!1,s=Yt(this._config,t=>this._entityState(t)),i=this._curveOutputTemp,a=this.hass.states[this._config.climate_entity],r=a?tr(a,this._config.name??this._config.title,this.hass)||t("status_card.default_title"):this._config.title??t("status_card.default_title");return W`
-      <ha-card>
-        ${this._renderHeader({iconName:"mdi:thermostat",clickEntity:this._config.climate_entity,title:r})}
+let EqTuningDialog = class EqTuningDialog extends EquithermBaseElement {
+    constructor() {
+        super(...arguments);
+        this.open = false;
+        this._proposedHc = 0.9;
+        this._proposedShift = 0;
+        this._applying = false;
+        this._applySuccess = false;
+        this._lastHcState = null;
+        this._lastShiftState = null;
+        this._onHcMoved = (e) => {
+            this._proposedHc = e.detail.value;
+        };
+        this._onHcChanged = (e) => {
+            this._proposedHc = e.detail.value;
+        };
+        this._onShiftMoved = (e) => {
+            this._proposedShift = this._fromDisplayDelta(e.detail.value);
+        };
+        this._onShiftChanged = (e) => {
+            this._proposedShift = this._fromDisplayDelta(e.detail.value);
+        };
+    }
+    // --- Dirty state ---
+    get _hcChanged() {
+        return Math.abs(this._proposedHc - this._currentHc) > this._hcStep / 2;
+    }
+    get _shiftChanged() {
+        return Math.abs(this._proposedShift - this._currentShift) > this._shiftStep / 2;
+    }
+    get _isDirty() {
+        return this._hcChanged || this._shiftChanged;
+    }
+    // --- Lifecycle ---
+    disconnectedCallback() {
+        clearTimeout(this._successTimer);
+        super.disconnectedCallback();
+    }
+    willUpdate(changedProps) {
+        super.willUpdate(changedProps);
+        // Sync proposed values when source data changes
+        if (changedProps.has('config') && this.config) {
+            this._lastHcState = null;
+            this._lastShiftState = null;
+            this._syncProposedValues();
+        }
+        else if (changedProps.has('open') && this.open) {
+            this._syncProposedValues();
+        }
+        else if (changedProps.has('hass') && this.hass && this.config && !this._isDirty) {
+            this._syncProposedValues();
+        }
+        // Rebuild chart in the same update cycle to avoid double-render flash
+        if (this.config && this.hass && this.open) {
+            const chartNeedsUpdate = changedProps.has('config') ||
+                changedProps.has('open') ||
+                changedProps.has('_proposedHc') ||
+                changedProps.has('_proposedShift') ||
+                (changedProps.has('hass') && this._hassRelevantChange(changedProps));
+            if (chartNeedsUpdate) {
+                this._chartConfig = this._buildChart();
+            }
+        }
+    }
+    _hassRelevantChange(changedProps) {
+        const oldHass = changedProps.get('hass');
+        return !oldHass || this._relevantStateChanged(oldHass);
+    }
+    _relevantStateChanged(oldHass) {
+        const cfg = this.config;
+        const entities = [
+            cfg.outdoor_entity, cfg.climate_entity, cfg.hc_entity, cfg.shift_entity,
+            cfg.n_entity, cfg.min_flow_entity, cfg.max_flow_entity,
+        ].filter(Boolean);
+        return entities.some(id => this.hass.states[id]?.state !== oldHass.states[id]?.state);
+    }
+    // --- Entity helpers ---
+    _entityState(entityId) {
+        if (!entityId || !this.hass)
+            return undefined;
+        return this.hass.states[entityId];
+    }
+    _entityAttr(entityId, key) {
+        return this._entityState(entityId)?.attributes?.[key];
+    }
+    _resolveEntityNumber(entityId, fallback) {
+        const s = this._entityState(entityId);
+        if (!s)
+            return fallback;
+        const val = parseFloat(s.state);
+        return isNaN(val) ? fallback : val;
+    }
+    _openMoreInfo(entityId) {
+        if (entityId && this.hass) {
+            const event = new CustomEvent('hass-more-info', {
+                bubbles: true,
+                composed: true,
+                detail: { entityId },
+            });
+            this.dispatchEvent(event);
+        }
+    }
+    // --- Entity getters ---
+    get _climateState() {
+        return this._entityState(this.config.climate_entity);
+    }
+    get _tTarget() {
+        return this._climateState?.attributes?.temperature ?? 21;
+    }
+    get _currentN() {
+        const cfg = this.config;
+        return cfg.curve_from_entities
+            ? this._resolveEntityNumber(cfg.n_entity, cfg.n)
+            : cfg.n;
+    }
+    get _currentHc() {
+        return this._resolveEntityNumber(this.config.hc_entity, 0.9);
+    }
+    get _currentShift() {
+        return this._resolveEntityNumber(this.config.shift_entity, 0);
+    }
+    get _tOutdoor() {
+        const s = this._entityState(this.config.outdoor_entity);
+        if (!s)
+            return null;
+        const v = parseFloat(s.state);
+        return isNaN(v) ? null : this._fromDisplayTemp(v);
+    }
+    get _hcMin() { return this._entityAttr(this.config.hc_entity, 'min') ?? 0.5; }
+    get _hcMax() { return this._entityAttr(this.config.hc_entity, 'max') ?? 3.0; }
+    get _hcStep() { return this._entityAttr(this.config.hc_entity, 'step') ?? 0.1; }
+    get _shiftMin() { return this._entityAttr(this.config.shift_entity, 'min') ?? -15; }
+    get _shiftMax() { return this._entityAttr(this.config.shift_entity, 'max') ?? 15; }
+    get _shiftStep() { return this._entityAttr(this.config.shift_entity, 'step') ?? 1; }
+    get _isWWSD() {
+        if (!this.config?.climate_entity)
+            return false;
+        const tOutdoor = this._tOutdoor;
+        return tOutdoor !== null && tOutdoor >= this._tTarget;
+    }
+    _syncProposedValues() {
+        if (!this.hass || !this.config)
+            return;
+        const hc = this._currentHc;
+        const shift = this._currentShift;
+        if (this._lastHcState !== hc) {
+            this._proposedHc = hc;
+            this._lastHcState = hc;
+        }
+        if (this._lastShiftState !== shift) {
+            this._proposedShift = shift;
+            this._lastShiftState = shift;
+        }
+    }
+    // --- Chart ---
+    _buildChart() {
+        const localize = setupCustomlocalize(this.hass);
+        const cfg = this.config;
+        const minFlow = cfg.curve_from_entities ? this._resolveEntityNumber(cfg.min_flow_entity, cfg.min_flow) : cfg.min_flow;
+        const maxFlow = cfg.curve_from_entities ? this._resolveEntityNumber(cfg.max_flow_entity, cfg.max_flow) : cfg.max_flow;
+        const currentParams = { tTarget: this._tTarget, hc: this._currentHc, n: this._currentN, shift: this._currentShift, minFlow, maxFlow };
+        const proposedParams = { tTarget: this._tTarget, hc: this._proposedHc ?? this._currentHc, n: this._currentN, shift: this._proposedShift ?? this._currentShift, minFlow, maxFlow };
+        const heatingColor = resolveRgbColor(this, 'heating');
+        const rawProposed = getComputedStyle(this).getPropertyValue('--rgb-state-climate-cool').trim()
+            || getComputedStyle(this).getPropertyValue('--rgb-primary-color').trim()
+            || '33, 150, 243';
+        const proposedColor = `rgb(${rawProposed})`;
+        const wwsdFill = `rgba(${getComputedStyle(this).getPropertyValue('--rgb-warning').trim() || '255, 167, 38'}, 0.08)`;
+        const currentSeries = buildCurveSeries(currentParams, cfg.t_out_min, cfg.t_out_max);
+        const proposedSeries = buildCurveSeries(proposedParams, cfg.t_out_min, cfg.t_out_max);
+        // Convert curve data from °C to display units for the chart
+        const currentDisplaySeries = currentSeries.map(p => ({
+            x: this._toDisplayTemp(p.x),
+            y: this._toDisplayTemp(p.y),
+        }));
+        const proposedDisplaySeries = proposedSeries.map(p => ({
+            x: this._toDisplayTemp(p.x),
+            y: this._toDisplayTemp(p.y),
+        }));
+        const tOutdoor = this._tOutdoor;
+        const operatingPointSeries = [];
+        if (tOutdoor !== null) {
+            const currentFlow = flowAtOutdoor(currentParams, tOutdoor);
+            operatingPointSeries.push({
+                type: 'line',
+                name: 'operating-point',
+                data: [{
+                        value: [this._toDisplayTemp(tOutdoor), this._toDisplayTemp(currentFlow)],
+                        symbolSize: 9,
+                        itemStyle: { color: heatingColor, borderColor: '#ffffff', borderWidth: 2 },
+                    }],
+                showSymbol: true,
+                symbol: 'circle',
+                lineStyle: { width: 0 },
+                tooltip: { show: false },
+            });
+        }
+        const wwsdSeries = [];
+        if (this._isWWSD) {
+            wwsdSeries.push({
+                type: 'line',
+                name: 'wwsd',
+                data: [
+                    [this._toDisplayTemp(cfg.t_out_max), this._toDisplayTemp(maxFlow + 5)],
+                    [this._toDisplayTemp(this._tTarget), this._toDisplayTemp(maxFlow + 5)],
+                ],
+                showSymbol: false,
+                lineStyle: { width: 0 },
+                areaStyle: { color: wwsdFill },
+                tooltip: { show: false },
+            });
+        }
+        const tempUnit = this.hass?.config?.unit_system?.temperature ?? '°C';
+        return {
+            options: {
+                animation: false,
+                xAxis: {
+                    type: 'value',
+                    min: this._toDisplayTemp(cfg.t_out_min),
+                    max: this._toDisplayTemp(cfg.t_out_max),
+                    inverse: true,
+                    axisLabel: { fontSize: 10, formatter: (val) => `${val.toFixed(0)}`, hideOverlap: true },
+                    axisTick: { show: false },
+                    axisLine: { show: false },
+                },
+                yAxis: {
+                    type: 'value',
+                    min: this._toDisplayTemp(minFlow - 5),
+                    max: this._toDisplayTemp(maxFlow + 5),
+                    axisLabel: { fontSize: 10 },
+                },
+                grid: { top: 10, right: 15, bottom: 25, left: 35 },
+                tooltip: {
+                    trigger: 'axis',
+                    backgroundColor: 'rgba(var(--rgb-card-background-color, 255, 255, 255), 0.95)',
+                    borderColor: 'var(--divider-color, rgba(0,0,0,0.12))',
+                    borderWidth: 1,
+                    padding: [8, 12],
+                    textStyle: { color: 'var(--primary-text-color)', fontSize: 12 },
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    formatter: (params) => {
+                        const arr = Array.isArray(params) ? params : [params];
+                        const curveParam = arr.find((p) => p.seriesName === localize('tuning_dialog.current') || p.seriesName === localize('tuning_dialog.proposed'));
+                        if (!curveParam)
+                            return '';
+                        const outdoorVal = curveParam.value[0];
+                        let out = '';
+                        for (const p of arr) {
+                            if (p.seriesName === 'operating-point' || p.seriesName === 'wwsd')
+                                continue;
+                            const marker = `<span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:${p.color};"></span>`;
+                            const dashLabel = p.lineStyle?.type === 'dashed' ? ` (${localize('tuning_dialog.proposed')})` : '';
+                            out += `${marker}${p.seriesName}${dashLabel}: <b>${p.value[1].toFixed(1)}${tempUnit}</b><br/>`;
+                        }
+                        out += `<span style="opacity:0.6">${outdoorVal.toFixed(1)}${tempUnit} ${localize('tuning_dialog.outdoor_axis_suffix')}</span>`;
+                        return out;
+                    },
+                },
+                legend: { show: false },
+            },
+            data: [
+                {
+                    type: 'line',
+                    name: localize('tuning_dialog.current'),
+                    data: currentDisplaySeries.map(p => [p.x, p.y]),
+                    showSymbol: false,
+                    lineStyle: { width: 2 },
+                    itemStyle: { color: heatingColor },
+                },
+                {
+                    type: 'line',
+                    name: localize('tuning_dialog.proposed'),
+                    data: proposedDisplaySeries.map(p => [p.x, p.y]),
+                    showSymbol: false,
+                    lineStyle: { width: 2, type: 'dashed' },
+                    itemStyle: { color: proposedColor },
+                },
+                ...operatingPointSeries,
+                ...wwsdSeries,
+            ],
+        };
+    }
+    // --- Service calls ---
+    async _recalculate() {
+        const svc = this.config.recalculate_service;
+        if (!svc || !this.hass)
+            return;
+        const [domain, service] = svc.split('.', 2);
+        if (!domain || !service)
+            return;
+        if (!this.hass.services[domain]?.[service])
+            return;
+        await this.hass.callService(domain, service, {});
+    }
+    async _applyAll() {
+        if (!this.hass || !this.config)
+            return;
+        this._applying = true;
+        try {
+            const hcChanged = this._hcChanged;
+            const shiftChanged = this._shiftChanged;
+            if (hcChanged)
+                await this.hass.callService(computeDomain(this.config.hc_entity), 'set_value', { entity_id: this.config.hc_entity, value: this._proposedHc });
+            if (shiftChanged)
+                await this.hass.callService(computeDomain(this.config.shift_entity), 'set_value', { entity_id: this.config.shift_entity, value: this._proposedShift });
+            if (hcChanged || shiftChanged)
+                await this._recalculate();
+            this._applySuccess = true;
+            clearTimeout(this._successTimer);
+            this._successTimer = setTimeout(() => { this._applySuccess = false; }, 1500);
+        }
+        catch (err) {
+            console.warn('Failed to apply tuning:', err);
+        }
+        finally {
+            this._applying = false;
+        }
+    }
+    _resetAll() {
+        this._proposedHc = this._currentHc;
+        this._proposedShift = this._currentShift;
+    }
+    // --- Render ---
+    render() {
+        if (!this.open || !this.config || !this.hass)
+            return A;
+        const localize = setupCustomlocalize(this.hass);
+        const hcDecimals = this._hcStep < 1 ? Math.ceil(-Math.log10(this._hcStep)) : 0;
+        const shiftDisplayStep = this._toDisplayDelta(this._shiftStep);
+        const shiftDecimals = shiftDisplayStep < 1 ? Math.ceil(-Math.log10(shiftDisplayStep)) : 0;
+        const dirty = this._isDirty;
+        const hcDelta = this._proposedHc - this._currentHc;
+        const shiftDelta = this._proposedShift - this._currentShift;
+        return b `
+      <ha-dialog
+        .open=${true}
+        .headerTitle=${localize('tuning_dialog.default_title')}
+        @closed=${() => { this.open = false; this.dispatchEvent(new CustomEvent('closed')); }}
+        flexcontent
+      >
+        <div class="dialog-chart">
+          ${this._chartConfig ? b `
+            <ha-chart-base .hass=${this.hass} .options=${this._chartConfig.options} .data=${this._chartConfig.data} height="100%" hide-reset-button></ha-chart-base>
+          ` : A}
+        </div>
 
-        <div class=${yt({temps:!0,vertical:e})}>
-          <div class="temp-block"
-            @click=${()=>this._openMoreInfo(this._config.outdoor_entity)}
-          >
-            <div class="temp-value">${this._outdoorTemp}</div>
-            <div class="temp-label">${t("common.outdoor")}</div>
+        <div class="controls">
+          <!-- HC panel -->
+          <div class="ctrl-panel">
+            <span class="ctrl-label">${localize('tuning_dialog.hc_short')}</span>
+            <div class="hero-row">
+              <span class="hero-value">${formatNumber(this._proposedHc, this.hass?.locale, { minimumFractionDigits: hcDecimals, maximumFractionDigits: hcDecimals })}</span>
+              ${Math.abs(hcDelta) > this._hcStep / 2 ? b `
+                <span class="ctrl-delta ${hcDelta > 0 ? 'pos' : 'neg'}">${formatNumber(hcDelta, this.hass?.locale, { minimumFractionDigits: hcDecimals, maximumFractionDigits: hcDecimals, signDisplay: 'always' })}</span>
+              ` : A}
+            </div>
+            <eq-param-bar
+              .min=${this._hcMin} .max=${this._hcMax}
+              .step=${this._hcStep}
+              .value=${this._proposedHc}
+              interactive indicator hideDragTip
+              ariaUnit="HC"
+              @slider-moved=${this._onHcMoved}
+              @value-changed=${this._onHcChanged}
+            ></eq-param-bar>
           </div>
-          <div class="arrow" aria-hidden="true">→</div>
-          <div class="temp-block"
-            @click=${()=>this._openMoreInfo(this._config.flow_entity)}
-          >
-            ${s&&i?W`
-              <div class="flow-dual">
-                <div class="temp-value flow">${this._flowTemp}</div>
-                <div class="target">→ ${i}</div>
-              </div>
-            `:W`
-              <div class="temp-value flow">${this._flowTemp}</div>
-            `}
-            <div class="temp-label">${t("common.flow")}</div>
-          </div>
-          <div class="divider"></div>
-          <div class="temp-block"
-            @click=${()=>this._openMoreInfo(this._config.climate_entity)}
-          >
-            <div class="temp-value">${this._roomTemp}</div>
-            <div class="temp-label">${t("common.room")}</div>
+          <div class="ctrl-divider"></div>
+          <!-- Shift panel -->
+          <div class="ctrl-panel">
+            <span class="ctrl-label">${localize('tuning_dialog.shift_short')}</span>
+            <div class="hero-row">
+              <span class="hero-value">${formatNumber(this._toDisplayDelta(this._proposedShift), this.hass?.locale, { minimumFractionDigits: shiftDecimals, maximumFractionDigits: shiftDecimals })}${this.hass?.config?.unit_system?.temperature ?? '°C'}</span>
+              ${Math.abs(shiftDelta) > this._shiftStep / 2 ? b `
+                <span class="ctrl-delta ${shiftDelta > 0 ? 'pos' : 'neg'}">${formatNumber(this._toDisplayDelta(shiftDelta), this.hass?.locale, { minimumFractionDigits: shiftDecimals, maximumFractionDigits: shiftDecimals, signDisplay: 'always' })}${this.hass?.config?.unit_system?.temperature ?? '°C'}</span>
+              ` : A}
+            </div>
+            <eq-param-bar
+              .min=${this._toDisplayDelta(this._shiftMin)}
+              .max=${this._toDisplayDelta(this._shiftMax)}
+              .step=${this._toDisplayDelta(this._shiftStep)}
+              .value=${this._toDisplayDelta(this._proposedShift)}
+              centered indicator interactive hideDragTip
+              ariaUnit=${this.hass?.config?.unit_system?.temperature ?? '°C'}
+              @slider-moved=${this._onShiftMoved}
+              @value-changed=${this._onShiftChanged}
+            ></eq-param-bar>
           </div>
         </div>
-        ${this._hasPidDiagnostic?this._renderPidSection():U}
-        ${this._config.show_last_updated?W`
-          <div class="footer-meta">
-            ${this._renderLastUpdated(this._config.flow_entity)}
-          </div>
-        `:U}
-      </ha-card>
-    `}_renderPidSection(){const t=this._readNum(this._config.pid_correction_entity),e=this._readNum(this._config.pid_proportional_entity),s=this._readNum(this._config.pid_integral_entity),i=this._readNum(this._config.pid_derivative_entity),a=(t,e,s,i="",a="")=>W`
-      <span class="term ${i}" @click=${()=>this._openMoreInfo(s)}>
-        <span class="lbl">${t}</span> <span class="val ${a}">${this._formatNum(e)}°</span>
-      </span>
-    `,r=(null!==t?t>0?"positive":t<0?"negative":"":"")||"neutral";return W`
-      <div class=${yt({"pid-row":!0,vertical:this.vertical})}>
-        ${a("P",e,this._config.pid_proportional_entity)}
-        <span class="sep">·</span>
-        ${a("I",s,this._config.pid_integral_entity)}
-        <span class="sep">·</span>
-        ${a("D",i,this._config.pid_derivative_entity)}
-        <span class="divider-v"></span>
-        ${a("Σ",t,this._config.pid_correction_entity,`correction ${r}`,r)}
+
+        ${this._renderKpi()}
+
+        <div slot="footer">
+          <ha-button size="small" @click=${this._resetAll} .disabled=${!dirty}>${localize('tuning_dialog.reset')}</ha-button>
+          <ha-button variant="brand" appearance="filled" size="small"
+            .disabled=${!dirty || this._applying} .loading=${this._applying}
+            @click=${async () => { await this._applyAll(); if (this._applySuccess) {
+            this.open = false;
+            this.dispatchEvent(new CustomEvent('closed'));
+        } }}
+          >${this._applySuccess ? b `<ha-icon icon="mdi:check" slot="start"></ha-icon>` : A}${localize('tuning_dialog.apply')}</ha-button>
+        </div>
+      </ha-dialog>
+    `;
+    }
+    _renderKpi() {
+        if (!this.config || !this.hass)
+            return A;
+        const localize = setupCustomlocalize(this.hass);
+        const unit = this.hass?.config?.unit_system?.temperature ?? '°C';
+        const fmtNum = (v) => `${formatNumber(v, this.hass?.locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })} ${unit}`;
+        const outdoorState = this._entityState(this.config.outdoor_entity);
+        const outdoorVal = outdoorState ? parseFloat(outdoorState.state) : NaN;
+        const outdoor = isNaN(outdoorVal) ? '—' : fmtNum(outdoorVal);
+        const flowState = this._entityState(this.config.flow_entity);
+        const flowVal = flowState ? parseFloat(flowState.state) : NaN;
+        const flow = isNaN(flowVal) ? '—' : fmtNum(flowVal);
+        const roomTemp = this._climateState?.attributes?.current_temperature;
+        const room = roomTemp != null && !isNaN(roomTemp) ? fmtNum(roomTemp) : '—';
+        return b `
+      <div class="kpi-footer">
+        <div class="kpi-block" @click=${() => this._openMoreInfo(this.config.outdoor_entity)}>
+          <div class="kpi-value">${outdoor}</div>
+          <div class="kpi-label">${localize('common.outdoor')}</div>
+        </div>
+        <div class="kpi-divider"></div>
+        <div class="kpi-block" @click=${() => this._openMoreInfo(this.config.flow_entity)}>
+          <div class="kpi-value flow">${flow}</div>
+          <div class="kpi-label">${localize('common.flow')}</div>
+        </div>
+        <div class="kpi-divider"></div>
+        <div class="kpi-block" @click=${() => this._openMoreInfo(this.config.climate_entity)}>
+          <div class="kpi-value">${room}</div>
+          <div class="kpi-label">${localize('common.room')}</div>
+        </div>
       </div>
-    `}};t([pt({reflect:!0,type:Boolean})],Lr.prototype,"vertical",void 0),Lr=t([ct(_r)],Lr);const Pr=`${Cr}-curve-card`,Mr=`${Pr}-editor`,Tr=["climate"],Ir=["sensor"],Hr={n:1.25,min_flow:20,max_flow:70},Fr={n:br(mr()),min_flow:br(mr()),max_flow:br(mr())},Rr={min_flow_entity:br(yr()),max_flow_entity:br(yr())},Br=wr({type:yr(),climate_entity:yr(),outdoor_entity:yr(),curve_output_entity:yr(),pid_output_entity:br(yr()),flow_entity:yr(),rate_limiting_entity:br(yr()),pid_active_entity:br(yr()),show_last_updated:br(xr()),title:br(fr()),name:br(fr()),curve_from_entities:br(fr()),hc_entity:br(yr()),n_entity:br(yr()),shift_entity:br(yr()),...Rr,hc:br(mr()),...Fr,shift:br(mr()),t_out_min:br(mr()),t_out_max:br(mr())}),Nr={hc:.9,shift:0,t_out_min:-20,t_out_max:20,...Hr};function zr(t){return gr(t,Br),{...Nr,...t}}function Or(t){const{tTarget:e,tOutdoor:s,hc:i,n:a,shift:r,minFlow:o,maxFlow:n}=t,l=o??20,h=n??70;if(isNaN(e)||isNaN(s)||isNaN(i)||isNaN(a)||isNaN(r)||isNaN(l)||isNaN(h))return l;if(a<=0)return l;const c=Math.min(l,h),d=Math.max(l,h),g=e-s;if(g<=0)return Math.round(10*c)/10;const p=e+r+i*Math.pow(g,1/a),u=Math.max(c,Math.min(d,p));return Math.round(10*u)/10}function Xr(t,e,s){const i=Math.round((s-e)/.1)+1;return Array.from({length:i},(s,i)=>{const a=e+.1*i,r=Or({...t,tOutdoor:a});return{x:a,y:parseFloat(r.toFixed(1))}})}function Yr(t,e){return Or({...t,tOutdoor:e})}ir({type:Pr,name:"Equitherm Curve",description:"Heating curve visualization with current operating point"});let $r=class extends ja{updated(t){if(super.updated(t),this._chart){if(t.has("hass")&&this.hass){const t=this._isDark,e=void 0!==this._prevDarkMode&&this._prevDarkMode!==t;this._prevDarkMode=t,e?this._updateChartOptions():this._updateChartSeries()}if(t.has("_config")){const e=t.get("_config");this._structuralParamsChanged(e,this._config)?this._updateChartOptions():this._updateChartSeries()}}}static async getStubConfig(t){const e=t.states,s=Object.keys(e),i=s.find(t=>Tr.includes(wt(t))),a=s.filter(t=>{const s=e[t];return Ir.includes(wt(t))&&"temperature"===s?.attributes?.device_class}),r=a.find(t=>t.includes("outdoor")||t.includes("outside")||t.includes("exterior"))??a[0],o=a.find(t=>t.includes("flow")||t.includes("supply")||t.includes("forward"))??a[0],n=a.find(t=>t.includes("curve_output"))??"";return{type:"custom:equitherm-curve-card",climate_entity:i,outdoor_entity:r,curve_output_entity:n,flow_entity:o,hc:1.2,n:1.25,shift:0,min_flow:25,max_flow:70,t_out_min:-20,t_out_max:20}}static async getConfigElement(){return await Promise.resolve().then(function(){return xo}),document.createElement(Mr)}setConfig(t){this._config=zr(t)}get _tTarget(){return this._climate?.attributes.temperature??21}get _tOutdoor(){const t=this._entityState(this._config.outdoor_entity);if(!t)return null;const e=parseFloat(t.state);return isNaN(e)?null:e}get _tOutdoorUnit(){return this._entityAttr(this._config.outdoor_entity,"unit_of_measurement")}get _flowTemp(){const t=this._entityState(this._config.flow_entity);return t?parseFloat(t.state):this._config.min_flow}get _flowTempUnit(){return this._entityAttr(this._config.flow_entity,"unit_of_measurement")}get _curveOutputTemp(){const t=Xt(this._config);if(!t)return"";const e=this._entityState(t);if(!e)return"";const s=parseFloat(e.state);return isNaN(s)?"":this._formatTemp(s,this._entityAttr(t,"unit_of_measurement"))}_buildChartOptions(){const t=ms(this.hass),e=this._config,s={tTarget:this._tTarget,hc:e.curve_from_entities?this._resolveEntityNumber(e.hc_entity,e.hc):e.hc,n:e.curve_from_entities?this._resolveEntityNumber(e.n_entity,e.n):e.n,shift:e.curve_from_entities?this._resolveEntityNumber(e.shift_entity,e.shift):e.shift,minFlow:e.curve_from_entities?this._resolveEntityNumber(e.min_flow_entity,e.min_flow):e.min_flow,maxFlow:e.curve_from_entities?this._resolveEntityNumber(e.max_flow_entity,e.max_flow):e.max_flow},i=getComputedStyle(this),a=i.getPropertyValue("--curve-gradient-start").trim(),r=i.getPropertyValue("--curve-gradient-end").trim(),o=a?`rgb(${a})`:zt(this,"heating"),n=r?`rgb(${r})`:zt(this,"cooling"),l=Xr(s,e.t_out_min,e.t_out_max),h=this._tOutdoor,c=[],d=Ot(this._config,t=>this._entityState(t)),g=Xt(this._config);if(null!==h){const t=Yr(s,h);if(d){const e=g&&this._entityState(g)?parseFloat(this._entityState(g).state):t;if(this._config.pid_output_entity&&this._config.curve_output_entity){const e=this._entityState(this._config.curve_output_entity),s=e?parseFloat(e.state):t;c.push({x:-h,y:s,marker:{size:6,fillColor:"transparent",strokeColor:o,strokeWidth:1.5}})}c.push({x:-h,y:e,marker:{size:8,fillColor:o,strokeColor:"#ffffff",strokeWidth:2}}),c.push({x:-h,y:this._flowTemp,marker:{size:6,fillColor:"transparent",strokeColor:o,strokeWidth:2}})}else c.push({x:-h,y:t,marker:{size:7,fillColor:o,strokeColor:"#ffffff",strokeWidth:2}})}const p={points:c};if(this._isWWSD){const s=this._tTarget;p.xaxis=[{x:-e.t_out_max,x2:-s,borderColor:"transparent",fillColor:"rgba(var(--rgb-warning, 255, 167, 38), 0.08)"},{x:-s,borderColor:"rgba(var(--rgb-warning, 255, 167, 38), 0.4)",strokeDashArray:4,label:{text:t("common.wwsd"),borderWidth:0,style:{color:"var(--secondary-text-color)",fontSize:"10px",background:"var(--card-background-color, #fff)"}}}]}return{chart:{type:"line",width:"100%",height:"100%",toolbar:{show:!1},zoom:{enabled:!1},animations:{enabled:!0,speed:400},background:"transparent"},theme:{mode:this._isDark?"dark":"light"},series:[{name:t("curve_card.flow_temp"),data:l.map(t=>({x:-t.x,y:t.y}))}],annotations:p,stroke:{curve:"straight",width:2},colors:[o],fill:{type:"gradient",gradient:{type:"horizontal",gradientToColors:[n],shadeIntensity:1,opacityFrom:1,opacityTo:1,stops:[0,100,100,100]}},markers:{size:0,discrete:l.reduce((t,e,s)=>s%50==0?[...t,{seriesIndex:0,dataPointIndex:s,size:3,fillColor:o,strokeColor:"#fff",strokeWidth:1}]:t,[]),hover:{size:6}},xaxis:{type:"numeric",min:-e.t_out_max,max:-e.t_out_min,forceNiceScale:!1,title:{text:t("curve_card.outdoor_axis"),style:{color:"var(--secondary-text-color)",fontWeight:400}},labels:{style:{colors:"var(--secondary-text-color)",fontWeight:400},formatter:t=>`${(-t).toFixed(1)}`},axisBorder:{show:!1},axisTicks:{show:!1}},yaxis:{title:{text:t("curve_card.flow_axis"),style:{color:"var(--secondary-text-color)",fontWeight:400}},labels:{style:{colors:"var(--secondary-text-color)",fontWeight:400}},min:e.min_flow-5,max:e.max_flow+5},grid:{show:!1},legend:{show:!1},dataLabels:{enabled:!1},tooltip:{theme:this._isDark?"dark":"light",x:{formatter:e=>t("curve_card.outdoor_tooltip",{temp:(-e).toFixed(1)})},y:{formatter:e=>t("curve_card.flow_tooltip",{temp:e.toFixed(1)})}}}}_updateChartSeries(){if(!this._chart)return;const t=this._buildChartOptions();this._chart.updateSeries(t.series,!1),this._chart.updateOptions({annotations:t.annotations},!1,!1)}_structuralParamsChanged(t,e){if(!t)return!0;return["hc","n","shift","min_flow","max_flow","t_out_min","t_out_max"].some(s=>t[s]!==e[s])}static get styles(){return[super.styles,sr,bs,n`
-        ha-card {
-          height: 100%;
-          overflow: hidden;
-        }
-        .chart-wrapper { flex: 1; min-height: 0; }
-        #chart { width: 100%; height: 100%; }
-        .footer {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 0;
-          margin-top: 6px;
-          padding-top: 6px;
-          border-top: 1px solid var(--divider-color, rgba(0,0,0,0.12));
-          flex-shrink: 0;
-        }
-        .footer-metric {
-          display: flex;
-          align-items: baseline;
-          gap: 4px;
-          padding: 0 12px;
-          cursor: pointer;
-          border-radius: 6px;
-          transition: background 0.15s;
-        }
-        .footer-metric:hover {
-          background: var(--secondary-background-color, rgba(0,0,0,0.04));
-        }
-        .footer-value {
-          font-size: var(--ha-font-size-m, 1rem);
-          font-weight: 600;
-          font-variant-numeric: tabular-nums;
-          color: var(--primary-text-color);
-          white-space: nowrap;
-          line-height: 1;
-        }
-        .footer-value.flow { color: var(--gradient-hot); }
-        .footer-label {
-          font-size: 0.68rem;
-          font-weight: 500;
-          letter-spacing: 0.04em;
-          text-transform: uppercase;
-          color: var(--secondary-text-color);
-          white-space: nowrap;
-          margin-top: 0;
-        }
-        .footer-sep {
-          font-size: var(--ha-font-size-s, 0.8rem);
-          color: var(--divider-color, rgba(0,0,0,0.2));
-          user-select: none;
-        }
-        .flow-target {
-          font-size: 0.68rem;
-          color: var(--secondary-text-color);
-          margin-left: 2px;
-        }
-
-      `]}render(){if(!this._config||!this.hass)return U;const t=ms(this.hass),e=Yt(this._config,t=>this._entityState(t)),s=this.hass.states[this._config.climate_entity],i=s?tr(s,this._config.name??this._config.title,this.hass)||t("curve_card.default_title"):this._config.title??t("curve_card.default_title");return W`
-      <ha-card>
-        ${this._renderHeader({iconName:"mdi:thermostat",clickEntity:this._config.climate_entity,title:i})}
-        <div class="chart-wrapper">
-          <div id="chart"></div>
-          ${this._renderManualOverlay()}
-        </div>
-        <div class="footer">
-          <div class="footer-metric"
-            @click=${()=>this._openMoreInfo(this._config.outdoor_entity)}
-          >
-            <span class="footer-value">${this._formatTemp(this._tOutdoor,this._tOutdoorUnit)}</span>
-            <span class="footer-label">${t("common.outdoor")}</span>
-          </div>
-          <span class="footer-sep" aria-hidden="true">·</span>
-          <div class="footer-metric"
-            @click=${()=>this._openMoreInfo(this._config.flow_entity)}
-          >
-            <span class="footer-value flow">${this._formatTemp(this._flowTemp,this._flowTempUnit)}</span>
-            ${e&&this._curveOutputTemp?W`<span class="flow-target">→ ${this._curveOutputTemp}</span>`:U}
-            <span class="footer-label">${t("common.flow")}</span>
-          </div>
-          <span class="footer-sep" aria-hidden="true">·</span>
-          <div class="footer-metric"
-            @click=${()=>this._openMoreInfo(this._config.climate_entity)}
-          >
-            <span class="footer-value">${this._roomTemp}</span>
-            <span class="footer-label">${t("common.room")}</span>
-          </div>
-        </div>
-        ${this._config.show_last_updated?W`
-          <div class="footer-meta">
-            ${this._renderLastUpdated(this._config.flow_entity)}
-          </div>
-        `:U}
-      </ha-card>
-    `}};$r=t([ct(Pr)],$r);const Wr=`${Cr}-forecast-card`,Gr=`${Wr}-editor`,Ur=["climate"],jr=["sensor"],Vr=wr({type:yr(),weather_entity:yr(),climate_entity:yr(),flow_entity:yr(),hours:br(mr()),name:br(fr()),curve_from_entities:br(fr()),hc_entity:br(yr()),n_entity:br(yr()),shift_entity:br(yr()),...Rr,outdoor_entity:br(yr()),pid_active_entity:br(yr()),show_last_updated:br(xr()),hc:br(mr()),...Fr,shift:br(mr())}),qr={hours:24,hc:.9,shift:0,...Hr};function Zr(t){return gr(t,Vr),{...qr,...t}}ir({type:Wr,name:"Equitherm Forecast",description:"Heating forecast based on weather predictions"});let Kr=class extends ja{constructor(){super(...arguments),this._forecastPoints=[]}updated(t){if(super.updated(t),(t.has("_config")||!this._unsub&&t.has("hass"))&&this._subscribeForecast(),this._chart&&t.has("hass")&&this.hass){const t=this._isDark,e=void 0!==this._prevDarkMode&&this._prevDarkMode!==t;this._prevDarkMode=t,e&&this._updateChartOptions()}}static async getStubConfig(t){const e=t.states,s=Object.keys(e),i=s.find(t=>Ur.includes(wt(t))),a=s.find(t=>"weather"===wt(t)),r=s.filter(t=>{const s=e[t];return jr.includes(wt(t))&&"temperature"===s?.attributes?.device_class}),o=r.find(t=>t.includes("flow")||t.includes("supply")||t.includes("forward"))??r[0];return{type:"custom:equitherm-forecast-card",weather_entity:a??"",climate_entity:i??"",flow_entity:o??"",hours:24,hc:1.2,n:1.25,shift:0,min_flow:25,max_flow:70}}static async getConfigElement(){return await Promise.resolve().then(function(){return bo}),document.createElement(Gr)}setConfig(t){this._config=Zr(t)}get _tTarget(){return this._climate?.attributes.temperature??21}get _flowTemp(){const t=this._entityState(this._config.flow_entity);return t?parseFloat(t.state):this._config.min_flow}get _outdoorTemp(){if(this._config.outdoor_entity){const t=this._entityState(this._config.outdoor_entity);if(t)return parseFloat(t.state)}const t=this._entityState(this._config.weather_entity);return t?parseFloat(t.attributes.temperature):NaN}get _isWWSD(){const t=this._climate?.attributes.temperature;return null!=t&&(!isNaN(this._outdoorTemp)&&this._outdoorTemp>=t)}_wwsdDescription(){const t=ms(this.hass),e=this._climate?.attributes.temperature;return isNaN(this._outdoorTemp)||null==e?t("common.wwsd_label"):`${t("common.outdoor")} ${this._formatTemp(this._outdoorTemp)} ≥ ${this._formatTemp(e)}`}get _flowTempUnit(){return this._entityAttr(this._config.flow_entity,"unit_of_measurement")}get _curveParams(){const t=this._config;return{tTarget:this._tTarget,hc:t.curve_from_entities?this._resolveEntityNumber(t.hc_entity,t.hc):t.hc,n:t.curve_from_entities?this._resolveEntityNumber(t.n_entity,t.n):t.n,shift:t.curve_from_entities?this._resolveEntityNumber(t.shift_entity,t.shift):t.shift,minFlow:t.curve_from_entities?this._resolveEntityNumber(t.min_flow_entity,t.min_flow):t.min_flow,maxFlow:t.curve_from_entities?this._resolveEntityNumber(t.max_flow_entity,t.max_flow):t.max_flow}}_processForecast(t){const e=function(t,e,s){return t.slice(0,s).map(t=>({datetime:t.datetime,hour:new Date(t.datetime).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}),tOutdoor:t.temperature,tFlow:Or({...e,tOutdoor:t.temperature})}))}(t,this._curveParams,this._config.hours);this._forecastPoints=e,this._chartInitialized&&this._chart&&this._updateChartWithData(e)}_unsubscribeForecast(){this._unsub&&(this._unsub(),this._unsub=void 0)}async _subscribeForecast(){if(this._unsubscribeForecast(),this.isConnected&&this.hass&&this._config?.weather_entity)try{const t=await this.hass.connection.subscribeMessage(t=>{t.forecast&&this._processForecast(t.forecast)},{type:"weather/subscribe_forecast",forecast_type:"hourly",entity_id:this._config.weather_entity});this._unsub?t():this._unsub=t}catch(t){console.warn("Failed to subscribe to weather forecast:",t)}}_buildChartOptions(t=[]){const e=ms(this.hass);this._config;const s=getComputedStyle(this),i=s.getPropertyValue("--curve-gradient-start").trim(),a=s.getPropertyValue("--curve-gradient-end").trim(),r=i?`rgb(${i})`:zt(this,"heating"),o=a?`rgb(${a})`:zt(this,"cooling"),n=t.map(t=>({x:t.datetime,y:t.tFlow})),l=t.map(t=>({x:t.datetime,y:t.tOutdoor})),h=function(t){if(0!==t.length)return t.reduce((t,e)=>e.tFlow>(t?.tFlow??0)?e:t,t[0])}(t),c={};return h&&(c.points=[{x:h.datetime,y:h.tFlow,marker:{size:6,fillColor:r,strokeColor:"#ffffff",strokeWidth:2},label:{text:`${e("forecast_card.peak")}: ${h.tFlow.toFixed(1)}°`,style:{color:"#ffffff",background:r,fontSize:"11px",fontWeight:600,padding:{left:6,right:6,top:2,bottom:2}}}}]),{chart:{type:"area",width:"100%",height:"100%",toolbar:{show:!1},zoom:{enabled:!1},animations:{enabled:!0,speed:400},background:"transparent"},theme:{mode:this._isDark?"dark":"light"},series:[{name:e("forecast_card.flow_temp"),data:n},{name:e("forecast_card.outdoor_temp"),data:l}],annotations:c,stroke:{curve:"straight",width:[2,1.5],dashArray:[0,4]},colors:[r,o],fill:{type:"gradient",gradient:{type:"vertical",shadeIntensity:.3,opacityFrom:.4,opacityTo:.05,stops:[0,100]}},markers:{size:0,hover:{size:4}},xaxis:{type:"datetime",title:{text:"",style:{color:"var(--secondary-text-color)",fontWeight:400}},labels:{style:{colors:"var(--secondary-text-color)",fontWeight:400},datetimeUTC:!1,format:"HH:mm"},axisBorder:{show:!1},axisTicks:{show:!1}},yaxis:[{title:{text:e("forecast_card.flow_temp"),style:{color:"var(--secondary-text-color)",fontWeight:400}},labels:{style:{colors:"var(--secondary-text-color)",fontWeight:400}},min:(this._curveParams.minFlow??20)-5,max:(this._curveParams.maxFlow??70)+5},{opposite:!0,title:{text:e("forecast_card.outdoor_temp"),style:{color:"var(--secondary-text-color)",fontWeight:400}},labels:{style:{colors:"var(--secondary-text-color)",fontWeight:400}}}],grid:{show:!1},legend:{show:!1},dataLabels:{enabled:!1},tooltip:{theme:this._isDark?"dark":"light",x:{format:"HH:mm"},y:{formatter:t=>this._formatTemp(t,this.hass?.config?.unit_system?.temperature)}}}}_updateChartWithData(t){if(!this._chart)return;const e=this._buildChartOptions(t);this._chart.updateOptions(e,!1,!1)}_updateChartOptions(){if(!this._chart)return;const t=this._buildChartOptions(this._forecastPoints);this._chart.updateOptions(t,!1,!1)}_onChartDisconnecting(){this._unsubscribeForecast()}_onChartReconnected(){this._subscribeForecast()}static get styles(){return[super.styles,sr,bs,n`
-        ha-card {
-          height: 100%;
-          overflow: hidden;
-        }
-        .chart-wrapper { flex: 1; min-height: 0; }
-        #chart { width: 100%; height: 100%; }
-        .footer {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 0;
-          margin-top: 6px;
-          padding-top: 6px;
-          border-top: 1px solid var(--divider-color, rgba(0,0,0,0.12));
-          flex-shrink: 0;
-        }
-        .footer-metric {
-          display: flex;
-          align-items: baseline;
-          gap: 4px;
-          padding: 0 12px;
-          cursor: pointer;
-          border-radius: 6px;
-          transition: background 0.15s;
-        }
-        .footer-metric:hover {
-          background: var(--secondary-background-color, rgba(0,0,0,0.04));
-        }
-        .footer-value {
-          font-size: var(--ha-font-size-m, 1rem);
-          font-weight: 600;
-          font-variant-numeric: tabular-nums;
-          color: var(--primary-text-color);
-          white-space: nowrap;
-          line-height: 1;
-        }
-        .footer-value.flow { color: var(--gradient-hot); }
-        .footer-label {
-          font-size: 0.68rem;
-          font-weight: 500;
-          letter-spacing: 0.04em;
-          text-transform: uppercase;
-          color: var(--secondary-text-color);
-          white-space: nowrap;
-          margin-top: 0;
-        }
-        .footer-sep {
-          font-size: var(--ha-font-size-s, 0.8rem);
-          color: var(--divider-color, rgba(0,0,0,0.2));
-          user-select: none;
-        }
-
-      `]}render(){if(!this._config||!this.hass)return U;const t=ms(this.hass),e=this.hass.states[this._config.climate_entity],s=e&&tr(e,this._config.name,this.hass)||t("forecast_card.default_title");return W`
-      <ha-card>
-        ${this._renderHeader({iconName:"mdi:weather-partly-cloudy",clickEntity:this._config.weather_entity,title:s})}
-        <div class="chart-wrapper">
-          <div id="chart"></div>
-          ${this._renderManualOverlay()}
-        </div>
-        <div class="footer">
-          <div class="footer-metric"
-            @click=${()=>this._openMoreInfo(this._config.outdoor_entity??this._config.weather_entity)}
-          >
-            <span class="footer-value">${this._formatTemp(this._outdoorTemp)}</span>
-            <span class="footer-label">${t("forecast_card.outdoor_temp")}</span>
-          </div>
-          <span class="footer-sep" aria-hidden="true">·</span>
-          <div class="footer-metric"
-            @click=${()=>this._openMoreInfo(this._config.flow_entity)}
-          >
-            <span class="footer-value flow">${this._formatTemp(this._flowTemp,this._flowTempUnit)}</span>
-            <span class="footer-label">${t("common.flow")}</span>
-          </div>
-          <span class="footer-sep" aria-hidden="true">·</span>
-          <div class="footer-metric"
-            @click=${()=>this._openMoreInfo(this._config.climate_entity)}
-          >
-            <span class="footer-value">${this._roomTemp}</span>
-            <span class="footer-label">${t("common.room")}</span>
-          </div>
-        </div>
-        ${this._config.show_last_updated?W`
-          <div class="footer-meta">
-            ${this._renderLastUpdated(this._config.weather_entity)}
-          </div>
-        `:U}
-      </ha-card>
-    `}};t([ut()],Kr.prototype,"_forecastPoints",void 0),Kr=t([ct(Wr)],Kr);const Jr=`${Cr}-tuning-card`,Qr=`${Jr}-editor`,to=["climate"],eo=["sensor","input_number"],so=["number","input_number"],io=wr({type:yr(),climate_entity:yr(),outdoor_entity:yr(),hc_entity:yr(),shift_entity:yr(),name:br(fr()),curve_from_entities:br(fr()),n_entity:br(yr()),...Rr,recalculate_service:br(yr()),pid_active_entity:br(yr()),show_last_updated:br(xr()),...Fr,t_out_min:br(mr()),t_out_max:br(mr())}),ao={t_out_min:-20,t_out_max:20,...Hr};function ro(t){return gr(t,io),{...ao,...t}}ir({type:Jr,name:"Equitherm Tuning",description:"Interactive curve tuning with hc/shift sliders"});let oo=class extends ja{constructor(){super(...arguments),this._applying=!1,this._applySuccess=!1,this._lastHcState=null,this._lastShiftState=null}getGridOptions(){return{columns:12,rows:5,min_rows:4}}disconnectedCallback(){clearTimeout(this._successTimer),super.disconnectedCallback()}updated(t){if(super.updated(t),t.has("hass")&&this.hass&&(this._syncProposedValues(),!this._chart&&this._chartEl&&(this._initChart(),this._setupResizeObserver())),this._chart&&(t.has("_config")&&(this._lastHcState=null,this._lastShiftState=null,this._syncProposedValues(),this._updateChartOptions()),t.has("hass")&&this.hass)){const t=this._isDark,e=void 0!==this._prevDarkMode&&this._prevDarkMode!==t;this._prevDarkMode=t,e?this._updateChartOptions():this._updateChartSeries()}}static async getStubConfig(t){const e=t.states,s=Object.keys(e),i=s.find(t=>to.includes(wt(t))),a=s.filter(t=>{const s=e[t];return eo.includes(wt(t))&&"temperature"===s?.attributes?.device_class}),r=a.find(t=>t.includes("outdoor")||t.includes("outside")||t.includes("exterior"))??a[0],o=s.filter(t=>so.includes(wt(t))),n=o.find(t=>t.includes("hc"))??o[0]??"",l=o.find(t=>t.includes("shift"))??o[1]??"";return{type:`custom:${Jr}`,climate_entity:i??"",outdoor_entity:r??"",hc_entity:n,shift_entity:l}}static async getConfigElement(){return await Promise.resolve().then(function(){return wo}),document.createElement(Qr)}setConfig(t){this._config=ro(t)}get _tTarget(){return this._climate?.attributes.temperature??21}get _currentN(){return this._config.curve_from_entities?this._resolveEntityNumber(this._config.n_entity,this._config.n):this._config.n}get _currentHc(){return this._resolveEntityNumber(this._config.hc_entity,.9)}get _currentShift(){return this._resolveEntityNumber(this._config.shift_entity,0)}get _tOutdoor(){const t=this._entityState(this._config.outdoor_entity);if(!t)return null;const e=parseFloat(t.state);return isNaN(e)?null:e}get _hcMin(){return this._entityAttr(this._config.hc_entity,"min")??.5}get _hcMax(){return this._entityAttr(this._config.hc_entity,"max")??3}get _hcStep(){return this._entityAttr(this._config.hc_entity,"step")??.1}get _shiftMin(){return this._entityAttr(this._config.shift_entity,"min")??-15}get _shiftMax(){return this._entityAttr(this._config.shift_entity,"max")??15}get _shiftStep(){return this._entityAttr(this._config.shift_entity,"step")??1}_syncProposedValues(){if(!this.hass)return;const t=this._currentHc,e=this._currentShift;this._lastHcState!==t&&(this._proposedHc=t,this._lastHcState=t),this._lastShiftState!==e&&(this._proposedShift=e,this._lastShiftState=e)}_buildChartOptions(){const t=ms(this.hass),e=this._config,s=e.curve_from_entities?this._resolveEntityNumber(e.min_flow_entity,e.min_flow):e.min_flow,i=e.curve_from_entities?this._resolveEntityNumber(e.max_flow_entity,e.max_flow):e.max_flow,a={tTarget:this._tTarget,hc:this._currentHc,n:this._currentN,shift:this._currentShift,minFlow:s,maxFlow:i},r={tTarget:this._tTarget,hc:this._proposedHc??this._currentHc,n:this._currentN,shift:this._proposedShift??this._currentShift,minFlow:s,maxFlow:i},o=zt(this,"heating"),n=getComputedStyle(this).getPropertyValue("--rgb-state-climate-cool").trim(),l=n?`rgb(${n})`:"rgb(38, 142, 213)",h=Xr(a,e.t_out_min,e.t_out_max),c=Xr(r,e.t_out_min,e.t_out_max),d=this._tOutdoor,g=[];if(null!==d){const t=Yr(a,d);g.push({x:-d,y:t,marker:{size:7,fillColor:o,strokeColor:"#ffffff",strokeWidth:2}})}const p={points:g};if(this._isWWSD){const s=this._tTarget;p.xaxis=[{x:-e.t_out_max,x2:-s,borderColor:"transparent",fillColor:"rgba(var(--rgb-warning, 255, 167, 38), 0.08)"},{x:-s,borderColor:"rgba(var(--rgb-warning, 255, 167, 38), 0.4)",strokeDashArray:4,label:{text:t("common.wwsd"),borderWidth:0,style:{color:"var(--secondary-text-color)",fontSize:"10px",background:"var(--card-background-color, #fff)"}}}]}return{chart:{type:"line",width:"100%",height:"100%",toolbar:{show:!1},zoom:{enabled:!1},animations:{enabled:!0,speed:400},background:"transparent"},theme:{mode:this._isDark?"dark":"light"},series:[{name:t("tuning_card.current"),data:h.map(t=>({x:-t.x,y:t.y}))},{name:t("tuning_card.proposed"),data:c.map(t=>({x:-t.x,y:t.y}))}],stroke:{curve:"straight",width:[2,2],dashArray:[0,5]},colors:[o,l],fill:{type:"solid"},markers:{size:0,hover:{size:4}},xaxis:{type:"numeric",min:-e.t_out_max,max:-e.t_out_min,forceNiceScale:!1,labels:{style:{colors:"var(--secondary-text-color)",fontWeight:400,fontSize:"10px"},formatter:t=>`${(-t).toFixed(0)}`},axisBorder:{show:!1},axisTicks:{show:!1}},yaxis:{labels:{style:{colors:"var(--secondary-text-color)",fontWeight:400,fontSize:"10px"}},min:s-5,max:i+5,forceNiceScale:!1},grid:{show:!1},legend:{show:!1},dataLabels:{enabled:!1},annotations:p,tooltip:{theme:this._isDark?"dark":"light",x:{formatter:e=>`${(-e).toFixed(1)} ${t("tuning_card.outdoor_axis")}`},y:{formatter:e=>`${e.toFixed(1)} ${t("tuning_card.flow_axis")}`}}}}_updateChartSeries(){if(!this._chart)return;const t=this._buildChartOptions();this._chart.updateSeries(t.series,!1),this._chart.updateOptions({annotations:t.annotations},!1,!1)}async _recalculate(){const t=this._config.recalculate_service;if(!t||!this.hass)return;const[e,s]=t.split(".",2);e&&s&&this.hass.services[e]?.[s]&&await this.hass.callService(e,s,{})}async _applyAll(){if(this.hass){this._applying=!0;try{const t=Math.abs((this._proposedHc??0)-this._currentHc)>this._hcStep/2,e=Math.abs((this._proposedShift??0)-this._currentShift)>this._shiftStep/2;t&&await this.hass.callService("number","set_value",{entity_id:this._config.hc_entity,value:this._proposedHc}),e&&await this.hass.callService("number","set_value",{entity_id:this._config.shift_entity,value:this._proposedShift}),(t||e)&&await this._recalculate(),this._applySuccess=!0,clearTimeout(this._successTimer),this._successTimer=setTimeout(()=>{this._applySuccess=!1},1500)}catch(t){console.warn("Failed to apply tuning:",t)}finally{this._applying=!1}}}_resetHc(){this._proposedHc=this._currentHc,this._updateChartSeries()}_resetShift(){this._proposedShift=this._currentShift,this._updateChartSeries()}_adjustHc(t){const e=(this._proposedHc??this._currentHc)+t,s=Math.max(this._hcMin,Math.min(this._hcMax,e)),i=this._hcStep<1?Math.ceil(-Math.log10(this._hcStep)):0;this._proposedHc=parseFloat(s.toFixed(i)),this._updateChartSeries()}_adjustShift(t){const e=(this._proposedShift??this._currentShift)+t,s=Math.max(this._shiftMin,Math.min(this._shiftMax,e)),i=this._shiftStep<1?Math.ceil(-Math.log10(this._shiftStep)):0;this._proposedShift=parseFloat(s.toFixed(i)),this._updateChartSeries()}static get styles(){return[super.styles,sr,bs,n`
-        :host { --tc-proposed: rgb(var(--rgb-state-climate-cool, 38, 142, 213)); }
-        ha-card {
-          height: 100%;
-        }
-
-        /* ── Chart ── */
-        .chart-area {
-          flex: 1;
-          min-height: 0;
-          padding: 4px 4px 0;
-          position: relative;
-        }
-        #chart { width: 100%; height: 100%; }
-        .chart-legend {
-          position: absolute;
-          top: 8px;
-          left: 14px;
-          display: flex;
-          gap: 10px;
-          z-index: 1;
-          pointer-events: none;
-        }
-        .legend-item {
-          display: inline-flex;
-          align-items: center;
-          gap: 5px;
-          font-size: 10px;
-          color: var(--secondary-text-color);
-        }
-        .legend-line { width: 14px; height: 2px; flex-shrink: 0; }
-        .legend-line.dashed {
-          background: repeating-linear-gradient(90deg, var(--tc-proposed) 0 4px, transparent 4px 7px);
-        }
-
-        /* ── Controls strip ── */
+    `;
+    }
+    static get styles() {
+        return [
+            super.styles,
+            i$5 `
+        .dialog-chart { height: 250px; padding: 0 4px; }
+        .dialog-chart ha-chart-base { height: 100%; }
         .controls {
-          display: flex;
-          flex-shrink: 0;
+          display: flex; flex-shrink: 0;
           border-top: 1px solid var(--divider-color);
           margin-top: 4px;
         }
         .ctrl-panel {
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          padding: 8px 0 8px;
-          gap: 1px;
-          position: relative;
+          flex: 1; display: flex; flex-direction: column;
+          align-items: center; padding: 10px 4px 6px; gap: 4px;
         }
         .ctrl-divider {
-          width: 1px;
-          background: var(--divider-color);
-          margin: 6px 0;
-          flex-shrink: 0;
+          width: 1px; background: var(--divider-color);
+          margin: 6px 0; flex-shrink: 0;
         }
         .ctrl-label {
-          font-size: 10px;
-          font-weight: var(--ha-font-weight-medium, 500);
-          text-transform: uppercase;
-          letter-spacing: 0.07em;
+          font-size: 10px; font-weight: var(--ha-font-weight-medium, 500);
+          text-transform: uppercase; letter-spacing: 0.07em;
           color: var(--secondary-text-color);
         }
-        .ctrl-stepper {
-          display: flex;
-          align-items: center;
-          gap: 0;
-        }
-        .step-btn {
-          --ha-icon-button-size: 32px;
-          --ha-icon-button-padding-inline: 2px;
-          --mdc-icon-size: 16px;
-          color: var(--primary-text-color);
-        }
-        .ctrl-value {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          min-width: 52px;
-          gap: 1px;
-        }
-        .ctrl-num {
-          font-size: 20px;
-          font-weight: 600;
+        .hero-row { display: flex; align-items: baseline; gap: 6px; }
+        .hero-value {
+          font-size: 1.5rem; font-weight: 600;
           font-variant-numeric: tabular-nums;
-          line-height: 1.1;
-          color: var(--primary-text-color);
+          color: var(--primary-text-color); line-height: 1;
         }
         .ctrl-delta {
-          font-size: 10px;
-          font-weight: var(--ha-font-weight-medium, 500);
-          font-variant-numeric: tabular-nums;
-          min-height: 13px;
-          line-height: 1;
+          font-size: 10px; font-weight: var(--ha-font-weight-medium, 500);
+          font-variant-numeric: tabular-nums; line-height: 1;
         }
         .ctrl-delta.pos { color: var(--success-color, #4caf50); }
         .ctrl-delta.neg { color: var(--error-color, #e53935); }
-        .reset-btn {
-          position: absolute;
-          top: 4px;
-          right: 4px;
-          --ha-icon-button-size: 24px;
-          --ha-icon-button-padding-inline: 2px;
-          --mdc-icon-size: 12px;
-          color: var(--disabled-text-color);
+        .ctrl-panel eq-param-bar {
+          width: 100%; padding: 4px 8px 0; box-sizing: border-box;
         }
-        .reset-btn:hover { color: var(--secondary-text-color); }
+        .kpi-footer {
+          display: flex; align-items: center; padding: 8px 12px;
+          gap: 0; flex-shrink: 0;
+        }
+        .kpi-block {
+          flex: 1; text-align: center; cursor: pointer;
+          padding: 4px 0;
+        }
+        .kpi-value {
+          font-size: var(--ha-font-size-l, 1.1rem);
+          font-weight: 600; font-variant-numeric: tabular-nums;
+          color: var(--primary-text-color);
+        }
+        .kpi-label {
+          font-size: 10px; color: var(--secondary-text-color);
+          text-transform: uppercase; letter-spacing: 0.05em;
+        }
+        .kpi-divider {
+          width: 1px; height: 28px;
+          background: var(--divider-color); flex-shrink: 0;
+        }
+      `,
+        ];
+    }
+};
+__decorate([
+    n$1({ attribute: false })
+], EqTuningDialog.prototype, "hass", void 0);
+__decorate([
+    n$1({ attribute: false })
+], EqTuningDialog.prototype, "config", void 0);
+__decorate([
+    n$1({ type: Boolean })
+], EqTuningDialog.prototype, "open", void 0);
+__decorate([
+    r()
+], EqTuningDialog.prototype, "_proposedHc", void 0);
+__decorate([
+    r()
+], EqTuningDialog.prototype, "_proposedShift", void 0);
+__decorate([
+    r()
+], EqTuningDialog.prototype, "_applying", void 0);
+__decorate([
+    r()
+], EqTuningDialog.prototype, "_applySuccess", void 0);
+__decorate([
+    r()
+], EqTuningDialog.prototype, "_chartConfig", void 0);
+EqTuningDialog = __decorate([
+    t$1('eq-tuning-dialog')
+], EqTuningDialog);
 
-        /* ── Apply ── */
-        .apply-row {
+/** Default values for shared curve parameters (matching @equitherm/core defaults) */
+const CURVE_CONFIG_DEFAULTS = {
+    n: 1.25,
+    min_flow: 20,
+    max_flow: 70,
+    t_out_min: -20,
+    t_out_max: 20,
+};
+/** Superstruct fields for shared curve params — spread into a card's config struct */
+const curveConfigStructFields = {
+    n: optional(number$1()),
+    min_flow: optional(number$1()),
+    max_flow: optional(number$1()),
+    t_out_min: optional(number$1()),
+    t_out_max: optional(number$1()),
+};
+/** Superstruct fields for live entity overrides — spread when curve_from_entities is enabled */
+const curveEntityStructFields = {
+    min_flow_entity: optional(string()),
+    max_flow_entity: optional(string()),
+};
+
+function buildTuningDialogConfig(cfg) {
+    const hc_entity = cfg.hc_entity;
+    const shift_entity = cfg.shift_entity;
+    if (!hc_entity || !shift_entity)
+        return undefined;
+    return {
+        climate_entity: cfg.climate_entity,
+        outdoor_entity: cfg.outdoor_entity,
+        flow_entity: cfg.flow_entity,
+        hc_entity,
+        shift_entity,
+        n_entity: cfg.n_entity,
+        min_flow_entity: cfg.min_flow_entity,
+        max_flow_entity: cfg.max_flow_entity,
+        recalculate_service: cfg.recalculate_service,
+        curve_from_entities: cfg.curve_from_entities
+            ?? !!(cfg.n_entity),
+        n: cfg.n ?? CURVE_CONFIG_DEFAULTS.n,
+        min_flow: cfg.min_flow ?? CURVE_CONFIG_DEFAULTS.min_flow,
+        max_flow: cfg.max_flow ?? CURVE_CONFIG_DEFAULTS.max_flow,
+        t_out_min: cfg.t_out_min ?? CURVE_CONFIG_DEFAULTS.t_out_min,
+        t_out_max: cfg.t_out_max ?? CURVE_CONFIG_DEFAULTS.t_out_max,
+    };
+}
+
+registerCustomCard({
+    type: STATUS_CARD_NAME,
+    name: 'Equitherm Status',
+    description: 'Compact heating status tile with temperature displays',
+});
+let EquithermStatusCard = class EquithermStatusCard extends EquithermBaseCard {
+    getGridOptions() {
+        return { columns: 12, rows: this._config.show_last_updated ? 4 : 3, min_rows: 3 };
+    }
+    static async getStubConfig(hass) {
+        return {
+            type: 'custom:equitherm-status-card',
+            climate_entity: findClimateEntity(hass),
+            outdoor_entity: findOutdoorEntity(hass),
+            flow_entity: findFlowEntity(hass),
+        };
+    }
+    static async getConfigElement() {
+        await Promise.resolve().then(function () { return statusCardEditor; });
+        return document.createElement(STATUS_CARD_EDITOR_NAME);
+    }
+    setConfig(config) {
+        this._config = validateStatusCardConfig(config);
+        this._dialogConfig = buildTuningDialogConfig(this._config);
+    }
+    _lastUpdatedEntity() {
+        return this._config.flow_entity;
+    }
+    get _hasParamsFooter() {
+        const cfg = this._config;
+        return !!cfg.hc_entity || !!cfg.shift_entity || !!cfg.n_entity || !!cfg.pid_correction_entity;
+    }
+    static get styles() {
+        return [
+            super.styles,
+            cardStyle,
+            headerStyles,
+            paramsFooterStyles,
+            tunableFooterStyles,
+            kpiFooterStyles,
+            i$5 `
+        ha-card {
+          height: 100%;
           display: flex;
-          justify-content: flex-end;
-          align-items: center;
-          padding: 0 10px 0;
-          flex-shrink: 0;
-          overflow: hidden;
-          max-height: 0;
-          transition: max-height 0.15s ease, padding-bottom 0.15s ease;
+          flex-direction: column;
         }
-        .apply-row.visible {
-          max-height: 48px;
-          padding-bottom: 10px;
+        .kpi-footer {
+          flex: 1;
+          min-width: 0;
+          place-content: center;
         }
-
-
-      `]}render(){if(!this._config||!this.hass)return U;const t=ms(this.hass),e=this.hass.states[this._config.climate_entity],s=e&&tr(e,this._config.name,this.hass)||t("tuning_card.default_title");if(void 0===this._proposedHc||void 0===this._proposedShift)return W`<ha-card>
-        ${this._renderHeader({iconName:"mdi:tune-vertical",clickEntity:this._config.climate_entity,title:s})}
-      </ha-card>`;const i=Math.abs(this._proposedHc-this._currentHc)>this._hcStep/2,a=Math.abs(this._proposedShift-this._currentShift)>this._shiftStep/2,r=i||a,o=this._hcStep<1?Math.ceil(-Math.log10(this._hcStep)):0,n=this._shiftStep<1?Math.ceil(-Math.log10(this._shiftStep)):0,l=this._proposedHc-this._currentHc,h=this._proposedShift-this._currentShift,c=(t,e)=>`${t>0?"+":""}${t.toFixed(e)}`,d=zt(this,"heating"),g=Mt({background:d});return W`
+      `,
+        ];
+    }
+    _renderParamsFooterWithTune() {
+        return this._renderTunableParamsFooter({
+            hc: this._config.hc_entity ? { entity: this._config.hc_entity, fallback: 0.9 } : undefined,
+            n: this._config.n_entity ? { entity: this._config.n_entity, fallback: 1.25 } : undefined,
+            shift: this._config.shift_entity ? { entity: this._config.shift_entity, fallback: 0 } : undefined,
+            pid_correction: this._config.pid_correction_entity ? { entity: this._config.pid_correction_entity } : undefined,
+        }, () => { this._showTuningDialog = true; });
+    }
+    render() {
+        if (!this._config || !this.hass)
+            return A;
+        const lookup = (id) => this._entityState(id);
+        const adjustingDir = getAdjustingDirection(this._config, lookup);
+        const title = this._computeCardTitle('status_card.default_title');
+        return b `
       <ha-card>
-        ${this._renderHeader({iconName:"mdi:tune-vertical",clickEntity:this._config.climate_entity,title:s})}
+        ${this._renderHeader({
+            iconName: 'mdi:thermostat',
+            clickEntity: this._config.climate_entity,
+            title,
+        })}
 
-        <!-- Chart (primary visual) -->
-        <div class="chart-area">
-          <div class="chart-legend">
-            <span class="legend-item"><span class="legend-line" style=${g}></span>${t("tuning_card.current")}</span>
-            <span class="legend-item"><span class="legend-line dashed"></span>${t("tuning_card.proposed")}</span>
-          </div>
-          <div id="chart"></div>
-          ${this._renderManualOverlay()}
-        </div>
-
-        <!-- Controls: HC and Shift steppers -->
-        <div class="controls">
-          <div class="ctrl-panel">
-            <span class="ctrl-label">${t("editor.hc")}</span>
-            <div class="ctrl-stepper">
-              <ha-icon-button class="step-btn" .label=${"-"} @click=${()=>this._adjustHc(-this._hcStep)}>
-                <ha-icon icon="mdi:minus"></ha-icon>
-              </ha-icon-button>
-              <div class="ctrl-value">
-                <span class="ctrl-num">${this._proposedHc.toFixed(o)}</span>
-                <span class="ctrl-delta ${i?l>0?"pos":"neg":""}">${i?c(l,o):""}</span>
-              </div>
-              <ha-icon-button class="step-btn" .label=${"+"} @click=${()=>this._adjustHc(this._hcStep)}>
-                <ha-icon icon="mdi:plus"></ha-icon>
-              </ha-icon-button>
-            </div>
-            ${i?W`<ha-icon-button class="reset-btn" .label=${t("tuning_card.reset")} @click=${this._resetHc}><ha-icon icon="mdi:undo"></ha-icon></ha-icon-button>`:U}
-          </div>
-          <div class="ctrl-divider"></div>
-          <div class="ctrl-panel">
-            <span class="ctrl-label">${t("editor.shift")}</span>
-            <div class="ctrl-stepper">
-              <ha-icon-button class="step-btn" .label=${"-"} @click=${()=>this._adjustShift(-this._shiftStep)}>
-                <ha-icon icon="mdi:minus"></ha-icon>
-              </ha-icon-button>
-              <div class="ctrl-value">
-                <span class="ctrl-num">${this._proposedShift.toFixed(n)}°</span>
-                <span class="ctrl-delta ${a?h>0?"pos":"neg":""}">${a?c(h,n):""}</span>
-              </div>
-              <ha-icon-button class="step-btn" .label=${"+"} @click=${()=>this._adjustShift(this._shiftStep)}>
-                <ha-icon icon="mdi:plus"></ha-icon>
-              </ha-icon-button>
-            </div>
-            ${a?W`<ha-icon-button class="reset-btn" .label=${t("tuning_card.reset")} @click=${this._resetShift}><ha-icon icon="mdi:undo"></ha-icon></ha-icon-button>`:U}
-          </div>
-        </div>
-
-        <!-- Apply row (max-height collapse, no layout shift) -->
-        <div class=${yt({"apply-row":!0,visible:r})}>
-          <ha-button variant="brand" appearance="filled" size="small"
-            .disabled=${this._applying} .loading=${this._applying}
-            @click=${this._applyAll}
-          >${this._applySuccess?W`<ha-icon icon="mdi:check" slot="start"></ha-icon>`:U}${t("tuning_card.apply")}</ha-button>
-        </div>
-
-        ${this._config.show_last_updated?W`
-          <div class="footer-meta">${this._renderLastUpdated(this._config.outdoor_entity)}</div>
-        `:U}
+        ${this._renderKpiFooter({
+            adjustingDir: adjustingDir ?? undefined,
+            curveOutput: this._curveOutputTempFormatted || undefined,
+        })}
+        ${this._renderParamsFooterWithTune()}
+        ${this._renderFooterMeta()}
       </ha-card>
-    `}};t([ut()],oo.prototype,"_proposedHc",void 0),t([ut()],oo.prototype,"_proposedShift",void 0),t([ut()],oo.prototype,"_applying",void 0),t([ut()],oo.prototype,"_applySuccess",void 0),oo=t([ct(Jr)],oo),console.info("%c EQUITHERM-CARDS %c 1.4.0 ","color: white; background: #f97316; font-weight: bold;","color: #f97316; background: white; font-weight: bold;");var no=Number.isNaN||function(t){return"number"==typeof t&&t!=t};function lo(t,e){return t===e||!(!no(t)||!no(e))}function ho(t,e){if(t.length!==e.length)return!1;for(var s=0;s<t.length;s++)if(!lo(t[s],e[s]))return!1;return!0}function co(t,e){void 0===e&&(e=ho);var s=null;function i(){for(var i=[],a=0;a<arguments.length;a++)i[a]=arguments[a];if(s&&s.lastThis===this&&e(i,s.lastArgs))return s.lastResult;var r=t.apply(this,i);return s={lastResult:r,lastArgs:i,lastThis:this},r}return i.clear=function(){s=null},i}const go={entity:function(t,e={}){return{name:t,required:e.required??!0,selector:{entity:{domain:e.domain,device_class:e.device_class}}}},number:function(t,e,s,i=1,a={}){return{name:t,required:a.required??!1,...void 0!==a.default&&{default:a.default},selector:{number:{min:e,max:s,step:i,mode:a.mode??"box",unit_of_measurement:a.unit_of_measurement}}}},text:function(t,e=!1){return{name:t,required:e,selector:{text:{}}}},entityName:function(t,e){return{name:t,selector:{entity_name:{}},context:e}},grid:function(t){return{type:"grid",name:"",schema:t}},expandable:function(t,e,s){return{type:"expandable",flatten:!0,title:t,icon:e,name:"",schema:s}}};let po=class extends lt{constructor(){super(...arguments),this._getSchema=co(()=>{const t=ms(this.hass);return[go.entity("climate_entity",{domain:"climate"}),go.entityName("name",{entity:"climate_entity"}),go.entity("outdoor_entity",{domain:["sensor","input_number"],device_class:"temperature"}),go.entity("flow_entity",{domain:["sensor","number","input_number"],device_class:"temperature"}),{name:"show_last_updated",selector:{boolean:{}}},go.expandable(t("editor.optional"),"mdi:connection",[go.entity("curve_output_entity",{domain:["sensor"],device_class:"temperature",required:!1}),go.entity("pid_output_entity",{domain:["sensor"],device_class:"temperature",required:!1}),go.entity("rate_limiting_entity",{domain:["binary_sensor"],required:!1}),go.entity("pid_active_entity",{domain:["binary_sensor"],required:!1}),go.entity("pid_correction_entity",{domain:["sensor","input_number"],device_class:"temperature",required:!1}),go.entity("pid_proportional_entity",{domain:["sensor","input_number"],required:!1}),go.entity("pid_integral_entity",{domain:["sensor","input_number"],required:!1}),go.entity("pid_derivative_entity",{domain:["sensor","input_number"],required:!1})]),go.expandable(t("editor.appearance"),"mdi:palette-outline",[{name:"content_layout",selector:{select:{mode:"box",options:["horizontal","vertical"].map(e=>({value:e,label:t(`editor.layout_options.${e}`)}))}}}])]}),this._computeLabel=t=>{const e=ms(this.hass),s=`editor.${t.name}`,i=e(s),a=i!==s?i:t.name;return!1===t.required?`${a} (${e("editor.optional")})`:a},this._computeHelper=t=>{const e=ms(this.hass),s=`editor.helper.${t.name}`,i=e(s);return i!==s?i:""}}setConfig(t){this._config={...t}}_valueChanged(t){if(t.stopPropagation(),!this._config)return;let e={...this._config,...t.detail.value};"content_layout"in e&&(e.vertical="vertical"===e.content_layout,delete e.content_layout),delete e.layout;try{Ar(e),this._error=void 0,Tt(this,"config-changed",{config:e})}catch(t){this._error={base:t.message}}}render(){return this.hass&&this._config?W`
-      <ha-form
-        .hass=${this.hass}
-        .data=${{...this._config,content_layout:this._config.vertical?"vertical":"horizontal"}}
-        .schema=${this._getSchema()}
-        .computeLabel=${this._computeLabel}
-        .computeHelper=${this._computeHelper}
-        .error=${this._error}
-        @value-changed=${this._valueChanged}
-      ></ha-form>
-    `:U}};po.styles=n`
-    ha-form { display: block; }
-    ha-expandable {
-      margin: 8px 0;
-      --ha-card-border-radius: 8px;
+
+      ${this._dialogConfig && this._showTuningDialog ? b `
+        <eq-tuning-dialog
+          .hass=${this.hass}
+          .config=${this._dialogConfig}
+          .open=${this._showTuningDialog}
+          @closed=${() => { this._showTuningDialog = false; }}
+        ></eq-tuning-dialog>
+      ` : A}
+    `;
     }
-  `,t([pt({attribute:!1})],po.prototype,"hass",void 0),t([ut()],po.prototype,"_config",void 0),t([ut()],po.prototype,"_error",void 0),po=t([ct(Sr)],po);var uo=Object.freeze({__proto__:null,get StatusCardEditor(){return po}});let fo=class extends lt{constructor(){super(...arguments),this._getSchema=co(t=>{const e=ms(this.hass);return[go.entity("climate_entity",{domain:"climate"}),go.entityName("name",{entity:"climate_entity"}),go.entity("outdoor_entity",{domain:["sensor","input_number"],device_class:"temperature"}),go.entity("curve_output_entity",{domain:["sensor"],device_class:"temperature"}),go.entity("flow_entity",{domain:["sensor","number","input_number"],device_class:"temperature"}),{name:"show_last_updated",selector:{boolean:{}}},go.expandable(e("editor.optional"),"mdi:connection",[go.entity("pid_output_entity",{domain:["sensor"],device_class:"temperature",required:!1}),go.entity("rate_limiting_entity",{domain:["binary_sensor"],required:!1}),go.entity("pid_active_entity",{domain:["binary_sensor"],required:!1})]),go.expandable(e("editor.curve_parameters"),"mdi:chart-bell-curve",[{name:"curve_from_entities",selector:{boolean:{}}},...t?[go.entity("hc_entity",{domain:"number"}),go.entity("n_entity",{domain:"number"}),go.entity("shift_entity",{domain:"number"}),go.entity("min_flow_entity",{domain:["sensor","number"],required:!1}),go.entity("max_flow_entity",{domain:["sensor","number"],required:!1})]:[go.grid([go.number("hc",.5,3,.1,{default:.9}),go.number("n",1,2,.05,{default:1.25})]),go.number("shift",-15,15,1,{unit_of_measurement:"°C",default:0}),go.grid([go.number("min_flow",15,35,1,{unit_of_measurement:"°C",default:20}),go.number("max_flow",50,90,1,{unit_of_measurement:"°C",default:70})])]]),go.expandable(e("editor.display_range"),"mdi:arrow-expand-horizontal",[go.grid([go.number("t_out_min",-30,5,1,{unit_of_measurement:"°C",default:-20}),go.number("t_out_max",0,30,1,{unit_of_measurement:"°C",default:20})])])]}),this._computeLabel=t=>{const e=ms(this.hass),s=`editor.${t.name}`,i=e(s),a=i!==s?i:t.name;return!1===t.required?`${a} (${e("editor.optional")})`:a},this._computeHelper=t=>{const e=ms(this.hass),s=`editor.helper.${t.name}`,i=e(s);return i!==s?i:""}}setConfig(t){this._config={...t}}_valueChanged(t){if(!this._config)return;const e={...this._config,...t.detail.value};try{zr(e),this._error=void 0,Tt(this,"config-changed",{config:e})}catch(t){this._error={base:t.message}}}render(){return this.hass&&this._config?W`
-      <ha-form
-        .hass=${this.hass}
-        .data=${this._config}
-        .schema=${this._getSchema(!!this._config.curve_from_entities)}
-        .computeLabel=${this._computeLabel}
-        .computeHelper=${this._computeHelper}
-        .error=${this._error}
-        @value-changed=${this._valueChanged}
-      ></ha-form>
-    `:U}};fo.styles=n`
-    ha-form { display: block; }
-    ha-expandable {
-      margin: 8px 0;
-      --ha-card-border-radius: 8px;
+};
+EquithermStatusCard = __decorate([
+    t$1(STATUS_CARD_NAME)
+], EquithermStatusCard);
+
+const CURVE_CARD_NAME = `${PREFIX_NAME}-curve-card`;
+const CURVE_CARD_EDITOR_NAME = editorName(CURVE_CARD_NAME);
+
+// src/cards/curve-card/curve-card-config.ts
+/** Runtime validation schema for CurveCardConfig */
+const CurveCardConfigStruct = type({
+    type: string(),
+    climate_entity: string(),
+    outdoor_entity: string(),
+    curve_output_entity: optional(string()),
+    pid_output_entity: optional(string()),
+    flow_entity: string(),
+    rate_limiting_entity: optional(string()),
+    pid_active_entity: optional(string()),
+    wws_entity: optional(string()),
+    show_last_updated: optional(boolean()),
+    show_kpi_footer: optional(boolean()),
+    show_params_footer: optional(boolean()),
+    name: optional(any()),
+    curve_from_entities: optional(any()),
+    hc_entity: optional(string()),
+    n_entity: optional(string()),
+    shift_entity: optional(string()),
+    tunable: optional(boolean()),
+    recalculate_service: optional(string()),
+    ...curveEntityStructFields,
+    hc: optional(number$1()),
+    shift: optional(number$1()),
+    ...curveConfigStructFields,
+});
+/** Default curve parameter values (matching @equitherm/core defaults) */
+const CURVE_CARD_DEFAULTS = {
+    hc: 0.9,
+    shift: 0,
+    ...CURVE_CONFIG_DEFAULTS,
+};
+/** Validate and apply defaults */
+function validateCurveCardConfig(config) {
+    const c = { ...config };
+    if ('title' in c && !('name' in c))
+        c.name = c.title;
+    delete c.title;
+    assert(c, CurveCardConfigStruct);
+    return { ...CURVE_CARD_DEFAULTS, ...c };
+}
+
+let EqManualOverlay = class EqManualOverlay extends i$2 {
+    constructor() {
+        super(...arguments);
+        this._active = false;
     }
-  `,t([pt({attribute:!1})],fo.prototype,"hass",void 0),t([ut()],fo.prototype,"_config",void 0),t([ut()],fo.prototype,"_error",void 0),fo=t([ct(Mr)],fo);var xo=Object.freeze({__proto__:null,get EquithermCurveCardEditor(){return fo}});let mo=class extends lt{constructor(){super(...arguments),this._getSchema=co(t=>{const e=ms(this.hass);return[go.entity("weather_entity",{domain:"weather"}),go.entity("climate_entity",{domain:"climate"}),go.entityName("name",{entity:"climate_entity"}),go.entity("flow_entity",{domain:["sensor","number","input_number"],device_class:"temperature"}),{name:"show_last_updated",selector:{boolean:{}}},go.expandable(e("editor.optional"),"mdi:connection",[go.entity("outdoor_entity",{domain:["sensor","number","input_number"],device_class:"temperature",required:!1}),go.entity("pid_active_entity",{domain:["binary_sensor"],required:!1})]),go.expandable(e("editor.forecast_settings"),"mdi:clock-outline",[go.number("hours",1,48,1,{unit_of_measurement:"h",default:24})]),go.expandable(e("editor.curve_parameters"),"mdi:chart-bell-curve",[{name:"curve_from_entities",selector:{boolean:{}}},...t?[go.entity("hc_entity",{domain:"number"}),go.entity("n_entity",{domain:"number"}),go.entity("shift_entity",{domain:"number"}),go.entity("min_flow_entity",{domain:["sensor","number"],required:!1}),go.entity("max_flow_entity",{domain:["sensor","number"],required:!1})]:[go.grid([go.number("hc",.5,3,.1,{default:.9}),go.number("n",1,2,.05,{default:1.25})]),go.number("shift",-15,15,1,{unit_of_measurement:"°C",default:0}),go.grid([go.number("min_flow",15,35,1,{unit_of_measurement:"°C",default:20}),go.number("max_flow",50,90,1,{unit_of_measurement:"°C",default:70})])]])]}),this._computeLabel=t=>{const e=ms(this.hass),s=`editor.${t.name}`,i=e(s),a=i!==s?i:t.name;return!1===t.required?`${a} (${e("editor.optional")})`:a},this._computeHelper=t=>{const e=ms(this.hass),s=`editor.helper.${t.name}`,i=e(s);return i!==s?i:""}}setConfig(t){this._config={...t}}_valueChanged(t){if(!this._config)return;const e={...this._config,...t.detail.value};try{Zr(e),this._error=void 0,Tt(this,"config-changed",{config:e})}catch(t){this._error={base:t.message}}}render(){return this.hass&&this._config?W`
-      <ha-form
-        .hass=${this.hass}
-        .data=${this._config}
-        .schema=${this._getSchema(!!this._config.curve_from_entities)}
-        .computeLabel=${this._computeLabel}
-        .computeHelper=${this._computeHelper}
-        .error=${this._error}
-        @value-changed=${this._valueChanged}
-      ></ha-form>
-    `:U}};mo.styles=n`
-    ha-form { display: block; }
-    ha-expandable {
-      margin: 8px 0;
-      --ha-card-border-radius: 8px;
+    connectedCallback() {
+        super.connectedCallback();
+        const root = this.getRootNode();
+        this._hostEl = root.host;
+        if (!this._hostEl)
+            return;
+        this._active = this._hostEl.hasAttribute('manual-override');
+        this._observer = new MutationObserver(() => {
+            this._active = this._hostEl.hasAttribute('manual-override');
+        });
+        this._observer.observe(this._hostEl, {
+            attributes: true,
+            attributeFilter: ['manual-override'],
+        });
     }
-  `,t([pt({attribute:!1})],mo.prototype,"hass",void 0),t([ut()],mo.prototype,"_config",void 0),t([ut()],mo.prototype,"_error",void 0),mo=t([ct(Gr)],mo);var bo=Object.freeze({__proto__:null,get EquithermForecastCardEditor(){return mo}});let yo=class extends lt{constructor(){super(...arguments),this._getSchema=co(t=>{const e=ms(this.hass);return[go.entity("climate_entity",{domain:"climate"}),go.entityName("name",{entity:"climate_entity"}),go.entity("outdoor_entity",{domain:["sensor","input_number"],device_class:"temperature"}),go.entity("hc_entity",{domain:["number","input_number"]}),go.entity("shift_entity",{domain:["number","input_number"]}),{name:"show_last_updated",selector:{boolean:{}}},go.expandable(e("editor.curve_parameters"),"mdi:chart-bell-curve",[{name:"curve_from_entities",selector:{boolean:{}}},...t?[go.entity("n_entity",{domain:["number","input_number"]}),go.entity("min_flow_entity",{domain:["sensor","number","input_number"],required:!1}),go.entity("max_flow_entity",{domain:["sensor","number","input_number"],required:!1})]:[go.number("n",1,2,.05,{default:1.25}),go.grid([go.number("min_flow",15,35,1,{unit_of_measurement:"°C",default:20}),go.number("max_flow",50,90,1,{unit_of_measurement:"°C",default:70})])]]),go.expandable(e("editor.display_range"),"mdi:arrow-expand-horizontal",[go.grid([go.number("t_out_min",-30,5,1,{unit_of_measurement:"°C",default:-20}),go.number("t_out_max",0,30,1,{unit_of_measurement:"°C",default:20})])]),go.expandable(e("editor.advanced"),"mdi:cog",[go.entity("pid_active_entity",{domain:["binary_sensor"],required:!1}),{name:"recalculate_service",selector:{text:{}}}])]}),this._computeLabel=t=>{const e=ms(this.hass),s=`editor.${t.name}`,i=e(s),a=i!==s?i:t.name;return!1===t.required?`${a} (${e("editor.optional")})`:a},this._computeHelper=t=>{const e=ms(this.hass),s=`editor.helper.${t.name}`,i=e(s);return i!==s?i:""}}setConfig(t){this._config={...t}}_valueChanged(t){if(!this._config)return;const e={...this._config,...t.detail.value};try{ro(e),this._error=void 0,Tt(this,"config-changed",{config:e})}catch(t){this._error={base:t.message}}}render(){return this.hass&&this._config?W`
-      <ha-form
-        .hass=${this.hass}
-        .data=${this._config}
-        .schema=${this._getSchema(!!this._config.curve_from_entities)}
-        .computeLabel=${this._computeLabel}
-        .computeHelper=${this._computeHelper}
-        .error=${this._error}
-        @value-changed=${this._valueChanged}
-      ></ha-form>
-    `:U}};yo.styles=n`
-    ha-form { display: block; }
-    ha-expandable {
-      margin: 8px 0;
-      --ha-card-border-radius: 8px;
+    disconnectedCallback() {
+        this._observer?.disconnect();
+        super.disconnectedCallback();
     }
-  `,t([pt({attribute:!1})],yo.prototype,"hass",void 0),t([ut()],yo.prototype,"_config",void 0),t([ut()],yo.prototype,"_error",void 0),yo=t([ct(Qr)],yo);var wo=Object.freeze({__proto__:null,get EquithermTuningCardEditor(){return yo}});
+    static get styles() {
+        return i$5 `
+      :host {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+        z-index: 10;
+      }
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 10px;
+        border-radius: 99px;
+        background: color-mix(in srgb, var(--card-background-color, #fff) 80%, transparent);
+        border: 1px solid color-mix(in srgb, var(--divider-color, rgba(0,0,0,0.12)) 60%, transparent);
+        color: var(--secondary-text-color);
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      .chip ha-icon {
+        --mdc-icon-size: 14px;
+        opacity: 0.7;
+      }
+    `;
+    }
+    render() {
+        if (!this._active)
+            return A;
+        const localize = setupCustomlocalize(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        this.getRootNode()?.host?.hass);
+        return b `
+      <div class="chip">
+        <ha-icon icon="mdi:hand-back-right"></ha-icon>
+        ${localize('common.manual_override')}
+      </div>
+    `;
+    }
+};
+__decorate([
+    r()
+], EqManualOverlay.prototype, "_active", void 0);
+EqManualOverlay = __decorate([
+    t$1('eq-manual-overlay')
+], EqManualOverlay);
+
+registerCustomCard({
+    type: CURVE_CARD_NAME,
+    name: 'Equitherm Curve',
+    description: 'Heating curve visualization with current operating point',
+});
+/** Marker sizes for chart annotations */
+const MARKER_SINGLE = 9;
+const MARKER_CURVE_OUTPUT = 10;
+const MARKER_RATE_LIMITED = 8;
+let EquithermCurveCard = class EquithermCurveCard extends EquithermEChartCard {
+    willUpdate(changedProps) {
+        super.willUpdate(changedProps);
+        if (changedProps.has('_config')) {
+            this._updateChartConfig();
+            return;
+        }
+        if (changedProps.has('hass') && this.hass) {
+            const oldHass = changedProps.get('hass');
+            if (!oldHass || this._relevantStateChanged(oldHass)) {
+                this._updateChartConfig();
+            }
+        }
+    }
+    _relevantStateChanged(oldHass) {
+        const entities = [
+            this._config.outdoor_entity,
+            this._config.flow_entity,
+            this._config.climate_entity,
+            this._config.rate_limiting_entity,
+            this._config.pid_output_entity,
+            this._config.curve_output_entity,
+            this._config.pid_active_entity,
+            ...((this._config.curve_from_entities || this._config.tunable) ? [this._config.hc_entity, this._config.shift_entity, this._config.n_entity, this._config.min_flow_entity, this._config.max_flow_entity] : []),
+        ].filter(Boolean);
+        return entities.some(id => this.hass.states[id]?.state !== oldHass.states[id]?.state);
+    }
+    static async getStubConfig(hass) {
+        return {
+            type: 'custom:equitherm-curve-card',
+            climate_entity: findClimateEntity(hass),
+            outdoor_entity: findOutdoorEntity(hass),
+            curve_output_entity: findCurveOutputEntity(hass),
+            flow_entity: findFlowEntity(hass),
+            hc: 1.2,
+            n: 1.25,
+            shift: 0,
+            min_flow: 25,
+            max_flow: 70,
+            t_out_min: -20,
+            t_out_max: 20,
+        };
+    }
+    static async getConfigElement() {
+        await Promise.resolve().then(function () { return curveCardEditor; });
+        return document.createElement(CURVE_CARD_EDITOR_NAME);
+    }
+    setConfig(config) {
+        this._config = validateCurveCardConfig(config);
+        this._dialogConfig = buildTuningDialogConfig(this._config);
+    }
+    _lastUpdatedEntity() {
+        return this._config.flow_entity;
+    }
+    get _tTarget() {
+        return this._climate?.attributes.temperature ?? 21;
+    }
+    get _tOutdoor() {
+        const s = this._entityState(this._config.outdoor_entity);
+        if (!s)
+            return null;
+        const val = parseFloat(s.state);
+        return isNaN(val) ? null : this._fromDisplayTemp(val);
+    }
+    get _flowTemp() {
+        const s = this._entityState(this._config.flow_entity);
+        if (s) {
+            const val = parseFloat(s.state);
+            if (!isNaN(val))
+                return this._fromDisplayTemp(val);
+        }
+        return this._config.min_flow;
+    }
+    get _currentN() {
+        return this._config.curve_from_entities
+            ? this._resolveEntityNumber(this._config.n_entity, this._config.n)
+            : this._config.n;
+    }
+    _renderParamsFooterContent() {
+        if (!this._config.curve_from_entities)
+            return A;
+        return this._renderTunableParamsFooter({
+            hc: this._config.hc_entity ? { entity: this._config.hc_entity, fallback: this._config.hc, onClick: this._config.tunable ? undefined : () => { this._showTuningDialog = true; } } : undefined,
+            n: this._config.n_entity ? { entity: this._config.n_entity, fallback: this._config.n } : undefined,
+            shift: this._config.shift_entity ? { entity: this._config.shift_entity, fallback: this._config.shift, onClick: this._config.tunable ? undefined : () => { this._showTuningDialog = true; } } : undefined,
+        }, () => { this._showTuningDialog = true; });
+    }
+    _buildEChartOptions() {
+        return this._buildSingleCurveOptions();
+    }
+    _buildSingleCurveOptions() {
+        const localize = setupCustomlocalize(this.hass);
+        const cfg = this._config;
+        const curveParams = {
+            tTarget: this._tTarget,
+            hc: cfg.curve_from_entities ? this._resolveEntityNumber(cfg.hc_entity, cfg.hc) : cfg.hc,
+            n: cfg.curve_from_entities ? this._resolveEntityNumber(cfg.n_entity, cfg.n) : cfg.n,
+            shift: cfg.curve_from_entities ? this._resolveEntityTemp(cfg.shift_entity, cfg.shift) : cfg.shift,
+            minFlow: cfg.curve_from_entities ? this._resolveEntityTemp(cfg.min_flow_entity, cfg.min_flow) : cfg.min_flow,
+            maxFlow: cfg.curve_from_entities ? this._resolveEntityTemp(cfg.max_flow_entity, cfg.max_flow) : cfg.max_flow,
+        };
+        // Resolve colors at runtime from CSS variables
+        const style = getComputedStyle(this);
+        const gradientStart = style.getPropertyValue('--curve-gradient-start').trim();
+        const gradientEnd = style.getPropertyValue('--curve-gradient-end').trim();
+        const heatingColor = gradientStart ? `rgb(${gradientStart})` : resolveRgbColor(this, 'heating');
+        const coolingColor = gradientEnd ? `rgb(${gradientEnd})` : resolveRgbColor(this, 'cooling');
+        const wwsdFill = `rgba(${style.getPropertyValue('--rgb-warning').trim() || '255, 167, 38'}, 0.08)`;
+        const curveSeries = buildCurveSeries(curveParams, cfg.t_out_min, cfg.t_out_max);
+        // Convert curve data to display units for charting
+        const displaySeries = curveSeries.map(p => ({
+            x: this._toDisplayTemp(p.x),
+            y: this._toDisplayTemp(p.y),
+        }));
+        const tOutdoor = this._tOutdoor;
+        // Build operating point data for a line series (markPoint doesn't work through ha-chart-base)
+        const operatingPoints = [];
+        const lookup = (id) => this._entityState(id);
+        const rateLimiting = isRateLimitingActive(this._config, lookup);
+        const rateTarget = getRateTargetEntity(this._config);
+        if (tOutdoor !== null) {
+            const tOutdoorDisplay = this._toDisplayTemp(tOutdoor);
+            const currentFlow = flowAtOutdoor(curveParams, tOutdoor);
+            const currentFlowDisplay = this._toDisplayTemp(currentFlow);
+            if (rateLimiting) {
+                // rateTarget entity state is already in display units
+                const rateTargetValue = rateTarget
+                    ? (this._entityState(rateTarget) ? parseFloat(this._entityState(rateTarget).state) : currentFlowDisplay)
+                    : currentFlowDisplay;
+                if (this._config.pid_output_entity && this._config.curve_output_entity) {
+                    // curveOutput entity state is already in display units
+                    const curveOutput = this._entityState(this._config.curve_output_entity);
+                    const curveValue = curveOutput ? parseFloat(curveOutput.state) : currentFlowDisplay;
+                    operatingPoints.push({
+                        value: [tOutdoorDisplay, curveValue],
+                        symbolSize: MARKER_RATE_LIMITED,
+                        itemStyle: { color: 'transparent', borderColor: heatingColor, borderWidth: 1.5 },
+                    });
+                }
+                operatingPoints.push({
+                    value: [tOutdoorDisplay, rateTargetValue],
+                    symbolSize: MARKER_CURVE_OUTPUT,
+                    itemStyle: { color: heatingColor, borderColor: '#ffffff', borderWidth: 2 },
+                });
+                operatingPoints.push({
+                    value: [tOutdoorDisplay, this._toDisplayTemp(this._flowTemp)],
+                    symbolSize: MARKER_RATE_LIMITED,
+                    itemStyle: { color: 'transparent', borderColor: heatingColor, borderWidth: 2 },
+                });
+            }
+            else {
+                operatingPoints.push({
+                    value: [tOutdoorDisplay, currentFlowDisplay],
+                    symbolSize: MARKER_SINGLE,
+                    itemStyle: { color: heatingColor, borderColor: '#ffffff', borderWidth: 2 },
+                });
+            }
+        }
+        // Discrete markers: sample every 50th point
+        const discretePoints = displaySeries
+            .filter((_p, i) => i % 50 === 0)
+            .map(p => [p.x, p.y]);
+        return {
+            options: {
+                animation: false,
+                xAxis: {
+                    type: 'value',
+                    min: this._toDisplayTemp(cfg.t_out_min),
+                    max: this._toDisplayTemp(cfg.t_out_max),
+                    inverse: true,
+                    axisLabel: {
+                        fontSize: 10,
+                        formatter: (val) => `${parseFloat(val.toFixed(1))}`,
+                    },
+                    axisTick: { show: false },
+                    axisLine: { show: false },
+                },
+                yAxis: {
+                    type: 'value',
+                    axisLabel: {
+                        fontSize: 10,
+                        formatter: (v) => `${parseFloat(v.toFixed(1))}`,
+                    },
+                    min: this._toDisplayTemp(curveParams.minFlow - 5),
+                    max: this._toDisplayTemp(curveParams.maxFlow + 5),
+                },
+                grid: { top: 5, right: 5, bottom: 20, left: 30 },
+                tooltip: {
+                    trigger: 'axis',
+                    backgroundColor: 'rgba(var(--rgb-card-background-color, 255, 255, 255), 0.95)',
+                    borderColor: 'var(--divider-color, rgba(0,0,0,0.12))',
+                    borderWidth: 1,
+                    padding: [8, 12],
+                    textStyle: { color: 'var(--primary-text-color)', fontSize: 12 },
+                    formatter: (params) => {
+                        const curveParam = (Array.isArray(params) ? params : []).find((p) => p.seriesName === localize('curve_card.flow_temp'));
+                        if (!curveParam)
+                            return '';
+                        const outdoorVal = curveParam.value[0];
+                        const flowVal = curveParam.value[1];
+                        const unit = this.hass?.config?.unit_system?.temperature ?? '°C';
+                        const fmt = (v) => `${parseFloat(v.toFixed(1))} ${unit}`;
+                        const marker = (color) => `<span style="display:inline-block;margin-right:6px;border-radius:50%;width:8px;height:8px;background-color:${color}"></span>`;
+                        return `<div style="margin-bottom:4px;font-weight:600">${fmt(outdoorVal)} ${localize('curve_card.outdoor_axis_suffix')}</div>`
+                            + `<div>${marker(heatingColor)}${fmt(flowVal)} ${localize('curve_card.flow_axis_suffix')}</div>`;
+                    },
+                },
+                legend: { show: false },
+            },
+            data: [
+                {
+                    type: 'line',
+                    name: localize('curve_card.flow_temp'),
+                    data: displaySeries.map(p => [p.x, p.y]),
+                    showSymbol: false,
+                    lineStyle: { width: 2 },
+                    itemStyle: { color: heatingColor },
+                    areaStyle: {
+                        color: {
+                            type: 'linear',
+                            x: 0, y: 0, x2: 1, y2: 0,
+                            colorStops: [
+                                { offset: 0, color: heatingColor },
+                                { offset: 1, color: coolingColor },
+                            ],
+                        },
+                    },
+                },
+                // Discrete markers (every 50th point) — line series with no line
+                {
+                    type: 'line',
+                    name: 'markers',
+                    data: discretePoints,
+                    showSymbol: true,
+                    symbol: 'circle',
+                    symbolSize: 3,
+                    lineStyle: { width: 0 },
+                    itemStyle: { color: heatingColor, borderColor: '#fff', borderWidth: 1 },
+                    tooltip: { show: false },
+                },
+                // Operating point(s) — line series with no line (markPoint workaround)
+                {
+                    type: 'line',
+                    name: 'operating-point',
+                    data: operatingPoints,
+                    showSymbol: true,
+                    symbol: 'circle',
+                    lineStyle: { width: 0 },
+                    tooltip: { show: false },
+                },
+                // WWSD zone — filled area from t_out_max to tTarget
+                ...(this._isWWSD ? [{
+                        type: 'line',
+                        name: 'wwsd',
+                        data: [
+                            [this._toDisplayTemp(cfg.t_out_max), this._toDisplayTemp(curveParams.maxFlow + 5)],
+                            [this._toDisplayTemp(this._tTarget), this._toDisplayTemp(curveParams.maxFlow + 5)],
+                        ],
+                        showSymbol: false,
+                        lineStyle: { width: 0 },
+                        areaStyle: { color: wwsdFill },
+                        tooltip: { show: false },
+                    }] : []),
+            ],
+        };
+    }
+    _renderChart() {
+        if (!this._echartConfig)
+            return A;
+        const { options, data } = this._echartConfig;
+        return b `
+      <div class="chart-wrapper">
+        <ha-chart-base
+          .hass=${this.hass}
+          .options=${options}
+          .data=${data}
+          height="100%"
+          hide-reset-button
+        ></ha-chart-base>
+        <eq-manual-overlay></eq-manual-overlay>
+      </div>
+    `;
+    }
+    static get styles() {
+        return [
+            super.styles,
+            cardStyle,
+            headerStyles,
+            paramsFooterStyles,
+            tunableFooterStyles,
+            kpiFooterStyles,
+            i$5 `
+        ha-card {
+          height: 100%;
+          overflow: hidden;
+        }
+        .chart-wrapper {
+          --chart-max-height: none;
+          padding: 0 8px;
+        }
+        .chart-wrapper ha-chart-base {
+          height: 100%;
+        }
+      `,
+        ];
+    }
+    render() {
+        if (!this._config || !this.hass)
+            return A;
+        const lookup = (id) => this._entityState(id);
+        const adjustingDir = getAdjustingDirection(this._config, lookup);
+        const title = this._computeCardTitle('curve_card.default_title');
+        return b `
+      <ha-card>
+        ${this._renderHeader({
+            iconName: 'mdi:thermostat',
+            clickEntity: this._config.climate_entity,
+            title,
+        })}
+        ${this._renderChart()}
+        ${this._renderKpiFooter({
+            adjustingDir: adjustingDir ?? undefined,
+            curveOutput: this._curveOutputTempFormatted || undefined,
+        })}
+        ${this._renderParamsFooterContent()}
+        ${this._renderFooterMeta()}
+      </ha-card>
+
+      ${this._dialogConfig && this._showTuningDialog ? b `
+        <eq-tuning-dialog
+          .hass=${this.hass}
+          .config=${this._dialogConfig}
+          .open=${this._showTuningDialog}
+          @closed=${() => { this._showTuningDialog = false; }}
+        ></eq-tuning-dialog>
+      ` : A}
+    `;
+    }
+};
+EquithermCurveCard = __decorate([
+    t$1(CURVE_CARD_NAME)
+], EquithermCurveCard);
+
+const FORECAST_CARD_NAME = `${PREFIX_NAME}-forecast-card`;
+const FORECAST_CARD_EDITOR_NAME = editorName(FORECAST_CARD_NAME);
+
+// src/cards/forecast-card/forecast-card-config.ts
+/** Runtime validation schema for ForecastCardConfig */
+const ForecastCardConfigStruct = type({
+    type: string(),
+    weather_entity: string(),
+    climate_entity: string(),
+    flow_entity: string(),
+    hours: optional(number$1()),
+    name: optional(any()),
+    curve_from_entities: optional(any()),
+    hc_entity: optional(string()),
+    n_entity: optional(string()),
+    shift_entity: optional(string()),
+    ...curveEntityStructFields,
+    outdoor_entity: optional(string()),
+    pid_active_entity: optional(string()),
+    wws_entity: optional(string()),
+    show_last_updated: optional(boolean()),
+    show_kpi_footer: optional(boolean()),
+    show_params_footer: optional(boolean()),
+    tunable: optional(boolean()),
+    recalculate_service: optional(string()),
+    hc: optional(number$1()),
+    ...curveConfigStructFields,
+    shift: optional(number$1()),
+});
+const FORECAST_CARD_DEFAULTS = {
+    hours: 24,
+    hc: 0.9,
+    shift: 0,
+    ...CURVE_CONFIG_DEFAULTS,
+};
+/** Validate and apply defaults */
+function validateForecastCardConfig(config) {
+    assert(config, ForecastCardConfigStruct);
+    return { ...FORECAST_CARD_DEFAULTS, ...config };
+}
+
+function buildForecastSeries(forecast, params, hours) {
+    return forecast.slice(0, hours).map((entry) => ({
+        datetime: entry.datetime,
+        hour: new Date(entry.datetime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        tOutdoor: entry.temperature,
+        tFlow: computeFlowTemperature({ ...params, tOutdoor: entry.temperature }),
+    }));
+}
+function peakDemand(points) {
+    if (points.length === 0)
+        return undefined;
+    return points.reduce((max, p) => (p.tFlow > (max?.tFlow ?? 0) ? p : max), points[0]);
+}
+
+registerCustomCard({
+    type: FORECAST_CARD_NAME,
+    name: 'Equitherm Forecast',
+    description: 'Heating forecast based on weather predictions',
+});
+let EquithermForecastCard = class EquithermForecastCard extends EquithermEChartCard {
+    constructor() {
+        super(...arguments);
+        this._forecastPoints = [];
+    }
+    updated(changedProps) {
+        super.updated(changedProps);
+        // Subscribe to forecast on config change or first hass
+        if (changedProps.has('_config') || (!this._unsub && changedProps.has('hass'))) {
+            this._subscribeForecast();
+        }
+        if (changedProps.has('_forecastPoints')) {
+            this._updateChartConfig();
+        }
+    }
+    static async getStubConfig(hass) {
+        return {
+            type: 'custom:equitherm-forecast-card',
+            weather_entity: findWeatherEntity(hass) ?? '',
+            climate_entity: findClimateEntity(hass) ?? '',
+            flow_entity: findFlowEntity(hass) ?? '',
+            hours: 24,
+            hc: 1.2,
+            n: 1.25,
+            shift: 0,
+            min_flow: 25,
+            max_flow: 70,
+        };
+    }
+    static async getConfigElement() {
+        await Promise.resolve().then(function () { return forecastCardEditor; });
+        return document.createElement(FORECAST_CARD_EDITOR_NAME);
+    }
+    setConfig(config) {
+        this._config = validateForecastCardConfig(config);
+        this._dialogConfig = buildTuningDialogConfig(this._config);
+    }
+    _lastUpdatedEntity() {
+        return this._config.weather_entity;
+    }
+    get _tTarget() {
+        return this._climate?.attributes.temperature ?? 21;
+    }
+    get _flowTemp() {
+        const s = this._entityState(this._config.flow_entity);
+        if (s) {
+            const val = parseFloat(s.state);
+            if (!isNaN(val))
+                return this._fromDisplayTemp(val);
+        }
+        return this._config.min_flow; // config values always °C
+    }
+    /** Current outdoor temp from dedicated sensor (Kalman etc.) or weather entity (always °C) */
+    get _outdoorTemp() {
+        if (this._config.outdoor_entity) {
+            const s = this._entityState(this._config.outdoor_entity);
+            if (s) {
+                const val = parseFloat(s.state);
+                if (!isNaN(val))
+                    return this._fromDisplayTemp(val);
+            }
+        }
+        const weather = this._entityState(this._config.weather_entity);
+        if (weather) {
+            const val = parseFloat(weather.attributes.temperature);
+            if (!isNaN(val))
+                return this._fromDisplayTemp(val);
+        }
+        return NaN;
+    }
+    /** Override: outdoor formatted with weather entity fallback */
+    get _outdoorTempFormatted() {
+        const temp = this._outdoorTemp;
+        return isNaN(temp) ? '—' : this._formatCalcTemp(temp);
+    }
+    /** Whether Warm Weather Shutdown is active.
+     *  Prefers wws_entity when configured, otherwise infers from forecast outdoor temp. */
+    get _isWWSD() {
+        if (this._config?.wws_entity) {
+            const s = this._entityState(this._config.wws_entity);
+            return s?.state === 'on';
+        }
+        const tTarget = this._climate?.attributes.temperature;
+        if (tTarget == null)
+            return false;
+        return !isNaN(this._outdoorTemp) && this._outdoorTemp >= tTarget;
+    }
+    _wwsdDescription() {
+        const localize = setupCustomlocalize(this.hass);
+        const tTarget = this._climate?.attributes.temperature;
+        if (!isNaN(this._outdoorTemp) && tTarget != null) {
+            return `${localize('common.outdoor')} ${this._formatCalcTemp(this._outdoorTemp)} ≥ ${this._formatCalcTemp(tTarget)}`;
+        }
+        return localize('common.wwsd_label');
+    }
+    /** Build the curve params from config, optionally reading from live entities */
+    get _curveParams() {
+        const cfg = this._config;
+        return {
+            tTarget: this._tTarget,
+            hc: cfg.curve_from_entities ? this._resolveEntityNumber(cfg.hc_entity, cfg.hc) : cfg.hc,
+            n: cfg.curve_from_entities ? this._resolveEntityNumber(cfg.n_entity, cfg.n) : cfg.n,
+            shift: cfg.curve_from_entities ? this._resolveEntityNumber(cfg.shift_entity, cfg.shift) : cfg.shift,
+            minFlow: cfg.curve_from_entities ? this._resolveEntityNumber(cfg.min_flow_entity, cfg.min_flow) : cfg.min_flow,
+            maxFlow: cfg.curve_from_entities ? this._resolveEntityNumber(cfg.max_flow_entity, cfg.max_flow) : cfg.max_flow,
+        };
+    }
+    /** Process forecast data and update chart (converts display units to °C for computation) */
+    _processForecast(forecast) {
+        const celsiusForecast = forecast.map(f => ({
+            datetime: f.datetime,
+            temperature: this._fromDisplayTemp(f.temperature),
+        }));
+        this._forecastPoints = buildForecastSeries(celsiusForecast, this._curveParams, this._config.hours);
+    }
+    /** Unsubscribe from forecast updates */
+    _unsubscribeForecast() {
+        if (this._unsub) {
+            this._unsub();
+            this._unsub = undefined;
+        }
+    }
+    /** Subscribe to weather forecast via HA WebSocket (real-time updates) */
+    async _subscribeForecast() {
+        this._unsubscribeForecast();
+        if (!this.isConnected || !this.hass || !this._config?.weather_entity)
+            return;
+        try {
+            const unsub = await this.hass.connection.subscribeMessage((event) => {
+                if (event.forecast) {
+                    this._processForecast(event.forecast);
+                }
+            }, {
+                type: 'weather/subscribe_forecast',
+                forecast_type: 'hourly',
+                entity_id: this._config.weather_entity,
+            });
+            // Only store if still the active subscription (not replaced by a newer call)
+            if (!this._unsub) {
+                this._unsub = unsub;
+            }
+            else {
+                unsub(); // Another subscription was already set, discard this one
+            }
+        }
+        catch (err) {
+            console.warn('Failed to subscribe to weather forecast:', err);
+        }
+    }
+    _buildEChartOptions() {
+        const points = this._forecastPoints;
+        const localize = setupCustomlocalize(this.hass);
+        const heatingColor = resolveRgbColor(this, 'heating');
+        const coolingColor = resolveRgbColor(this, 'cooling');
+        const peak = peakDemand(points);
+        // Peak marker data (markPoint workaround)
+        const peakData = peak ? [{
+                value: [new Date(peak.datetime).getTime(), this._toDisplayTemp(peak.tFlow)],
+                symbolSize: 6,
+                itemStyle: { color: heatingColor, borderColor: '#fff', borderWidth: 2 },
+                label: {
+                    show: true,
+                    formatter: `${localize('forecast_card.peak')}: ${this._toDisplayTemp(peak.tFlow).toFixed(1)}${this.hass?.config?.unit_system?.temperature ?? '°C'}`,
+                    color: '#fff',
+                    backgroundColor: heatingColor,
+                    fontSize: 11,
+                    fontWeight: 600,
+                    padding: [2, 6],
+                    borderRadius: 3,
+                    position: 'top',
+                },
+            }] : [];
+        return {
+            options: {
+                animation: false,
+                xAxis: {
+                    type: 'time',
+                    axisLabel: { fontSize: 10, hideOverlap: true, formatter: (value) => this._formatChartTime(value) },
+                    axisTick: { show: false },
+                    axisLine: { show: false },
+                },
+                yAxis: [
+                    {
+                        type: 'value',
+                        axisLabel: { fontSize: 10 },
+                        min: this._toDisplayTemp((this._curveParams.minFlow ?? 20) - 5),
+                        max: this._toDisplayTemp((this._curveParams.maxFlow ?? 70) + 5),
+                    },
+                    {
+                        type: 'value',
+                        axisLabel: { fontSize: 10 },
+                    },
+                ],
+                grid: { top: 15, right: 15, bottom: 25, left: 35 },
+                tooltip: {
+                    trigger: 'axis',
+                    backgroundColor: 'rgba(var(--rgb-card-background-color, 255, 255, 255), 0.95)',
+                    borderColor: 'var(--divider-color, rgba(0,0,0,0.12))',
+                    borderWidth: 1,
+                    padding: [8, 12],
+                    textStyle: { color: 'var(--primary-text-color)', fontSize: 12 },
+                    formatter: (params) => {
+                        const time = this._formatChartTime(params[0].value[0]);
+                        const unit = this.hass?.config?.unit_system?.temperature ?? '°C';
+                        let out = `<span style="opacity:0.6">${time}</span><br/>`;
+                        for (const p of params) {
+                            if (p.seriesName === 'peak')
+                                continue;
+                            const marker = `<span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:${p.color};"></span>`;
+                            out += `${marker}${p.seriesName}: <b>${p.value[1].toFixed(1)}${unit}</b><br/>`;
+                        }
+                        return out;
+                    },
+                },
+                legend: { show: false },
+            },
+            data: [
+                {
+                    type: 'line',
+                    name: localize('forecast_card.flow_temp'),
+                    data: points.map(p => [new Date(p.datetime).getTime(), this._toDisplayTemp(p.tFlow)]),
+                    showSymbol: false,
+                    lineStyle: { width: 2 },
+                    itemStyle: { color: heatingColor },
+                    areaStyle: {
+                        color: {
+                            type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
+                            colorStops: [
+                                { offset: 0, color: `rgba(${heatingColor.replace('rgb(', '').replace(')', '')}, 0.4)` },
+                                { offset: 1, color: `rgba(${heatingColor.replace('rgb(', '').replace(')', '')}, 0.05)` },
+                            ],
+                        },
+                    },
+                },
+                {
+                    type: 'line',
+                    name: localize('forecast_card.outdoor_temp'),
+                    data: points.map(p => [new Date(p.datetime).getTime(), this._toDisplayTemp(p.tOutdoor)]),
+                    yAxisIndex: 1,
+                    showSymbol: false,
+                    lineStyle: { width: 1.5, type: 'dashed' },
+                    itemStyle: { color: coolingColor },
+                },
+                // Peak marker (markPoint workaround)
+                ...(peak ? [{
+                        type: 'line',
+                        name: 'peak',
+                        data: peakData,
+                        showSymbol: true,
+                        symbol: 'circle',
+                        lineStyle: { width: 0 },
+                        tooltip: { show: false },
+                    }] : []),
+            ],
+        };
+    }
+    _renderChart() {
+        if (!this._echartConfig)
+            return A;
+        const { options, data } = this._echartConfig;
+        return b `
+      <div class="chart-wrapper">
+        <ha-chart-base
+          .hass=${this.hass}
+          .options=${options}
+          .data=${data}
+          height="100%"
+          hide-reset-button
+        ></ha-chart-base>
+        <eq-manual-overlay></eq-manual-overlay>
+      </div>
+    `;
+    }
+    _onChartDisconnecting() {
+        this._unsubscribeForecast();
+    }
+    _onChartReconnected() {
+        this._subscribeForecast();
+    }
+    static get styles() {
+        return [
+            super.styles,
+            cardStyle,
+            headerStyles,
+            paramsFooterStyles,
+            kpiFooterStyles,
+            tunableFooterStyles,
+            i$5 `
+        ha-card {
+          height: 100%;
+          overflow: hidden;
+        }
+        .chart-wrapper {
+          --chart-max-height: none;
+        }
+        .chart-wrapper ha-chart-base {
+          height: 100%;
+        }
+      `,
+        ];
+    }
+    render() {
+        if (!this._config || !this.hass)
+            return A;
+        const title = this._computeCardTitle('forecast_card.default_title');
+        return b `
+      <ha-card>
+        ${this._renderHeader({
+            iconName: 'mdi:weather-partly-cloudy',
+            clickEntity: this._config.weather_entity,
+            title,
+        })}
+        ${this._renderChart()}
+        ${this._renderKpiFooter({
+            outdoorClickEntity: this._config.outdoor_entity ?? this._config.weather_entity,
+        })}
+        ${this._config.curve_from_entities
+            ? this._renderTunableParamsFooter({
+                hc: this._config.hc_entity ? { entity: this._config.hc_entity, fallback: this._config.hc } : undefined,
+                n: this._config.n_entity ? { entity: this._config.n_entity, fallback: this._config.n } : undefined,
+                shift: this._config.shift_entity ? { entity: this._config.shift_entity, fallback: this._config.shift } : undefined,
+            }, () => { this._showTuningDialog = true; })
+            : A}
+        ${this._renderFooterMeta()}
+      </ha-card>
+
+      ${this._dialogConfig && this._showTuningDialog ? b `
+        <eq-tuning-dialog
+          .hass=${this.hass}
+          .config=${this._dialogConfig}
+          .open=${this._showTuningDialog}
+          @closed=${() => { this._showTuningDialog = false; }}
+        ></eq-tuning-dialog>
+      ` : A}
+    `;
+    }
+};
+__decorate([
+    r()
+], EquithermForecastCard.prototype, "_forecastPoints", void 0);
+EquithermForecastCard = __decorate([
+    t$1(FORECAST_CARD_NAME)
+], EquithermForecastCard);
+
+console.info('%c EQUITHERM-CARDS %c 1.5.0 ', 'color: white; background: #f97316; font-weight: bold;', 'color: #f97316; background: white; font-weight: bold;');
+
+/** Create an entity selector field */
+function entity(name, opts = {}) {
+    return {
+        name,
+        required: opts.required ?? true,
+        selector: { entity: { domain: opts.domain, device_class: opts.device_class } },
+    };
+}
+/** Create a number field */
+function number(name, min, max, step = 1, opts = {}) {
+    return {
+        name,
+        required: opts.required ?? false,
+        ...(opts.default !== undefined && { default: opts.default }),
+        selector: { number: { min, max, step, mode: opts.mode ?? 'box', unit_of_measurement: opts.unit_of_measurement } },
+    };
+}
+/** Create a text input field */
+function text(name, required = false) {
+    return {
+        name,
+        required,
+        selector: { text: {} },
+    };
+}
+/** Create an entity name picker field */
+function entityName(name, context) {
+    return {
+        name,
+        selector: { entity_name: {} },
+        context,
+    };
+}
+/** Group fields side-by-side in a grid */
+function grid(fields) {
+    return {
+        type: 'grid',
+        name: '',
+        schema: fields,
+    };
+}
+/** Create a collapsible section */
+function expandable(title, icon, schema) {
+    return {
+        type: 'expandable',
+        flatten: true,
+        title,
+        icon,
+        name: '',
+        schema,
+    };
+}
+/** Convenience object for namespaced imports */
+const schemaHelpers = {
+    entity,
+    number,
+    text,
+    entityName,
+    grid,
+    expandable,
+};
+
+let StatusCardEditor = class StatusCardEditor extends EquithermBaseEditor {
+    constructor() {
+        super(...arguments);
+        this._schemaMemo = memoizeOne((tunable) => {
+            const localize = setupCustomlocalize(this.hass);
+            return [
+                // Required entities
+                schemaHelpers.entity('climate_entity', { domain: 'climate' }),
+                schemaHelpers.entityName('name', { entity: 'climate_entity' }),
+                schemaHelpers.entity('outdoor_entity', { domain: ['sensor', 'input_number'], device_class: 'temperature' }),
+                schemaHelpers.entity('flow_entity', { domain: ['sensor', 'number', 'input_number'], device_class: 'temperature' }),
+                { name: 'show_last_updated', selector: { boolean: {} }, default: false },
+                { name: 'show_params_footer', selector: { boolean: {} }, default: true },
+                { name: 'tunable', selector: { boolean: {} }, default: false },
+                ...(tunable
+                    ? [schemaHelpers.expandable(localize('editor.tuning'), 'mdi:tune-variant', [
+                            schemaHelpers.entity('hc_entity', { domain: ['number', 'input_number'] }),
+                            schemaHelpers.entity('shift_entity', { domain: ['number', 'input_number'] }),
+                            { name: 'recalculate_service', selector: { text: {} } },
+                        ])]
+                    : []),
+                // Optional entities
+                schemaHelpers.expandable(localize('editor.optional'), 'mdi:connection', [
+                    schemaHelpers.entity('curve_output_entity', { domain: ['sensor'], device_class: 'temperature', required: false }),
+                    schemaHelpers.entity('pid_output_entity', { domain: ['sensor'], device_class: 'temperature', required: false }),
+                    schemaHelpers.entity('rate_limiting_entity', { domain: ['binary_sensor'], required: false }),
+                    schemaHelpers.entity('pid_active_entity', { domain: ['binary_sensor'], required: false }),
+                    schemaHelpers.entity('wws_entity', { domain: ['binary_sensor'], required: false }),
+                    schemaHelpers.entity('pid_correction_entity', { domain: ['sensor', 'input_number'], device_class: 'temperature', required: false }),
+                ]),
+                schemaHelpers.expandable(localize('editor.curve_parameters'), 'mdi:chart-bell-curve-cumulative', [
+                    schemaHelpers.entity('hc_entity', { domain: ['number', 'input_number'], required: false }),
+                    schemaHelpers.entity('shift_entity', { domain: ['number', 'input_number'], required: false }),
+                    schemaHelpers.entity('n_entity', { domain: ['number', 'input_number'], required: false }),
+                ]),
+            ];
+        });
+    }
+    setConfig(config) {
+        this._config = { ...config };
+    }
+    _validate(config) {
+        validateStatusCardConfig(config);
+    }
+    _getSchema() {
+        return this._schemaMemo(!!this._config.tunable);
+    }
+};
+StatusCardEditor = __decorate([
+    t$1(STATUS_CARD_EDITOR_NAME)
+], StatusCardEditor);
+
+var statusCardEditor = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    get StatusCardEditor () { return StatusCardEditor; }
+});
+
+let EquithermCurveCardEditor = class EquithermCurveCardEditor extends EquithermBaseEditor {
+    constructor() {
+        super(...arguments);
+        this._schemaMemo = memoizeOne((curveFromEntities, tunable, imperial) => {
+            const unit = this.hass?.config?.unit_system?.temperature ?? '°C';
+            const abs = (c) => Math.round(celsiusToDisplay(c, imperial) * 10) / 10;
+            const delta = (c) => Math.round(celsiusToDisplayDelta(c, imperial) * 10) / 10;
+            const localize = setupCustomlocalize(this.hass);
+            return [
+                // Required entities — top level
+                schemaHelpers.entity('climate_entity', { domain: 'climate' }),
+                // Name (depends on climate_entity for context)
+                schemaHelpers.entityName('name', { entity: 'climate_entity' }),
+                schemaHelpers.entity('outdoor_entity', { domain: ['sensor', 'input_number'], device_class: 'temperature' }),
+                schemaHelpers.entity('curve_output_entity', { domain: ['sensor'], device_class: 'temperature', required: false }),
+                schemaHelpers.entity('flow_entity', { domain: ['sensor', 'number', 'input_number'], device_class: 'temperature' }),
+                { name: 'tunable', selector: { boolean: {} }, default: false },
+                { name: 'show_last_updated', selector: { boolean: {} }, default: false },
+                { name: 'show_kpi_footer', selector: { boolean: {} }, default: true },
+                { name: 'show_params_footer', selector: { boolean: {} }, default: true },
+                // Tuning entities (only when tunable enabled)
+                ...(tunable
+                    ? [schemaHelpers.expandable(localize('editor.tuning'), 'mdi:tune-variant', [
+                            schemaHelpers.entity('hc_entity', { domain: ['number', 'input_number'] }),
+                            schemaHelpers.entity('shift_entity', { domain: ['number', 'input_number'] }),
+                            { name: 'recalculate_service', selector: { text: {} } },
+                        ])]
+                    : []),
+                // Optional entities
+                schemaHelpers.expandable(localize('editor.optional'), 'mdi:connection', [
+                    schemaHelpers.entity('pid_output_entity', { domain: ['sensor'], device_class: 'temperature', required: false }),
+                    schemaHelpers.entity('rate_limiting_entity', { domain: ['binary_sensor'], required: false }),
+                    schemaHelpers.entity('pid_active_entity', { domain: ['binary_sensor'], required: false }),
+                    schemaHelpers.entity('wws_entity', { domain: ['binary_sensor'], required: false }),
+                ]),
+                // Curve parameters
+                schemaHelpers.expandable(localize('editor.curve_parameters'), 'mdi:chart-bell-curve', [
+                    { name: 'curve_from_entities', selector: { boolean: {} } },
+                    ...(curveFromEntities
+                        ? [
+                            schemaHelpers.entity('hc_entity', { domain: 'number' }),
+                            schemaHelpers.entity('n_entity', { domain: 'number' }),
+                            schemaHelpers.entity('shift_entity', { domain: 'number' }),
+                            schemaHelpers.entity('min_flow_entity', { domain: ['sensor', 'number'], required: false }),
+                            schemaHelpers.entity('max_flow_entity', { domain: ['sensor', 'number'], required: false }),
+                        ]
+                        : [
+                            schemaHelpers.grid([
+                                schemaHelpers.number('hc', 0.5, 3.0, 0.1, { default: 0.9 }),
+                                schemaHelpers.number('n', 1.0, 2.0, 0.05, { default: 1.25 }),
+                            ]),
+                            schemaHelpers.number('shift', delta(-15), delta(15), 1, { unit_of_measurement: unit, default: delta(0) }),
+                            schemaHelpers.grid([
+                                schemaHelpers.number('min_flow', abs(15), abs(35), 1, { unit_of_measurement: unit, default: abs(20) }),
+                                schemaHelpers.number('max_flow', abs(50), abs(90), 1, { unit_of_measurement: unit, default: abs(70) }),
+                            ]),
+                        ]),
+                ]),
+                // Display range
+                schemaHelpers.expandable(localize('editor.display_range'), 'mdi:arrow-expand-horizontal', [
+                    schemaHelpers.grid([
+                        schemaHelpers.number('t_out_min', abs(-30), abs(5), 1, { unit_of_measurement: unit, default: abs(-20) }),
+                        schemaHelpers.number('t_out_max', abs(0), abs(30), 1, { unit_of_measurement: unit, default: abs(20) }),
+                    ]),
+                ]),
+            ];
+        });
+    }
+    setConfig(config) {
+        this._config = { ...config };
+    }
+    _validate(config) {
+        validateCurveCardConfig(config);
+    }
+    /** Convert user-entered imperial values to °C before validation. */
+    _transformConfig(raw) {
+        const imp = isImperial(this.hass);
+        if (!imp)
+            return raw;
+        const cfg = { ...raw };
+        if (cfg.shift != null)
+            cfg.shift = displayDeltaToCelsius(cfg.shift, true);
+        for (const f of ['min_flow', 'max_flow', 't_out_min', 't_out_max']) {
+            if (cfg[f] != null)
+                cfg[f] = displayToCelsius(cfg[f], true);
+        }
+        return cfg;
+    }
+    /** Convert internal °C values to display units for the form. */
+    _getDisplayConfig() {
+        const imp = isImperial(this.hass);
+        if (!imp)
+            return this._config;
+        const cfg = { ...this._config };
+        if (cfg.shift != null)
+            cfg.shift = Math.round(celsiusToDisplayDelta(cfg.shift, true) * 10) / 10;
+        for (const f of ['min_flow', 'max_flow', 't_out_min', 't_out_max']) {
+            if (cfg[f] != null)
+                cfg[f] = Math.round(celsiusToDisplay(cfg[f], true) * 10) / 10;
+        }
+        return cfg;
+    }
+    _getSchema() {
+        return this._schemaMemo(!!this._config.curve_from_entities, !!this._config.tunable, isImperial(this.hass));
+    }
+};
+EquithermCurveCardEditor = __decorate([
+    t$1(CURVE_CARD_EDITOR_NAME)
+], EquithermCurveCardEditor);
+
+var curveCardEditor = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    get EquithermCurveCardEditor () { return EquithermCurveCardEditor; }
+});
+
+let EquithermForecastCardEditor = class EquithermForecastCardEditor extends EquithermBaseEditor {
+    constructor() {
+        super(...arguments);
+        this._schemaMemo = memoizeOne((curveFromEntities, tunable) => {
+            const localize = setupCustomlocalize(this.hass);
+            return [
+                // Required entities — top level
+                schemaHelpers.entity('weather_entity', { domain: 'weather' }),
+                schemaHelpers.entity('climate_entity', { domain: 'climate' }),
+                schemaHelpers.entityName('name', { entity: 'climate_entity' }),
+                schemaHelpers.entity('flow_entity', { domain: ['sensor', 'number', 'input_number'], device_class: 'temperature' }),
+                { name: 'show_last_updated', selector: { boolean: {} }, default: false },
+                { name: 'show_kpi_footer', selector: { boolean: {} }, default: true },
+                { name: 'show_params_footer', selector: { boolean: {} }, default: true },
+                { name: 'tunable', selector: { boolean: {} }, default: false },
+                ...(tunable
+                    ? [schemaHelpers.expandable(localize('editor.tuning'), 'mdi:tune-variant', [
+                            schemaHelpers.entity('hc_entity', { domain: ['number', 'input_number'] }),
+                            schemaHelpers.entity('shift_entity', { domain: ['number', 'input_number'] }),
+                            { name: 'recalculate_service', selector: { text: {} } },
+                        ])]
+                    : []),
+                // Optional entities
+                schemaHelpers.expandable(localize('editor.optional'), 'mdi:connection', [
+                    schemaHelpers.entity('outdoor_entity', { domain: ['sensor', 'number', 'input_number'], device_class: 'temperature', required: false }),
+                    schemaHelpers.entity('pid_active_entity', { domain: ['binary_sensor'], required: false }),
+                    schemaHelpers.entity('wws_entity', { domain: ['binary_sensor'], required: false }),
+                ]),
+                // Forecast settings
+                schemaHelpers.expandable(localize('editor.forecast_settings'), 'mdi:clock-outline', [
+                    schemaHelpers.number('hours', 1, 48, 1, { unit_of_measurement: 'h', default: 24 }),
+                ]),
+                // Curve parameters
+                schemaHelpers.expandable(localize('editor.curve_parameters'), 'mdi:chart-bell-curve', [
+                    { name: 'curve_from_entities', selector: { boolean: {} } },
+                    ...(curveFromEntities
+                        ? [
+                            schemaHelpers.entity('hc_entity', { domain: 'number' }),
+                            schemaHelpers.entity('n_entity', { domain: 'number' }),
+                            schemaHelpers.entity('shift_entity', { domain: 'number' }),
+                            schemaHelpers.entity('min_flow_entity', { domain: ['sensor', 'number'], required: false }),
+                            schemaHelpers.entity('max_flow_entity', { domain: ['sensor', 'number'], required: false }),
+                        ]
+                        : [
+                            schemaHelpers.grid([
+                                schemaHelpers.number('hc', 0.5, 3.0, 0.1, { default: 0.9 }),
+                                schemaHelpers.number('n', 1.0, 2.0, 0.05, { default: 1.25 }),
+                            ]),
+                            schemaHelpers.number('shift', -15, 15, 1, { unit_of_measurement: '°C', default: 0 }),
+                            schemaHelpers.grid([
+                                schemaHelpers.number('min_flow', 15, 35, 1, { unit_of_measurement: '°C', default: 20 }),
+                                schemaHelpers.number('max_flow', 50, 90, 1, { unit_of_measurement: '°C', default: 70 }),
+                            ]),
+                        ]),
+                ]),
+            ];
+        });
+    }
+    setConfig(config) {
+        this._config = { ...config };
+    }
+    _validate(config) {
+        validateForecastCardConfig(config);
+    }
+    _getSchema() {
+        return this._schemaMemo(!!this._config.curve_from_entities, !!this._config.tunable);
+    }
+};
+EquithermForecastCardEditor = __decorate([
+    t$1(FORECAST_CARD_EDITOR_NAME)
+], EquithermForecastCardEditor);
+
+var forecastCardEditor = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    get EquithermForecastCardEditor () { return EquithermForecastCardEditor; }
+});
+//# sourceMappingURL=equitherm-cards.js.map

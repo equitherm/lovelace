@@ -19,3 +19,5 @@ export function registerCustomCard(params: RegisterCardParams) {
     documentationURL: `${__REPOSITORY_URL__}/blob/main/docs/cards/${cardPage}.md`,
   });
 }
+
+export const editorName = (cardName: string): string => `${cardName}-editor`;

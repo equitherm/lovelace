@@ -44,7 +44,7 @@ export const themeColorCss = css`
   --rgb-danger: var(--eq-rgb-danger, var(--default-red));
   --rgb-disabled: var(--eq-rgb-disabled, var(--default-disabled));
 
-  /* State climate colors — kept as RGB triples for eq-badge-info and ApexCharts */
+  /* State climate colors — kept as RGB triples for eq-badge-info and ECharts */
   --rgb-state-climate-auto: var(--eq-rgb-state-climate-auto, 146, 107, 199);
   --rgb-state-climate-cool: var(--eq-rgb-state-climate-cool, 59, 130, 246);
   --rgb-state-climate-dry: var(--eq-rgb-state-climate-dry, 76, 175, 80);

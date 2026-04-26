@@ -6,17 +6,20 @@
 ![build][build-badge]
 [![license][license-badge]][license-url]
 
+[![Open in HACS](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=equitherm&repository=lovelace&category=frontend)
+
 <!-- Hero screenshot — layout: status full-width top + 3 charts below -->
 ![Equitherm Cards](docs/hero-screenshot.png)
 
-A collection of Lovelace cards for the ESPHome equitherm climate component. Monitor heating status, visualize heating curves, forecast demand, and tune parameters — directly from your Home Assistant dashboard.
+A collection of Lovelace cards for the [ESPHome equitherm climate component][equitherm-core]. Monitor heating status, visualize heating curves, forecast demand, and tune parameters — directly from your Home Assistant dashboard.
+
+[equitherm-core]: https://github.com/equitherm/core
 
 ## Features
 
-- **Status Card** — Live temperatures, HVAC state, PID diagnostics, rate-limiting indicators
-- **Curve Card** — Interactive heating curve with operating point marker
+- **Status Card** — Live temperatures, HVAC state, PID diagnostics, WWSD indicator
+- **Curve Card** — Interactive heating curve with operating point marker and tuning mode
 - **Forecast Card** — Weather-based flow temperature prediction
-- **Tuning Card** — Real-time curve tuning with hc/shift controls and preview
 - Visual editor for all cards — no manual YAML required
 - Light and dark theme support
 - Automatic temperature unit conversion (°C/°F)
@@ -25,7 +28,9 @@ A collection of Lovelace cards for the ESPHome equitherm climate component. Moni
 
 ### HACS (recommended)
 
-Equitherm Cards is available in [HACS][hacs] as a Lovelace plugin. Requires Home Assistant 2026.3.1 or later.
+[![Open in HACS](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=equitherm&repository=lovelace&category=frontend)
+
+_or_
 
 1. Open HACS in Home Assistant
 2. Search for "Equitherm Cards"
@@ -46,14 +51,15 @@ Equitherm Cards is available in [HACS][hacs] as a Lovelace plugin. Requires Home
 
 ## Cards
 
-| Card | Type | Description |
-|------|------|-------------|
-| Status | `equitherm-status-card` | Temperature readings, PID diagnostics, HVAC badge |
-| Curve | `equitherm-curve-card` | Heating curve visualization |
-| Forecast | `equitherm-forecast-card` | Weather-based flow prediction |
-| Tuning | `equitherm-tuning-card` | Interactive parameter tuning |
+- :thermometer: [Status Card](docs/cards/status-card.md) — Temperature readings, PID diagnostics, HVAC badge
+- :chart_with_upwards_trend: [Curve Card](docs/cards/curve-card.md) — Heating curve visualization with tuning mode
+- :partly_sunny: [Forecast Card](docs/cards/forecast-card.md) — Weather-based flow prediction
 
-See [docs/cards/](docs/cards/) for full configuration reference for each card.
+| Card | Type |
+|------|------|
+| Status | `custom:equitherm-status-card` |
+| Curve | `custom:equitherm-curve-card` |
+| Forecast | `custom:equitherm-forecast-card` |
 
 ## Quick Start
 
