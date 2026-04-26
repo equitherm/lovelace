@@ -1,3 +1,9 @@
+## [1.6.0](https://github.com/equitherm/lovelace/compare/v1.5.0...v1.6.0) (2026-04-26)
+
+### Features
+
+* equitherm card improvements (tuning, params footer, KPI footer, interactive bars) ([#22](https://github.com/equitherm/lovelace/issues/22)) ([a8fea11](https://github.com/equitherm/lovelace/commit/a8fea118aa2eeeb72dd94c0bf321be26f9ffa3a9))
+
 ## [1.5.0](https://github.com/equitherm/lovelace/compare/v1.4.0...v1.5.0) (2026-04-19)
 
 ### Features
