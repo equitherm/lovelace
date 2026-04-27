@@ -1,4 +1,5 @@
 import { html, css, nothing, type TemplateResult } from 'lit';
+import { classMap } from 'lit/directives/class-map.js';
 import { customElement } from 'lit/decorators.js';
 import type { CurveCardConfig } from './curve-card-config';
 import type { HomeAssistant } from '../../ha/types';
@@ -329,12 +330,14 @@ export class EquithermCurveCard extends EquithermEChartCard<CurveCardConfig> {
     if (!this._echartConfig) return nothing;
     const { options, data } = this._echartConfig;
     return html`
-      <div class="chart-wrapper">
+      <div class="chart-wrapper ${classMap({
+        'has-rows': this._hasRows,
+      })}">
         <ha-chart-base
           .hass=${this.hass}
           .options=${options}
           .data=${data}
-          height="100%"
+          .height=${this._hasFixedHeight ? "100%" : undefined}
           hide-reset-button
         ></ha-chart-base>
         <eq-manual-overlay></eq-manual-overlay>
@@ -358,9 +361,6 @@ export class EquithermCurveCard extends EquithermEChartCard<CurveCardConfig> {
         .chart-wrapper {
           --chart-max-height: none;
           padding: 0 8px;
-        }
-        .chart-wrapper ha-chart-base {
-          height: 100%;
         }
       `,
     ];
