@@ -239,8 +239,8 @@ export class EquithermCurveCard extends EquithermEChartCard<CurveCardConfig> {
             fontSize: 10,
             formatter: (v: number) => `${parseFloat(v.toFixed(1))}`,
           },
-          min: this._toDisplayTemp(curveParams.minFlow - 5),
-          max: this._toDisplayTemp(curveParams.maxFlow + 5),
+          min: this._toDisplayTemp(Math.floor((curveParams.minFlow - 1) / 10) * 10),
+          max: this._toDisplayTemp(Math.ceil((curveParams.maxFlow + 1) / 10) * 10),
         },
         grid: { top: 5, right: 5, bottom: 20, left: 30 },
         tooltip: {
