@@ -304,7 +304,7 @@ export class EquithermForecastCard extends EquithermEChartCard<ForecastCardConfi
     const { options, data } = this._echartConfig;
     return html`
       <div class="chart-wrapper ${classMap({
-        'has-rows': this._hasRows,
+        'has-fixed-height': this._hasFixedHeight,
       })}">
         <ha-chart-base
           .hass=${this.hass}
@@ -338,9 +338,6 @@ export class EquithermForecastCard extends EquithermEChartCard<ForecastCardConfi
         ha-card {
           height: 100%;
           overflow: hidden;
-        }
-        .chart-wrapper {
-          --chart-max-height: none;
         }
       `,
     ];

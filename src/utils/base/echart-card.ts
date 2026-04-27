@@ -34,12 +34,6 @@ export abstract class EquithermEChartCard<TConfig extends EquithermCardConfig> e
     return typeof rows === "number";
   }
 
-  /** Whether any row option is set (auto or number). */
-  protected get _hasRows(): boolean {
-    const opts = (this._config as Record<string, unknown>)?.grid_options as Record<string, unknown> | undefined;
-    return !!opts?.['rows'];
-  }
-
   protected _formatChartTime(timestampMs: number): string {
     return formatTime(new Date(timestampMs), this.hass!.locale);
   }
@@ -91,7 +85,7 @@ export abstract class EquithermEChartCard<TConfig extends EquithermCardConfig> e
     const { options, data } = this._echartConfig;
     return html`
       <div class="chart-wrapper ${classMap({
-        'has-rows': this._hasRows,
+        'has-fixed-height': this._hasFixedHeight,
       })}">
         <ha-chart-base
           .hass=${this.hass}
@@ -112,15 +106,16 @@ export abstract class EquithermEChartCard<TConfig extends EquithermCardConfig> e
         pointer-events: none;
       }
       .chart-wrapper {
-        flex: 1 1 200px;
-        min-height: 0;
         position: relative;
+        --chart-max-height: none;
       }
-      .chart-wrapper ha-chart-base {
-        height: 100%;
-      }
-      .chart-wrapper.has-rows {
+      .chart-wrapper.has-fixed-height {
+        flex: 1;
+        min-height: 0;
         --chart-max-height: 100%;
+      }
+      .chart-wrapper.has-fixed-height ha-chart-base {
+        height: 100%;
       }
     `];
   }
