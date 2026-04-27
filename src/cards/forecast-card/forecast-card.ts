@@ -227,8 +227,8 @@ export class EquithermForecastCard extends EquithermEChartCard<ForecastCardConfi
           {
             type: 'value' as const,
             axisLabel: { fontSize: 10 },
-            min: this._toDisplayTemp((this._curveParams.minFlow ?? 20) - 5),
-            max: this._toDisplayTemp((this._curveParams.maxFlow ?? 70) + 5),
+            min: this._toDisplayTemp(Math.floor(((this._curveParams.minFlow ?? 20) - 1) / 10) * 10),
+            max: this._toDisplayTemp(Math.ceil(((this._curveParams.maxFlow ?? 70) + 1) / 10) * 10),
           },
           {
             type: 'value' as const,
