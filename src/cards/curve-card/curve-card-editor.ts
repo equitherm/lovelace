@@ -109,6 +109,11 @@ export class EquithermCurveCardEditor extends EquithermBaseEditor<CurveCardConfi
             schemaHelpers.number('t_out_max', abs(0), abs(30), 1, { unit_of_measurement: unit, default: abs(20) }),
           ]),
         ]),
+        // Appearance
+        schemaHelpers.expandable(localize('editor.appearance'), 'mdi:palette-outline', [
+          { name: 'gradient_warm_color', selector: { ui_color: {} } },
+          { name: 'gradient_cool_color', selector: { ui_color: {} } },
+        ]),
       ] as const satisfies readonly HaFormSchema[];
     },
   );

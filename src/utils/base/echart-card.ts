@@ -1,6 +1,7 @@
 // src/utils/base/echart-card.ts
 import { html, css, nothing, type CSSResultGroup, type PropertyValues, type TemplateResult } from 'lit';
 import { state } from 'lit/decorators.js';
+import { classMap } from 'lit/directives/class-map.js';
 import type { EChartsOption } from 'echarts/types/dist/shared';
 import { EquithermBaseCard, type EquithermCardConfig } from './base-card';
 import { formatTime } from '../../ha';
@@ -17,7 +18,7 @@ export abstract class EquithermEChartCard<TConfig extends EquithermCardConfig> e
   @state() protected _echartConfig?: EChartConfig;
 
   public override getGridOptions(): LovelaceGridOptions {
-    return { columns: 12, rows: 5, min_rows: 5 };
+    return { columns: 12, rows: "auto", min_rows: 3 };
   }
 
   public override getCardSize(): number {
@@ -25,6 +26,13 @@ export abstract class EquithermEChartCard<TConfig extends EquithermCardConfig> e
   }
 
   protected abstract _buildEChartOptions(): EChartConfig;
+
+  /** Whether the user set a specific row count (not auto). */
+  protected get _hasFixedHeight(): boolean {
+    const opts = (this._config as Record<string, unknown>)?.grid_options as Record<string, unknown> | undefined;
+    const rows = opts?.['rows'];
+    return typeof rows === "number";
+  }
 
   protected _formatChartTime(timestampMs: number): string {
     return formatTime(new Date(timestampMs), this.hass!.locale);
@@ -76,11 +84,14 @@ export abstract class EquithermEChartCard<TConfig extends EquithermCardConfig> e
     if (!this._echartConfig) return nothing;
     const { options, data } = this._echartConfig;
     return html`
-      <div class="chart-wrapper">
+      <div class="chart-wrapper ${classMap({
+        'has-fixed-height': this._hasFixedHeight,
+      })}">
         <ha-chart-base
           .hass=${this.hass}
           .options=${options}
           .data=${data}
+          .height=${this._hasFixedHeight ? "100%" : undefined}
           hide-reset-button
         ></ha-chart-base>
       </div>
@@ -95,9 +106,16 @@ export abstract class EquithermEChartCard<TConfig extends EquithermCardConfig> e
         pointer-events: none;
       }
       .chart-wrapper {
+        position: relative;
+        --chart-max-height: none;
+      }
+      .chart-wrapper.has-fixed-height {
         flex: 1;
         min-height: 0;
-        position: relative;
+        --chart-max-height: 100%;
+      }
+      .chart-wrapper.has-fixed-height ha-chart-base {
+        height: 100%;
       }
     `];
   }
