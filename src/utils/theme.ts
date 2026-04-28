@@ -9,7 +9,7 @@ export const themeVariables = css`
   --dot-glow: var(--eq-dot-glow, rgba(var(--rgb-heating), 0.4));
 
   /* Curve gradient */
-  --curve-gradient-start: var(--eq-curve-gradient-start, 211, 47, 47);
+  --curve-gradient-start: var(--eq-curve-gradient-start, var(--rgb-state-climate-heat));
   --curve-gradient-end: var(--eq-curve-gradient-end, var(--rgb-state-climate-cool));
 
   /* Badge colors */

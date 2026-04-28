@@ -35,6 +35,7 @@ export class EquithermCurveCard extends EquithermEChartCard<CurveCardConfig> {
   protected override willUpdate(changedProps: Map<string, unknown>): void {
     super.willUpdate(changedProps);
     if (changedProps.has('_config')) {
+      this._applyGradientColors();
       this._updateChartConfig();
       return;
     }
@@ -60,6 +61,35 @@ export class EquithermCurveCard extends EquithermEChartCard<CurveCardConfig> {
     return entities.some(id =>
       this.hass!.states[id]?.state !== oldHass.states[id]?.state
     );
+  }
+
+  private _applyGradientColors(): void {
+    this._setColorVar('--curve-gradient-start', this._config.gradient_warm_color);
+    this._setColorVar('--curve-gradient-end', this._config.gradient_cool_color);
+  }
+
+  private _setColorVar(prop: string, color: string | undefined): void {
+    if (!color) {
+      this.style.removeProperty(prop);
+      return;
+    }
+    const rgb = this._resolveToRgbTriple(color);
+    if (rgb) this.style.setProperty(prop, rgb);
+  }
+
+  /** Resolve a ui_color string (named theme color or hex) to an "R, G, B" triplet. */
+  private _resolveToRgbTriple(color: string): string | undefined {
+    if (color.startsWith('#')) return this._hexToRgbTriple(color);
+    // Named theme color → resolve via HA's --{name}-color CSS variable
+    const resolved = getComputedStyle(document.body).getPropertyValue(`--${color}-color`).trim();
+    if (resolved) return this._hexToRgbTriple(resolved);
+    return undefined;
+  }
+
+  private _hexToRgbTriple(hex: string): string | undefined {
+    const m = hex.match(/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i);
+    if (!m) return undefined;
+    return `${parseInt(m[1], 16)}, ${parseInt(m[2], 16)}, ${parseInt(m[3], 16)}`;
   }
 
   static async getStubConfig(hass: HomeAssistant): Promise<CurveCardConfig> {

@@ -110,6 +110,8 @@
     "dhw_setpoint_entity": "DHW Setpoint",
     "dhw_temp_entity": "DHW Temperature",
     "condensing_threshold": "Condensing Threshold",
+    "gradient_warm_color": "Gradient warm color",
+    "gradient_cool_color": "Gradient cool color",
     "display": "Display",
     "helper": {
       "curve_from_entities": "Read from ESPHome runtime-tunable numbers instead of static values",
@@ -147,7 +149,9 @@
       "modulation_entity": "Current boiler modulation level (%)",
       "ch_active_entity": "Recommended to avoid false positives during DHW cycles. If absent, flame is used as proxy.",
       "dhw_active_entity": "Binary sensor indicating domestic hot water is actively heating",
-      "dhw_temp_entity": "DHW temperature sensor showing current hot water temperature"
+      "dhw_temp_entity": "DHW temperature sensor showing current hot water temperature",
+      "gradient_warm_color": "High flow temperature color (cold outdoor side)",
+      "gradient_cool_color": "Low flow temperature color (warm outdoor side)"
     }
   },
   "opentherm": {
