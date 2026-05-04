@@ -23,6 +23,7 @@ import '../../shared/badge-info';
 import '../../shared/eq-manual-overlay';
 import '../../shared/eq-tuning-dialog';
 import { buildTuningDialogConfig } from '../../utils/tuning-dialog-config';
+import { niceBounds } from '../../utils/chart';
 
 /** Marker sizes for chart annotations */
 const MARKER_SINGLE = 9;
@@ -244,6 +245,10 @@ export class EquithermCurveCard extends EquithermEChartCard<CurveCardConfig> {
       }
     }
 
+    const yBounds = niceBounds(curveParams.minFlow, curveParams.maxFlow);
+    const yMin = this._toDisplayTemp(yBounds.min);
+    const yMax = this._toDisplayTemp(yBounds.max);
+
     // Discrete markers: sample every 50th point
     const discretePoints = displaySeries
       .filter((_p, i) => i % 50 === 0)
@@ -270,8 +275,8 @@ export class EquithermCurveCard extends EquithermEChartCard<CurveCardConfig> {
             fontSize: 10,
             formatter: (v: number) => `${parseFloat(v.toFixed(1))}`,
           },
-          min: this._toDisplayTemp(Math.floor((curveParams.minFlow - 1) / 10) * 10),
-          max: this._toDisplayTemp(Math.ceil((curveParams.maxFlow + 1) / 10) * 10),
+          min: yMin,
+          max: yMax,
         },
         grid: { top: 5, right: 5, bottom: 20, left: 30 },
         tooltip: {
@@ -344,8 +349,8 @@ export class EquithermCurveCard extends EquithermEChartCard<CurveCardConfig> {
           type: 'line' as const,
           name: 'wwsd',
           data: [
-            [this._toDisplayTemp(cfg.t_out_max), this._toDisplayTemp(curveParams.maxFlow + 5)] as [number, number],
-            [this._toDisplayTemp(this._tTarget), this._toDisplayTemp(curveParams.maxFlow + 5)] as [number, number],
+            [this._toDisplayTemp(cfg.t_out_max), yMax] as [number, number],
+            [this._toDisplayTemp(this._tTarget), yMax] as [number, number],
           ],
           showSymbol: false,
           lineStyle: { width: 0 },
