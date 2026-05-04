@@ -187,7 +187,8 @@ export class EquithermCurveCard extends EquithermEChartCard<CurveCardConfig> {
     const coolingColor = gradientEnd ? `rgb(${gradientEnd})` : resolveRgbColor(this, 'cooling');
     const wwsdFill = `rgba(${style.getPropertyValue('--rgb-warning').trim() || '255, 167, 38'}, 0.08)`;
 
-    const curveSeries = buildCurveSeries(curveParams, cfg.t_out_min, cfg.t_out_max);
+    const curveMax = cfg.t_out_max;
+    const curveSeries = buildCurveSeries(curveParams, cfg.t_out_min, curveMax);
     // Convert curve data to display units for charting
     const displaySeries = curveSeries.map(p => ({
       x: this._toDisplayTemp(p.x),
@@ -204,7 +205,7 @@ export class EquithermCurveCard extends EquithermEChartCard<CurveCardConfig> {
     const lookup = (id: string) => this._entityState(id);
     const rateLimiting = isRateLimitingActive(this._config, lookup);
     const rateTarget = getRateTargetEntity(this._config);
-    if (tOutdoor !== null) {
+    if (tOutdoor !== null && !this._isWWSD) {
       const tOutdoorDisplay = this._toDisplayTemp(tOutdoor);
       const currentFlow = flowAtOutdoor(curveParams, tOutdoor);
       const currentFlowDisplay = this._toDisplayTemp(currentFlow);
@@ -245,8 +246,10 @@ export class EquithermCurveCard extends EquithermEChartCard<CurveCardConfig> {
       }
     }
 
-    const yBounds = niceBounds(curveParams.minFlow, curveParams.maxFlow);
-    const yMin = this._toDisplayTemp(yBounds.min);
+    const dataMin = displaySeries.reduce((m, p) => Math.min(m, p.y), Infinity);
+    const dataMax = displaySeries.reduce((m, p) => Math.max(m, p.y), -Infinity);
+    const yBounds = niceBounds(dataMin, dataMax);
+    const yMin = this._toDisplayTemp(Math.max(0, yBounds.min));
     const yMax = this._toDisplayTemp(yBounds.max);
 
     // Discrete markers: sample every 50th point
