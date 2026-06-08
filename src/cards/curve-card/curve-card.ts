@@ -23,7 +23,7 @@ import '../../shared/badge-info';
 import '../../shared/eq-manual-overlay';
 import '../../shared/eq-tuning-dialog';
 import { buildTuningDialogConfig } from '../../utils/tuning-dialog-config';
-import { niceBounds, computeYAxisFractionDigits } from '../../utils/chart';
+import { niceBounds, computeYAxisFractionDigits, sideTooltipPosition } from '../../utils/chart';
 
 /** Marker sizes for chart annotations */
 const MARKER_SINGLE = 9;
@@ -286,6 +286,7 @@ export class EquithermCurveCard extends EquithermEChartCard<CurveCardConfig> {
         // ha-chart-base wraps formatters via wrapLitTooltipFormatter (Lit render)
         tooltip: {
           trigger: 'axis' as const,
+          position: sideTooltipPosition,
           backgroundColor: 'rgba(var(--rgb-card-background-color, 255, 255, 255), 0.95)',
           borderColor: 'var(--divider-color, rgba(0,0,0,0.12))',
           borderWidth: 1,
