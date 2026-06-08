@@ -1,4 +1,13 @@
+// @source home-assistant/frontend/src/common/number/format_number.ts
+// @synced 2026-06-08 @ SHA 1cca5f3
+
+import type {
+  HassEntity,
+  HassEntityAttributeBase,
+} from "home-assistant-js-websocket";
+import type { EntityRegistryDisplayEntry } from "../../types";
 import type { FrontendLocaleData } from "../../types";
+import { round } from "./round";
 
 enum NumberFormat {
   language = "language",
@@ -10,7 +19,18 @@ enum NumberFormat {
   none = "none",
 }
 
-const numberFormatToLocale = (
+export const isNumericState = (stateObj: HassEntity): boolean =>
+  isNumericFromAttributes(stateObj.attributes);
+
+export const isNumericFromAttributes = (
+  attributes: HassEntityAttributeBase,
+  numericDeviceClasses?: string[]
+): boolean =>
+  !!attributes.unit_of_measurement ||
+  !!attributes.state_class ||
+  (numericDeviceClasses || []).includes(attributes.device_class || "");
+
+export const numberFormatToLocale = (
   localeOptions: FrontendLocaleData
 ): string | string[] | undefined => {
   switch (localeOptions.number_format) {
@@ -33,19 +53,18 @@ export const formatNumber = (
   num: string | number,
   localeOptions?: FrontendLocaleData,
   options?: Intl.NumberFormatOptions
-): string =>
-  formatNumberToParts(num, localeOptions, options)
-    .map((part) => part.value)
-    .join("");
-
-const formatNumberToParts = (
-  num: string | number,
-  localeOptions?: FrontendLocaleData,
-  options?: Intl.NumberFormatOptions
-): any[] => {
+): string => {
   const locale = localeOptions
     ? numberFormatToLocale(localeOptions)
     : undefined;
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (Number as any).isNaN =
+    Number.isNaN ||
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    function isNaN(input: any): input is number {
+      return typeof input === "number" && isNaN(input);
+    };
 
   if (
     localeOptions?.number_format !== NumberFormat.none &&
@@ -54,7 +73,7 @@ const formatNumberToParts = (
     return new Intl.NumberFormat(
       locale,
       getDefaultFormatOptions(num, options)
-    ).formatToParts(Number(num));
+    ).format(Number(num));
   }
 
   if (
@@ -68,13 +87,38 @@ const formatNumberToParts = (
         ...options,
         useGrouping: false,
       })
-    ).formatToParts(Number(num));
+    ).format(Number(num));
   }
 
-  return [{ type: "literal", value: num }];
+  if (typeof num === "string") {
+    return num;
+  }
+  return `${round(num, options?.maximumFractionDigits).toString()}${
+    options?.style === "currency" ? ` ${options.currency}` : ""
+  }`;
 };
 
-const getDefaultFormatOptions = (
+export const getNumberFormatOptions = (
+  entityState?: HassEntity,
+  entity?: EntityRegistryDisplayEntry
+): Intl.NumberFormatOptions | undefined => {
+  const precision = entity?.display_precision;
+  if (precision != null) {
+    return {
+      maximumFractionDigits: precision,
+      minimumFractionDigits: precision,
+    };
+  }
+  if (
+    Number.isInteger(Number(entityState?.attributes?.step)) &&
+    Number.isInteger(Number(entityState?.state))
+  ) {
+    return { maximumFractionDigits: 0 };
+  }
+  return undefined;
+};
+
+export const getDefaultFormatOptions = (
   num: string | number,
   options?: Intl.NumberFormatOptions
 ): Intl.NumberFormatOptions => {

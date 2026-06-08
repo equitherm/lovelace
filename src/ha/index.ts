@@ -12,10 +12,23 @@ export * from "./common/entity/compute_entity_name_display";
 export * from "./common/translations/localize";
 
 // Common datetime formatting
-export { formatTime } from "./common/datetime/format_time";
+export {
+  formatTime,
+  formatTimeWithSeconds,
+  formatTimeWeekday,
+  formatTime24h,
+} from "./common/datetime/format_time";
 
 // Common number formatting
-export { formatNumber } from "./common/number/format_number";
+export {
+  formatNumber,
+  numberFormatToLocale,
+  getDefaultFormatOptions,
+  getNumberFormatOptions,
+  isNumericState,
+  isNumericFromAttributes,
+} from "./common/number/format_number";
+export { round } from "./common/number/round";
 
 // Common utilities
 export * from "./common/util/debounce";

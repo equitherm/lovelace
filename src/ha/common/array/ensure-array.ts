@@ -1,3 +1,6 @@
+// @source home-assistant/frontend/src/common/array/ensure-array.ts
+// @synced 2026-06-08 @ SHA 1cca5f3
+
 type NonNullUndefined<T> = T extends undefined
   ? never
   : T extends null
