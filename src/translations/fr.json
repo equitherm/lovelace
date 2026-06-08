@@ -190,6 +190,26 @@
       "cycles_per_hour": "cycles/h",
       "flame": "Flamme"
     },
+    "diagnostics_card": {
+      "name": "Diagnostics OpenTherm",
+      "description": "Surveillance des défauts et diagnostics chaudière",
+      "default_title": "Diagnostics Chaudière",
+      "pressure": "Pression",
+      "exhaust": "Échappement",
+      "fault_code": "Code Défaut",
+      "flame_fault": "Défaut Flamme",
+      "low_pressure": "Pression Basse",
+      "air_pressure": "Pression Air",
+      "water_overtemp": "Surchauffe Eau",
+      "lockout": "Verrouillage",
+      "service_request": "Service Requis",
+      "diagnostic": "Diagnostic",
+      "all_clear": "Tout OK",
+      "editor": {
+        "fault_sensors": "Capteurs Défaut",
+        "diagnostic_sensors": "Capteurs Diagnostic"
+      }
+    },
     "common": {
       "fault": "Défaut"
     }

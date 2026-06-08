@@ -2,6 +2,7 @@ import './cards/opentherm/ot-status-card/ot-status-card';
 import './cards/opentherm/ot-dhw-card/ot-dhw-card';
 import './cards/opentherm/ot-efficiency-card/ot-efficiency-card';
 import './cards/opentherm/ot-modulation-card/ot-modulation-card';
+import './cards/opentherm/ot-diagnostics-card/ot-diagnostics-card';
 
 console.info(
   '%c OPENTHERM-CARDS %c __VERSION__ ',

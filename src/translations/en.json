@@ -192,6 +192,26 @@
       "cycles_per_hour": "cycles/h",
       "flame": "Flame"
     },
+    "diagnostics_card": {
+      "name": "OpenTherm Diagnostics",
+      "description": "Boiler fault and diagnostic monitoring",
+      "default_title": "Boiler Diagnostics",
+      "pressure": "Pressure",
+      "exhaust": "Exhaust",
+      "fault_code": "Fault Code",
+      "flame_fault": "Flame Fault",
+      "low_pressure": "Low Pressure",
+      "air_pressure": "Air Pressure",
+      "water_overtemp": "Water Overtemp",
+      "lockout": "Lockout Reset",
+      "service_request": "Service Required",
+      "diagnostic": "Diagnostic",
+      "all_clear": "All Clear",
+      "editor": {
+        "fault_sensors": "Fault Sensors",
+        "diagnostic_sensors": "Diagnostic Sensors"
+      }
+    },
     "common": {
       "fault": "Fault"
     }
