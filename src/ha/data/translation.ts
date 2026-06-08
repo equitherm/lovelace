@@ -1,7 +1,8 @@
 // @source home-assistant/frontend/src/data/translation.ts
 // @synced 2026-06-08 @ SHA 1cca5f3
-// Enums and FrontendLocaleData only — runtime functions (getHassTranslations,
-// subscribeTranslationPreferences, saveTranslationPreferences) excluded.
+// @note Adapted: Runtime functions (getHassTranslations, subscribeTranslationPreferences,
+//   saveTranslationPreferences) excluded — they import from data/frontend.ts which we
+//   don't vendor.
 
 export enum NumberFormat {
   language = "language",
@@ -52,3 +53,30 @@ export interface FrontendLocaleData {
   first_weekday: FirstWeekday;
   time_zone: TimeZone;
 }
+
+declare global {
+  interface FrontendUserData {
+    language: FrontendLocaleData;
+  }
+}
+
+export type TranslationCategory =
+  | "title"
+  | "state"
+  | "entity"
+  | "entity_component"
+  | "exceptions"
+  | "config"
+  | "config_subentries"
+  | "config_panel"
+  | "options"
+  | "device_automation"
+  | "mfa_setup"
+  | "system_health"
+  | "application_credentials"
+  | "issues"
+  | "preview_features"
+  | "selector"
+  | "services"
+  | "triggers"
+  | "conditions";

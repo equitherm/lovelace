@@ -40,5 +40,6 @@ export * from "./data/lovelace";
 export * from "./data/translation";
 
 // Lovelace panel
+export * from "./panels/lovelace/common/validate-condition";
 export * from "./panels/lovelace/types";
 export * from "./types";
