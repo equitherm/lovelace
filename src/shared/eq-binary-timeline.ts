@@ -85,7 +85,7 @@ export class EqBinaryTimeline extends LitElement {
           const durStr = duration >= 60
             ? `${Math.floor(duration / 60)}m ${duration % 60}s`
             : `${duration}s`;
-          const timeStr = formatTime(new Date(startMs), this.hass.locale);
+          const timeStr = formatTime(new Date(startMs), this.hass.locale, this.hass.config);
           return html`
             <ha-chart-tooltip-marker .color=${color}></ha-chart-tooltip-marker>
             <b>${state}</b> &nbsp;${durStr}<br/>

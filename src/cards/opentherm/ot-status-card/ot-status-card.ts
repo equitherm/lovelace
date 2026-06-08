@@ -48,7 +48,7 @@ export class OtStatusCard extends OtBaseCard<OtStatusCardConfig> {
   }
 
   public override getGridOptions(): LovelaceGridOptions {
-    return { columns: 12, rows: 3, min_rows: 1 };
+    return { columns: 12, rows: this._config.show_last_updated ? 4 : 3, min_rows: 3 };
   }
 
   private get _flameOn(): boolean {
@@ -203,6 +203,20 @@ export class OtStatusCard extends OtBaseCard<OtStatusCardConfig> {
           min-width: 36px;
           text-align: right;
         }
+        @container (max-width: 260px) {
+          .temps-row {
+            grid-template-columns: 1fr;
+            gap: 4px;
+          }
+          .temps-row .divider,
+          .temps-row .arrow {
+            display: none;
+          }
+          .temp-block {
+            text-align: left;
+            padding: 2px 4px;
+          }
+        }
       `,
     ];
   }
@@ -220,6 +234,8 @@ export class OtStatusCard extends OtBaseCard<OtStatusCardConfig> {
     const setpoint = cfg.setpoint_entity ? this._resolveEntityNumber(cfg.setpoint_entity, NaN) : NaN;
     const fmtTemp = (v: number) => isNaN(v) ? '—' : this._formatCalcTemp(v);
     const title = this._computeCardTitle('opentherm.status_card.default_title');
+    const notFoundBoiler = this._renderNotFound(cfg.boiler_temp_entity, localize('opentherm.status_card.flow'));
+    const notFoundReturn = this._renderNotFound(cfg.return_temp_entity, localize('opentherm.status_card.return'));
 
     return html`
       <ha-card>
@@ -254,6 +270,8 @@ export class OtStatusCard extends OtBaseCard<OtStatusCardConfig> {
             </div>
           ` : nothing}
         </div>
+        ${notFoundBoiler}
+        ${notFoundReturn}
         ${this._renderFooterMeta()}
       </ha-card>
     `;

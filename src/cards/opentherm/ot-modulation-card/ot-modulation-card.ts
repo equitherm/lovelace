@@ -56,7 +56,7 @@ export class OtModulationCard extends OtBaseCard<OtModulationCardConfig> {
   }
 
   public override getGridOptions(): LovelaceGridOptions {
-    return { columns: 6, rows: 4, min_rows: 3 };
+    return { columns: 6, rows: this._config.show_last_updated ? 5 : 4, min_rows: 3 };
   }
 
   private get _flameOn(): boolean {
@@ -223,6 +223,16 @@ export class OtModulationCard extends OtBaseCard<OtModulationCardConfig> {
           margin-bottom: 4px;
           opacity: 0.7;
         }
+        @container (max-width: 260px) {
+          .mod-row, .max-row {
+            flex-wrap: wrap;
+            gap: 4px;
+          }
+          .mod-label {
+            min-width: unset;
+            width: 100%;
+          }
+        }
       `,
     ];
   }
@@ -241,6 +251,7 @@ export class OtModulationCard extends OtBaseCard<OtModulationCardConfig> {
 
     const modFormatted = formatNumber(mod, this.hass.locale, { maximumFractionDigits: 0 });
     const maxModFormatted = formatNumber(maxMod, this.hass.locale, { maximumFractionDigits: 0 });
+    const notFoundFlame = this._renderNotFound(cfg.flame_entity);
 
     return html`
       <ha-card>
@@ -273,6 +284,7 @@ export class OtModulationCard extends OtBaseCard<OtModulationCardConfig> {
             .endTime=${endTime}
           ></eq-binary-timeline>
         </div>
+        ${notFoundFlame}
         ${this._renderFooterMeta()}
       </ha-card>
     `;

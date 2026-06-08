@@ -44,7 +44,7 @@ export class OtDhwCard extends OtBaseCard<OtDhwCardConfig> {
   }
 
   public override getGridOptions(): LovelaceGridOptions {
-    return { columns: 6, rows: 4, min_rows: 1 };
+    return { columns: 6, rows: this._config.show_last_updated ? 5 : 4, min_rows: 3 };
   }
 
   private get _dhwEnabled(): boolean {
@@ -211,6 +211,7 @@ export class OtDhwCard extends OtBaseCard<OtDhwCardConfig> {
     const dhwTemp = this._dhwTemp;
     const hasDhwTemp = cfg.dhw_temp_entity && !isNaN(dhwTemp);
     const title = this._computeCardTitle('opentherm.dhw_card.default_title');
+    const notFoundEnable = this._renderNotFound(cfg.dhw_enable_entity, localize('opentherm.dhw_card.enable'));
 
     return html`
       <ha-card>
@@ -249,6 +250,7 @@ export class OtDhwCard extends OtBaseCard<OtDhwCardConfig> {
             ></ha-slider>
           </div>
         </div>
+        ${notFoundEnable}
         ${this._renderFooterMeta()}
       </ha-card>
     `;

@@ -242,11 +242,15 @@ export class OtEfficiencyCard extends EquithermEChartCard<OtEfficiencyCardConfig
     const cfg = this._config;
     const localize = setupCustomLocalize(this.hass);
     const title = this._computeCardTitle('opentherm.efficiency_card.default_title');
+    const notFoundBoiler = this._renderNotFound(cfg.boiler_temp_entity);
+    const notFoundReturn = this._renderNotFound(cfg.return_temp_entity);
 
     return html`
       <ha-card>
         ${this._renderHeader({ iconName: 'mdi:chart-areaspline', clickEntity: cfg.boiler_temp_entity, title })}
         ${this._renderChart()}
+        ${notFoundBoiler}
+        ${notFoundReturn}
         ${this._renderFooterMeta()}
       </ha-card>
     `;
