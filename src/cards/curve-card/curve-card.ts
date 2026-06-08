@@ -23,7 +23,7 @@ import '../../shared/badge-info';
 import '../../shared/eq-manual-overlay';
 import '../../shared/eq-tuning-dialog';
 import { buildTuningDialogConfig } from '../../utils/tuning-dialog-config';
-import { niceBounds } from '../../utils/chart';
+import { niceBounds, computeYAxisFractionDigits } from '../../utils/chart';
 
 /** Marker sizes for chart annotations */
 const MARKER_SINGLE = 9;
@@ -249,8 +249,9 @@ export class EquithermCurveCard extends EquithermEChartCard<CurveCardConfig> {
     const dataMin = displaySeries.reduce((m, p) => Math.min(m, p.y), Infinity);
     const dataMax = displaySeries.reduce((m, p) => Math.max(m, p.y), -Infinity);
     const yBounds = niceBounds(dataMin, dataMax);
-    const yMin = this._toDisplayTemp(Math.max(0, yBounds.min));
-    const yMax = this._toDisplayTemp(yBounds.max);
+    const yMin = Math.max(0, yBounds.min);
+    const yMax = yBounds.max;
+    const yFractionDigits = computeYAxisFractionDigits(yMin, yMax);
 
     // Discrete markers: sample every 50th point
     const discretePoints = displaySeries
@@ -276,7 +277,7 @@ export class EquithermCurveCard extends EquithermEChartCard<CurveCardConfig> {
           type: 'value' as const,
           axisLabel: {
             fontSize: 10,
-            formatter: (v: number) => `${parseFloat(v.toFixed(1))}`,
+            formatter: (v: number) => `${parseFloat(v.toFixed(yFractionDigits))}`,
           },
           min: yMin,
           max: yMax,
