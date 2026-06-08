@@ -1,3 +1,9 @@
+## [1.7.0](https://github.com/equitherm/lovelace/compare/v1.6.1...v1.7.0) (2026-06-08)
+
+### Features
+
+* adopt HA release features — Y-axis precision, tooltip positioning, card suggestions, chart fixes ([#25](https://github.com/equitherm/lovelace/issues/25)) ([863ea2b](https://github.com/equitherm/lovelace/commit/863ea2b03b97a342d8a36d41b59cee3de2a6c10c))
+
 ## [1.6.1](https://github.com/equitherm/lovelace/compare/v1.6.0...v1.6.1) (2026-06-08)
 
 ### Bug Fixes
