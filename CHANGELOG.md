@@ -1,3 +1,9 @@
+## [1.6.1](https://github.com/equitherm/lovelace/compare/v1.6.0...v1.6.1) (2026-06-08)
+
+### Bug Fixes
+
+* **chart:** y-axis, auto-height, WWSD, and Lit tooltip migration ([#23](https://github.com/equitherm/lovelace/issues/23)) ([23711f5](https://github.com/equitherm/lovelace/commit/23711f555eec3044c87babfc7785ed24af7e26a3))
+
 ## [1.6.0](https://github.com/equitherm/lovelace/compare/v1.5.0...v1.6.0) (2026-04-26)
 
 ### Features
