@@ -1,0 +1,126 @@
+// src/utils/base/echart-base.ts
+import { html, css, nothing, type CSSResultGroup, type PropertyValues, type TemplateResult } from 'lit';
+import { state } from 'lit/decorators.js';
+import { classMap } from 'lit/directives/class-map.js';
+import type { EChartsOption } from 'echarts/types/dist/shared';
+import { BaseCard } from './abstract-base-card';
+import { formatTime } from '../../ha';
+import type { LovelaceGridOptions } from '../../ha/panels/lovelace/types';
+import type { HomeAssistant } from '../../ha/types';
+
+export interface EChartConfig {
+  options: EChartsOption;
+  data: EChartsOption['series'];
+}
+
+/**
+ * Framework-agnostic EChart base class.
+ * Contains ONLY chart lifecycle logic — no climate or OT specifics.
+ */
+export abstract class EChartCardBase<TConfig extends Record<string, unknown>> extends BaseCard<TConfig> {
+
+  @state() protected _echartConfig?: EChartConfig;
+
+  public override getGridOptions(): LovelaceGridOptions {
+    return { columns: 12, rows: "auto", min_rows: 3 };
+  }
+
+  public override getCardSize(): number {
+    return 3;
+  }
+
+  protected abstract _buildEChartOptions(): EChartConfig;
+
+  /** Whether the user set a specific row count (not auto). */
+  protected get _hasFixedHeight(): boolean {
+    const opts = (this._config as Record<string, unknown>)?.grid_options as Record<string, unknown> | undefined;
+    const rows = opts?.['rows'];
+    return typeof rows === "number";
+  }
+
+  protected _formatChartTime(timestampMs: number): string {
+    return formatTime(new Date(timestampMs), this.hass!.locale, this.hass!.config);
+  }
+
+  protected _formatChartDateTime(timestampMs: number): string {
+    const date = new Date(timestampMs);
+    const weekday = date.toLocaleDateString(this.hass?.locale?.language, { weekday: 'short' });
+    return `${weekday} ${formatTime(date, this.hass!.locale, this.hass!.config)}`;
+  }
+
+  protected _updateChartConfig(): void {
+    if (this._config && this.hass) {
+      this._echartConfig = this._buildEChartOptions();
+    }
+  }
+
+  protected override updated(changedProps: PropertyValues): void {
+    super.updated(changedProps);
+    if (changedProps.has('hass')) {
+      const oldHass = changedProps.get('hass') as HomeAssistant | undefined;
+      const tempChanged = oldHass &&
+        this.hass?.config?.unit_system?.temperature !== oldHass.config?.unit_system?.temperature;
+      const timeFormatChanged = oldHass &&
+        this.hass?.locale?.time_format !== oldHass.locale?.time_format;
+      if (tempChanged || timeFormatChanged) {
+        this._updateChartConfig();
+      }
+    }
+  }
+
+  protected _onChartReconnected(): void {}
+
+  protected _onChartDisconnecting(): void {}
+
+  public override connectedCallback(): void {
+    super.connectedCallback();
+    if (this._config && this.hass) {
+      this._onChartReconnected();
+    }
+  }
+
+  public override disconnectedCallback(): void {
+    this._onChartDisconnecting();
+    super.disconnectedCallback();
+  }
+
+  protected _renderChart(): TemplateResult | typeof nothing {
+    if (!this._echartConfig) return nothing;
+    const { options, data } = this._echartConfig;
+    return html`
+      <div class="chart-wrapper ${classMap({
+        'has-fixed-height': this._hasFixedHeight,
+      })}">
+        <ha-chart-base
+          .hass=${this.hass}
+          .options=${options}
+          .data=${data}
+          .height=${this._hasFixedHeight ? "100%" : undefined}
+          hide-reset-button
+        ></ha-chart-base>
+      </div>
+    `;
+  }
+
+  static get styles(): CSSResultGroup {
+    return [super.styles, css`
+      :host([manual-override]) .chart-wrapper {
+        opacity: 0.18;
+        transition: opacity 400ms ease;
+        pointer-events: none;
+      }
+      .chart-wrapper {
+        position: relative;
+        --chart-max-height: none;
+      }
+      .chart-wrapper.has-fixed-height {
+        flex: 1;
+        min-height: 0;
+        --chart-max-height: 100%;
+      }
+      .chart-wrapper.has-fixed-height ha-chart-base {
+        height: 100%;
+      }
+    `];
+  }
+}

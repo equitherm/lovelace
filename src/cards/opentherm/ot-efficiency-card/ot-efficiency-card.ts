@@ -1,7 +1,8 @@
 import { html, css, nothing } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import type { OtEfficiencyCardConfig } from './ot-efficiency-card-config';
-import { EquithermEChartCard, type EChartConfig, headerStyles } from '../../../utils/base';
+import { OtEChartCard } from '../../../utils/base/ot-echart-card';
+import { type EChartConfig, headerStyles } from '../../../utils/base';
 import type { HomeAssistant } from '../../../ha';
 import { formatNumber } from '../../../ha';
 import { cardStyle, kpiFooterStyles } from '../../../utils/card-styles';
@@ -23,7 +24,7 @@ registerCustomCard({
 });
 
 @customElement(OT_EFFICIENCY_CARD_NAME)
-export class OtEfficiencyCard extends EquithermEChartCard<OtEfficiencyCardConfig> {
+export class OtEfficiencyCard extends OtEChartCard<OtEfficiencyCardConfig> {
   private _boilerHistory: OtHistoryPoint[] = [];
   private _returnHistory: OtHistoryPoint[] = [];
   private _fetchTimer?: ReturnType<typeof setInterval>;
