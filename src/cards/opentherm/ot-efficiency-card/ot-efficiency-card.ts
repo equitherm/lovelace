@@ -160,6 +160,7 @@ export class OtEfficiencyCard extends OtEChartCard<OtEfficiencyCardConfig> {
   }
 
   private async _fetchHistory(): Promise<void> {
+    if (document.visibilityState !== 'visible') return;
     const hours = this._config.hours ?? DEFAULT_HOURS;
     const history = await OtHistoryHelper.fetch(
       this.hass,

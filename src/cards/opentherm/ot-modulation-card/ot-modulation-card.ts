@@ -107,16 +107,62 @@ export class OtModulationCard extends OtBaseCard<OtModulationCardConfig> {
 
   private async _fetchHistory(): Promise<void> {
     if (!this.hass) return;
+    if (document.visibilityState !== 'visible') return;
     const hours = this._config.hours ?? DEFAULT_HOURS;
-    const history = await OtHistoryHelper.fetch(this.hass, [this._config.flame_entity], hours);
+
+    const entityIds = [this._config.flame_entity];
+    if (this._config.ch_active_entity) {
+      entityIds.push(this._config.ch_active_entity);
+    }
+    const history = await OtHistoryHelper.fetch(this.hass, entityIds, hours);
     this._flameHistory = history[this._config.flame_entity] ?? [];
+
+    const chActiveHistory = this._config.ch_active_entity
+      ? (history[this._config.ch_active_entity] ?? [])
+      : null;
 
     const oneHourAgo = Date.now() - 3600 * 1000;
     const lastHourHistory = this._flameHistory.filter(
       p => new Date(p.last_changed).getTime() >= oneHourAgo,
     );
-    this._cyclesPerHour = OtHistoryHelper.countCycles(lastHourHistory);
+
+    if (chActiveHistory) {
+      const lastHourCh = chActiveHistory.filter(
+        p => new Date(p.last_changed).getTime() >= oneHourAgo,
+      );
+      this._cyclesPerHour = this._countChOnlyCycles(lastHourHistory, lastHourCh);
+    } else {
+      this._cyclesPerHour = OtHistoryHelper.countCycles(lastHourHistory);
+    }
     this._timelineCache = this._buildTimelineData();
+  }
+
+  /** Count flame OFF→ON transitions only while CH was active */
+  private _countChOnlyCycles(flameHistory: OtHistoryPoint[], chHistory: OtHistoryPoint[]): number {
+    if (!chHistory.length) return OtHistoryHelper.countCycles(flameHistory);
+
+    let count = 0;
+    for (let i = 1; i < flameHistory.length; i++) {
+      if (flameHistory[i - 1].state === 'off' && flameHistory[i].state === 'on') {
+        const transitionTime = new Date(flameHistory[i].last_changed).getTime();
+        const chState = this._getChStateAtTime(chHistory, transitionTime);
+        if (chState === 'on') count++;
+      }
+    }
+    return count;
+  }
+
+  /** Get CH active state at a specific point in time from history */
+  private _getChStateAtTime(chHistory: OtHistoryPoint[], timestamp: number): string {
+    let state = 'off';
+    for (const point of chHistory) {
+      if (new Date(point.last_changed).getTime() <= timestamp) {
+        state = point.state;
+      } else {
+        break;
+      }
+    }
+    return state;
   }
 
   private _onMaxModulationChange = (e: Event): void => {
