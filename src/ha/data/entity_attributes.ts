@@ -1,9 +1,8 @@
-// @source home-assistant/frontend/src/data/entity/entity_attributes.ts
-// @synced 2026-06-08 @ SHA 1cca5f3
-// @note Adapted: Minimal extract (3 of ~225 upstream lines). Remaining upstream content
-//   (STATE_ATTRIBUTES, TEMPERATURE_ATTRIBUTES, DOMAIN_ATTRIBUTES_UNITS, NON_NUMERIC_ATTRIBUTES,
-//   computeShownAttributes, etc.) is unused by our cards and would pull in heavy dependencies
-//   (formatDurationDigital, computeStateDomain).
+// Custom utility functions for entity state checking and display.
+// Inspired by patterns in home-assistant/frontend/src/data/entity/entity_attributes.ts
+// but does not vendor upstream content — the functions here are specific to our codebase.
+// Upstream entity_attributes.ts contains STATE_ATTRIBUTES, TEMPERATURE_ATTRIBUTES,
+// computeShownAttributes, etc. which we don't use.
 
 import type { HassEntity } from "home-assistant-js-websocket";
 import { UNAVAILABLE, UNKNOWN } from "./entity";
