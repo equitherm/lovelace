@@ -82,11 +82,8 @@ export class OtEfficiencyCard extends EquithermEChartCard<OtEfficiencyCardConfig
 
   private get _formattedDeltaT(): string {
     const boilerTemp = this._resolveEntityNumber(this._config.boiler_temp_entity, NaN);
-    const returnTemp = this._returnTemp;
-    const delta = boilerTemp - returnTemp;
-    if (isNaN(delta)) return '—';
-    const unit = this.hass?.config?.unit_system?.temperature ?? '°C';
-    return `${formatNumber(delta, this.hass?.locale, { minimumFractionDigits: 1, maximumFractionDigits: 1, signDisplay: 'always' })} ${unit}`;
+    const delta = boilerTemp - this._returnTemp;
+    return this._formatCalcDelta(delta);
   }
 
   private get _isCondensing(): boolean {

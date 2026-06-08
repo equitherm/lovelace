@@ -59,6 +59,18 @@ export abstract class BaseCard<TConfig extends Record<string, unknown>>
     return `${formatNumber(display, this.hass?.locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })} ${unit}`;
   }
 
+  /** Format a computed temperature delta (always °C internally) for display.
+   *  Uses _toDisplayDelta() for correct °F scaling (1.8×, no offset).
+   *  signDisplay:'always' ensures explicit +/- in all locales. */
+  protected _formatCalcDelta(value: number | undefined | null): string {
+    if (value == null || isNaN(value)) return '—';
+    const display = this._toDisplayDelta(value);
+    const unit = this.hass?.config?.unit_system?.temperature ?? '°C';
+    return `${formatNumber(display, this.hass?.locale, {
+      minimumFractionDigits: 1, maximumFractionDigits: 1, signDisplay: 'always'
+    })} ${unit}`;
+  }
+
   protected _openMoreInfo(entityId: string | undefined): void {
     if (entityId && this.hass) {
       executeAction(this, this.hass, { action: 'more-info' }, entityId);

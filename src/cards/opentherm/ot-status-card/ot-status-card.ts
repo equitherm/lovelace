@@ -68,10 +68,7 @@ export class OtStatusCard extends OtBaseCard<OtStatusCardConfig> {
   }
 
   private get _formattedDeltaT(): string {
-    const delta = this._deltaT;
-    if (isNaN(delta)) return '—';
-    const unit = this.hass?.config?.unit_system?.temperature ?? '°C';
-    return `${formatNumber(delta, this.hass?.locale, { minimumFractionDigits: 1, maximumFractionDigits: 1, signDisplay: 'always' })} ${unit}`;
+    return this._formatCalcDelta(this._deltaT);
   }
 
   private get _modulation(): number {
