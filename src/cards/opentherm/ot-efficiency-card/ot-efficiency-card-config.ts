@@ -8,6 +8,7 @@ export interface OtEfficiencyCardConfig {
   ch_active_entity?: string;
   condensing_threshold?: number;
   hours?: number;
+  fault_entity?: string;
   name?: unknown;
   show_last_updated?: boolean;
   [key: string]: unknown;
@@ -21,6 +22,7 @@ export const OtEfficiencyCardConfigStruct = type({
   ch_active_entity: optional(string()),
   condensing_threshold: optional(number()),
   hours: optional(number()),
+  fault_entity: optional(string()),
   name: optional(unknown()),
   show_last_updated: optional(boolean()),
 });

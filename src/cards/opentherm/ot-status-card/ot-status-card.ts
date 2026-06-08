@@ -81,6 +81,8 @@ export class OtStatusCard extends OtBaseCard<OtStatusCardConfig> {
   }
 
   protected override _headerIconColor(): string {
+    const fault = this._faultOverride();
+    if (fault) return fault;
     return this._flameOn
       ? 'var(--rgb-state-climate-heat, 244,81,30)'
       : 'var(--rgb-disabled, 158,158,158)';
@@ -94,6 +96,7 @@ export class OtStatusCard extends OtBaseCard<OtStatusCardConfig> {
 
     return html`
       <div class="badges">
+        ${this._renderFaultBadge()}
         ${this._flameOn ? html`
           <eq-badge-info
             style="--badge-info-color: var(--rgb-state-climate-heat, 255, 152, 0)"

@@ -5,6 +5,7 @@ import setupCustomLocalize from '../../localize';
 
 export interface OtCardConfig {
   show_last_updated?: boolean;
+  fault_entity?: string;
   [key: string]: unknown;
 }
 
@@ -14,6 +15,31 @@ export abstract class OtBaseCard<TConfig extends OtCardConfig>
   /** Override to customize header icon color. Return a CSS rgb() value or var() reference. */
   protected override _headerIconColor(): string {
     return 'var(--rgb-disabled, 158,158,158)';
+  }
+
+  /** Whether a boiler fault is active */
+  protected _hasFault(): boolean {
+    if (!this._config.fault_entity) return false;
+    return this._entityState(this._config.fault_entity)?.state === 'on';
+  }
+
+  /** Returns error color if fault active, null otherwise. Call from _headerIconColor(). */
+  protected _faultOverride(): string | null {
+    return this._hasFault() ? 'var(--rgb-error, 229,57,53)' : null;
+  }
+
+  /** Shared fault badge for use in _renderHeaderBadges() */
+  protected _renderFaultBadge(): typeof nothing | ReturnType<typeof html> {
+    if (!this._hasFault()) return nothing;
+    const localize = setupCustomLocalize(this.hass);
+    return html`
+      <eq-badge-info
+        .label=${localize('opentherm.common.fault')}
+        .icon=${'mdi:alert-circle'}
+        .active=${true}
+        style="--badge-info-color: var(--rgb-error, 229,57,53)"
+      ></eq-badge-info>
+    `;
   }
 
   /** Render a not-found state for missing entity */

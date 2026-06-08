@@ -79,6 +79,8 @@ export class OtDhwCard extends OtBaseCard<OtDhwCardConfig> {
   }
 
   protected override _headerIconColor(): string {
+    const fault = this._faultOverride();
+    if (fault) return fault;
     return this._dhwEnabled
       ? 'var(--rgb-state-climate-heat, 244,81,30)'
       : 'var(--rgb-disabled, 158,158,158)';
@@ -88,6 +90,7 @@ export class OtDhwCard extends OtBaseCard<OtDhwCardConfig> {
     const localize = setupCustomLocalize(this.hass);
     return html`
       <div class="badges">
+        ${this._renderFaultBadge()}
         ${this._dhwActive ? html`
           <eq-badge-info
             style="--badge-info-color: var(--rgb-state-climate-heat, 255, 152, 0)"

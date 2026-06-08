@@ -9,6 +9,7 @@ export interface OtStatusCardConfig {
   modulation_entity?: string;
   ch_active_entity?: string;
   dhw_active_entity?: string;
+  fault_entity?: string;
   name?: unknown;
   show_last_updated?: boolean;
   [key: string]: unknown;
@@ -23,6 +24,7 @@ export const OtStatusCardConfigStruct = type({
   modulation_entity: optional(string()),
   ch_active_entity: optional(string()),
   dhw_active_entity: optional(string()),
+  fault_entity: optional(string()),
   name: optional(unknown()),
   show_last_updated: optional(boolean()),
 });

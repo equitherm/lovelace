@@ -32,6 +32,7 @@ export class OtEfficiencyCardEditor extends EquithermBaseEditor<OtEfficiencyCard
         schemaHelpers.entity('ch_active_entity', { domain: ['binary_sensor', 'input_boolean'] }),
         schemaHelpers.number('condensing_threshold', 30, 80, 1, { unit_of_measurement: '°C' }),
         schemaHelpers.number('hours', 1, 48, 1),
+        schemaHelpers.entity('fault_entity', { domain: ['binary_sensor', 'input_boolean'], required: false }),
         { name: 'show_last_updated', selector: { boolean: {} } },
       ]),
     ] as const satisfies readonly HaFormSchema[];

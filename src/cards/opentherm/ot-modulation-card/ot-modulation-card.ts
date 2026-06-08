@@ -68,6 +68,8 @@ export class OtModulationCard extends OtBaseCard<OtModulationCardConfig> {
   }
 
   protected override _headerIconColor(): string {
+    const fault = this._faultOverride();
+    if (fault) return fault;
     return this._flameOn
       ? 'var(--rgb-state-climate-heat, 244,81,30)'
       : 'var(--rgb-disabled, 158,158,158)';
@@ -79,6 +81,7 @@ export class OtModulationCard extends OtBaseCard<OtModulationCardConfig> {
     const shortCycling = cycles > SHORT_CYCLE_THRESHOLD;
     return html`
       <div class="badges">
+        ${this._renderFaultBadge()}
         ${cycles > 0 ? html`
           <eq-badge-info .label=${`${cycles} ${localize('opentherm.modulation_card.cycles_per_hour')}`}
             icon=${shortCycling ? 'mdi:alert' : 'mdi:lightning-bolt'}

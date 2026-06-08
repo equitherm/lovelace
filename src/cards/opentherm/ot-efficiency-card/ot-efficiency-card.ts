@@ -104,6 +104,8 @@ export class OtEfficiencyCard extends OtEChartCard<OtEfficiencyCardConfig> {
   }
 
   protected override _headerIconColor(): string {
+    const fault = this._faultOverride();
+    if (fault) return fault;
     if (this._isCondensing) return 'var(--rgb-success, 76,175,80)';
     if (this._isHeatingTooHot) return 'var(--rgb-state-climate-heat, 244,81,30)';
     return 'var(--rgb-disabled, 158,158,158)';
@@ -116,6 +118,7 @@ export class OtEfficiencyCard extends OtEChartCard<OtEfficiencyCardConfig> {
 
     return html`
       <div class="badges">
+        ${this._renderFaultBadge()}
         ${this._isCondensing ? html`
           <eq-badge-info .label=${localize('opentherm.efficiency_card.condensing')} .icon=${'mdi:water-percent'} .active=${true}
             style="--badge-info-color: var(--rgb-success, 76,175,80)">

@@ -29,6 +29,7 @@ export class OtModulationCardEditor extends EquithermBaseEditor<OtModulationCard
       { name: 'show_last_updated', selector: { boolean: {} } },
       schemaHelpers.expandable(localize('editor.optional'), 'mdi:tune', [
         { name: 'hours', selector: { number: { min: 1, max: 24, step: 1, mode: 'box' as const } } },
+        schemaHelpers.entity('fault_entity', { domain: ['binary_sensor', 'input_boolean'], required: false }),
       ]),
     ] as const satisfies readonly HaFormSchema[];
   });

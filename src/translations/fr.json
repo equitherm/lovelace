@@ -188,6 +188,9 @@
       "current": "Actuelle",
       "max": "Max",
       "cycles_per_hour": "cycles/h"
+    },
+    "common": {
+      "fault": "Défaut"
     }
   }
 }

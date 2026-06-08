@@ -190,6 +190,9 @@
       "current": "Current",
       "max": "Max",
       "cycles_per_hour": "cycles/h"
+    },
+    "common": {
+      "fault": "Fault"
     }
   }
 }

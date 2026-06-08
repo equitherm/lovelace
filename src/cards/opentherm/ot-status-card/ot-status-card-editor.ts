@@ -35,6 +35,7 @@ export class OtStatusCardEditor extends EquithermBaseEditor<OtStatusCardConfig> 
         schemaHelpers.entity('modulation_entity', { domain: ['sensor', 'input_number'], required: false }),
         schemaHelpers.entity('ch_active_entity', { domain: ['binary_sensor', 'input_boolean'], required: false }),
         schemaHelpers.entity('dhw_active_entity', { domain: ['binary_sensor', 'input_boolean'], required: false }),
+        schemaHelpers.entity('fault_entity', { domain: ['binary_sensor', 'input_boolean'], required: false }),
       ]),
     ] as const satisfies readonly HaFormSchema[];
   });

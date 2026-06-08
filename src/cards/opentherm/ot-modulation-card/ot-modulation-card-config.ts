@@ -6,6 +6,7 @@ export interface OtModulationCardConfig {
   max_modulation_entity: string;
   flame_entity: string;
   hours?: number;
+  fault_entity?: string;
   name?: unknown;
   show_last_updated?: boolean;
   [key: string]: unknown;
@@ -17,6 +18,7 @@ export const OtModulationCardConfigStruct = type({
   max_modulation_entity: string(),
   flame_entity: string(),
   hours: optional(number()),
+  fault_entity: optional(string()),
   name: optional(unknown()),
   show_last_updated: optional(boolean()),
 });
