@@ -282,6 +282,7 @@ export class EquithermCurveCard extends EquithermEChartCard<CurveCardConfig> {
           max: yMax,
         },
         grid: { top: 5, right: 5, bottom: 20, left: 30 },
+        // ha-chart-base wraps formatters via wrapLitTooltipFormatter (Lit render)
         tooltip: {
           trigger: 'axis' as const,
           backgroundColor: 'rgba(var(--rgb-card-background-color, 255, 255, 255), 0.95)',
@@ -293,17 +294,17 @@ export class EquithermCurveCard extends EquithermEChartCard<CurveCardConfig> {
             const curveParam = (Array.isArray(params) ? params : []).find(
               (p: any) => p.seriesName === localize('curve_card.flow_temp'),
             );
-            if (!curveParam) return '';
+            if (!curveParam) return nothing;
             const outdoorVal = curveParam.value[0];
             const flowVal = curveParam.value[1];
             const unit = this.hass?.config?.unit_system?.temperature ?? '°C';
             const fmt = (v: number) => `${parseFloat(v.toFixed(1))} ${unit}`;
-            const marker = (color: string) =>
-              `<span style="display:inline-block;margin-right:6px;border-radius:50%;width:8px;height:8px;background-color:${color}"></span>`;
-            return `<div style="margin-bottom:4px;font-weight:600">${fmt(outdoorVal)} ${localize('curve_card.outdoor_axis_suffix')}</div>`
-              + `<div>${marker(heatingColor)}${fmt(flowVal)} ${localize('curve_card.flow_axis_suffix')}</div>`;
+            return html`
+              <div style="margin-bottom:4px;font-weight:600">${fmt(outdoorVal)} ${localize('curve_card.outdoor_axis_suffix')}</div>
+              <div><ha-chart-tooltip-marker .color=${heatingColor}></ha-chart-tooltip-marker>${fmt(flowVal)} ${localize('curve_card.flow_axis_suffix')}</div>
+            `;
           },
-        },
+        } as any,
         legend: { show: false },
       },
       data: [
