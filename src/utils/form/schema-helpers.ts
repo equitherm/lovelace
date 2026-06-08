@@ -2,17 +2,17 @@
 /**
  * Reusable schema field builders for ha-form.
  */
-import type { HaFormSchema, HaFormSelectorSchema, HaFormGridSchema, HaFormExpandableSchema } from './ha-form';
+import type { HaFormSchema, HaFormSelector, HaFormGridSchema, HaFormExpandableSchema } from './ha-form';
 
 /** Create an entity selector field */
 export function entity(
   name: string,
   opts: { domain?: string | string[]; device_class?: string; required?: boolean } = {}
-): HaFormSelectorSchema {
+): HaFormSelector {
   return {
     name,
     required: opts.required ?? true,
-    selector: { entity: { domain: opts.domain, device_class: opts.device_class } },
+    selector: { entity: { filter: { domain: opts.domain, device_class: opts.device_class } } },
   };
 }
 
@@ -23,7 +23,7 @@ export function number(
   max: number,
   step = 1,
   opts: { mode?: 'slider' | 'box'; unit_of_measurement?: string; required?: boolean; default?: number } = {},
-): HaFormSelectorSchema {
+): HaFormSelector {
   return {
     name,
     required: opts.required ?? false,
@@ -33,7 +33,7 @@ export function number(
 }
 
 /** Create a text input field */
-export function text(name: string, required = false): HaFormSelectorSchema {
+export function text(name: string, required = false): HaFormSelector {
   return {
     name,
     required,
@@ -42,7 +42,7 @@ export function text(name: string, required = false): HaFormSelectorSchema {
 }
 
 /** Create an entity name picker field */
-export function entityName(name: string, context?: Record<string, string>): HaFormSelectorSchema {
+export function entityName(name: string, context?: Record<string, string>): HaFormSelector {
   return {
     name,
     selector: { entity_name: {} },
@@ -51,7 +51,7 @@ export function entityName(name: string, context?: Record<string, string>): HaFo
 }
 
 /** Group fields side-by-side in a grid */
-export function grid(fields: HaFormSelectorSchema[]): HaFormGridSchema {
+export function grid(fields: HaFormSelector[]): HaFormGridSchema {
   return {
     type: 'grid',
     name: '',
@@ -63,7 +63,7 @@ export function grid(fields: HaFormSelectorSchema[]): HaFormGridSchema {
 export function expandable(
   title: string,
   icon: string,
-  schema: (HaFormSelectorSchema | HaFormGridSchema)[]
+  schema: (HaFormSelector | HaFormGridSchema)[]
 ): HaFormExpandableSchema {
   return {
     type: 'expandable',

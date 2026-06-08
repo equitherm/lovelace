@@ -1,10 +1,5 @@
-// src/utils/form/ha-form.ts
-/**
- * HA Form schema types.
- * Vendored from home-assistant-frontend/src/components/ha-form/types.ts
- *
- * Upstream commit: tracked via vendor-audit.
- */
+// @source home-assistant/frontend/src/components/ha-form/types.ts
+// @synced 2026-06-08 @ SHA 1cca5f3
 import type { LitElement } from 'lit';
 import type { Selector } from './ha-selector';
 

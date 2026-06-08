@@ -1,12 +1,7 @@
-// src/utils/form/ha-selector.ts
-/**
- * HA Selector type definitions.
- * Vendored from home-assistant-frontend/src/data/selector.ts
- * TYPE DEFINITIONS ONLY — runtime functions (handleLegacyEntitySelector,
- * filterSelectorEntities, expandLabelTarget, resolveEntityIDs, etc.) are excluded.
- *
- * Upstream commit: tracked via vendor-audit.
- */
+// @source home-assistant/frontend/src/data/selector.ts
+// @synced 2026-06-08 @ SHA 1cca5f3
+// TYPE DEFINITIONS ONLY — runtime functions (handleLegacyEntitySelector,
+// filterSelectorEntities, expandLabelTarget, resolveEntityIDs, etc.) are excluded.
 
 // Simplified types for external dependencies we don't vendor
 type ActionRelatedContext = any;
