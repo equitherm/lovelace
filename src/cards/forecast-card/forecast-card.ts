@@ -1,4 +1,5 @@
 import { html, css, nothing, type TemplateResult } from 'lit';
+import { classMap } from 'lit/directives/class-map.js';
 import { customElement, state } from 'lit/decorators.js';
 import type { ForecastCardConfig } from './forecast-card-config';
 import type { HomeAssistant } from '../../ha';
@@ -17,6 +18,7 @@ import '../../shared/eq-manual-overlay';
 import '../../shared/eq-param-bar';
 import '../../shared/eq-tuning-dialog';
 import { buildTuningDialogConfig } from '../../utils/tuning-dialog-config';
+import { niceBounds } from '../../utils/chart';
 
 registerCustomCard({
   type: FORECAST_CARD_NAME,
@@ -214,6 +216,8 @@ export class EquithermForecastCard extends EquithermEChartCard<ForecastCardConfi
       },
     }] : [];
 
+    const forecastYBounds = niceBounds(this._curveParams.minFlow ?? 20, this._curveParams.maxFlow ?? 70);
+
     return {
       options: {
         animation: false,
@@ -227,8 +231,8 @@ export class EquithermForecastCard extends EquithermEChartCard<ForecastCardConfi
           {
             type: 'value' as const,
             axisLabel: { fontSize: 10 },
-            min: this._toDisplayTemp((this._curveParams.minFlow ?? 20) - 5),
-            max: this._toDisplayTemp((this._curveParams.maxFlow ?? 70) + 5),
+            min: this._toDisplayTemp(forecastYBounds.min),
+            max: this._toDisplayTemp(forecastYBounds.max),
           },
           {
             type: 'value' as const,
@@ -236,6 +240,7 @@ export class EquithermForecastCard extends EquithermEChartCard<ForecastCardConfi
           },
         ],
         grid: { top: 15, right: 15, bottom: 25, left: 35 },
+        // ha-chart-base wraps formatters via wrapLitTooltipFormatter (Lit render)
         tooltip: {
           trigger: 'axis' as const,
           backgroundColor: 'rgba(var(--rgb-card-background-color, 255, 255, 255), 0.95)',
@@ -246,15 +251,15 @@ export class EquithermForecastCard extends EquithermEChartCard<ForecastCardConfi
           formatter: (params: any) => {
             const time = this._formatChartTime(params[0].value[0] as number);
             const unit = this.hass?.config?.unit_system?.temperature ?? '°C';
-            let out = `<span style="opacity:0.6">${time}</span><br/>`;
-            for (const p of params) {
-              if (p.seriesName === 'peak') continue;
-              const marker = `<span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:${p.color};"></span>`;
-              out += `${marker}${p.seriesName}: <b>${p.value[1].toFixed(1)}${unit}</b><br/>`;
-            }
-            return out;
+            const filtered = params.filter((p: any) => p.seriesName !== 'peak');
+            return html`
+              <span style="opacity:0.6">${time}</span><br/>
+              ${filtered.map((p: any) => html`
+                <ha-chart-tooltip-marker .color=${p.color}></ha-chart-tooltip-marker>${p.seriesName}: <b>${p.value[1].toFixed(1)}${unit}</b><br/>
+              `)}
+            `;
           },
-        },
+        } as any,
         legend: { show: false },
       },
       data: [
@@ -302,12 +307,14 @@ export class EquithermForecastCard extends EquithermEChartCard<ForecastCardConfi
     if (!this._echartConfig) return nothing;
     const { options, data } = this._echartConfig;
     return html`
-      <div class="chart-wrapper">
+      <div class="chart-wrapper ${classMap({
+        'has-fixed-height': this._hasFixedHeight,
+      })}">
         <ha-chart-base
           .hass=${this.hass}
           .options=${options}
           .data=${data}
-          height="100%"
+          .height=${this._hasFixedHeight ? "100%" : undefined}
           hide-reset-button
         ></ha-chart-base>
         <eq-manual-overlay></eq-manual-overlay>
@@ -335,12 +342,6 @@ export class EquithermForecastCard extends EquithermEChartCard<ForecastCardConfi
         ha-card {
           height: 100%;
           overflow: hidden;
-        }
-        .chart-wrapper {
-          --chart-max-height: none;
-        }
-        .chart-wrapper ha-chart-base {
-          height: 100%;
         }
       `,
     ];

@@ -254,6 +254,7 @@ export class EqTuningDialog extends EquithermBaseElement {
           axisLabel: { fontSize: 10 },
         },
         grid: { top: 10, right: 15, bottom: 25, left: 35 },
+        // ha-chart-base wraps formatters via wrapLitTooltipFormatter (Lit render)
         tooltip: {
           trigger: 'axis' as const,
           backgroundColor: 'rgba(var(--rgb-card-background-color, 255, 255, 255), 0.95)',
@@ -261,25 +262,27 @@ export class EqTuningDialog extends EquithermBaseElement {
           borderWidth: 1,
           padding: [8, 12],
           textStyle: { color: 'var(--primary-text-color)', fontSize: 12 },
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           formatter: (params: any) => {
             const arr = Array.isArray(params) ? params : [params];
             const curveParam = arr.find(
               (p: any) => p.seriesName === localize('tuning_dialog.current') || p.seriesName === localize('tuning_dialog.proposed'),
             );
-            if (!curveParam) return '';
+            if (!curveParam) return nothing;
             const outdoorVal = curveParam.value[0] as number;
-            let out = '';
-            for (const p of arr) {
-              if (p.seriesName === 'operating-point' || p.seriesName === 'wwsd') continue;
-              const marker = `<span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:${p.color};"></span>`;
-              const dashLabel = p.lineStyle?.type === 'dashed' ? ` (${localize('tuning_dialog.proposed')})` : '';
-              out += `${marker}${p.seriesName}${dashLabel}: <b>${(p.value[1] as number).toFixed(1)}${tempUnit}</b><br/>`;
-            }
-            out += `<span style="opacity:0.6">${outdoorVal.toFixed(1)}${tempUnit} ${localize('tuning_dialog.outdoor_axis_suffix')}</span>`;
-            return out;
+            const filtered = arr.filter(
+              (p: any) => p.seriesName !== 'operating-point' && p.seriesName !== 'wwsd',
+            );
+            return html`
+              ${filtered.map((p: any) => {
+                const dashLabel = p.lineStyle?.type === 'dashed' ? ` (${localize('tuning_dialog.proposed')})` : '';
+                return html`
+                  <ha-chart-tooltip-marker .color=${p.color}></ha-chart-tooltip-marker>${p.seriesName}${dashLabel}: <b>${(p.value[1] as number).toFixed(1)}${tempUnit}</b><br/>
+                `;
+              })}
+              <span style="opacity:0.6">${outdoorVal.toFixed(1)}${tempUnit} ${localize('tuning_dialog.outdoor_axis_suffix')}</span>
+            `;
           },
-        },
+        } as any,
         legend: { show: false },
       },
       data: [

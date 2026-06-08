@@ -55,6 +55,8 @@ export class EquithermBaseElement extends LitElement {
       animations,
       css`
         :host {
+          display: block;
+          height: 100%;
           ${defaultColorCss}
         }
         :host([dark-mode]) {

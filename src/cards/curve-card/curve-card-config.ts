@@ -34,6 +34,8 @@ export interface CurveCardConfig {
   max_flow: number;
   t_out_min: number;
   t_out_max: number;
+  gradient_warm_color?: string;
+  gradient_cool_color?: string;
   [key: string]: unknown;
 }
 
@@ -62,6 +64,8 @@ export const CurveCardConfigStruct = type({
   hc: optional(number()),
   shift: optional(number()),
   ...curveConfigStructFields,
+  gradient_warm_color: optional(string()),
+  gradient_cool_color: optional(string()),
 });
 
 /** Default curve parameter values (matching @equitherm/core defaults) */

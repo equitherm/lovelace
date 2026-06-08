@@ -53,6 +53,15 @@ export interface ColorSelector {
   color_rgb?: Record<string, never>;
 }
 
+export interface UiColorSelector {
+  ui_color?: {
+    include_none?: boolean;
+    include_state?: boolean;
+    default_color?: string;
+    extra_options?: Array<{ value: string; label: string; icon?: string; display_color?: string }>;
+  };
+}
+
 export interface EntityNameSelector {
   entity_name?: {
     entity_id?: string;
@@ -68,4 +77,5 @@ export type Selector =
   | SelectSelector
   | IconSelector
   | ColorSelector
+  | UiColorSelector
   | EntityNameSelector;

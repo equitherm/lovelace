@@ -1,4 +1,5 @@
 import { html, css, nothing, type TemplateResult } from 'lit';
+import { classMap } from 'lit/directives/class-map.js';
 import { customElement } from 'lit/decorators.js';
 import type { CurveCardConfig } from './curve-card-config';
 import type { HomeAssistant } from '../../ha/types';
@@ -22,6 +23,7 @@ import '../../shared/badge-info';
 import '../../shared/eq-manual-overlay';
 import '../../shared/eq-tuning-dialog';
 import { buildTuningDialogConfig } from '../../utils/tuning-dialog-config';
+import { niceBounds } from '../../utils/chart';
 
 /** Marker sizes for chart annotations */
 const MARKER_SINGLE = 9;
@@ -34,6 +36,7 @@ export class EquithermCurveCard extends EquithermEChartCard<CurveCardConfig> {
   protected override willUpdate(changedProps: Map<string, unknown>): void {
     super.willUpdate(changedProps);
     if (changedProps.has('_config')) {
+      this._applyGradientColors();
       this._updateChartConfig();
       return;
     }
@@ -59,6 +62,35 @@ export class EquithermCurveCard extends EquithermEChartCard<CurveCardConfig> {
     return entities.some(id =>
       this.hass!.states[id]?.state !== oldHass.states[id]?.state
     );
+  }
+
+  private _applyGradientColors(): void {
+    this._setColorVar('--curve-gradient-start', this._config.gradient_warm_color);
+    this._setColorVar('--curve-gradient-end', this._config.gradient_cool_color);
+  }
+
+  private _setColorVar(prop: string, color: string | undefined): void {
+    if (!color) {
+      this.style.removeProperty(prop);
+      return;
+    }
+    const rgb = this._resolveToRgbTriple(color);
+    if (rgb) this.style.setProperty(prop, rgb);
+  }
+
+  /** Resolve a ui_color string (named theme color or hex) to an "R, G, B" triplet. */
+  private _resolveToRgbTriple(color: string): string | undefined {
+    if (color.startsWith('#')) return this._hexToRgbTriple(color);
+    // Named theme color → resolve via HA's --{name}-color CSS variable
+    const resolved = getComputedStyle(document.body).getPropertyValue(`--${color}-color`).trim();
+    if (resolved) return this._hexToRgbTriple(resolved);
+    return undefined;
+  }
+
+  private _hexToRgbTriple(hex: string): string | undefined {
+    const m = hex.match(/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i);
+    if (!m) return undefined;
+    return `${parseInt(m[1], 16)}, ${parseInt(m[2], 16)}, ${parseInt(m[3], 16)}`;
   }
 
   static async getStubConfig(hass: HomeAssistant): Promise<CurveCardConfig> {
@@ -155,7 +187,8 @@ export class EquithermCurveCard extends EquithermEChartCard<CurveCardConfig> {
     const coolingColor = gradientEnd ? `rgb(${gradientEnd})` : resolveRgbColor(this, 'cooling');
     const wwsdFill = `rgba(${style.getPropertyValue('--rgb-warning').trim() || '255, 167, 38'}, 0.08)`;
 
-    const curveSeries = buildCurveSeries(curveParams, cfg.t_out_min, cfg.t_out_max);
+    const curveMax = cfg.t_out_max;
+    const curveSeries = buildCurveSeries(curveParams, cfg.t_out_min, curveMax);
     // Convert curve data to display units for charting
     const displaySeries = curveSeries.map(p => ({
       x: this._toDisplayTemp(p.x),
@@ -172,7 +205,7 @@ export class EquithermCurveCard extends EquithermEChartCard<CurveCardConfig> {
     const lookup = (id: string) => this._entityState(id);
     const rateLimiting = isRateLimitingActive(this._config, lookup);
     const rateTarget = getRateTargetEntity(this._config);
-    if (tOutdoor !== null) {
+    if (tOutdoor !== null && !this._isWWSD) {
       const tOutdoorDisplay = this._toDisplayTemp(tOutdoor);
       const currentFlow = flowAtOutdoor(curveParams, tOutdoor);
       const currentFlowDisplay = this._toDisplayTemp(currentFlow);
@@ -213,6 +246,12 @@ export class EquithermCurveCard extends EquithermEChartCard<CurveCardConfig> {
       }
     }
 
+    const dataMin = displaySeries.reduce((m, p) => Math.min(m, p.y), Infinity);
+    const dataMax = displaySeries.reduce((m, p) => Math.max(m, p.y), -Infinity);
+    const yBounds = niceBounds(dataMin, dataMax);
+    const yMin = this._toDisplayTemp(Math.max(0, yBounds.min));
+    const yMax = this._toDisplayTemp(yBounds.max);
+
     // Discrete markers: sample every 50th point
     const discretePoints = displaySeries
       .filter((_p, i) => i % 50 === 0)
@@ -239,10 +278,11 @@ export class EquithermCurveCard extends EquithermEChartCard<CurveCardConfig> {
             fontSize: 10,
             formatter: (v: number) => `${parseFloat(v.toFixed(1))}`,
           },
-          min: this._toDisplayTemp(curveParams.minFlow - 5),
-          max: this._toDisplayTemp(curveParams.maxFlow + 5),
+          min: yMin,
+          max: yMax,
         },
         grid: { top: 5, right: 5, bottom: 20, left: 30 },
+        // ha-chart-base wraps formatters via wrapLitTooltipFormatter (Lit render)
         tooltip: {
           trigger: 'axis' as const,
           backgroundColor: 'rgba(var(--rgb-card-background-color, 255, 255, 255), 0.95)',
@@ -254,17 +294,17 @@ export class EquithermCurveCard extends EquithermEChartCard<CurveCardConfig> {
             const curveParam = (Array.isArray(params) ? params : []).find(
               (p: any) => p.seriesName === localize('curve_card.flow_temp'),
             );
-            if (!curveParam) return '';
+            if (!curveParam) return nothing;
             const outdoorVal = curveParam.value[0];
             const flowVal = curveParam.value[1];
             const unit = this.hass?.config?.unit_system?.temperature ?? '°C';
             const fmt = (v: number) => `${parseFloat(v.toFixed(1))} ${unit}`;
-            const marker = (color: string) =>
-              `<span style="display:inline-block;margin-right:6px;border-radius:50%;width:8px;height:8px;background-color:${color}"></span>`;
-            return `<div style="margin-bottom:4px;font-weight:600">${fmt(outdoorVal)} ${localize('curve_card.outdoor_axis_suffix')}</div>`
-              + `<div>${marker(heatingColor)}${fmt(flowVal)} ${localize('curve_card.flow_axis_suffix')}</div>`;
+            return html`
+              <div style="margin-bottom:4px;font-weight:600">${fmt(outdoorVal)} ${localize('curve_card.outdoor_axis_suffix')}</div>
+              <div><ha-chart-tooltip-marker .color=${heatingColor}></ha-chart-tooltip-marker>${fmt(flowVal)} ${localize('curve_card.flow_axis_suffix')}</div>
+            `;
           },
-        },
+        } as any,
         legend: { show: false },
       },
       data: [
@@ -313,8 +353,8 @@ export class EquithermCurveCard extends EquithermEChartCard<CurveCardConfig> {
           type: 'line' as const,
           name: 'wwsd',
           data: [
-            [this._toDisplayTemp(cfg.t_out_max), this._toDisplayTemp(curveParams.maxFlow + 5)] as [number, number],
-            [this._toDisplayTemp(this._tTarget), this._toDisplayTemp(curveParams.maxFlow + 5)] as [number, number],
+            [this._toDisplayTemp(cfg.t_out_max), yMax] as [number, number],
+            [this._toDisplayTemp(this._tTarget), yMax] as [number, number],
           ],
           showSymbol: false,
           lineStyle: { width: 0 },
@@ -329,12 +369,14 @@ export class EquithermCurveCard extends EquithermEChartCard<CurveCardConfig> {
     if (!this._echartConfig) return nothing;
     const { options, data } = this._echartConfig;
     return html`
-      <div class="chart-wrapper">
+      <div class="chart-wrapper ${classMap({
+        'has-fixed-height': this._hasFixedHeight,
+      })}">
         <ha-chart-base
           .hass=${this.hass}
           .options=${options}
           .data=${data}
-          height="100%"
+          .height=${this._hasFixedHeight ? "100%" : undefined}
           hide-reset-button
         ></ha-chart-base>
         <eq-manual-overlay></eq-manual-overlay>
@@ -356,11 +398,7 @@ export class EquithermCurveCard extends EquithermEChartCard<CurveCardConfig> {
           overflow: hidden;
         }
         .chart-wrapper {
-          --chart-max-height: none;
           padding: 0 8px;
-        }
-        .chart-wrapper ha-chart-base {
-          height: 100%;
         }
       `,
     ];

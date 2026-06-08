@@ -108,6 +108,8 @@
     "dhw_setpoint_entity": "Consigne ECS",
     "dhw_temp_entity": "Température ECS",
     "condensing_threshold": "Seuil de Condensation",
+    "gradient_warm_color": "Couleur chaude du dégradé",
+    "gradient_cool_color": "Couleur froide du dégradé",
     "display": "Affichage",
     "helper": {
       "curve_from_entities": "Lire depuis les nombres ESPHome ajustables au lieu de valeurs statiques",
@@ -145,7 +147,9 @@
       "modulation_entity": "Niveau actuel de modulation chaudière (%)",
       "ch_active_entity": "Recommandé pour éviter les faux positifs lors des cycles ECS. Si absent, la flamme est utilisée comme proxy.",
       "dhw_active_entity": "Capteur binaire indiquant que l'eau chaude sanitaire chauffe activement",
-      "dhw_temp_entity": "Capteur de température ECS affichant la température actuelle de l'eau chaude"
+      "dhw_temp_entity": "Capteur de température ECS affichant la température actuelle de l'eau chaude",
+      "gradient_warm_color": "Couleur haute température (côté extérieur froid)",
+      "gradient_cool_color": "Couleur basse température (côté extérieur doux)"
     }
   },
   "opentherm": {
