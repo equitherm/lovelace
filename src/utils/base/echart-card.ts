@@ -35,13 +35,13 @@ export abstract class EquithermEChartCard<TConfig extends EquithermCardConfig> e
   }
 
   protected _formatChartTime(timestampMs: number): string {
-    return formatTime(new Date(timestampMs), this.hass!.locale);
+    return formatTime(new Date(timestampMs), this.hass!.locale, this.hass!.config);
   }
 
   protected _formatChartDateTime(timestampMs: number): string {
     const date = new Date(timestampMs);
     const weekday = date.toLocaleDateString(this.hass?.locale?.language, { weekday: 'short' });
-    return `${weekday} ${formatTime(date, this.hass!.locale)}`;
+    return `${weekday} ${formatTime(date, this.hass!.locale, this.hass!.config)}`;
   }
 
   protected _updateChartConfig(): void {

@@ -1,3 +1,6 @@
+// @source home-assistant/frontend/src/common/util/debounce.ts
+// @synced 2026-06-08 @ SHA 1cca5f3
+
 // From: https://davidwalsh.name/javascript-debounce-function
 
 // Returns a function, that, as long as it continues to be invoked, will not

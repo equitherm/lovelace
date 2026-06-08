@@ -3,7 +3,6 @@ import { customElement } from 'lit/decorators.js';
 import memoizeOne from 'memoize-one';
 import type { ForecastCardConfig } from './forecast-card-config';
 import { validateForecastCardConfig } from './forecast-card-config';
-import type { LovelaceCardConfig } from '../../ha/data/lovelace';
 import { EquithermBaseEditor } from '../../utils/base';
 import { schemaHelpers } from '../../utils/form';
 import type { HaFormSchema } from '../../utils/form';
@@ -12,8 +11,8 @@ import { FORECAST_CARD_EDITOR_NAME } from './const';
 
 @customElement(FORECAST_CARD_EDITOR_NAME)
 export class EquithermForecastCardEditor extends EquithermBaseEditor<ForecastCardConfig> {
-  setConfig(config: LovelaceCardConfig): void {
-    this._config = { ...config } as ForecastCardConfig;
+  setConfig(config: ForecastCardConfig): void {
+    this._config = { ...config };
   }
 
   protected _validate(config: ForecastCardConfig): void {

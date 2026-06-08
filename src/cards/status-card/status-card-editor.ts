@@ -3,7 +3,6 @@ import { customElement } from 'lit/decorators.js';
 import memoizeOne from 'memoize-one';
 import type { StatusCardConfig } from './status-card-config';
 import { validateStatusCardConfig } from './status-card-config';
-import type { LovelaceCardConfig } from '../../ha/data/lovelace';
 import { EquithermBaseEditor } from '../../utils/base';
 import { schemaHelpers } from '../../utils/form';
 import type { HaFormSchema } from '../../utils/form';
@@ -12,8 +11,8 @@ import { STATUS_CARD_EDITOR_NAME } from './const';
 
 @customElement(STATUS_CARD_EDITOR_NAME)
 export class StatusCardEditor extends EquithermBaseEditor<StatusCardConfig> {
-  setConfig(config: LovelaceCardConfig): void {
-    this._config = { ...config } as StatusCardConfig;
+  setConfig(config: StatusCardConfig): void {
+    this._config = { ...config };
   }
 
   protected _validate(config: StatusCardConfig): void {

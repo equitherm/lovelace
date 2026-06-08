@@ -1,6 +1,10 @@
+// @source home-assistant/frontend/src/common/entity/compute_entity_name_display.ts
+// @synced 2026-06-08 @ SHA 1cca5f3
+
 import type { HassEntity } from "home-assistant-js-websocket";
 import type { HomeAssistant } from "../../types";
 import { ensureArray } from "../array/ensure-array";
+import { computeRTL } from "../util/compute_rtl";
 import { computeAreaName } from "./compute_area_name";
 import { computeDeviceName } from "./compute_device_name";
 import { computeEntityName, entityUseDeviceName } from "./compute_entity_name";
@@ -10,10 +14,10 @@ import { getEntityContext } from "./context/get_entity_context";
 
 const DEFAULT_SEPARATOR = " ";
 
-export const DEFAULT_ENTITY_NAME: EntityNameItem[] = [
+export const DEFAULT_ENTITY_NAME = [
   { type: "device" },
   { type: "entity" },
-];
+] satisfies EntityNameItem[];
 
 export type EntityNameItem =
   | {
@@ -31,11 +35,12 @@ export interface EntityNameOptions {
 export const computeEntityNameDisplay = (
   stateObj: HassEntity,
   name: string | EntityNameItem | EntityNameItem[] | undefined,
-  hass: HomeAssistant,
+  entities: HomeAssistant["entities"],
+  devices: HomeAssistant["devices"],
+  areas: HomeAssistant["areas"],
+  floors: HomeAssistant["floors"],
   options?: EntityNameOptions
-): string => {
-  const { entities, devices, areas, floors } = hass;
-
+) => {
   if (typeof name === "string") {
     return name;
   }
@@ -51,7 +56,7 @@ export const computeEntityNameDisplay = (
 
   // If all items are text, just join them
   if (items.every((n) => n.type === "text")) {
-    return items.map((item) => ("text" in item ? item.text : "")).join(separator);
+    return items.map((item) => item.text).join(separator);
   }
 
   const useDeviceName = entityUseDeviceName(stateObj, entities, devices);
@@ -60,7 +65,7 @@ export const computeEntityNameDisplay = (
   if (useDeviceName) {
     const hasDevice = items.some((n) => n.type === "device");
     if (!hasDevice) {
-      items = items.map((n) => (n.type === "entity" ? { type: "device" } as EntityNameItem : n));
+      items = items.map((n) => (n.type === "entity" ? { type: "device" } : n));
     }
   }
 
@@ -81,7 +86,7 @@ export const computeEntityNameDisplay = (
   return names.filter((n) => n).join(separator);
 };
 
-const computeEntityNameList = (
+export const computeEntityNameList = (
   stateObj: HassEntity,
   name: EntityNameItem[],
   entities: HomeAssistant["entities"],
@@ -97,7 +102,7 @@ const computeEntityNameList = (
     floors
   );
 
-  return name.map((item) => {
+  const names = name.map((item) => {
     switch (item.type) {
       case "entity":
         return computeEntityName(stateObj, entities, devices);
@@ -113,4 +118,38 @@ const computeEntityNameList = (
         return "";
     }
   });
+
+  return names;
+};
+
+export interface EntityPickerDisplay {
+  primary: string;
+  secondary?: string;
+}
+
+export const computeEntityPickerDisplay = (
+  hass: HomeAssistant,
+  stateObj: HassEntity
+): EntityPickerDisplay => {
+  const [entityName, deviceName, areaName] = computeEntityNameList(
+    stateObj,
+    [{ type: "entity" }, { type: "device" }, { type: "area" }],
+    hass.entities,
+    hass.devices,
+    hass.areas,
+    hass.floors
+  );
+
+  const isRTL = computeRTL(
+    hass.language,
+    hass.translationMetadata.translations
+  );
+
+  const primary = entityName || deviceName || stateObj.entity_id;
+  const secondary =
+    [areaName, entityName ? deviceName : undefined]
+      .filter(Boolean)
+      .join(isRTL ? " ◂ " : " ▸ ") || undefined;
+
+  return { primary, secondary };
 };

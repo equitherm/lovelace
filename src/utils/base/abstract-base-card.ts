@@ -77,7 +77,7 @@ export abstract class BaseCard<TConfig extends Record<string, unknown>>
     const stateObj = this._entityState(this._titleEntity());
     const configName = (this._config as Record<string, unknown>).name as string | undefined;
     if (!stateObj) return configName ?? fallback;
-    return computeEntityNameDisplay(stateObj, configName, this.hass) || configName || fallback;
+    return computeEntityNameDisplay(stateObj, configName, this.hass.entities, this.hass.devices, this.hass.areas, this.hass.floors) || configName || fallback;
   }
 
   /** Override to control footer visibility. Defaults to checking config.show_last_updated. */

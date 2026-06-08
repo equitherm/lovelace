@@ -1,3 +1,6 @@
+// @source home-assistant/frontend/src/common/array/ensure-array.ts
+// @synced 2026-06-08 @ SHA 1cca5f3
+
 type NonNullUndefined<T> = T extends undefined
   ? never
   : T extends null
@@ -6,6 +9,7 @@ type NonNullUndefined<T> = T extends undefined
 
 /**
  * Ensure that the input is an array or wrap it in an array
+ * @param value - The value to ensure is an array
  */
 export function ensureArray(value: undefined): undefined;
 export function ensureArray(value: null): null;
