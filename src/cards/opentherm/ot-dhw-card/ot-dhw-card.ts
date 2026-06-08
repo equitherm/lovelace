@@ -1,17 +1,21 @@
 import { html, css, nothing } from 'lit';
-import { customElement } from 'lit/decorators.js';
+import { customElement, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import type { OtDhwCardConfig } from './ot-dhw-card-config';
 import type { HomeAssistant } from '../../../ha';
 import type { LovelaceGridOptions } from '../../../ha/panels/lovelace/types';
 import { computeDomain } from '../../../ha/common/entity/compute_domain';
+import { formatNumber } from '../../../ha';
 import { OtBaseCard, headerStyles } from '../../../utils/base';
 import { cardStyle } from '../../../utils/card-styles';
 import { registerCustomCard } from '../../../utils/register-card';
+import { OtHistoryHelper, type OtHistoryPoint } from '../../../utils/ot-history';
 import { OT_DHW_CARD_NAME, OT_DHW_CARD_EDITOR_NAME, WRITABLE_BINARY_DOMAINS, NUMBER_DOMAINS } from './const';
 import { validateOtDhwCardConfig } from './ot-dhw-card-config';
 import setupCustomLocalize from '../../../localize';
 import '../../../shared/badge-info';
+import '../../../shared/eq-binary-timeline';
+import type { BinarySegment } from '../../../shared/eq-binary-timeline';
 
 registerCustomCard({
   type: OT_DHW_CARD_NAME,
@@ -21,6 +25,13 @@ registerCustomCard({
 
 @customElement(OT_DHW_CARD_NAME)
 export class OtDhwCard extends OtBaseCard<OtDhwCardConfig> {
+
+  private _dhwHistory: OtHistoryPoint[] = [];
+  @state() private _cyclesPerHour = 0;
+  @state() private _totalCycles = 0;
+  @state() private _totalActiveTime = 0;
+  private _timelineCache: { segments: BinarySegment[]; startTime: number; endTime: number } | null = null;
+  private _fetchTimer?: ReturnType<typeof setInterval>;
 
   static async getStubConfig(hass: HomeAssistant): Promise<OtDhwCardConfig> {
     const entityIds = Object.keys(hass.states);
@@ -45,7 +56,81 @@ export class OtDhwCard extends OtBaseCard<OtDhwCardConfig> {
   }
 
   public override getGridOptions(): LovelaceGridOptions {
-    return { columns: 6, rows: this._config.show_last_updated ? 5 : 4, min_rows: 3 };
+    const hasTimeline = !!this._config?.dhw_active_entity;
+    const baseRows = hasTimeline ? 7 : 4;
+    return { columns: 6, rows: this._config.show_last_updated ? baseRows + 1 : baseRows, min_rows: hasTimeline ? 4 : 3 };
+  }
+
+  override connectedCallback() {
+    super.connectedCallback();
+    this._fetchHistory();
+    this._fetchTimer = setInterval(() => this._fetchHistory(), 30_000);
+  }
+
+  override disconnectedCallback() {
+    super.disconnectedCallback();
+    clearInterval(this._fetchTimer);
+    this._fetchTimer = undefined;
+  }
+
+  private async _fetchHistory(): Promise<void> {
+    if (!this.hass || !this._config?.dhw_active_entity) return;
+    if (document.visibilityState !== 'visible') return;
+    const hours = this._config.hours ?? 1;
+
+    const history = await OtHistoryHelper.fetch(this.hass, [this._config.dhw_active_entity], hours);
+    this._dhwHistory = history[this._config.dhw_active_entity] ?? [];
+
+    const oneHourAgo = Date.now() - 3600 * 1000;
+    const lastHourHistory = this._dhwHistory.filter(
+      p => new Date(p.last_changed).getTime() >= oneHourAgo,
+    );
+
+    this._cyclesPerHour = OtHistoryHelper.countCycles(lastHourHistory);
+    this._totalCycles = OtHistoryHelper.countCycles(this._dhwHistory);
+    this._totalActiveTime = this._computeActiveTime(this._dhwHistory);
+    this._timelineCache = this._buildTimelineData();
+  }
+
+  private _computeActiveTime(history: OtHistoryPoint[]): number {
+    let totalMs = 0;
+    const now = Date.now();
+    for (let i = 0; i < history.length; i++) {
+      if (history[i].state !== 'on') continue;
+      const start = new Date(history[i].last_changed).getTime();
+      const end = i + 1 < history.length
+        ? new Date(history[i + 1].last_changed).getTime()
+        : now;
+      totalMs += end - start;
+    }
+    return Math.round(totalMs / 60_000);
+  }
+
+  private _buildTimelineData() {
+    const hours = this._config?.hours ?? 1;
+    const endTime = Date.now();
+    const startTime = endTime - hours * 3600 * 1000;
+    const nowMs = endTime;
+
+    const segments: BinarySegment[] = [];
+    const points = this._dhwHistory.filter(p => {
+      const t = new Date(p.last_changed).getTime();
+      return t >= startTime && t <= nowMs;
+    });
+
+    for (let i = 0; i < points.length; i++) {
+      const segStart = new Date(points[i].last_changed).getTime();
+      const segEnd = i + 1 < points.length
+        ? new Date(points[i + 1].last_changed).getTime()
+        : nowMs;
+      segments.push({
+        start: segStart,
+        end: segEnd,
+        state: points[i].state === 'on' ? 'on' : 'off',
+      });
+    }
+
+    return { segments, startTime, endTime };
   }
 
   private get _dhwEnabled(): boolean {
@@ -98,6 +183,13 @@ export class OtDhwCard extends OtBaseCard<OtDhwCardConfig> {
             .icon=${'mdi:water-boiler'}
             .label=${localize('opentherm.dhw_card.dhw')}
             .active=${true}
+          ></eq-badge-info>
+        ` : nothing}
+        ${this._cyclesPerHour > 0 ? html`
+          <eq-badge-info
+            style="--badge-info-color: var(--rgb-info, 3, 169, 244)"
+            .icon=${'mdi:water-boiler'}
+            .label=${`${this._cyclesPerHour} ${localize('opentherm.dhw_card.cycles')}/h`}
           ></eq-badge-info>
         ` : nothing}
       </div>
@@ -186,6 +278,30 @@ export class OtDhwCard extends OtBaseCard<OtDhwCardConfig> {
           --control-slider-thickness: 32px;
           --control-slider-border-radius: var(--ha-border-radius-lg, 12px);
         }
+        .timeline-section {
+          padding: 6px 12px 0;
+          border-top: 1px solid var(--divider-color);
+          margin-top: 2px;
+        }
+        .timeline-label {
+          font-size: 9px;
+          font-weight: 500;
+          text-transform: uppercase;
+          letter-spacing: 0.08em;
+          color: var(--secondary-text-color);
+          margin-bottom: 4px;
+          opacity: 0.7;
+        }
+        .kpi-inline {
+          display: flex;
+          justify-content: center;
+          gap: 6px;
+          padding: 4px 0 8px;
+          font-size: var(--ha-font-size-xs, 0.75rem);
+          color: var(--secondary-text-color);
+          font-variant-numeric: tabular-nums;
+        }
+        .kpi-sep { opacity: 0.4; }
         @container (max-width: 260px) {
           .feature-row {
             flex-wrap: wrap;
@@ -208,6 +324,12 @@ export class OtDhwCard extends OtBaseCard<OtDhwCardConfig> {
     const title = this._computeCardTitle('opentherm.dhw_card.default_title');
     const notFoundEnable = this._renderNotFound(cfg.dhw_enable_entity, localize('opentherm.dhw_card.enable'));
 
+    const delta = hasDhwTemp && !isNaN(setpoint) ? dhwTemp - setpoint : NaN;
+    const hasDelta = !isNaN(delta);
+
+    const hasTimeline = !!cfg.dhw_active_entity && this._timelineCache !== null;
+    const { segments, startTime, endTime } = this._timelineCache ?? { segments: [], startTime: Date.now(), endTime: Date.now() };
+
     return html`
       <ha-card>
         ${this._renderHeader({
@@ -224,6 +346,7 @@ export class OtDhwCard extends OtBaseCard<OtDhwCardConfig> {
               </div>
               <div class="hero-label">
                 ${localize('opentherm.dhw_card.target')} ${isNaN(setpoint) ? '—' : this._formatCalcTemp(setpoint)}
+                ${hasDelta ? html` · ΔT ${formatNumber(delta, this.hass.locale, { signDisplay: 'always', minimumFractionDigits: 1, maximumFractionDigits: 1 })}` : nothing}
               </div>
             `
             : html`
@@ -249,6 +372,22 @@ export class OtDhwCard extends OtBaseCard<OtDhwCardConfig> {
             @value-changed=${this._onSetpointChanged}
           ></ha-control-slider>
         </div>
+        ${hasTimeline ? html`
+          <div class="timeline-section">
+            <div class="timeline-label">${localize('opentherm.dhw_card.timeline')}</div>
+            <eq-binary-timeline
+              .hass=${this.hass}
+              .segments=${segments}
+              .startTime=${startTime}
+              .endTime=${endTime}
+            ></eq-binary-timeline>
+            <div class="kpi-inline">
+              <span>${this._totalCycles} ${localize('opentherm.dhw_card.cycles')}</span>
+              <span class="kpi-sep">·</span>
+              <span>${this._totalActiveTime} ${localize('opentherm.dhw_card.active_time')}</span>
+            </div>
+          </div>
+        ` : nothing}
         ${notFoundEnable}
         ${this._renderFooterMeta()}
       </ha-card>
