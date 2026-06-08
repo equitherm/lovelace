@@ -4,14 +4,31 @@ import { computeDomain } from '../ha/common/entity/compute_domain';
 const CLIMATE_DOMAINS: readonly string[] = ['climate'];
 const SENSOR_DOMAINS: readonly string[] = ['sensor'];
 
-export function findClimateEntity(hass: HomeAssistant): string | undefined {
-  return Object.keys(hass.states).find(e =>
-    CLIMATE_DOMAINS.includes(computeDomain(e)),
-  );
+/** Find the first entity matching any of `domains` from the candidates list or fallback to all HA states. */
+function findEntityByDomain(
+  hass: HomeAssistant,
+  entities: string[],
+  entitiesFallback: string[],
+  domains: readonly string[],
+): string | undefined {
+  const match = (list: string[]) => list.find(e => domains.includes(computeDomain(e)));
+  return match(entities) ?? match(entitiesFallback) ?? match(Object.keys(hass.states));
 }
 
-export function findWeatherEntity(hass: HomeAssistant): string | undefined {
-  return Object.keys(hass.states).find(e => computeDomain(e) === 'weather');
+export function findClimateEntity(
+  hass: HomeAssistant,
+  entities: string[] = [],
+  entitiesFallback: string[] = [],
+): string | undefined {
+  return findEntityByDomain(hass, entities, entitiesFallback, CLIMATE_DOMAINS);
+}
+
+export function findWeatherEntity(
+  hass: HomeAssistant,
+  entities: string[] = [],
+  entitiesFallback: string[] = [],
+): string | undefined {
+  return findEntityByDomain(hass, entities, entitiesFallback, ['weather']);
 }
 
 function findTempSensors(hass: HomeAssistant): string[] {

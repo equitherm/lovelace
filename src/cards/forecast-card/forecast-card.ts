@@ -44,11 +44,15 @@ export class EquithermForecastCard extends EquithermEChartCard<ForecastCardConfi
     }
   }
 
-  static async getStubConfig(hass: HomeAssistant): Promise<ForecastCardConfig> {
+  static getStubConfig(
+    hass: HomeAssistant,
+    entities: string[],
+    entitiesFallback: string[],
+  ): ForecastCardConfig {
     return {
       type: 'custom:equitherm-forecast-card',
-      weather_entity: findWeatherEntity(hass) ?? '',
-      climate_entity: findClimateEntity(hass) ?? '',
+      weather_entity: findWeatherEntity(hass, entities, entitiesFallback) ?? '',
+      climate_entity: findClimateEntity(hass, entities, entitiesFallback) ?? '',
       flow_entity: findFlowEntity(hass) ?? '',
       hours: 24,
       hc: 1.2,

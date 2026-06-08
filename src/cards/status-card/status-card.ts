@@ -28,12 +28,16 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
     return { columns: 12, rows: this._config.show_last_updated ? 4 : 3, min_rows: 3 };
   }
 
-  static async getStubConfig(hass: HomeAssistant): Promise<StatusCardConfig> {
+  static getStubConfig(
+    hass: HomeAssistant,
+    entities: string[],
+    entitiesFallback: string[],
+  ): StatusCardConfig {
     return {
       type: 'custom:equitherm-status-card',
-      climate_entity: findClimateEntity(hass),
-      outdoor_entity: findOutdoorEntity(hass),
-      flow_entity: findFlowEntity(hass),
+      climate_entity: findClimateEntity(hass, entities, entitiesFallback) ?? '',
+      outdoor_entity: findOutdoorEntity(hass) ?? '',
+      flow_entity: findFlowEntity(hass) ?? '',
     } as StatusCardConfig;
   }
 

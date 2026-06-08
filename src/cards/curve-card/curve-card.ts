@@ -93,13 +93,17 @@ export class EquithermCurveCard extends EquithermEChartCard<CurveCardConfig> {
     return `${parseInt(m[1], 16)}, ${parseInt(m[2], 16)}, ${parseInt(m[3], 16)}`;
   }
 
-  static async getStubConfig(hass: HomeAssistant): Promise<CurveCardConfig> {
+  static getStubConfig(
+    hass: HomeAssistant,
+    entities: string[],
+    entitiesFallback: string[],
+  ): CurveCardConfig {
     return {
       type: 'custom:equitherm-curve-card',
-      climate_entity: findClimateEntity(hass),
-      outdoor_entity: findOutdoorEntity(hass),
+      climate_entity: findClimateEntity(hass, entities, entitiesFallback) ?? '',
+      outdoor_entity: findOutdoorEntity(hass) ?? '',
       curve_output_entity: findCurveOutputEntity(hass),
-      flow_entity: findFlowEntity(hass),
+      flow_entity: findFlowEntity(hass) ?? '',
       hc: 1.2,
       n: 1.25,
       shift: 0,
