@@ -3,11 +3,16 @@ import './cards/curve-card/curve-card';
 import './cards/forecast-card/forecast-card';
 
 // OpenTherm cards
-import './cards/opentherm/ot-status-card/ot-status-card';
+import './cards/opentherm/ot-heating-card/ot-heating-card';
 import './cards/opentherm/ot-dhw-card/ot-dhw-card';
 import './cards/opentherm/ot-efficiency-card/ot-efficiency-card';
-import './cards/opentherm/ot-modulation-card/ot-modulation-card';
 import './cards/opentherm/ot-diagnostics-card/ot-diagnostics-card';
+
+// Deprecated aliases — ot-status-card and ot-modulation-card now resolve to ot-heating-card
+customElements.define('opentherm-status-card',
+  customElements.get('opentherm-heating-card') as CustomElementConstructor);
+customElements.define('opentherm-modulation-card',
+  customElements.get('opentherm-heating-card') as CustomElementConstructor);
 
 // Shared components
 import './shared/eq-tuning-dialog';

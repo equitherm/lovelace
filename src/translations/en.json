@@ -216,6 +216,23 @@
         "diagnostic_sensors": "Diagnostic Sensors"
       }
     },
+    "heating_card": {
+      "name": "OpenTherm Heating",
+      "description": "Boiler status, modulation control, and flame monitoring",
+      "default_title": "Boiler",
+      "flow": "Flow",
+      "return": "Return",
+      "modulation": "Modulation",
+      "max": "Max",
+      "flame": "Flame",
+      "ch": "CH",
+      "dhw": "DHW",
+      "cycles_per_hour": "cycles/h",
+      "editor": {
+        "modulation": "Modulation",
+        "monitoring": "Monitoring"
+      }
+    },
     "common": {
       "fault": "Fault"
     }

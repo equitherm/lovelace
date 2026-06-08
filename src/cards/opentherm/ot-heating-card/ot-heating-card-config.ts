@@ -1,13 +1,22 @@
-import { assert, type, string, optional, boolean, unknown } from 'superstruct';
+import { type, string, optional, boolean, unknown, number } from 'superstruct';
+import { create } from 'superstruct';
 
-export interface OtStatusCardConfig {
+const DEFAULT_HOURS = 1;
+
+export interface OtHeatingCardConfig {
   type: string;
+  // Content (ex-status) — always visible
   boiler_temp_entity: string;
   return_temp_entity: string;
   flame_entity: string;
   setpoint_entity?: string;
+  // Feature panel — visible if configured
+  max_modulation_entity?: string;
   modulation_entity?: string;
+  // Monitoring — visible if flame_entity + hours
+  hours?: number;
   ch_active_entity?: string;
+  // Common
   dhw_active_entity?: string;
   fault_entity?: string;
   name?: unknown;
@@ -15,13 +24,15 @@ export interface OtStatusCardConfig {
   [key: string]: unknown;
 }
 
-export const OtStatusCardConfigStruct = type({
+export const OtHeatingCardConfigStruct = type({
   type: string(),
   boiler_temp_entity: string(),
   return_temp_entity: string(),
   flame_entity: string(),
   setpoint_entity: optional(string()),
+  max_modulation_entity: optional(string()),
   modulation_entity: optional(string()),
+  hours: optional(number()),
   ch_active_entity: optional(string()),
   dhw_active_entity: optional(string()),
   fault_entity: optional(string()),
@@ -29,7 +40,6 @@ export const OtStatusCardConfigStruct = type({
   show_last_updated: optional(boolean()),
 });
 
-export function validateOtStatusCardConfig(config: unknown): OtStatusCardConfig {
-  assert(config, OtStatusCardConfigStruct);
-  return config as OtStatusCardConfig;
+export function validateOtHeatingCardConfig(config: unknown): OtHeatingCardConfig {
+  return create(config, OtHeatingCardConfigStruct);
 }

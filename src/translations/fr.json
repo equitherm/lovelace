@@ -214,6 +214,23 @@
         "diagnostic_sensors": "Capteurs Diagnostic"
       }
     },
+    "heating_card": {
+      "name": "Chauffage OpenTherm",
+      "description": "Statut chaudière, contrôle modulation et suivi flamme",
+      "default_title": "Chaudière",
+      "flow": "Départ",
+      "return": "Retour",
+      "modulation": "Modulation",
+      "max": "Max",
+      "flame": "Flamme",
+      "ch": "CH",
+      "dhw": "ECS",
+      "cycles_per_hour": "cycles/h",
+      "editor": {
+        "modulation": "Modulation",
+        "monitoring": "Surveillance"
+      }
+    },
     "common": {
       "fault": "Défaut"
     }
