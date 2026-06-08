@@ -1,5 +1,6 @@
 import { html, css, nothing } from 'lit';
 import { customElement } from 'lit/decorators.js';
+import { classMap } from 'lit/directives/class-map.js';
 import type { OtDhwCardConfig } from './ot-dhw-card-config';
 import type { HomeAssistant } from '../../../ha';
 import type { LovelaceGridOptions } from '../../../ha/panels/lovelace/types';
@@ -115,16 +116,14 @@ export class OtDhwCard extends OtBaseCard<OtDhwCardConfig> {
     this.hass.callService(domain, service, { entity_id: entityId });
   }
 
-  private _setpointChanged(ev: CustomEvent): void {
-    if (!this.hass) return;
-    const value = (ev.target as any).value;
-    const numValue = parseFloat(value);
-    if (isNaN(numValue)) return;
+  private _onSetpointChanged(ev: CustomEvent<{ value: number }>): void {
+    const value = ev.detail.value;
+    if (isNaN(value)) return;
     const domain = computeDomain(this._config.dhw_setpoint_entity);
     const serviceDomain = domain === 'input_number' ? 'input_number' : 'number';
     this.hass.callService(serviceDomain, 'set_value', {
       entity_id: this._config.dhw_setpoint_entity,
-      value: numValue,
+      value,
     });
   }
 
@@ -135,70 +134,57 @@ export class OtDhwCard extends OtBaseCard<OtDhwCardConfig> {
       headerStyles,
       css`
         ha-card { height: 100%; }
-        .body {
-          padding: 8px 10px 10px;
-          display: flex;
-          flex-direction: column;
-          gap: 12px;
-        }
-        .control-row {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-        }
-        .control-label {
-          font-size: var(--ha-font-size-xs, 0.75rem);
-          font-weight: 500;
-          letter-spacing: 0.06em;
-          text-transform: uppercase;
-          color: var(--secondary-text-color);
-          min-width: 60px;
-        }
-        .toggle-row {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-        }
-        .toggle-label {
-          font-size: var(--ha-font-size-m, 1rem);
-          font-weight: 500;
-          color: var(--primary-text-color);
-        }
-        .slider-container {
-          display: flex;
-          flex-direction: column;
-          gap: 4px;
-        }
-        .slider-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        }
-        .slider-value {
-          font-size: 22px;
-          font-weight: 600;
-          font-variant-numeric: tabular-nums;
-          color: var(--primary-text-color);
-        }
-        .hero-temp {
+        .content {
           text-align: center;
-          padding: 4px 0;
+          padding: 8px 16px 12px;
+          transition: opacity 0.3s ease;
+        }
+        .content.disabled {
+          opacity: 0.45;
         }
         .hero-value {
-          font-size: 28px;
+          font-size: calc(var(--ha-font-size-l, 16px) * 1.75);
           font-weight: 600;
           font-variant-numeric: tabular-nums;
           line-height: 1.1;
           color: var(--gradient-hot, #f97316);
           cursor: pointer;
         }
-        .hero-target {
-          font-size: 12px;
+        .hero-value.disabled {
+          color: var(--secondary-text-color);
+          cursor: default;
+        }
+        .hero-label {
+          font-size: var(--ha-font-size-s, 12px);
           color: var(--secondary-text-color);
           margin-top: 2px;
         }
-        ha-slider {
+        .features {
+          --feature-color: var(--gradient-hot, #f97316);
+          border-top: 1px solid var(--divider-color);
+          padding: 12px 16px 16px;
+          display: flex;
+          flex-direction: column;
+          gap: var(--ha-card-feature-gap, 12px);
+          flex-shrink: 0;
+        }
+        .feature-row {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+        .feature-label {
+          font-size: var(--ha-font-size-m, 1rem);
+          font-weight: 500;
+          color: var(--primary-text-color);
+        }
+        ha-control-slider {
           width: 100%;
+          --control-slider-color: var(--feature-color);
+          --control-slider-background: var(--feature-color);
+          --control-slider-background-opacity: 0.2;
+          --control-slider-thickness: 32px;
+          --control-slider-border-radius: var(--ha-border-radius-lg, 12px);
         }
       `,
     ];
@@ -223,35 +209,39 @@ export class OtDhwCard extends OtBaseCard<OtDhwCardConfig> {
           clickEntity: cfg.dhw_enable_entity,
           title,
         })}
-        <div class="body">
-          ${hasDhwTemp ? html`
-            <div class="hero-temp">
-              <div class="hero-value">${this._formatCalcTemp(dhwTemp)}</div>
-              <div class="hero-target">→ ${isNaN(setpoint) ? '—' : this._formatCalcTemp(setpoint)}</div>
-            </div>
-          ` : nothing}
-          <div class="toggle-row">
-            <span class="toggle-label">${localize('opentherm.dhw_card.enable')}</span>
-            <ha-switch
-              .checked=${enabled}
-              @change=${this._toggleDhw}
-            ></ha-switch>
+        <div class="content ${classMap({ disabled: !enabled })}">
+          ${hasDhwTemp
+            ? html`
+              <div class="hero-value ${classMap({ disabled: !enabled })}"
+                @click=${() => this._openMoreInfo(cfg.dhw_temp_entity!)}>
+                ${this._formatCalcTemp(dhwTemp)}
+              </div>
+              <div class="hero-label">
+                ${localize('opentherm.dhw_card.target')} ${isNaN(setpoint) ? '—' : this._formatCalcTemp(setpoint)}
+              </div>
+            `
+            : html`
+              <div class="hero-value ${classMap({ disabled: !enabled })}">${isNaN(setpoint) ? '—' : this._formatCalcTemp(setpoint)}</div>
+              <div class="hero-label">${localize('opentherm.dhw_card.setpoint')}</div>
+            `
+          }
+        </div>
+        <div class="features">
+          <div class="feature-row">
+            <span class="feature-label">${localize('opentherm.dhw_card.enable')}</span>
+            <ha-switch .checked=${enabled} @change=${this._toggleDhw}></ha-switch>
           </div>
-          <div class="slider-container">
-            <div class="slider-header">
-              <span class="control-label">${localize('opentherm.dhw_card.setpoint')}</span>
-              <span class="slider-value">${isNaN(setpoint) ? '—' : this._formatCalcTemp(setpoint)}</span>
-            </div>
-            <ha-slider
-              .min=${this._sliderProps.min}
-              .max=${this._sliderProps.max}
-              .step=${this._sliderProps.step}
-              .value=${isNaN(setpoint) ? this._sliderProps.min : setpoint}
-              .disabled=${!enabled}
-              pin
-              @change=${this._setpointChanged}
-            ></ha-slider>
-          </div>
+          <ha-control-slider
+            .min=${this._sliderProps.min}
+            .max=${this._sliderProps.max}
+            .step=${this._sliderProps.step}
+            .value=${isNaN(setpoint) ? this._sliderProps.min : setpoint}
+            .disabled=${!enabled}
+            mode="start"
+            .label=${localize('opentherm.dhw_card.setpoint')}
+            .locale=${this.hass.locale}
+            @value-changed=${this._onSetpointChanged}
+          ></ha-control-slider>
         </div>
         ${notFoundEnable}
         ${this._renderFooterMeta()}
