@@ -14,6 +14,7 @@ import { formatNumber } from '../../../ha';
 import setupCustomLocalize from '../../../localize';
 import '../../../shared/badge-info';
 import '../../../shared/ot-timeline-section';
+import type { KpiItem } from '../../../shared/ot-timeline-section';
 import '../../../shared/eq-param-bar';
 import type { BinarySegment } from '../../../shared/eq-binary-timeline';
 
@@ -61,6 +62,12 @@ export class OtModulationCard extends OtBaseCard<OtModulationCardConfig> {
 
   private get _flameOn(): boolean {
     return this._entityState(this._config.flame_entity)?.state === 'on';
+  }
+
+  private get _timelineKpis(): KpiItem[] {
+    if (this._cyclesPerHour <= 0) return [];
+    const localize = setupCustomLocalize(this.hass);
+    return [{ value: `${this._cyclesPerHour}`, label: localize('opentherm.modulation_card.cycles_per_hour') }];
   }
 
   protected override _titleEntity(): string | undefined {
@@ -316,9 +323,7 @@ export class OtModulationCard extends OtBaseCard<OtModulationCardConfig> {
           .segments=${segments}
           .startTime=${startTime}
           .endTime=${endTime}
-          .kpis=${this._cyclesPerHour > 0
-            ? [{ value: `${this._cyclesPerHour}`, label: localize('opentherm.modulation_card.cycles_per_hour') }]
-            : []}
+          .kpis=${this._timelineKpis}
         ></ot-timeline-section>
         ${notFoundFlame}
         ${this._renderFooterMeta()}

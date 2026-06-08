@@ -28,7 +28,7 @@ export interface KpiItem {
 @customElement('ot-timeline-section')
 export class OtTimelineSection extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
-  @property() public label = '';
+  @property({ attribute: false }) public label = '';
   @property({ attribute: false }) public segments: BinarySegment[] = [];
   @property({ attribute: false }) public startTime = 0;
   @property({ attribute: false }) public endTime = 0;
