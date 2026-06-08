@@ -1,3 +1,6 @@
+// @source home-assistant/frontend/src/panels/lovelace/types.ts
+// @synced 2026-06-08 @ SHA 1cca5f3
+
 import type { HassEntity } from "home-assistant-js-websocket";
 import type { LocalizeFunc } from "../../common/translations/localize";
 import type { HaFormSchema } from "../../../utils/form/ha-form";
@@ -31,6 +34,7 @@ export interface Lovelace {
   setEditMode: (editMode: boolean) => void;
   saveConfig: (newConfig: LovelaceConfig) => Promise<void>;
   deleteConfig: () => Promise<void>;
+  showToast: (params: any) => void;
 }
 
 export interface LovelaceBadge extends HTMLElement {

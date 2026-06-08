@@ -1,8 +1,13 @@
+// @source home-assistant/frontend/src/data/lovelace/config/card.ts
+// @source home-assistant/frontend/src/data/lovelace/config/action.ts
+// @source home-assistant/frontend/src/data/lovelace/config/badge.ts
+// @synced 2026-06-08 @ SHA 1cca5f3
+
 import type { HassServiceTarget } from "home-assistant-js-websocket";
 
 // ============================================================================
 // Lovelace Configuration Types
-// Sourced from home-assistant/frontend/src/data/lovelace.ts
+// Sourced from home-assistant/frontend/src/data/lovelace/config/types.ts
 // ============================================================================
 
 export interface LovelaceConfig {
@@ -36,22 +41,39 @@ export interface ShowViewConfig {
   user?: string;
 }
 
+// ============================================================================
+// Card Config
+// Sourced from home-assistant/frontend/src/data/lovelace/config/card.ts
+// ============================================================================
+
 export interface LovelaceCardConfig {
   index?: number;
   view_index?: number;
   view_layout?: any;
+  /** @deprecated Use `grid_options` instead */
+  layout_options?: any;
+  grid_options?: any;
   type: string;
+  visibility?: any[];
+  disabled?: boolean;
   [key: string]: any;
 }
 
+// ============================================================================
+// Badge Config
+// Sourced from home-assistant/frontend/src/data/lovelace/config/badge.ts
+// ============================================================================
+
 export interface LovelaceBadgeConfig {
-  type?: string;
+  type: string;
+  visibility?: any[];
+  disabled?: boolean;
   [key: string]: any;
 }
 
 // ============================================================================
 // Action Config Types
-// Sourced from home-assistant/frontend/src/data/lovelace.ts
+// Sourced from home-assistant/frontend/src/data/lovelace/config/action.ts
 // ============================================================================
 
 export interface BaseActionConfig {
@@ -61,6 +83,9 @@ export interface BaseActionConfig {
 
 export interface ConfirmationRestrictionConfig {
   text?: string;
+  title?: string;
+  confirm_text?: string;
+  dismiss_text?: string;
   exemptions?: RestrictionConfig[];
 }
 
@@ -86,6 +111,7 @@ export interface CallServiceActionConfig extends BaseActionConfig {
 export interface NavigateActionConfig extends BaseActionConfig {
   action: "navigate";
   navigation_path: string;
+  navigation_replace?: boolean;
 }
 
 export interface UrlActionConfig extends BaseActionConfig {
@@ -95,6 +121,7 @@ export interface UrlActionConfig extends BaseActionConfig {
 
 export interface MoreInfoActionConfig extends BaseActionConfig {
   action: "more-info";
+  entity?: string;
 }
 
 export interface NoActionConfig extends BaseActionConfig {

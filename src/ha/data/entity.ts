@@ -1,5 +1,5 @@
-import { HassEntity } from "home-assistant-js-websocket";
-import { computeDomain } from "../common/entity/compute_domain";
+// @source home-assistant/frontend/src/data/entity/entity.ts
+// @synced 2026-06-08 @ SHA 1cca5f3
 
 export const UNAVAILABLE = "unavailable";
 export const UNKNOWN = "unknown";
@@ -7,54 +7,7 @@ export const UNKNOWN = "unknown";
 export const ON = "on";
 export const OFF = "off";
 
-const OFF_STATES = [UNAVAILABLE, UNKNOWN, OFF];
+export const OFF_STATES = [UNAVAILABLE, UNKNOWN, OFF] as const;
 
-export function isActive(stateObj: HassEntity) {
-  const domain = computeDomain(stateObj.entity_id);
-  const state = stateObj.state;
-
-  if (["button", "input_button", "scene"].includes(domain)) {
-    return state !== UNAVAILABLE;
-  }
-
-  if (OFF_STATES.includes(state)) {
-    return false;
-  }
-
-  // Custom cases
-  switch (domain) {
-    case "cover":
-    case "valve":
-      return !["closed", "closing"].includes(state);
-    case "device_tracker":
-    case "person":
-      return state !== "not_home";
-    case "media_player":
-      return state !== "standby";
-    case "vacuum":
-      return !["idle", "docked", "paused"].includes(state);
-    case "plant":
-      return state === "problem";
-    default:
-      return true;
-  }
-}
-
-export function isAvailable(stateObj: HassEntity) {
-  return stateObj.state !== UNAVAILABLE;
-}
-
-export function isOff(stateObj: HassEntity) {
-  return stateObj.state === OFF;
-}
-
-export function isUnknown(stateObj: HassEntity) {
-  return stateObj.state === UNKNOWN;
-}
-
-export function getEntityPicture(stateObj: HassEntity) {
-  return (
-    (stateObj.attributes.entity_picture_local as string | undefined) ||
-    stateObj.attributes.entity_picture
-  );
-}
+export const isOffState = (state: unknown): state is (typeof OFF_STATES)[number] =>
+  (OFF_STATES as readonly string[]).includes(state as string);

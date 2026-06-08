@@ -1,16 +1,22 @@
-import {
+// @source home-assistant/frontend/src/data/climate.ts
+// @synced 2026-06-08 @ SHA 1cca5f3
+
+import type {
   HassEntityAttributeBase,
   HassEntityBase,
 } from "home-assistant-js-websocket";
 
-export type HvacMode =
-  | "off"
-  | "heat"
-  | "cool"
-  | "heat_cool"
-  | "auto"
-  | "dry"
-  | "fan_only";
+export const HVAC_MODES = [
+  "auto",
+  "heat_cool",
+  "heat",
+  "cool",
+  "dry",
+  "fan_only",
+  "off",
+] as const;
+
+export type HvacMode = (typeof HVAC_MODES)[number];
 
 export const CLIMATE_PRESET_NONE = "none";
 
@@ -40,6 +46,7 @@ export type ClimateEntity = HassEntityBase & {
     current_humidity?: number;
     target_humidity_low?: number;
     target_humidity_high?: number;
+    target_humidity_step?: number;
     min_humidity?: number;
     max_humidity?: number;
     fan_mode?: string;
@@ -48,22 +55,11 @@ export type ClimateEntity = HassEntityBase & {
     preset_modes?: string[];
     swing_mode?: string;
     swing_modes?: string[];
+    swing_horizontal_mode?: string;
+    swing_horizontal_modes?: string[];
     aux_heat?: "on" | "off";
   };
 };
-
-const hvacModeOrdering: { [key in HvacMode]: number } = {
-  auto: 1,
-  heat_cool: 2,
-  heat: 3,
-  cool: 4,
-  dry: 5,
-  fan_only: 6,
-  off: 7,
-};
-
-export const compareClimateHvacModes = (mode1: HvacMode, mode2: HvacMode) =>
-  hvacModeOrdering[mode1] - hvacModeOrdering[mode2];
 
 export const enum ClimateEntityFeature {
   TARGET_TEMPERATURE = 1,
@@ -78,7 +74,18 @@ export const enum ClimateEntityFeature {
   SWING_HORIZONTAL_MODE = 512,
 }
 
-// Climate icon/color mappings - backported from HA frontend src/data/climate.ts
+const hvacModeOrdering = HVAC_MODES.reduce(
+  (order, mode, index) => {
+    order[mode] = index;
+    return order;
+  },
+  {} as Record<HvacMode, number>
+);
+
+export const compareClimateHvacModes = (mode1: HvacMode, mode2: HvacMode) =>
+  hvacModeOrdering[mode1] - hvacModeOrdering[mode2];
+
+// Climate icon/color mappings — @mdi/js imports replaced with mdi:* string constants
 
 export const CLIMATE_HVAC_ACTION_TO_MODE: Record<HvacAction, HvacMode> = {
   cooling: "cool",

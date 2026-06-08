@@ -35,6 +35,7 @@ export * from "./common/util/debounce";
 // Data layer
 export * from "./data/climate";
 export * from "./data/entity";
+export * from "./data/entity_attributes";
 export * from "./data/lovelace";
 
 // Lovelace panel
