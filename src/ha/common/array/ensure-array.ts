@@ -9,6 +9,7 @@ type NonNullUndefined<T> = T extends undefined
 
 /**
  * Ensure that the input is an array or wrap it in an array
+ * @param value - The value to ensure is an array
  */
 export function ensureArray(value: undefined): undefined;
 export function ensureArray(value: null): null;

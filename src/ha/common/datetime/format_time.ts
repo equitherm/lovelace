@@ -7,6 +7,7 @@ import type { FrontendLocaleData } from "../../data/translation";
 import { resolveTimeZone } from "./resolve-time-zone";
 import { useAmPm } from "./use_am_pm";
 
+// 9:15 PM || 21:15
 export const formatTime = (
   dateObj: Date,
   locale: FrontendLocaleData,
@@ -23,6 +24,7 @@ const formatTimeMem = memoizeOne(
     })
 );
 
+// 9:15:24 PM || 21:15:24
 export const formatTimeWithSeconds = (
   dateObj: Date,
   locale: FrontendLocaleData,
@@ -40,6 +42,7 @@ const formatTimeWithSecondsMem = memoizeOne(
     })
 );
 
+// Tuesday 7:00 PM || Tuesday 19:00
 export const formatTimeWeekday = (
   dateObj: Date,
   locale: FrontendLocaleData,
@@ -57,6 +60,7 @@ const formatTimeWeekdayMem = memoizeOne(
     })
 );
 
+// 21:15
 export const formatTime24h = (
   dateObj: Date,
   locale: FrontendLocaleData,
@@ -65,6 +69,7 @@ export const formatTime24h = (
 
 const formatTime24hMem = memoizeOne(
   (locale: FrontendLocaleData, serverTimeZone: string) =>
+    // en-GB to fix Chrome 24:59 to 0:59 https://stackoverflow.com/a/60898146
     new Intl.DateTimeFormat("en-GB", {
       hour: "numeric",
       minute: "2-digit",
