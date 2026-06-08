@@ -155,12 +155,12 @@ export class OtStatusCard extends OtBaseCard<OtStatusCardConfig> {
         }
         .temp-value.hot { color: var(--gradient-hot, #f97316); }
         .temp-setpoint {
-          font-size: 11px;
+          font-size: var(--ha-font-size-xs, 0.75rem);
           color: var(--secondary-text-color);
           margin-top: 1px;
         }
         .temp-label {
-          font-size: 10px;
+          font-size: var(--ha-font-size-xs, 0.75rem);
           font-weight: 500;
           letter-spacing: 0.06em;
           text-transform: uppercase;
@@ -176,7 +176,7 @@ export class OtStatusCard extends OtBaseCard<OtStatusCardConfig> {
           padding: 0 4px;
         }
         .mod-label {
-          font-size: 10px;
+          font-size: var(--ha-font-size-xs, 0.75rem);
           font-weight: 500;
           text-transform: uppercase;
           letter-spacing: 0.06em;

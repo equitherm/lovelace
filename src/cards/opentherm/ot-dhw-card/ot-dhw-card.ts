@@ -144,7 +144,7 @@ export class OtDhwCard extends OtBaseCard<OtDhwCardConfig> {
           gap: 12px;
         }
         .control-label {
-          font-size: 11px;
+          font-size: var(--ha-font-size-xs, 0.75rem);
           font-weight: 500;
           letter-spacing: 0.06em;
           text-transform: uppercase;

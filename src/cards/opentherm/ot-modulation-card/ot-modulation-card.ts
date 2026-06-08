@@ -180,7 +180,7 @@ export class OtModulationCard extends OtBaseCard<OtModulationCardConfig> {
           gap: 8px;
         }
         .mod-label {
-          font-size: 10px;
+          font-size: var(--ha-font-size-xs, 0.75rem);
           font-weight: 500;
           text-transform: uppercase;
           letter-spacing: 0.06em;
@@ -215,7 +215,7 @@ export class OtModulationCard extends OtBaseCard<OtModulationCardConfig> {
           margin-top: 2px;
         }
         .timeline-label {
-          font-size: 9px;
+          font-size: var(--ha-font-size-xs, 0.75rem);
           font-weight: 500;
           text-transform: uppercase;
           letter-spacing: 0.08em;
