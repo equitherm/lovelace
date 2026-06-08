@@ -18,7 +18,7 @@ import '../../shared/eq-manual-overlay';
 import '../../shared/eq-param-bar';
 import '../../shared/eq-tuning-dialog';
 import { buildTuningDialogConfig } from '../../utils/tuning-dialog-config';
-import { niceBounds, computeYAxisFractionDigits, sideTooltipPosition } from '../../utils/chart';
+import { niceBounds, computeYAxisFractionDigits, sideTooltipPosition, Y_AXIS_FLOOR_C } from '../../utils/chart';
 
 registerCustomCard({
   type: FORECAST_CARD_NAME,
@@ -221,7 +221,7 @@ export class EquithermForecastCard extends EquithermEChartCard<ForecastCardConfi
     }] : [];
 
     const forecastYBounds = niceBounds(this._curveParams.minFlow ?? 20, this._curveParams.maxFlow ?? 70);
-    const flowYMin = this._toDisplayTemp(forecastYBounds.min);
+    const flowYMin = Math.min(this._toDisplayTemp(Y_AXIS_FLOOR_C), this._toDisplayTemp(forecastYBounds.min));
     const flowYMax = this._toDisplayTemp(forecastYBounds.max);
     const yFractionDigits = computeYAxisFractionDigits(flowYMin, flowYMax);
 

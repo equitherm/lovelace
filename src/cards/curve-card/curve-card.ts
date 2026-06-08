@@ -23,7 +23,7 @@ import '../../shared/badge-info';
 import '../../shared/eq-manual-overlay';
 import '../../shared/eq-tuning-dialog';
 import { buildTuningDialogConfig } from '../../utils/tuning-dialog-config';
-import { niceBounds, computeYAxisFractionDigits, sideTooltipPosition } from '../../utils/chart';
+import { niceBounds, computeYAxisFractionDigits, sideTooltipPosition, Y_AXIS_FLOOR_C } from '../../utils/chart';
 
 /** Marker sizes for chart annotations */
 const MARKER_SINGLE = 9;
@@ -253,7 +253,7 @@ export class EquithermCurveCard extends EquithermEChartCard<CurveCardConfig> {
     const dataMin = displaySeries.reduce((m, p) => Math.min(m, p.y), Infinity);
     const dataMax = displaySeries.reduce((m, p) => Math.max(m, p.y), -Infinity);
     const yBounds = niceBounds(dataMin, dataMax);
-    const yMin = Math.max(0, yBounds.min);
+    const yMin = Math.min(this._toDisplayTemp(Y_AXIS_FLOOR_C), yBounds.min);
     const yMax = yBounds.max;
     const yFractionDigits = computeYAxisFractionDigits(yMin, yMax);
 

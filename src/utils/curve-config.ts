@@ -14,8 +14,8 @@ export const CURVE_CONFIG_DEFAULTS: Required<CurveConfigFields> = {
   n: 1.25,
   min_flow: 20,
   max_flow: 70,
-  t_out_min: -20,
-  t_out_max: 20,
+  t_out_min: -30,
+  t_out_max: 30,
 };
 
 /** Superstruct fields for shared curve params — spread into a card's config struct */

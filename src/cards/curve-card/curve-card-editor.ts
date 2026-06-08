@@ -104,8 +104,8 @@ export class EquithermCurveCardEditor extends EquithermBaseEditor<CurveCardConfi
         // Display range
         schemaHelpers.expandable(localize('editor.display_range'), 'mdi:arrow-expand-horizontal', [
           schemaHelpers.grid([
-            schemaHelpers.number('t_out_min', abs(-30), abs(5), 1, { unit_of_measurement: unit, default: abs(-20) }),
-            schemaHelpers.number('t_out_max', abs(0), abs(30), 1, { unit_of_measurement: unit, default: abs(20) }),
+            schemaHelpers.number('t_out_min', abs(-30), abs(5), 1, { unit_of_measurement: unit, default: abs(-30) }),
+            schemaHelpers.number('t_out_max', abs(0), abs(30), 1, { unit_of_measurement: unit, default: abs(30) }),
           ]),
         ]),
         // Appearance
