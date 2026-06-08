@@ -1,23 +1,28 @@
 // @source home-assistant/frontend/src/panels/lovelace/types.ts
 // @synced 2026-06-08 @ SHA 1cca5f3
 // @note Adapted: Extra HASSDomEvents (ll-badge-rebuild, hass-more-info, config-changed)
-//   added for our card dispatches. Config sub-types (LovelaceCardFeatureContext,
-//   LovelaceCardFeaturePosition, ShowToastParams) typed as any to avoid vendoring
-//   card-features/types, notification-manager, and other upstream sub-modules.
+//   added for our card dispatches — upstream declares these in separate component files.
+// @note Adapted: LovelaceCardFeatureContext, LovelaceCardFeaturePosition, LovelaceCardFeatureConfig
+//   typed as any — from card-features/types.ts (364 lines importing AlarmMode, HvacMode, etc.).
+//   LovelaceElementConfig typed as any — from elements/types.ts (needs HuiImage Lit component).
+//   LovelaceRowConfig typed as any — from entity-rows/types.ts (needs evaluate-filter, components/types).
+//   EntitiesCardEntityConfig typed as any — from cards/types.ts (739 lines, 15+ deep imports).
 
 import type { HassEntity } from "home-assistant-js-websocket";
 import type { LocalizeFunc } from "../../common/translations/localize";
 import type { HaFormSchema } from "../../../utils/form/ha-form";
+import type { LovelaceBadgeConfig } from "../../data/lovelace/config/badge";
+import type { LovelaceCardConfig } from "../../data/lovelace/config/card";
 import type {
-  LovelaceBadgeConfig,
-  LovelaceCardConfig,
   LovelaceConfig,
-} from "../../data/lovelace";
-import type { FrontendLocaleData } from "../../types";
-import type { HomeAssistant, Constructor } from "../../types";
+} from "../../data/lovelace/config/types";
+import type { FrontendLocaleData } from "../../data/translation";
+import type { ShowToastParams } from "../../managers/notification-manager";
+import type { LovelaceHeaderFooterConfig } from "./header-footer/types";
+import type { LovelaceHeadingBadgeConfig } from "./heading-badges/types";
+import type { Constructor, HomeAssistant } from "../../types";
 
 declare global {
-  // eslint-disable-next-line
   interface HASSDomEvents {
     "ll-rebuild": Record<string, unknown>;
     "ll-upgrade": Record<string, unknown>;
@@ -38,7 +43,7 @@ export interface Lovelace {
   setEditMode: (editMode: boolean) => void;
   saveConfig: (newConfig: LovelaceConfig) => Promise<void>;
   deleteConfig: () => Promise<void>;
-  showToast: (params: any) => void;
+  showToast: (params: ShowToastParams) => void;
 }
 
 export interface LovelaceBadge extends HTMLElement {
@@ -110,16 +115,17 @@ export interface LovelaceBadgeConstructor extends Constructor<LovelaceBadge> {
   getConfigForm?: () => LovelaceConfigForm;
 }
 
-export interface LovelaceRow extends HTMLElement {
-  hass?: HomeAssistant;
+export interface LovelaceHeaderFooterConstructor extends Constructor<LovelaceHeaderFooter> {
+  getStubConfig?: (
+    hass: HomeAssistant,
+    entities: string[],
+    entitiesFallback: string[]
+  ) => LovelaceHeaderFooterConfig;
+  getConfigElement?: () => LovelaceHeaderFooterEditor;
 }
 
 export interface LovelaceRowConstructor extends Constructor<LovelaceRow> {
   getConfigElement?: () => LovelaceRowEditor;
-}
-
-export interface LovelaceElement extends HTMLElement {
-  hass?: HomeAssistant;
 }
 
 export interface LovelaceElementConstructor extends Constructor<LovelaceElement> {
@@ -128,64 +134,14 @@ export interface LovelaceElementConstructor extends Constructor<LovelaceElement>
     hass: HomeAssistant,
     entities: string[],
     entitiesFallback: string[]
-  ) => any;
+  ) => any; // LovelaceElementConfig — needs HuiImage Lit component
 }
 
 export interface LovelaceHeaderFooter extends HTMLElement {
   hass?: HomeAssistant;
   type: "header" | "footer";
   getCardSize(): number | Promise<number>;
-  setConfig(config: any): void;
-}
-
-export interface LovelaceHeaderFooterConstructor extends Constructor<LovelaceHeaderFooter> {
-  getStubConfig?: (
-    hass: HomeAssistant,
-    entities: string[],
-    entitiesFallback: string[]
-  ) => any;
-  getConfigElement?: () => LovelaceHeaderFooterEditor;
-}
-
-export interface LovelaceCardFeature extends HTMLElement {
-  hass?: HomeAssistant;
-  /** @deprecated Use `context` instead */
-  stateObj?: HassEntity;
-  context?: any;
-  setConfig(config: any): void;
-  color?: string;
-  position?: any;
-}
-
-export interface LovelaceCardFeatureConstructor extends Constructor<LovelaceCardFeature> {
-  getStubConfig?: (
-    hass: HomeAssistant,
-    context?: any
-  ) => any;
-  getConfigElement?: () => LovelaceCardFeatureEditor;
-  getConfigForm?: () => {
-    schema: HaFormSchema[];
-    assertConfig?: (config: LovelaceCardConfig) => void;
-  };
-  isSupported?: (stateObj?: HassEntity) => boolean;
-}
-
-export interface LovelaceHeadingBadge extends HTMLElement {
-  hass?: HomeAssistant;
-  preview?: boolean;
-  setConfig(config: any): void;
-}
-
-export interface LovelaceHeadingBadgeConstructor extends Constructor<LovelaceHeadingBadge> {
-  getStubConfig?: (
-    hass: HomeAssistant,
-    stateObj?: HassEntity
-  ) => any;
-  getConfigElement?: () => LovelaceHeadingBadgeEditor;
-  getConfigForm?: () => {
-    schema: HaFormSchema[];
-    assertConfig?: (config: LovelaceCardConfig) => void;
-  };
+  setConfig(config: LovelaceHeaderFooterConfig): void;
 }
 
 export interface LovelaceCardEditor extends LovelaceGenericElementEditor {
@@ -197,23 +153,15 @@ export interface LovelaceBadgeEditor extends LovelaceGenericElementEditor {
 }
 
 export interface LovelaceHeaderFooterEditor extends LovelaceGenericElementEditor {
-  setConfig(config: any): void;
+  setConfig(config: LovelaceHeaderFooterConfig): void;
 }
 
 export interface LovelaceRowEditor extends LovelaceGenericElementEditor {
-  setConfig(config: any): void;
+  setConfig(config: any): void; // LovelaceRowConfig — needs evaluate-filter, components/types
 }
 
 export interface LovelacePictureElementEditor extends LovelaceGenericElementEditor {
-  setConfig(config: any): void;
-}
-
-export interface LovelaceCardFeatureEditor extends LovelaceGenericElementEditor {
-  setConfig(config: any): void;
-}
-
-export interface LovelaceHeadingBadgeEditor extends LovelaceGenericElementEditor {
-  setConfig(config: any): void;
+  setConfig(config: any): void; // LovelaceElementConfig — needs HuiImage Lit component
 }
 
 export interface LovelaceGenericElementEditor<C = any> extends HTMLElement {
@@ -223,4 +171,61 @@ export interface LovelaceGenericElementEditor<C = any> extends HTMLElement {
   schema?: any;
   setConfig(config: any): void;
   focusYamlEditor?: () => void;
+}
+
+export interface LovelaceCardFeature extends HTMLElement {
+  hass?: HomeAssistant;
+  /** @deprecated Use `context` instead */
+  stateObj?: HassEntity;
+  context?: any; // LovelaceCardFeatureContext — from card-features/types.ts (364 lines)
+  setConfig(config: any): void; // LovelaceCardFeatureConfig — same
+  color?: string;
+  position?: any; // LovelaceCardFeaturePosition — same
+}
+
+export interface LovelaceCardFeatureConstructor extends Constructor<LovelaceCardFeature> {
+  getStubConfig?: (
+    hass: HomeAssistant,
+    context?: any // LovelaceCardFeatureContext
+  ) => any; // LovelaceCardFeatureConfig
+  getConfigElement?: () => LovelaceCardFeatureEditor;
+  getConfigForm?: () => {
+    schema: HaFormSchema[];
+    assertConfig?: (config: LovelaceCardConfig) => void;
+  };
+  isSupported?: (stateObj?: HassEntity) => boolean;
+}
+
+export interface LovelaceCardFeatureEditor extends LovelaceGenericElementEditor {
+  setConfig(config: any): void; // LovelaceCardFeatureConfig
+}
+
+export interface LovelaceHeadingBadge extends HTMLElement {
+  hass?: HomeAssistant;
+  preview?: boolean;
+  setConfig(config: LovelaceHeadingBadgeConfig): void;
+}
+
+export interface LovelaceHeadingBadgeConstructor extends Constructor<LovelaceHeadingBadge> {
+  getStubConfig?: (
+    hass: HomeAssistant,
+    stateObj?: HassEntity
+  ) => LovelaceHeadingBadgeConfig;
+  getConfigElement?: () => LovelaceHeadingBadgeEditor;
+  getConfigForm?: () => {
+    schema: HaFormSchema[];
+    assertConfig?: (config: LovelaceCardConfig) => void;
+  };
+}
+
+export interface LovelaceHeadingBadgeEditor extends LovelaceGenericElementEditor {
+  setConfig(config: LovelaceHeadingBadgeConfig): void;
+}
+
+export interface LovelaceRow extends HTMLElement {
+  hass?: HomeAssistant;
+}
+
+export interface LovelaceElement extends HTMLElement {
+  hass?: HomeAssistant;
 }

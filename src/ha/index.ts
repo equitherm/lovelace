@@ -40,7 +40,12 @@ export * from "./data/entity_attributes";
 export * from "./data/lovelace";
 export * from "./data/translation";
 
+// Managers
+export * from "./managers/notification-manager";
+
 // Lovelace panel
 export * from "./panels/lovelace/common/validate-condition";
+export * from "./panels/lovelace/header-footer/types";
+export * from "./panels/lovelace/heading-badges/types";
 export * from "./panels/lovelace/types";
 export * from "./types";
