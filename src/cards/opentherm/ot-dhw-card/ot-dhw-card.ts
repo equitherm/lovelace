@@ -53,6 +53,14 @@ export class OtDhwCard extends OtBaseCard<OtDhwCardConfig> {
 
   setConfig(config: unknown) {
     this._config = validateOtDhwCardConfig(config);
+    this._dhwHistory = [];
+    this._timelineCache = null;
+    this._cyclesPerHour = 0;
+    this._totalCycles = 0;
+    this._totalActiveTime = 0;
+    if (this.isConnected) {
+      this._fetchHistory();
+    }
   }
 
   public override getGridOptions(): LovelaceGridOptions {
@@ -284,7 +292,7 @@ export class OtDhwCard extends OtBaseCard<OtDhwCardConfig> {
           margin-top: 2px;
         }
         .timeline-label {
-          font-size: 9px;
+          font-size: var(--ha-font-size-xs, 0.75rem);
           font-weight: 500;
           text-transform: uppercase;
           letter-spacing: 0.08em;
@@ -346,7 +354,7 @@ export class OtDhwCard extends OtBaseCard<OtDhwCardConfig> {
               </div>
               <div class="hero-label">
                 ${localize('opentherm.dhw_card.target')} ${isNaN(setpoint) ? '—' : this._formatCalcTemp(setpoint)}
-                ${hasDelta ? html` · ΔT ${formatNumber(delta, this.hass.locale, { signDisplay: 'always', minimumFractionDigits: 1, maximumFractionDigits: 1 })}` : nothing}
+                ${hasDelta ? html` · ΔT ${this._formatCalcDelta(delta)}` : nothing}
               </div>
             `
             : html`
@@ -382,9 +390,9 @@ export class OtDhwCard extends OtBaseCard<OtDhwCardConfig> {
               .endTime=${endTime}
             ></eq-binary-timeline>
             <div class="kpi-inline">
-              <span>${this._totalCycles} ${localize('opentherm.dhw_card.cycles')}</span>
+              <span>${formatNumber(this._totalCycles, this.hass.locale)} ${localize('opentherm.dhw_card.cycles')}</span>
               <span class="kpi-sep">·</span>
-              <span>${this._totalActiveTime} ${localize('opentherm.dhw_card.active_time')}</span>
+              <span>${formatNumber(this._totalActiveTime, this.hass.locale)} ${localize('opentherm.dhw_card.active_time')}</span>
             </div>
           </div>
         ` : nothing}
