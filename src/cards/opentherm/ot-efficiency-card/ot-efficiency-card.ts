@@ -4,7 +4,7 @@ import type { OtEfficiencyCardConfig } from './ot-efficiency-card-config';
 import { EquithermEChartCard, type EChartConfig, headerStyles } from '../../../utils/base';
 import type { HomeAssistant } from '../../../ha';
 import { formatNumber } from '../../../ha';
-import { cardStyle } from '../../../utils/card-styles';
+import { cardStyle, kpiFooterStyles } from '../../../utils/card-styles';
 import { registerCustomCard } from '../../../utils/register-card';
 import { computeDomain } from '../../../ha/common/entity/compute_domain';
 import { OT_EFFICIENCY_CARD_NAME, OT_EFFICIENCY_CARD_EDITOR_NAME } from './const';
@@ -76,6 +76,19 @@ export class OtEfficiencyCard extends EquithermEChartCard<OtEfficiencyCardConfig
     return this._resolveEntityNumber(this._config.return_temp_entity, NaN);
   }
 
+  private get _flameOn(): boolean {
+    return this._entityState(this._config.flame_entity)?.state === 'on';
+  }
+
+  private get _formattedDeltaT(): string {
+    const boilerTemp = this._resolveEntityNumber(this._config.boiler_temp_entity, NaN);
+    const returnTemp = this._returnTemp;
+    const delta = boilerTemp - returnTemp;
+    if (isNaN(delta)) return '—';
+    const unit = this.hass?.config?.unit_system?.temperature ?? '°C';
+    return `${formatNumber(delta, this.hass?.locale, { minimumFractionDigits: 1, maximumFractionDigits: 1, signDisplay: 'always' })} ${unit}`;
+  }
+
   private get _isCondensing(): boolean {
     if (!this._isChActive) return false;
     const threshold = this._config.condensing_threshold ?? this._defaultThreshold;
@@ -100,6 +113,9 @@ export class OtEfficiencyCard extends EquithermEChartCard<OtEfficiencyCardConfig
 
   protected override _renderHeaderBadges(): ReturnType<typeof html> {
     const localize = setupCustomLocalize(this.hass);
+    const cfg = this._config;
+    const chActive = cfg.ch_active_entity ? this._entityState(cfg.ch_active_entity)?.state === 'on' : false;
+
     return html`
       <div class="badges">
         ${this._isCondensing ? html`
@@ -111,6 +127,21 @@ export class OtEfficiencyCard extends EquithermEChartCard<OtEfficiencyCardConfig
           <eq-badge-info .label=${localize('opentherm.efficiency_card.too_hot')} .icon=${'mdi:thermometer-alert'} .active=${true}
             style="--badge-info-color: var(--rgb-state-climate-heat, 244,81,30)">
           </eq-badge-info>
+        ` : nothing}
+        ${this._flameOn ? html`
+          <eq-badge-info
+            style="--badge-info-color: var(--rgb-state-climate-heat, 255, 152, 0)"
+            .label=${localize('opentherm.status_card.flame')}
+            .icon=${'mdi:fire'}
+            .active=${true}
+          ></eq-badge-info>
+        ` : nothing}
+        ${chActive ? html`
+          <eq-badge-info
+            style="--badge-info-color: var(--rgb-primary-color, 33, 150, 243)"
+            .label=${localize('opentherm.status_card.ch')}
+            .icon=${'mdi:radiator'}
+          ></eq-badge-info>
         ` : nothing}
       </div>
     `;
@@ -194,9 +225,9 @@ export class OtEfficiencyCard extends EquithermEChartCard<OtEfficiencyCardConfig
           name: `${localize('opentherm.efficiency_card.temp_axis')} (${this.hass?.config?.unit_system?.temperature ?? '°C'})`,
           axisLabel: { fontSize: 10, formatter: (v: number) => formatNumber(v, this.hass?.locale, { maximumFractionDigits: 1 }) },
         },
-        grid: { top: 10, right: 10, bottom: 25, left: 40 },
+        grid: { top: 24, right: 10, bottom: 25, left: 40 },
         tooltip: { trigger: 'axis' as const, formatter: this._buildTooltipFormatter() as any },
-        legend: { show: false },
+        legend: { show: true, top: 0, right: 0, textStyle: { fontSize: 10 }, icon: 'circle', itemWidth: 8, itemHeight: 8 },
       },
       data: [
         {
@@ -222,6 +253,35 @@ export class OtEfficiencyCard extends EquithermEChartCard<OtEfficiencyCardConfig
     };
   }
 
+  private _renderEfficiencyKpiFooter(): ReturnType<typeof html> | typeof nothing {
+    if (!this._config || !this.hass) return nothing;
+    const localize = setupCustomLocalize(this.hass);
+    const cfg = this._config;
+    const boilerMissing = !this._entityExists(cfg.boiler_temp_entity);
+    const returnMissing = !this._entityExists(cfg.return_temp_entity);
+
+    return html`
+      <div class="kpi-footer">
+        <div class="kpi-block${boilerMissing ? ' missing' : ''}"
+             @click=${boilerMissing ? undefined : () => this._openMoreInfo(cfg.boiler_temp_entity)}>
+          <div class="kpi-value">${this._formatEntityTemp(cfg.boiler_temp_entity)}</div>
+          <div class="kpi-label">${localize('opentherm.status_card.flow')}</div>
+        </div>
+        <div class="kpi-divider"></div>
+        <div class="kpi-block${returnMissing ? ' missing' : ''}"
+             @click=${returnMissing ? undefined : () => this._openMoreInfo(cfg.return_temp_entity)}>
+          <div class="kpi-value">${this._formatEntityTemp(cfg.return_temp_entity)}</div>
+          <div class="kpi-label">${localize('opentherm.status_card.return')}</div>
+        </div>
+        <div class="kpi-divider"></div>
+        <div class="kpi-block">
+          <div class="kpi-value">${this._formattedDeltaT}</div>
+          <div class="kpi-label">ΔT</div>
+        </div>
+      </div>
+    `;
+  }
+
   protected override _lastUpdatedEntity(): string | undefined {
     return this._config.boiler_temp_entity;
   }
@@ -231,8 +291,18 @@ export class OtEfficiencyCard extends EquithermEChartCard<OtEfficiencyCardConfig
       super.styles,
       cardStyle,
       headerStyles,
+      kpiFooterStyles,
       css`
         ha-card { height: 100%; overflow: hidden; }
+        @container (max-width: 260px) {
+          .kpi-footer {
+            grid-template-columns: 1fr;
+            gap: 12px;
+          }
+          .kpi-footer .kpi-divider {
+            display: none;
+          }
+        }
       `,
     ];
   }
@@ -249,6 +319,7 @@ export class OtEfficiencyCard extends EquithermEChartCard<OtEfficiencyCardConfig
       <ha-card>
         ${this._renderHeader({ iconName: 'mdi:chart-areaspline', clickEntity: cfg.boiler_temp_entity, title })}
         ${this._renderChart()}
+        ${this._renderEfficiencyKpiFooter()}
         ${notFoundBoiler}
         ${notFoundReturn}
         ${this._renderFooterMeta()}
