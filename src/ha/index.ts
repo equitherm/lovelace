@@ -31,6 +31,7 @@ export {
 export { round } from "./common/number/round";
 
 // Common utilities
+export * from "./common/util/compute_rtl";
 export * from "./common/util/debounce";
 // Data layer
 export * from "./data/climate";
