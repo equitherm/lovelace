@@ -5,7 +5,6 @@ import type { OtDhwCardConfig } from './ot-dhw-card-config';
 import type { HomeAssistant } from '../../../ha';
 import type { LovelaceGridOptions } from '../../../ha/panels/lovelace/types';
 import { computeDomain } from '../../../ha/common/entity/compute_domain';
-import { formatNumber } from '../../../ha';
 import { OtBaseCard, headerStyles } from '../../../utils/base';
 import { cardStyle } from '../../../utils/card-styles';
 import { registerCustomCard } from '../../../utils/register-card';
@@ -14,7 +13,8 @@ import { OT_DHW_CARD_NAME, OT_DHW_CARD_EDITOR_NAME, WRITABLE_BINARY_DOMAINS, NUM
 import { validateOtDhwCardConfig } from './ot-dhw-card-config';
 import setupCustomLocalize from '../../../localize';
 import '../../../shared/badge-info';
-import '../../../shared/eq-binary-timeline';
+import '../../../shared/ot-timeline-section';
+import type { KpiItem } from '../../../shared/ot-timeline-section';
 import type { BinarySegment } from '../../../shared/eq-binary-timeline';
 
 registerCustomCard({
@@ -168,6 +168,19 @@ export class OtDhwCard extends OtBaseCard<OtDhwCardConfig> {
     return this._resolveEntityNumber(this._config.dhw_temp_entity, NaN);
   }
 
+  private get _timelineKpis(): KpiItem[] {
+    if (!this._config.dhw_active_entity) return [];
+    const localize = setupCustomLocalize(this.hass);
+    const kpis: KpiItem[] = [];
+    if (this._totalCycles > 0) {
+      kpis.push({ value: `${this._totalCycles}`, label: localize('opentherm.dhw_card.cycles') });
+    }
+    if (this._totalActiveTime > 0) {
+      kpis.push({ value: `${this._totalActiveTime}`, label: localize('opentherm.dhw_card.active_time') });
+    }
+    return kpis;
+  }
+
   protected override _titleEntity(): string | undefined {
     return this._config.dhw_enable_entity;
   }
@@ -193,7 +206,7 @@ export class OtDhwCard extends OtBaseCard<OtDhwCardConfig> {
             .active=${true}
           ></eq-badge-info>
         ` : nothing}
-        ${this._cyclesPerHour > 0 ? html`
+        ${this._cyclesPerHour > 0 && this._config.dhw_active_entity ? html`
           <eq-badge-info
             style="--badge-info-color: var(--rgb-info, 3, 169, 244)"
             .icon=${'mdi:water-boiler'}
@@ -286,30 +299,6 @@ export class OtDhwCard extends OtBaseCard<OtDhwCardConfig> {
           --control-slider-thickness: 32px;
           --control-slider-border-radius: var(--ha-border-radius-lg, 12px);
         }
-        .timeline-section {
-          padding: 6px 12px 0;
-          border-top: 1px solid var(--divider-color);
-          margin-top: 2px;
-        }
-        .timeline-label {
-          font-size: var(--ha-font-size-xs, 0.75rem);
-          font-weight: 500;
-          text-transform: uppercase;
-          letter-spacing: 0.08em;
-          color: var(--secondary-text-color);
-          margin-bottom: 4px;
-          opacity: 0.7;
-        }
-        .kpi-inline {
-          display: flex;
-          justify-content: center;
-          gap: 6px;
-          padding: 4px 0 8px;
-          font-size: var(--ha-font-size-xs, 0.75rem);
-          color: var(--secondary-text-color);
-          font-variant-numeric: tabular-nums;
-        }
-        .kpi-sep { opacity: 0.4; }
         @container (max-width: 260px) {
           .feature-row {
             flex-wrap: wrap;
@@ -381,20 +370,14 @@ export class OtDhwCard extends OtBaseCard<OtDhwCardConfig> {
           ></ha-control-slider>
         </div>
         ${hasTimeline ? html`
-          <div class="timeline-section">
-            <div class="timeline-label">${localize('opentherm.dhw_card.timeline')}</div>
-            <eq-binary-timeline
-              .hass=${this.hass}
-              .segments=${segments}
-              .startTime=${startTime}
-              .endTime=${endTime}
-            ></eq-binary-timeline>
-            <div class="kpi-inline">
-              <span>${formatNumber(this._totalCycles, this.hass.locale)} ${localize('opentherm.dhw_card.cycles')}</span>
-              <span class="kpi-sep">·</span>
-              <span>${formatNumber(this._totalActiveTime, this.hass.locale)} ${localize('opentherm.dhw_card.active_time')}</span>
-            </div>
-          </div>
+          <ot-timeline-section
+            .hass=${this.hass}
+            .label=${localize('opentherm.dhw_card.timeline')}
+            .segments=${segments}
+            .startTime=${startTime}
+            .endTime=${endTime}
+            .kpis=${this._timelineKpis}
+          ></ot-timeline-section>
         ` : nothing}
         ${notFoundEnable}
         ${this._renderFooterMeta()}
