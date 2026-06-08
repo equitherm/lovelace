@@ -32,6 +32,7 @@ export class OtDhwCardEditor extends EquithermBaseEditor<OtDhwCardConfig> {
         schemaHelpers.entity('dhw_active_entity', { domain: ['binary_sensor', 'input_boolean'], required: false }),
         schemaHelpers.entity('dhw_temp_entity', { domain: ['sensor', 'input_number'], required: false }),
         schemaHelpers.entity('fault_entity', { domain: ['binary_sensor', 'input_boolean'], required: false }),
+        { name: 'hours', selector: { number: { min: 1, max: 24, step: 1, mode: 'box' as const } } },
       ]),
     ] as const satisfies readonly HaFormSchema[];
   });

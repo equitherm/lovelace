@@ -173,7 +173,10 @@
       "enable": "Enable",
       "setpoint": "Setpoint",
       "target": "Target",
-      "dhw": "DHW"
+      "dhw": "DHW",
+      "timeline": "Timeline",
+      "cycles": "cycles",
+      "active_time": "min active"
     },
     "efficiency_card": {
       "name": "OpenTherm Efficiency",
