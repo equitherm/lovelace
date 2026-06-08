@@ -13,7 +13,7 @@ import { computeDomain } from '../../../ha/common/entity/compute_domain';
 import { formatNumber } from '../../../ha';
 import setupCustomLocalize from '../../../localize';
 import '../../../shared/badge-info';
-import '../../../shared/eq-binary-timeline';
+import '../../../shared/ot-timeline-section';
 import '../../../shared/eq-param-bar';
 import type { BinarySegment } from '../../../shared/eq-binary-timeline';
 
@@ -258,20 +258,6 @@ export class OtModulationCard extends OtBaseCard<OtModulationCardConfig> {
           gap: 8px;
         }
         ha-slider { width: 100%; }
-        .timeline-section {
-          padding: 6px 12px 0;
-          border-top: 1px solid var(--divider-color, rgba(0,0,0,0.08));
-          margin-top: 2px;
-        }
-        .timeline-label {
-          font-size: var(--ha-font-size-xs, 0.75rem);
-          font-weight: 500;
-          text-transform: uppercase;
-          letter-spacing: 0.08em;
-          color: var(--secondary-text-color);
-          margin-bottom: 4px;
-          opacity: 0.7;
-        }
         @container (max-width: 260px) {
           .mod-row, .max-row {
             flex-wrap: wrap;
@@ -324,15 +310,16 @@ export class OtModulationCard extends OtBaseCard<OtModulationCardConfig> {
             <span class="mod-value">${maxModFormatted}%</span>
           </div>
         </div>
-        <div class="timeline-section">
-          <div class="timeline-label">${localize('opentherm.modulation_card.flame')}</div>
-          <eq-binary-timeline
-            .hass=${this.hass}
-            .segments=${segments}
-            .startTime=${startTime}
-            .endTime=${endTime}
-          ></eq-binary-timeline>
-        </div>
+        <ot-timeline-section
+          .hass=${this.hass}
+          .label=${localize('opentherm.modulation_card.flame')}
+          .segments=${segments}
+          .startTime=${startTime}
+          .endTime=${endTime}
+          .kpis=${this._cyclesPerHour > 0
+            ? [{ value: `${this._cyclesPerHour}`, label: localize('opentherm.modulation_card.cycles_per_hour') }]
+            : []}
+        ></ot-timeline-section>
         ${notFoundFlame}
         ${this._renderFooterMeta()}
       </ha-card>
