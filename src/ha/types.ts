@@ -1,3 +1,17 @@
+// @source home-assistant/frontend/src/types.ts
+// @source home-assistant/frontend/src/data/translation.ts
+// @synced 2026-06-08 @ SHA 1cca5f3
+//
+// Vendored from upstream with the following adaptations:
+//   - Enum types (NumberFormat, TimeFormat, etc.) inlined from data/translation.ts
+//   - EntityRegistryDisplayEntry, Themes defined locally (not imported from data/*)
+//   - DeviceRegistryEntry, AreaRegistryEntry, FloorRegistryEntry kept for internal
+//     ha/ entity utilities (not re-exported to consumers)
+//   - EntityNameItem, EntityNameOptions typed as `any` in HomeAssistantFormatters
+//     since our code doesn't call formatEntityName
+//   - CoreFrontendUserData, CoreFrontendSystemData, ExternalMessaging typed as `any`
+//   - loadBackendTranslation params simplified
+
 import type {
   Auth,
   Connection,
@@ -10,62 +24,77 @@ import type {
 } from "home-assistant-js-websocket";
 import type { LocalizeFunc } from "./common/translations/localize";
 
-export interface ThemeVars {
-  "primary-color": string;
-  "text-primary-color": string;
-  "accent-color": string;
-  [key: string]: string;
+// ---------------------------------------------------------------------------
+// Enums (from upstream data/translation.ts)
+// ---------------------------------------------------------------------------
+
+export enum NumberFormat {
+  language = "language",
+  system = "system",
+  comma_decimal = "comma_decimal",
+  decimal_comma = "decimal_comma",
+  quote_decimal = "quote_decimal",
+  space_comma = "space_comma",
+  none = "none",
 }
 
-export type Theme = ThemeVars & {
-  modes?: {
-    light?: ThemeVars;
-    dark?: ThemeVars;
-  };
-};
-
-export interface Themes {
-  default_theme: string;
-  default_dark_theme: string | null;
-  themes: Record<string, Theme>;
-  darkMode: boolean;
-  theme: string;
+export enum TimeFormat {
+  language = "language",
+  system = "system",
+  am_pm = "12",
+  twenty_four = "24",
 }
+
+export enum TimeZone {
+  local = "local",
+  server = "server",
+}
+
+export enum DateFormat {
+  language = "language",
+  system = "system",
+  DMY = "DMY",
+  MDY = "MDY",
+  YMD = "YMD",
+}
+
+export enum FirstWeekday {
+  language = "language",
+  monday = "monday",
+  tuesday = "tuesday",
+  wednesday = "wednesday",
+  thursday = "thursday",
+  friday = "friday",
+  saturday = "saturday",
+  sunday = "sunday",
+}
+
+// ---------------------------------------------------------------------------
+// Locale data
+// ---------------------------------------------------------------------------
 
 export interface FrontendLocaleData {
   language: string;
-  number_format: string;
-  time_format: string;
-  date_format: string;
-  first_weekday: string;
-  time_zone: string;
+  number_format: NumberFormat;
+  time_format: TimeFormat;
+  date_format: DateFormat;
+  first_weekday: FirstWeekday;
+  time_zone: TimeZone;
 }
 
-export type TranslationCategory =
-  | "title"
-  | "state"
-  | "entity"
-  | "entity_component"
-  | "config"
-  | "config_panel"
-  | "options"
-  | "device_automation"
-  | "mfa_setup"
-  | "system_health"
-  | "device_class"
-  | "application_credentials"
-  | "issues"
-  | "selector";
+// ---------------------------------------------------------------------------
+// Global declarations
+// ---------------------------------------------------------------------------
 
 declare global {
   /* eslint-disable no-var, no-redeclare */
   var __DEV__: boolean;
   var __DEMO__: boolean;
-  var __BUILD__: "latest" | "es5";
+  var __BUILD__: "modern" | "legacy";
   var __VERSION__: string;
   var __STATIC_PATH__: string;
   var __BACKWARDS_COMPAT__: boolean;
-  var __SUPERVISOR__: boolean;
+  var __HASS_URL__: string;
   /* eslint-enable no-var, no-redeclare */
 
   interface Window {
@@ -94,6 +123,12 @@ declare global {
       value: unknown;
     };
     change: undefined;
+    "hass-logout": undefined;
+    "config-refresh": undefined;
+    "hass-api-called": {
+      success: boolean;
+      response: unknown;
+    };
   }
 
   // For loading workers in webpack
@@ -101,6 +136,10 @@ declare global {
     url: string;
   }
 }
+
+// ---------------------------------------------------------------------------
+// Registry entries (kept for internal ha/ entity utilities)
+// ---------------------------------------------------------------------------
 
 export interface EntityRegistryDisplayEntry {
   entity_id: string;
@@ -146,6 +185,26 @@ export interface FloorRegistryEntry {
   icon: string | null;
 }
 
+// ---------------------------------------------------------------------------
+// Themes (simplified — only fields used by our codebase)
+// ---------------------------------------------------------------------------
+
+export interface Themes {
+  default_theme: string;
+  default_dark_theme: string | null;
+  themes: Record<string, any>;
+  darkMode: boolean;
+  theme: string;
+}
+
+// ---------------------------------------------------------------------------
+// Theme settings, panels, translations
+// ---------------------------------------------------------------------------
+
+// Currently selected theme and its settings. These are the values stored in local storage.
+// Note: These values are not meant to be used at runtime to check whether dark mode is active
+// or which theme name to use, as this interface represents the config data for the theme picker.
+// The actually active dark mode and theme name can be read from hass.themes.
 export interface ThemeSettings {
   theme: string;
   // Radio box selection for theme picker. Do not use in Lovelace rendering as
@@ -162,11 +221,13 @@ export interface PanelInfo<T = Record<string, any> | null> {
   icon: string | null;
   title: string | null;
   url_path: string;
+  config_panel_domain?: string;
+  default_visible?: boolean;
+  require_admin?: boolean;
+  show_in_sidebar?: boolean;
 }
 
-export interface Panels {
-  [name: string]: PanelInfo;
-}
+export type Panels = Record<string, PanelInfo>;
 
 export interface Resources {
   [language: string]: Record<string, string>;
@@ -180,10 +241,12 @@ export interface Translation {
 
 export interface TranslationMetadata {
   fragments: string[];
-  translations: {
-    [lang: string]: Translation;
-  };
+  translations: Record<string, Translation>;
 }
+
+// ---------------------------------------------------------------------------
+// Auth / user types
+// ---------------------------------------------------------------------------
 
 export interface Credential {
   auth_provider_type: string;
@@ -205,6 +268,10 @@ export interface CurrentUser {
   mfa_modules: MFAModule[];
 }
 
+// ---------------------------------------------------------------------------
+// Service call types
+// ---------------------------------------------------------------------------
+
 export interface ServiceCallRequest {
   domain: string;
   service: string;
@@ -218,25 +285,32 @@ export interface Context {
   user_id?: string | null;
 }
 
-export interface ServiceCallResponse {
+export interface ServiceCallResponse<T = any> {
   context: Context;
+  response?: T;
 }
 
-export interface HomeAssistant {
-  auth: Auth;
-  connection: Connection;
-  connected: boolean;
-  states: HassEntities;
-  entities: { [id: string]: EntityRegistryDisplayEntry };
-  devices: { [id: string]: DeviceRegistryEntry };
-  areas: { [id: string]: AreaRegistryEntry };
-  floors: { [id: string]: FloorRegistryEntry };
-  services: HassServices;
-  config: HassConfig;
-  themes: Themes;
-  selectedTheme: ThemeSettings | null;
-  panels: Panels;
-  panelUrl: string;
+// ---------------------------------------------------------------------------
+// Value formatting
+// ---------------------------------------------------------------------------
+
+export interface ValuePart {
+  type: "value" | "literal" | "unit";
+  value: string;
+}
+
+// ---------------------------------------------------------------------------
+// HomeAssistant decomposed into sub-interfaces
+// ---------------------------------------------------------------------------
+
+export interface HomeAssistantRegistries {
+  entities: Record<string, EntityRegistryDisplayEntry>;
+  devices: Record<string, DeviceRegistryEntry>;
+  areas: Record<string, AreaRegistryEntry>;
+  floors: Record<string, FloorRegistryEntry>;
+}
+
+export interface HomeAssistantInternationalization {
   // i18n
   // current effective language in that order:
   //   - backend saved user selected language
@@ -247,44 +321,150 @@ export interface HomeAssistant {
   // local stored language, keep that name for backward compatibility
   selectedLanguage: string | null;
   locale: FrontendLocaleData;
-  resources: Resources;
   localize: LocalizeFunc;
   translationMetadata: TranslationMetadata;
-  suspendWhenHidden: boolean;
-  enableShortcuts: boolean;
-  vibrate: boolean;
-  dockedSidebar: "docked" | "always_hidden" | "auto";
-  defaultPanel: string;
-  moreInfoEntityId: string | null;
-  user?: CurrentUser;
-  hassUrl(path?: string): string;
-  callService(
+  loadBackendTranslation(
+    category: string,
+    integration?: string | string[],
+    configFlow?: boolean
+  ): Promise<LocalizeFunc>;
+  loadFragmentTranslation(fragment: string): Promise<LocalizeFunc | undefined>;
+}
+
+export interface HomeAssistantApi {
+  callService<T = any>(
     domain: ServiceCallRequest["domain"],
     service: ServiceCallRequest["service"],
     serviceData?: ServiceCallRequest["serviceData"],
-    target?: ServiceCallRequest["target"]
-  ): Promise<ServiceCallResponse>;
+    target?: ServiceCallRequest["target"],
+    notifyOnError?: boolean,
+    returnResponse?: boolean
+  ): Promise<ServiceCallResponse<T>>;
   callApi<T>(
     method: "GET" | "POST" | "PUT" | "DELETE",
     path: string,
     parameters?: Record<string, any>,
     headers?: Record<string, string>
   ): Promise<T>;
+  callApiRaw(
+    method: "GET" | "POST" | "PUT" | "DELETE",
+    path: string,
+    parameters?: Record<string, any>,
+    headers?: Record<string, string>,
+    signal?: AbortSignal
+  ): Promise<Response>;
   fetchWithAuth(path: string, init?: Record<string, any>): Promise<Response>;
   sendWS(msg: MessageBase): void;
   callWS<T>(msg: MessageBase): Promise<T>;
-  loadBackendTranslation(
-    category: TranslationCategory,
-    integration?: string | string[],
-    configFlow?: boolean
-  ): Promise<LocalizeFunc>;
+}
+
+export interface HomeAssistantFormatters {
   formatEntityState(stateObj: HassEntity, state?: string): string;
+  formatEntityStateToParts(stateObj: HassEntity, state?: string): ValuePart[];
   formatEntityAttributeValue(
     stateObj: HassEntity,
     attribute: string,
     value?: any
   ): string;
+  formatEntityAttributeValueToParts(
+    stateObj: HassEntity,
+    attribute: string,
+    value?: any
+  ): ValuePart[];
   formatEntityAttributeName(stateObj: HassEntity, attribute: string): string;
+  formatEntityName(
+    stateObj: HassEntity,
+    type: string | any | any[] | undefined,
+    separator?: any
+  ): string;
 }
 
+export interface HomeAssistantConnection {
+  connection: Connection;
+  connected: boolean;
+  debugConnection: boolean;
+  hassUrl(path?: string): string;
+}
+
+export interface HomeAssistantUI {
+  themes: Themes;
+  selectedTheme: ThemeSettings | null;
+  panels: Panels;
+  panelUrl: string;
+  dockedSidebar: "docked" | "always_hidden" | "auto";
+  kioskMode: boolean;
+  enableShortcuts: boolean;
+  vibrate: boolean;
+  suspendWhenHidden: boolean;
+}
+
+export interface HomeAssistantConfig {
+  auth: Auth & { external?: any };
+  config: HassConfig;
+  user?: CurrentUser;
+  userData?: any;
+  systemData?: any;
+}
+
+export interface HomeAssistant
+  extends
+    HomeAssistantRegistries,
+    HomeAssistantInternationalization,
+    HomeAssistantApi,
+    HomeAssistantFormatters,
+    HomeAssistantConnection,
+    HomeAssistantUI,
+    HomeAssistantConfig {
+  states: HassEntities;
+  services: HassServices;
+}
+
+// ---------------------------------------------------------------------------
+// Utility types
+// ---------------------------------------------------------------------------
+
 export type Constructor<T = any> = new (...args: any[]) => T;
+
+export interface ClassElement {
+  kind: "field" | "method";
+  key: PropertyKey;
+  placement: "static" | "prototype" | "own";
+  initializer?: (...args: any[]) => unknown;
+  extras?: ClassElement[];
+  finisher?: <T>(cls: Constructor<T>) => undefined | Constructor<T>;
+  descriptor?: PropertyDescriptor;
+}
+
+export interface ValueChangedEvent<T> extends CustomEvent {
+  detail: {
+    value: T;
+  };
+}
+
+export interface Route {
+  prefix: string;
+  path: string;
+}
+
+export interface PanelElement extends HTMLElement {
+  hass?: HomeAssistant;
+  narrow?: boolean;
+  route?: Route | null;
+  panel?: PanelInfo;
+}
+
+export interface LocalizeMixin {
+  hass?: HomeAssistant;
+  localize: LocalizeFunc;
+}
+
+// https://www.jpwilliams.dev/how-to-unpack-the-return-type-of-a-promise-in-typescript
+export type AsyncReturnType<T extends (...args: any) => any> = T extends (
+  ...args: any
+) => Promise<infer U>
+  ? U
+  : T extends (...args: any) => infer U
+    ? U
+    : never;
+
+export type Entries<T> = [keyof T, T[keyof T]][];

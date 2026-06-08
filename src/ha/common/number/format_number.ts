@@ -7,17 +7,8 @@ import type {
 } from "home-assistant-js-websocket";
 import type { EntityRegistryDisplayEntry } from "../../types";
 import type { FrontendLocaleData } from "../../types";
+import { NumberFormat } from "../../types";
 import { round } from "./round";
-
-enum NumberFormat {
-  language = "language",
-  system = "system",
-  comma_decimal = "comma_decimal",
-  decimal_comma = "decimal_comma",
-  quote_decimal = "quote_decimal",
-  space_comma = "space_comma",
-  none = "none",
-}
 
 export const isNumericState = (stateObj: HassEntity): boolean =>
   isNumericFromAttributes(stateObj.attributes);
