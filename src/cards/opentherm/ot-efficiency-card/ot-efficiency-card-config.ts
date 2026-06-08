@@ -1,4 +1,8 @@
-import { assert, type, string, optional, unknown, boolean, number } from 'superstruct';
+import { defaulted, type, string, optional, unknown, boolean, number } from 'superstruct';
+import { create } from 'superstruct';
+
+const DEFAULT_HOURS = 6;
+const DEFAULT_CONDENSING_THRESHOLD = 55;
 
 export interface OtEfficiencyCardConfig {
   type: string;
@@ -20,14 +24,13 @@ export const OtEfficiencyCardConfigStruct = type({
   return_temp_entity: string(),
   flame_entity: optional(string()),
   ch_active_entity: optional(string()),
-  condensing_threshold: optional(number()),
-  hours: optional(number()),
+  condensing_threshold: optional(defaulted(number(), DEFAULT_CONDENSING_THRESHOLD)),
+  hours: optional(defaulted(number(), DEFAULT_HOURS)),
   fault_entity: optional(string()),
   name: optional(unknown()),
   show_last_updated: optional(boolean()),
 });
 
 export function validateOtEfficiencyCardConfig(config: unknown): OtEfficiencyCardConfig {
-  assert(config, OtEfficiencyCardConfigStruct);
-  return config as OtEfficiencyCardConfig;
+  return create(config, OtEfficiencyCardConfigStruct);
 }

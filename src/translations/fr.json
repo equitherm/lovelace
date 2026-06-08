@@ -187,7 +187,8 @@
       "default_title": "Modulation",
       "current": "Actuelle",
       "max": "Max",
-      "cycles_per_hour": "cycles/h"
+      "cycles_per_hour": "cycles/h",
+      "flame": "Flamme"
     },
     "common": {
       "fault": "Défaut"

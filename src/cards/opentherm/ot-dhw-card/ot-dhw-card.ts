@@ -63,9 +63,9 @@ export class OtDhwCard extends OtBaseCard<OtDhwCardConfig> {
   private get _sliderProps() {
     const id = this._config.dhw_setpoint_entity;
     return {
-      min: this._entityAttr<number>(id, 'min') ?? 30,
-      max: this._entityAttr<number>(id, 'max') ?? 60,
-      step: this._entityAttr<number>(id, 'step') ?? 0.5,
+      min: this._entityAttr<number>(id, 'min') ?? 40,
+      max: this._entityAttr<number>(id, 'max') ?? 65,
+      step: this._entityAttr<number>(id, 'step') ?? 1,
     };
   }
 
@@ -117,7 +117,7 @@ export class OtDhwCard extends OtBaseCard<OtDhwCardConfig> {
 
   private _setpointChanged(ev: CustomEvent): void {
     if (!this.hass) return;
-    const value = (ev.target as HTMLInputElement).value;
+    const value = (ev.target as any).value;
     const numValue = parseFloat(value);
     if (isNaN(numValue)) return;
     const domain = computeDomain(this._config.dhw_setpoint_entity);

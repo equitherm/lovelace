@@ -8,6 +8,7 @@ import { formatNumber } from '../../../ha';
 import { cardStyle, kpiFooterStyles } from '../../../utils/card-styles';
 import { registerCustomCard } from '../../../utils/register-card';
 import { computeDomain } from '../../../ha/common/entity/compute_domain';
+import { SENSOR_DOMAINS, BINARY_SENSOR_DOMAINS } from '../../../utils/domains';
 import { OT_EFFICIENCY_CARD_NAME, OT_EFFICIENCY_CARD_EDITOR_NAME } from './const';
 import { validateOtEfficiencyCardConfig } from './ot-efficiency-card-config';
 import { OtHistoryHelper, type OtHistoryPoint } from '../../../utils/ot-history';
@@ -40,13 +41,13 @@ export class OtEfficiencyCard extends OtEChartCard<OtEfficiencyCardConfig> {
 
   static async getStubConfig(hass: HomeAssistant): Promise<OtEfficiencyCardConfig> {
     const entityIds = Object.keys(hass.states);
-    const boiler = entityIds.find(e => e.includes('boiler') || e.includes('t_boiler')) ?? '';
-    const ret = entityIds.find(e => e.includes('ret') || e.includes('return')) ?? '';
+    const boiler = entityIds.find(e => SENSOR_DOMAINS.includes(computeDomain(e)) && (e.includes('boiler') || e.includes('t_boiler'))) ?? '';
+    const ret = entityIds.find(e => SENSOR_DOMAINS.includes(computeDomain(e)) && (e.includes('ret') || e.includes('return'))) ?? '';
     const flame = entityIds.find(e =>
-      computeDomain(e) === 'binary_sensor' && e.includes('flame')
+      BINARY_SENSOR_DOMAINS.includes(computeDomain(e)) && e.includes('flame')
     ) ?? '';
     const chActive = entityIds.find(e =>
-      computeDomain(e) === 'binary_sensor' && (e.includes('ch_active') || e.includes('central_heating'))
+      BINARY_SENSOR_DOMAINS.includes(computeDomain(e)) && (e.includes('ch_active') || e.includes('central_heating'))
     ) ?? '';
     return {
       type: `custom:${OT_EFFICIENCY_CARD_NAME}`,

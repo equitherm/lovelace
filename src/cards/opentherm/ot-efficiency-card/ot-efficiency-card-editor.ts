@@ -8,6 +8,7 @@ import { schemaHelpers } from '../../../utils/form';
 import type { HaFormSchema } from '../../../utils/form';
 import setupCustomLocalize from '../../../localize';
 import { OT_EFFICIENCY_CARD_EDITOR_NAME } from './const';
+import { SENSOR_DOMAINS, BINARY_SENSOR_DOMAINS } from '../../../utils/domains';
 
 @customElement(OT_EFFICIENCY_CARD_EDITOR_NAME)
 export class OtEfficiencyCardEditor extends EquithermBaseEditor<OtEfficiencyCardConfig> {
@@ -23,16 +24,16 @@ export class OtEfficiencyCardEditor extends EquithermBaseEditor<OtEfficiencyCard
     const localize = setupCustomLocalize(this.hass);
     return [
       // Required entities
-      schemaHelpers.entity('boiler_temp_entity', { domain: ['sensor', 'input_number'] }),
+      schemaHelpers.entity('boiler_temp_entity', { domain: [...SENSOR_DOMAINS] }),
       schemaHelpers.entityName('name', { entity: 'boiler_temp_entity' }),
-      schemaHelpers.entity('return_temp_entity', { domain: ['sensor', 'input_number'] }),
+      schemaHelpers.entity('return_temp_entity', { domain: [...SENSOR_DOMAINS] }),
       // Optional
       schemaHelpers.expandable(localize('editor.optional'), 'mdi:connection', [
-        schemaHelpers.entity('flame_entity', { domain: ['binary_sensor', 'input_boolean'] }),
-        schemaHelpers.entity('ch_active_entity', { domain: ['binary_sensor', 'input_boolean'] }),
+        schemaHelpers.entity('flame_entity', { domain: [...BINARY_SENSOR_DOMAINS] }),
+        schemaHelpers.entity('ch_active_entity', { domain: [...BINARY_SENSOR_DOMAINS] }),
         schemaHelpers.number('condensing_threshold', 30, 80, 1, { unit_of_measurement: '°C' }),
         schemaHelpers.number('hours', 1, 48, 1),
-        schemaHelpers.entity('fault_entity', { domain: ['binary_sensor', 'input_boolean'], required: false }),
+        schemaHelpers.entity('fault_entity', { domain: [...BINARY_SENSOR_DOMAINS], required: false }),
         { name: 'show_last_updated', selector: { boolean: {} } },
       ]),
     ] as const satisfies readonly HaFormSchema[];

@@ -1,4 +1,7 @@
-import { assert, type, string, optional, unknown, boolean, number } from 'superstruct';
+import { defaulted, type, string, optional, unknown, boolean, number } from 'superstruct';
+import { create } from 'superstruct';
+
+const DEFAULT_HOURS = 1;
 
 export interface OtModulationCardConfig {
   type: string;
@@ -17,13 +20,12 @@ export const OtModulationCardConfigStruct = type({
   modulation_entity: string(),
   max_modulation_entity: string(),
   flame_entity: string(),
-  hours: optional(number()),
+  hours: optional(defaulted(number(), DEFAULT_HOURS)),
   fault_entity: optional(string()),
   name: optional(unknown()),
   show_last_updated: optional(boolean()),
 });
 
 export function validateOtModulationCardConfig(config: unknown): OtModulationCardConfig {
-  assert(config, OtModulationCardConfigStruct);
-  return config as OtModulationCardConfig;
+  return create(config, OtModulationCardConfigStruct);
 }

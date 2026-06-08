@@ -120,7 +120,7 @@ export class OtModulationCard extends OtBaseCard<OtModulationCardConfig> {
   }
 
   private _onMaxModulationChange = (e: Event): void => {
-    const value = parseFloat((e.target as HTMLInputElement).value);
+    const value = parseFloat((e.target as any).value);
     if (isNaN(value)) return;
     this._setMaxModulation(value);
   };
@@ -279,7 +279,7 @@ export class OtModulationCard extends OtBaseCard<OtModulationCardConfig> {
           </div>
         </div>
         <div class="timeline-section">
-          <div class="timeline-label">Flame</div>
+          <div class="timeline-label">${localize('opentherm.modulation_card.flame')}</div>
           <eq-binary-timeline
             .hass=${this.hass}
             .segments=${segments}
