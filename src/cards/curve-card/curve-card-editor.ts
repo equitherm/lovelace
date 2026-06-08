@@ -3,7 +3,6 @@ import { customElement } from 'lit/decorators.js';
 import memoizeOne from 'memoize-one';
 import type { CurveCardConfig } from './curve-card-config';
 import { validateCurveCardConfig } from './curve-card-config';
-import type { LovelaceCardConfig } from '../../ha/data/lovelace';
 import { EquithermBaseEditor } from '../../utils/base';
 import { schemaHelpers } from '../../utils/form';
 import type { HaFormSchema } from '../../utils/form';
@@ -14,8 +13,8 @@ import { CURVE_CARD_EDITOR_NAME } from './const';
 @customElement(CURVE_CARD_EDITOR_NAME)
 export class EquithermCurveCardEditor extends EquithermBaseEditor<CurveCardConfig> {
 
-  setConfig(config: LovelaceCardConfig): void {
-    this._config = { ...config } as CurveCardConfig;
+  setConfig(config: CurveCardConfig): void {
+    this._config = { ...config };
   }
 
   protected _validate(config: CurveCardConfig): void {

@@ -2,8 +2,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import type { HomeAssistant } from '../../ha/types';
-import type { LovelaceCardConfig } from '../../ha/data/lovelace';
-import type { LovelaceCardEditor } from '../../ha/panels/lovelace/types';
 import { fireEvent } from '../../ha/common/dom/fire_event';
 import type { HaFormSchema } from '../form/ha-form';
 import setupCustomLocalize from '../../localize';
@@ -31,7 +29,6 @@ import setupCustomLocalize from '../../localize';
  */
 export abstract class EquithermBaseEditor<TConfig extends Record<string, unknown>>
   extends LitElement
-  implements LovelaceCardEditor
 {
   @property({ attribute: false }) hass!: HomeAssistant;
 
@@ -42,10 +39,10 @@ export abstract class EquithermBaseEditor<TConfig extends Record<string, unknown
   /**
    * Assign the editor config. Subclasses typically do:
    * ```
-   * setConfig(config: LovelaceCardConfig) { this._config = { ...config } as TConfig; }
+   * setConfig(config: TConfig) { this._config = { ...config }; }
    * ```
    */
-  abstract setConfig(config: LovelaceCardConfig): void;
+  abstract setConfig(config: TConfig): void;
 
   /** Return the ha-form schema for this editor. */
   protected abstract _getSchema(): readonly HaFormSchema[];
