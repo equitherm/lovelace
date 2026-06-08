@@ -8,9 +8,12 @@ import './cards/opentherm/ot-dhw-card/ot-dhw-card';
 import './cards/opentherm/ot-efficiency-card/ot-efficiency-card';
 import './cards/opentherm/ot-diagnostics-card/ot-diagnostics-card';
 
-// Deprecated aliases — ot-status-card and ot-modulation-card now resolve to OtHeatingCard
-customElements.define('opentherm-status-card', OtHeatingCard);
-customElements.define('opentherm-modulation-card', OtHeatingCard);
+// Deprecated aliases — thin subclasses required because customElements.define()
+// rejects the same constructor for a second tag name ("already used with this registry")
+class OtStatusCardDeprecated extends OtHeatingCard {}
+class OtModulationCardDeprecated extends OtHeatingCard {}
+customElements.define('opentherm-status-card', OtStatusCardDeprecated);
+customElements.define('opentherm-modulation-card', OtModulationCardDeprecated);
 
 // Shared components
 import './shared/eq-tuning-dialog';
