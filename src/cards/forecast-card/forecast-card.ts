@@ -18,7 +18,7 @@ import '../../shared/eq-manual-overlay';
 import '../../shared/eq-param-bar';
 import '../../shared/eq-tuning-dialog';
 import { buildTuningDialogConfig } from '../../utils/tuning-dialog-config';
-import { niceBounds } from '../../utils/chart';
+import { niceBounds, computeYAxisFractionDigits, sideTooltipPosition, Y_AXIS_FLOOR_C } from '../../utils/chart';
 
 registerCustomCard({
   type: FORECAST_CARD_NAME,
@@ -44,11 +44,15 @@ export class EquithermForecastCard extends EquithermEChartCard<ForecastCardConfi
     }
   }
 
-  static async getStubConfig(hass: HomeAssistant): Promise<ForecastCardConfig> {
+  static getStubConfig(
+    hass: HomeAssistant,
+    entities: string[],
+    entitiesFallback: string[],
+  ): ForecastCardConfig {
     return {
       type: 'custom:equitherm-forecast-card',
-      weather_entity: findWeatherEntity(hass) ?? '',
-      climate_entity: findClimateEntity(hass) ?? '',
+      weather_entity: findWeatherEntity(hass, entities, entitiesFallback) ?? '',
+      climate_entity: findClimateEntity(hass, entities, entitiesFallback) ?? '',
       flow_entity: findFlowEntity(hass) ?? '',
       hours: 24,
       hc: 1.2,
@@ -217,6 +221,9 @@ export class EquithermForecastCard extends EquithermEChartCard<ForecastCardConfi
     }] : [];
 
     const forecastYBounds = niceBounds(this._curveParams.minFlow ?? 20, this._curveParams.maxFlow ?? 70);
+    const flowYMin = Math.min(this._toDisplayTemp(Y_AXIS_FLOOR_C), this._toDisplayTemp(forecastYBounds.min));
+    const flowYMax = this._toDisplayTemp(forecastYBounds.max);
+    const yFractionDigits = computeYAxisFractionDigits(flowYMin, flowYMax);
 
     return {
       options: {
@@ -230,9 +237,12 @@ export class EquithermForecastCard extends EquithermEChartCard<ForecastCardConfi
         yAxis: [
           {
             type: 'value' as const,
-            axisLabel: { fontSize: 10 },
-            min: this._toDisplayTemp(forecastYBounds.min),
-            max: this._toDisplayTemp(forecastYBounds.max),
+            axisLabel: {
+              fontSize: 10,
+              formatter: (v: number) => `${parseFloat(v.toFixed(yFractionDigits))}`,
+            },
+            min: flowYMin,
+            max: flowYMax,
           },
           {
             type: 'value' as const,
@@ -243,6 +253,7 @@ export class EquithermForecastCard extends EquithermEChartCard<ForecastCardConfi
         // ha-chart-base wraps formatters via wrapLitTooltipFormatter (Lit render)
         tooltip: {
           trigger: 'axis' as const,
+          position: sideTooltipPosition,
           backgroundColor: 'rgba(var(--rgb-card-background-color, 255, 255, 255), 0.95)',
           borderColor: 'var(--divider-color, rgba(0,0,0,0.12))',
           borderWidth: 1,

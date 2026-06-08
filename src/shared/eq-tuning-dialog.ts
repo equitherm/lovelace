@@ -11,6 +11,7 @@ import { computeDomain } from '../ha/common/entity/compute_domain';
 import setupCustomlocalize from '../localize';
 import './eq-param-bar';
 import type { EChartConfig } from '../utils/base/echart-card';
+import { Y_AXIS_FLOOR_C } from '../utils/chart';
 
 @customElement('eq-tuning-dialog')
 export class EqTuningDialog extends EquithermBaseElement {
@@ -249,7 +250,7 @@ export class EqTuningDialog extends EquithermBaseElement {
         },
         yAxis: {
           type: 'value' as const,
-          min: this._toDisplayTemp(minFlow - 5),
+          min: this._toDisplayTemp(Y_AXIS_FLOOR_C),
           max: this._toDisplayTemp(maxFlow + 5),
           axisLabel: { fontSize: 10 },
         },

@@ -116,7 +116,7 @@ export { EquithermBaseEditor }                     // base-editor
 | Language | TypeScript 5.9 (strict mode) |
 | UI Framework | Lit 3 |
 | Bundler | Rollup 4 |
-| Charts | ECharts (OT cards) / ApexCharts (Equitherm cards) |
+| Charts | ECharts via ha-chart-base (all cards) |
 | Config validation | Superstruct |
 | HA Connection | home-assistant-js-websocket |
 | Release | semantic-release |
@@ -228,7 +228,7 @@ Never redeclare these locally in `const.ts` or schema files.
 | Card | Key entities | Notes |
 |---|---|---|
 | `status-card` | climate, outdoor, flow | HVAC badge, rate-limit, PID, WWSD |
-| `curve-card` | climate, outdoor, flow | ApexCharts, tuning dialog |
+| `curve-card` | climate, outdoor, flow | ECharts via ha-chart-base, tuning dialog |
 | `forecast-card` | weather, climate, flow | 24h forecast, WebSocket subscription |
 
 ### OpenTherm cards (`src/cards/opentherm/`)

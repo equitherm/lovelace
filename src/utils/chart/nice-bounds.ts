@@ -1,3 +1,6 @@
+/** Y-axis floor in °C — ensures charts always include the freezing point. */
+export const Y_AXIS_FLOOR_C = 0;
+
 /** Round axis bounds to "nice" multiples of a step value. */
 export function niceBounds(
   min: number,
