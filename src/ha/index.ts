@@ -1,9 +1,6 @@
 // Barrel file for vendored HA types from Mushroom
 // Add exports here as you copy more files from Mushroom
 
-// Common constants
-export * from "./common/const";
-
 // Common DOM
 export * from "./common/dom/fire_event";
 
