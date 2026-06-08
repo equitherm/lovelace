@@ -1,5 +1,7 @@
 // @source home-assistant/frontend/src/data/climate.ts
 // @synced 2026-06-08 @ SHA 1cca5f3
+// @note Adapted: @mdi/js SVG path imports replaced with mdi:* string identifiers.
+//   HA's <ha-icon> component resolves these at runtime — avoids bundling @mdi/js (~150KB).
 
 import type {
   HassEntityAttributeBase,

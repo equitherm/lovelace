@@ -3,15 +3,15 @@
 
 import type { HassConfig } from "home-assistant-js-websocket";
 import memoizeOne from "memoize-one";
-import type { FrontendLocaleData } from "../../types";
+import type { FrontendLocaleData } from "../../data/translation";
 import { resolveTimeZone } from "./resolve-time-zone";
 import { useAmPm } from "./use_am_pm";
 
 export const formatTime = (
   dateObj: Date,
   locale: FrontendLocaleData,
-  config?: HassConfig
-) => formatTimeMem(locale, config?.time_zone ?? "UTC").format(dateObj);
+  config: HassConfig
+) => formatTimeMem(locale, config.time_zone).format(dateObj);
 
 const formatTimeMem = memoizeOne(
   (locale: FrontendLocaleData, serverTimeZone: string) =>
@@ -26,8 +26,8 @@ const formatTimeMem = memoizeOne(
 export const formatTimeWithSeconds = (
   dateObj: Date,
   locale: FrontendLocaleData,
-  config?: HassConfig
-) => formatTimeWithSecondsMem(locale, config?.time_zone ?? "UTC").format(dateObj);
+  config: HassConfig
+) => formatTimeWithSecondsMem(locale, config.time_zone).format(dateObj);
 
 const formatTimeWithSecondsMem = memoizeOne(
   (locale: FrontendLocaleData, serverTimeZone: string) =>
@@ -43,8 +43,8 @@ const formatTimeWithSecondsMem = memoizeOne(
 export const formatTimeWeekday = (
   dateObj: Date,
   locale: FrontendLocaleData,
-  config?: HassConfig
-) => formatTimeWeekdayMem(locale, config?.time_zone ?? "UTC").format(dateObj);
+  config: HassConfig
+) => formatTimeWeekdayMem(locale, config.time_zone).format(dateObj);
 
 const formatTimeWeekdayMem = memoizeOne(
   (locale: FrontendLocaleData, serverTimeZone: string) =>
@@ -60,8 +60,8 @@ const formatTimeWeekdayMem = memoizeOne(
 export const formatTime24h = (
   dateObj: Date,
   locale: FrontendLocaleData,
-  config?: HassConfig
-) => formatTime24hMem(locale, config?.time_zone ?? "UTC").format(dateObj);
+  config: HassConfig
+) => formatTime24hMem(locale, config.time_zone).format(dateObj);
 
 const formatTime24hMem = memoizeOne(
   (locale: FrontendLocaleData, serverTimeZone: string) =>

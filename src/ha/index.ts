@@ -37,6 +37,7 @@ export * from "./data/climate";
 export * from "./data/entity";
 export * from "./data/entity_attributes";
 export * from "./data/lovelace";
+export * from "./data/translation";
 
 // Lovelace panel
 export * from "./panels/lovelace/types";

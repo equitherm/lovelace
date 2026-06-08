@@ -1,6 +1,9 @@
 // @source home-assistant/frontend/src/data/entity/entity_attributes.ts
 // @synced 2026-06-08 @ SHA 1cca5f3
-// Minimal extract — only functions used by our codebase.
+// @note Adapted: Minimal extract (3 of ~225 upstream lines). Remaining upstream content
+//   (STATE_ATTRIBUTES, TEMPERATURE_ATTRIBUTES, DOMAIN_ATTRIBUTES_UNITS, NON_NUMERIC_ATTRIBUTES,
+//   computeShownAttributes, etc.) is unused by our cards and would pull in heavy dependencies
+//   (formatDurationDigital, computeStateDomain).
 
 import type { HassEntity } from "home-assistant-js-websocket";
 import { UNAVAILABLE, UNKNOWN } from "./entity";

@@ -6,10 +6,13 @@ import type {
   HassEntityAttributeBase,
 } from "home-assistant-js-websocket";
 import type { EntityRegistryDisplayEntry } from "../../types";
-import type { FrontendLocaleData } from "../../types";
-import { NumberFormat } from "../../types";
-import { round } from "./round";
+import type { FrontendLocaleData } from "../../data/translation";
+import { NumberFormat } from "../../data/translation";
 
+/**
+ * Returns true if the entity is considered numeric based on the attributes it has
+ * @param stateObj The entity state object
+ */
 export const isNumericState = (stateObj: HassEntity): boolean =>
   isNumericFromAttributes(stateObj.attributes);
 
@@ -26,13 +29,13 @@ export const numberFormatToLocale = (
 ): string | string[] | undefined => {
   switch (localeOptions.number_format) {
     case NumberFormat.comma_decimal:
-      return ["en-US", "en"];
+      return ["en-US", "en"]; // Use United States with fallback to English formatting 1,234,567.89
     case NumberFormat.decimal_comma:
-      return ["de", "es", "it"];
+      return ["de", "es", "it"]; // Use German with fallback to Spanish then Italian formatting 1.234.567,89
     case NumberFormat.space_comma:
-      return ["fr", "sv", "cs"];
+      return ["fr", "sv", "cs"]; // Use French with fallback to Swedish and Czech formatting 1 234 567,89
     case NumberFormat.quote_decimal:
-      return ["de-CH"];
+      return ["de-CH"]; // Use German (Switzerland) formatting 1'234'567.89
     case NumberFormat.system:
       return undefined;
     default:
@@ -40,22 +43,36 @@ export const numberFormatToLocale = (
   }
 };
 
+/**
+ * Formats a number based on the user's preference with thousands separator(s) and decimal character for better legibility.
+ *
+ * @param num The number to format
+ * @param localeOptions The user-selected language and formatting, from `hass.locale`
+ * @param options Intl.NumberFormatOptions to use
+ */
 export const formatNumber = (
   num: string | number,
   localeOptions?: FrontendLocaleData,
   options?: Intl.NumberFormatOptions
-): string => {
+): string =>
+  formatNumberToParts(num, localeOptions, options)
+    .map((part) => part.value)
+    .join("");
+
+/**
+ * Returns an array of objects containing the formatted number in parts
+ * Similar to Intl.NumberFormat.prototype.formatToParts()
+ *
+ * Input params - same as for formatNumber()
+ */
+export const formatNumberToParts = (
+  num: string | number,
+  localeOptions?: FrontendLocaleData,
+  options?: Intl.NumberFormatOptions
+): any[] => {
   const locale = localeOptions
     ? numberFormatToLocale(localeOptions)
     : undefined;
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (Number as any).isNaN =
-    Number.isNaN ||
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    function isNaN(input: any): input is number {
-      return typeof input === "number" && isNaN(input);
-    };
 
   if (
     localeOptions?.number_format !== NumberFormat.none &&
@@ -64,7 +81,7 @@ export const formatNumber = (
     return new Intl.NumberFormat(
       locale,
       getDefaultFormatOptions(num, options)
-    ).format(Number(num));
+    ).formatToParts(Number(num));
   }
 
   if (
@@ -72,23 +89,24 @@ export const formatNumber = (
     num !== "" &&
     localeOptions?.number_format === NumberFormat.none
   ) {
+    // If NumberFormat is none, use en-US format without grouping.
     return new Intl.NumberFormat(
       "en-US",
       getDefaultFormatOptions(num, {
         ...options,
         useGrouping: false,
       })
-    ).format(Number(num));
+    ).formatToParts(Number(num));
   }
 
-  if (typeof num === "string") {
-    return num;
-  }
-  return `${round(num, options?.maximumFractionDigits).toString()}${
-    options?.style === "currency" ? ` ${options.currency}` : ""
-  }`;
+  return [{ type: "literal", value: num }];
 };
 
+/**
+ * Checks if the current entity state should be formatted as an integer based on the `state` and `step` attribute and returns the appropriate `Intl.NumberFormatOptions` object with `maximumFractionDigits` set
+ * @param entityState The state object of the entity
+ * @returns An `Intl.NumberFormatOptions` object with `maximumFractionDigits` set to 0, or `undefined`
+ */
 export const getNumberFormatOptions = (
   entityState?: HassEntity,
   entity?: EntityRegistryDisplayEntry
@@ -109,6 +127,11 @@ export const getNumberFormatOptions = (
   return undefined;
 };
 
+/**
+ * Generates default options for Intl.NumberFormat
+ * @param num The number to be formatted
+ * @param options The Intl.NumberFormatOptions that should be included in the returned options
+ */
 export const getDefaultFormatOptions = (
   num: string | number,
   options?: Intl.NumberFormatOptions
@@ -122,6 +145,7 @@ export const getDefaultFormatOptions = (
     return defaultOptions;
   }
 
+  // Keep decimal trailing zeros if they are present in a string numeric value
   if (
     !options ||
     (options.minimumFractionDigits === undefined &&

@@ -1,5 +1,9 @@
 // @source home-assistant/frontend/src/panels/lovelace/types.ts
 // @synced 2026-06-08 @ SHA 1cca5f3
+// @note Adapted: Extra HASSDomEvents (ll-badge-rebuild, hass-more-info, config-changed)
+//   added for our card dispatches. Config sub-types (LovelaceCardFeatureContext,
+//   LovelaceCardFeaturePosition, ShowToastParams) typed as any to avoid vendoring
+//   card-features/types, notification-manager, and other upstream sub-modules.
 
 import type { HassEntity } from "home-assistant-js-websocket";
 import type { LocalizeFunc } from "../../common/translations/localize";

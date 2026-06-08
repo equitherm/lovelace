@@ -3,8 +3,14 @@
 import type { LitElement } from 'lit';
 import type { Selector } from './ha-selector';
 
-// HaDurationData is not vendored; use `any` for now.
-type HaDurationData = any;
+/** @source home-assistant/frontend/src/components/ha-duration-input.ts */
+interface HaDurationData {
+  days?: number;
+  hours?: number;
+  minutes?: number;
+  seconds?: number;
+  milliseconds?: number;
+}
 
 export interface HaFormBaseSchema {
   name: string;

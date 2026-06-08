@@ -2,8 +2,8 @@
 // @synced 2026-06-08 @ SHA 1cca5f3
 
 import memoizeOne from "memoize-one";
-import type { FrontendLocaleData } from "../../types";
-import { TimeFormat } from "../../types";
+import type { FrontendLocaleData } from "../../data/translation";
+import { TimeFormat } from "../../data/translation";
 
 export const useAmPm = memoizeOne((locale: FrontendLocaleData): boolean => {
   if (locale.time_format === TimeFormat.language || locale.time_format === TimeFormat.system) {

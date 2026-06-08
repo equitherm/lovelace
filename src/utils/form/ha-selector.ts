@@ -2,6 +2,11 @@
 // @synced 2026-06-08 @ SHA 1cca5f3
 // TYPE DEFINITIONS ONLY — runtime functions (handleLegacyEntitySelector,
 // filterSelectorEntities, expandLabelTarget, resolveEntityIDs, etc.) are excluded.
+// @note Adapted: ~500 lines of runtime code excluded. Our editors use HA's built-in
+//   ha-entity-picker which handles entity filtering internally.
+// @note Adapted: 4 external types (ActionRelatedContext, UiAction, EntityNameItem,
+//   HaDurationData) typed as `any` to avoid vendoring hui-action-editor,
+//   compute_entity_name_display, and ha-duration-input component modules.
 
 // Simplified types for external dependencies we don't vendor
 type ActionRelatedContext = any;

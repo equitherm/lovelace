@@ -1,16 +1,16 @@
 // @source home-assistant/frontend/src/types.ts
-// @source home-assistant/frontend/src/data/translation.ts
 // @synced 2026-06-08 @ SHA 1cca5f3
 //
-// Vendored from upstream with the following adaptations:
-//   - Enum types (NumberFormat, TimeFormat, etc.) inlined from data/translation.ts
-//   - EntityRegistryDisplayEntry, Themes defined locally (not imported from data/*)
-//   - DeviceRegistryEntry, AreaRegistryEntry, FloorRegistryEntry kept for internal
-//     ha/ entity utilities (not re-exported to consumers)
-//   - EntityNameItem, EntityNameOptions typed as `any` in HomeAssistantFormatters
-//     since our code doesn't call formatEntityName
-//   - CoreFrontendUserData, CoreFrontendSystemData, ExternalMessaging typed as `any`
-//   - loadBackendTranslation params simplified
+// @note Adapted: EntityRegistryDisplayEntry, Themes defined locally instead of
+//   importing from data/entity_registry and data/ws-themes (not vendored).
+// @note Adapted: DeviceRegistryEntry, AreaRegistryEntry, FloorRegistryEntry kept
+//   for internal ha/ entity utilities (compute_entity_name etc.).
+// @note Adapted: EntityNameItem, EntityNameOptions typed as `any` in
+//   HomeAssistantFormatters.formatEntityName — our code never calls it.
+// @note Adapted: CoreFrontendUserData, CoreFrontendSystemData, ExternalMessaging
+//   typed as `any` in HomeAssistantConfig — we don't vendor those modules.
+// @note Adapted: loadBackendTranslation params simplified to avoid importing
+//   getHassTranslations (which pulls in saveFrontendUserData, subscribeFrontendUserData).
 
 import type {
   Auth,
@@ -24,63 +24,16 @@ import type {
 } from "home-assistant-js-websocket";
 import type { LocalizeFunc } from "./common/translations/localize";
 
-// ---------------------------------------------------------------------------
-// Enums (from upstream data/translation.ts)
-// ---------------------------------------------------------------------------
-
-export enum NumberFormat {
-  language = "language",
-  system = "system",
-  comma_decimal = "comma_decimal",
-  decimal_comma = "decimal_comma",
-  quote_decimal = "quote_decimal",
-  space_comma = "space_comma",
-  none = "none",
-}
-
-export enum TimeFormat {
-  language = "language",
-  system = "system",
-  am_pm = "12",
-  twenty_four = "24",
-}
-
-export enum TimeZone {
-  local = "local",
-  server = "server",
-}
-
-export enum DateFormat {
-  language = "language",
-  system = "system",
-  DMY = "DMY",
-  MDY = "MDY",
-  YMD = "YMD",
-}
-
-export enum FirstWeekday {
-  language = "language",
-  monday = "monday",
-  tuesday = "tuesday",
-  wednesday = "wednesday",
-  thursday = "thursday",
-  friday = "friday",
-  saturday = "saturday",
-  sunday = "sunday",
-}
-
-// ---------------------------------------------------------------------------
-// Locale data
-// ---------------------------------------------------------------------------
-
-export interface FrontendLocaleData {
-  language: string;
-  number_format: NumberFormat;
-  time_format: TimeFormat;
-  date_format: DateFormat;
-  first_weekday: FirstWeekday;
-  time_zone: TimeZone;
-}
+// Enums and FrontendLocaleData — verbatim from data/translation.ts
+import type { FrontendLocaleData } from "./data/translation";
+export {
+  type FrontendLocaleData,
+  NumberFormat,
+  TimeFormat,
+  TimeZone,
+  DateFormat,
+  FirstWeekday,
+} from "./data/translation";
 
 // ---------------------------------------------------------------------------
 // Global declarations
