@@ -170,6 +170,7 @@
       "default_title": "Eau Chaude",
       "enable": "Activer",
       "setpoint": "Consigne",
+      "target": "Cible",
       "dhw": "ECS"
     },
     "efficiency_card": {

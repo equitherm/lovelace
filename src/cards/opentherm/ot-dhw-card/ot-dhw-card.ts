@@ -116,8 +116,8 @@ export class OtDhwCard extends OtBaseCard<OtDhwCardConfig> {
     this.hass.callService(domain, service, { entity_id: entityId });
   }
 
-  private _onSetpointChanged(ev: CustomEvent<{ value: number }>): void {
-    const value = ev.detail.value;
+  private _onSetpointChanged(ev: CustomEvent): void {
+    const value = Number((ev.detail as { value: unknown }).value);
     if (isNaN(value)) return;
     const domain = computeDomain(this._config.dhw_setpoint_entity);
     const serviceDomain = domain === 'input_number' ? 'input_number' : 'number';
@@ -185,6 +185,12 @@ export class OtDhwCard extends OtBaseCard<OtDhwCardConfig> {
           --control-slider-background-opacity: 0.2;
           --control-slider-thickness: 32px;
           --control-slider-border-radius: var(--ha-border-radius-lg, 12px);
+        }
+        @container (max-width: 260px) {
+          .feature-row {
+            flex-wrap: wrap;
+            gap: 4px;
+          }
         }
       `,
     ];

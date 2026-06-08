@@ -172,6 +172,7 @@
       "default_title": "Hot Water",
       "enable": "Enable",
       "setpoint": "Setpoint",
+      "target": "Target",
       "dhw": "DHW"
     },
     "efficiency_card": {
