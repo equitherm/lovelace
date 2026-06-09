@@ -274,7 +274,7 @@ export class OtEfficiencyCard extends OtEChartCard<OtEfficiencyCardConfig> {
     const unit = this.hass?.config?.unit_system?.temperature ?? '°C';
     const locale = this.hass?.locale;
     return (params: any) => {
-      const time = this._formatChartTime(params[0].val[0] as number);
+      const time = this._formatChartTime(params[0].value[0] as number);
       let html = `<span style="opacity:0.6">${time}</span><br/>`;
       for (const p of params) {
         html += `<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${p.color};margin-right:4px;vertical-align:middle"></span>${p.seriesName}: <b>${formatNumber(p.value[1] as number, locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}${unit}</b><br/>`;
