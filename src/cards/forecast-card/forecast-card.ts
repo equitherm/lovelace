@@ -219,8 +219,10 @@ export class EquithermForecastCard extends EquithermEChartCard<ForecastCardConfi
       },
     }] : [];
 
-    const forecastYBounds = niceBounds(this._curveParams.minFlow ?? 20, this._curveParams.maxFlow ?? 70);
-    const flowYMin = Math.min(this._toDisplayTemp(Y_AXIS_FLOOR_C), this._toDisplayTemp(forecastYBounds.min));
+    const minFlowC = this._curveParams.minFlow ?? 20;
+    const forecastYBounds = niceBounds(minFlowC, this._curveParams.maxFlow ?? 70);
+    // Clamp to floor when data is above it (prevents niceBounds overshooting below 0°C)
+    const flowYMin = this._toDisplayTemp(minFlowC >= Y_AXIS_FLOOR_C ? Y_AXIS_FLOOR_C : forecastYBounds.min);
     const flowYMax = this._toDisplayTemp(forecastYBounds.max);
     const yFractionDigits = computeYAxisFractionDigits(flowYMin, flowYMax);
 

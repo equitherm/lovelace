@@ -240,7 +240,11 @@ export class EquithermCurveCard extends EquithermEChartCard<CurveCardConfig> {
     const dataMin = displaySeries.reduce((m, p) => Math.min(m, p.y), Infinity);
     const dataMax = displaySeries.reduce((m, p) => Math.max(m, p.y), -Infinity);
     const yBounds = niceBounds(dataMin, dataMax);
-    const yMin = Math.min(this._toDisplayTemp(Y_AXIS_FLOOR_C), yBounds.min);
+    const yFloor = this._toDisplayTemp(Y_AXIS_FLOOR_C);
+    // Use floor as hard lower bound when data is above it (prevents niceBounds
+    // from overshooting below 0°C with step=10). If data is genuinely below the
+    // floor, let niceBounds determine the axis extent.
+    const yMin = dataMin >= yFloor ? yFloor : yBounds.min;
     const yMax = yBounds.max;
     const yFractionDigits = computeYAxisFractionDigits(yMin, yMax);
 
