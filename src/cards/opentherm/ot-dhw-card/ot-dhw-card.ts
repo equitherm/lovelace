@@ -185,13 +185,6 @@ export class OtDhwCard extends OtBaseCard<OtDhwCardConfig> {
     return kpis;
   }
 
-  private _formatActiveTime(totalMinutes: number): string {
-    if (totalMinutes < 60) return `${totalMinutes}min`;
-    const h = Math.floor(totalMinutes / 60);
-    const m = totalMinutes % 60;
-    return m > 0 ? `${h}h ${m}min` : `${h}h`;
-  }
-
   protected override _titleEntity(): string | undefined {
     return this._config.dhw_enable_entity;
   }
@@ -336,7 +329,8 @@ export class OtDhwCard extends OtBaseCard<OtDhwCardConfig> {
     const hasDelta = !isNaN(delta);
 
     const hasTimeline = !!cfg.dhw_active_entity && this._timelineCache !== null;
-    const { segments, startTime, endTime } = this._timelineCache ?? { segments: [], startTime: Date.now(), endTime: Date.now() };
+    const timeline = this._timelineCache ?? { segments: [] as BinarySegment[], startTime: Date.now(), endTime: Date.now() };
+    const { segments, startTime, endTime } = timeline;
 
     return html`
       <ha-card>

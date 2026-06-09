@@ -31,6 +31,8 @@ registerCustomCard({
 export class OtHeatingCard extends OtBaseCard<OtHeatingCardConfig> {
 
   @state() private _cyclesPerHour = 0;
+  @state() private _totalCycles = 0;
+  @state() private _totalActiveTime = 0;
   private _flameHistory: OtHistoryPoint[] = [];
   private _timelineCache: { segments: BinarySegment[]; startTime: number; endTime: number } | null = null;
   private _fetchTimer?: ReturnType<typeof setInterval>;
@@ -69,7 +71,7 @@ export class OtHeatingCard extends OtBaseCard<OtHeatingCardConfig> {
     const hasMonitoring = !!(this._config.hours);
     const rows = 3 + (hasFeatures ? 1 : 0) + (hasMonitoring ? 1 : 0)
       + (this._config.show_last_updated ? 1 : 0);
-    return { columns: 12, rows, min_rows: 3 };
+    return { columns: 6, rows, min_rows: 3 };
   }
 
   // === Private getters ===
@@ -100,9 +102,15 @@ export class OtHeatingCard extends OtBaseCard<OtHeatingCardConfig> {
   }
 
   private get _timelineKpis(): KpiItem[] {
-    if (this._cyclesPerHour <= 0) return [];
     const localize = setupCustomLocalize(this.hass);
-    return [{ value: `${this._cyclesPerHour}`, label: localize('opentherm.heating_card.cycles_per_hour') }];
+    const kpis: KpiItem[] = [];
+    if (this._totalCycles > 0) {
+      kpis.push({ value: `${this._totalCycles}`, label: localize('opentherm.heating_card.cycles') });
+    }
+    if (this._totalActiveTime > 0) {
+      kpis.push({ value: this._formatActiveTime(this._totalActiveTime), label: localize('opentherm.heating_card.active_time') });
+    }
+    return kpis;
   }
 
   // === Hooks ===
@@ -214,6 +222,8 @@ export class OtHeatingCard extends OtBaseCard<OtHeatingCardConfig> {
     } else {
       this._cyclesPerHour = OtHistoryHelper.countCycles(lastHourHistory);
     }
+    this._totalCycles = OtHistoryHelper.countCycles(this._flameHistory);
+    this._totalActiveTime = this._computeActiveTime(this._flameHistory);
     this._timelineCache = this._buildTimelineData();
   }
 
@@ -245,13 +255,27 @@ export class OtHeatingCard extends OtBaseCard<OtHeatingCardConfig> {
     return state;
   }
 
+  private _computeActiveTime(history: OtHistoryPoint[]): number {
+    let totalMs = 0;
+    const now = Date.now();
+    for (let i = 0; i < history.length; i++) {
+      if (history[i].state !== 'on') continue;
+      const start = new Date(history[i].last_changed).getTime();
+      const end = i + 1 < history.length
+        ? new Date(history[i + 1].last_changed).getTime()
+        : now;
+      totalMs += end - start;
+    }
+    return Math.round(totalMs / 60_000);
+  }
+
   // === Max modulation control ===
 
-  private _onMaxModulationChange = (e: Event): void => {
-    const value = parseFloat((e.target as any).value);
+  private _onMaxModulationChange(ev: CustomEvent): void {
+    const value = Number((ev.detail as { value: unknown }).value);
     if (isNaN(value)) return;
     this._setMaxModulation(value);
-  };
+  }
 
   private async _setMaxModulation(value: number): Promise<void> {
     if (!this.hass) return;
@@ -384,7 +408,7 @@ export class OtHeatingCard extends OtBaseCard<OtHeatingCardConfig> {
         .feature-panel .mod-label {
           min-width: 56px;
         }
-        ha-slider { width: 100%; }
+        ha-control-slider { width: 100%; }
         @container (max-width: 260px) {
           .temps-row {
             grid-template-columns: 1fr;
@@ -437,7 +461,9 @@ export class OtHeatingCard extends OtBaseCard<OtHeatingCardConfig> {
 
     // Monitoring: flame timeline
     const hasMonitoring = !!(cfg.hours);
-    const { segments, startTime, endTime } = this._timelineCache ?? this._buildTimelineData();
+    const timeline = this._timelineCache ?? this._buildTimelineData();
+    if (!this._timelineCache) this._timelineCache = timeline;
+    const { segments, startTime, endTime } = timeline;
 
     return html`
       <ha-card>
@@ -475,14 +501,16 @@ export class OtHeatingCard extends OtBaseCard<OtHeatingCardConfig> {
         ${hasMaxMod ? html`
           <div class="feature-panel">
             <span class="mod-label">${localize('opentherm.heating_card.max')}</span>
-            <ha-slider
+            <ha-control-slider
               .min=${maxMin}
               .max=${maxMax}
               .step=${1}
-              .value=${maxMod}
-              pin
-              @change=${this._onMaxModulationChange}
-            ></ha-slider>
+              .value=${isNaN(maxMod) ? maxMin : maxMod}
+              mode="start"
+              .label=${localize('opentherm.heating_card.max')}
+              .locale=${this.hass.locale}
+              @value-changed=${this._onMaxModulationChange}
+            ></ha-control-slider>
             <span class="mod-value">${maxModFormatted}%</span>
           </div>
         ` : nothing}

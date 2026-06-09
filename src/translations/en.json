@@ -230,6 +230,8 @@
       "ch": "CH",
       "dhw": "DHW",
       "cycles_per_hour": "cycles/h",
+      "cycles": "cycles",
+      "active_time": "active",
       "editor": {
         "modulation": "Modulation",
         "monitoring": "Monitoring"

@@ -54,4 +54,12 @@ export abstract class OtBaseCard<TConfig extends OtCardConfig>
       </div>
     `;
   }
+
+  /** Format minutes into Xh Ym string */
+  protected _formatActiveTime(totalMinutes: number): string {
+    if (totalMinutes < 60) return `${totalMinutes}min`;
+    const h = Math.floor(totalMinutes / 60);
+    const m = totalMinutes % 60;
+    return m > 0 ? `${h}h ${m}min` : `${h}h`;
+  }
 }

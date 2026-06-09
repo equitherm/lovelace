@@ -228,6 +228,8 @@
       "ch": "CH",
       "dhw": "ECS",
       "cycles_per_hour": "cycles/h",
+      "cycles": "cycles",
+      "active_time": "actif",
       "editor": {
         "modulation": "Modulation",
         "monitoring": "Surveillance"
