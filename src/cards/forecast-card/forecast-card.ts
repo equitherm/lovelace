@@ -14,6 +14,7 @@ import { resolveRgbColor } from '../../utils/hvac-colors';
 import { buildForecastSeries, peakDemand } from '../../utils/forecast';
 import setupCustomLocalize from '../../localize';
 import '../../shared/badge-info';
+import '../../shared/eq-card-shell';
 import '../../shared/eq-manual-overlay';
 import '../../shared/eq-tuning-dialog';
 import { buildTuningDialogConfig } from '../../utils/tuning-dialog-config';
@@ -353,6 +354,10 @@ export class EquithermForecastCard extends EquithermEChartCard<ForecastCardConfi
           height: 100%;
           overflow: hidden;
         }
+        .chart-host {
+          height: 100%;
+          min-height: 0;
+        }
       `,
     ];
   }
@@ -363,32 +368,41 @@ export class EquithermForecastCard extends EquithermEChartCard<ForecastCardConfi
 
     return html`
       <ha-card>
-        ${this._renderHeader({
-          iconName: 'mdi:weather-partly-cloudy',
-          clickEntity: this._config.weather_entity,
-          title,
-        })}
-        ${this._renderChart()}
-        ${this._renderKpiFooter({
-          outdoorClickEntity: this._config.outdoor_entity ?? this._config.weather_entity,
-        })}
-        ${this._config.curve_from_entities && this._config.show_params_footer !== false ? html`
-          <eq-params-footer
-            .hass=${this.hass}
-            .config=${{
-              type: 'custom:eq-params-footer' as const,
-              hc_entity: this._config.hc_entity,
-              hc_fallback: this._config.hc,
-              n_entity: this._config.n_entity,
-              n_fallback: this._config.n,
-              shift_entity: this._config.shift_entity,
-              shift_fallback: this._config.shift,
-              interactive: !!this._config.tunable,
-            }}
-            @eq-tuning-requested=${() => { this._showTuningDialog = true; }}
-          ></eq-params-footer>
-        ` : nothing}
-        ${this._renderFooterMeta()}
+        <eq-card-shell>
+          <div slot="header">
+            ${this._renderHeader({
+              iconName: 'mdi:weather-partly-cloudy',
+              clickEntity: this._config.weather_entity,
+              title,
+            })}
+          </div>
+          <div slot="main" class="chart-host">
+            ${this._renderChart()}
+          </div>
+          <div slot="footer">
+            ${this._renderKpiFooter({
+              outdoorClickEntity: this._config.outdoor_entity ?? this._config.weather_entity,
+            })}
+          </div>
+          ${this._config.curve_from_entities && this._config.show_params_footer !== false ? html`
+            <eq-params-footer
+              slot="footer"
+              .hass=${this.hass}
+              .config=${{
+                type: 'custom:eq-params-footer' as const,
+                hc_entity: this._config.hc_entity,
+                hc_fallback: this._config.hc,
+                n_entity: this._config.n_entity,
+                n_fallback: this._config.n,
+                shift_entity: this._config.shift_entity,
+                shift_fallback: this._config.shift,
+                interactive: !!this._config.tunable,
+              }}
+              @eq-tuning-requested=${() => { this._showTuningDialog = true; }}
+            ></eq-params-footer>
+          ` : nothing}
+          ${this._renderFooterMeta({ slot: 'footer' })}
+        </eq-card-shell>
       </ha-card>
 
       ${this._dialogConfig && this._showTuningDialog ? html`
