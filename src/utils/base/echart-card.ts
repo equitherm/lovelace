@@ -106,12 +106,12 @@ export abstract class EquithermEChartCard<TConfig extends EquithermCardConfig> e
         pointer-events: none;
       }
       .chart-wrapper {
-        flex: 1;
-        min-height: 0;
         position: relative;
         --chart-max-height: none;
       }
       .chart-wrapper.has-fixed-height {
+        flex: 1;
+        min-height: 0;
         --chart-max-height: 100%;
       }
       .chart-wrapper.has-fixed-height ha-chart-base {
