@@ -24,7 +24,7 @@ registerCustomCard({
 export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
 
   public getGridOptions(): LovelaceGridOptions {
-    return { columns: 12, rows: this._config.show_last_updated ? 4 : 3, min_rows: 3 };
+    return { columns: 12, rows: this._activeRows, min_rows: 2 };
   }
 
   static getStubConfig(
@@ -59,6 +59,19 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
     return !!cfg.hc_entity || !!cfg.shift_entity || !!cfg.n_entity || !!cfg.pid_correction_entity;
   }
 
+  private get _activeRows(): number {
+    let rows = 1; // header (always)
+    if (this._config.show_kpi_footer !== false
+      && this._entityExists(this._config.outdoor_entity)
+      && this._entityExists(this._config.flow_entity)
+      && this._entityExists(this._config.climate_entity)) {
+      rows += 1;
+    }
+    if (this._hasParamsFooter) rows += 1;
+    if (this._config.show_last_updated) rows += 1;
+    return rows;
+  }
+
   static get styles() {
     return [
       super.styles,
@@ -72,7 +85,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
           flex-direction: column;
         }
         eq-temp-kpis {
-          flex: 1;
+          flex-shrink: 0;
           min-width: 0;
         }
       `,

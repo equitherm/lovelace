@@ -127,7 +127,6 @@ export class EqTempKpis extends LitElement {
         gap: 8px;
         padding: 0 10px var(--eq-kpi-padding-bottom, 8px);
         flex-shrink: 0;
-        height: 100%;
       }
       .kpi-block {
         text-align: center;
