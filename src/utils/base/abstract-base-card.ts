@@ -102,14 +102,14 @@ export abstract class BaseCard<TConfig extends Record<string, unknown>>
   }
 
   /** Render the footer meta line — only visible when entity is stale (>5 min) or unavailable. */
-  protected _renderFooterMeta(): typeof nothing | ReturnType<typeof html> {
+  protected _renderFooterMeta(opts?: { slot?: string }): typeof nothing | ReturnType<typeof html> {
     if (!this._showFooterMeta() || !this._isFooterVisible()) return nothing;
 
     const state = this._entityState(this._lastUpdatedEntity())!;
     const isUnavailable = state.state === 'unavailable' || state.state === 'unknown';
 
     return html`
-      <div class="footer-meta${isUnavailable ? ' footer-meta--warn' : ''}">
+      <div class="footer-meta${isUnavailable ? ' footer-meta--warn' : ''}" ${opts?.slot ? html`slot=${opts.slot}` : nothing}>
         <ha-relative-time .hass=${this.hass} .datetime=${state.last_updated} capitalize></ha-relative-time>
       </div>
     `;
