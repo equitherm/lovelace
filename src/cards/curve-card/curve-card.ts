@@ -392,6 +392,8 @@ export class EquithermCurveCard extends EquithermEChartCard<CurveCardConfig> {
         ha-card {
           height: 100%;
           overflow: hidden;
+          display: flex;
+          flex-direction: column;
         }
         .chart-host {
           height: 100%;
