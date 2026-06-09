@@ -187,7 +187,11 @@
       "condensing": "Condensing",
       "non_condensing": "Non-condensing",
       "too_hot": "Return too hot",
-      "dhw": "DHW"
+      "dhw": "DHW",
+      "flow": "Flow",
+      "return": "Return",
+      "flame": "Flame",
+      "ch": "CH"
     },
     "modulation_card": {
       "name": "OpenTherm Modulation",

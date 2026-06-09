@@ -33,7 +33,20 @@ export class OtEfficiencyCard extends OtEChartCard<OtEfficiencyCardConfig> {
   private _fetchTimer?: ReturnType<typeof setInterval>;
 
   setConfig(config: unknown) {
-    this._config = validateOtEfficiencyCardConfig(config);
+    const prev = this._config as Record<string, unknown> | undefined;
+    const next = validateOtEfficiencyCardConfig(config) as Record<string, unknown>;
+    const historyEntities = ['boiler_temp_entity', 'return_temp_entity', 'dhw_temp_entity', 'dhw_active_entity', 'hours'];
+    const historyChanged = historyEntities.some(key => prev?.[key] !== next[key]);
+    this._config = next as OtEfficiencyCardConfig;
+    if (historyChanged) {
+      this._boilerHistory = [];
+      this._returnHistory = [];
+      this._dhwHistory = [];
+      this._dhwActiveHistory = [];
+      if (this.isConnected) {
+        this._fetchHistory();
+      }
+    }
   }
 
   static async getConfigElement() {
@@ -135,7 +148,7 @@ export class OtEfficiencyCard extends OtEChartCard<OtEfficiencyCardConfig> {
         ${this._flameOn ? html`
           <eq-badge-info
             style="--badge-info-color: var(--rgb-state-climate-heat, 255, 152, 0)"
-            .label=${localize('opentherm.status_card.flame')}
+            .label=${localize('opentherm.efficiency_card.flame')}
             .icon=${'mdi:fire'}
             .active=${true}
           ></eq-badge-info>
@@ -143,7 +156,7 @@ export class OtEfficiencyCard extends OtEChartCard<OtEfficiencyCardConfig> {
         ${chActive ? html`
           <eq-badge-info
             style="--badge-info-color: var(--rgb-primary-color, 33, 150, 243)"
-            .label=${localize('opentherm.status_card.ch')}
+            .label=${localize('opentherm.efficiency_card.ch')}
             .icon=${'mdi:radiator'}
           ></eq-badge-info>
         ` : nothing}
@@ -200,9 +213,10 @@ export class OtEfficiencyCard extends OtEChartCard<OtEfficiencyCardConfig> {
   private _buildDhwSeries(): object[] {
     const cfg = this._config;
     if (!cfg.dhw_temp_entity) return [];
+    const localize = setupCustomLocalize(this.hass);
     const dhwSeries: Record<string, unknown> = {
       type: 'line' as const,
-      name: 'DHW',
+      name: localize('opentherm.efficiency_card.dhw'),
       data: this._toChartData(this._dhwHistory, cfg.dhw_temp_entity),
       smooth: true,
       showSymbol: false,
@@ -256,17 +270,16 @@ export class OtEfficiencyCard extends OtEChartCard<OtEfficiencyCardConfig> {
     };
   }
 
-  private _buildTooltipFormatter(): (params: any) => ReturnType<typeof html> {
+  private _buildTooltipFormatter(): (params: any) => string {
     const unit = this.hass?.config?.unit_system?.temperature ?? '°C';
     const locale = this.hass?.locale;
     return (params: any) => {
-      const time = this._formatChartTime(params[0].value[0] as number);
-      return html`
-        <span style="opacity:0.6">${time}</span><br/>
-        ${params.map((p: any) => html`
-          <ha-chart-tooltip-marker .color=${p.color}></ha-chart-tooltip-marker>${p.seriesName}: <b>${formatNumber(p.value[1] as number, locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}${unit}</b><br/>
-        `)}
-      `;
+      const time = this._formatChartTime(params[0].val[0] as number);
+      let html = `<span style="opacity:0.6">${time}</span><br/>`;
+      for (const p of params) {
+        html += `<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${p.color};margin-right:4px;vertical-align:middle"></span>${p.seriesName}: <b>${formatNumber(p.value[1] as number, locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}${unit}</b><br/>`;
+      }
+      return html;
     };
   }
 
@@ -297,7 +310,7 @@ export class OtEfficiencyCard extends OtEChartCard<OtEfficiencyCardConfig> {
       data: [
         {
           type: 'line' as const,
-          name: 'Flow',
+          name: localize('opentherm.efficiency_card.flow'),
           data: this._toChartData(this._boilerHistory, this._config.boiler_temp_entity),
           smooth: true,
           showSymbol: false,
@@ -307,7 +320,7 @@ export class OtEfficiencyCard extends OtEChartCard<OtEfficiencyCardConfig> {
         },
         {
           type: 'line' as const,
-          name: 'Return',
+          name: localize('opentherm.efficiency_card.return'),
           data: this._toChartData(this._returnHistory, this._config.return_temp_entity),
           smooth: true,
           showSymbol: false,
@@ -332,13 +345,13 @@ export class OtEfficiencyCard extends OtEChartCard<OtEfficiencyCardConfig> {
         <div class="kpi-block${boilerMissing ? ' missing' : ''}"
              @click=${boilerMissing ? undefined : () => this._openMoreInfo(cfg.boiler_temp_entity)}>
           <div class="kpi-value">${this._formatEntityTemp(cfg.boiler_temp_entity)}</div>
-          <div class="kpi-label">${localize('opentherm.status_card.flow')}</div>
+          <div class="kpi-label">${localize('opentherm.efficiency_card.flow')}</div>
         </div>
         <div class="kpi-divider"></div>
         <div class="kpi-block${returnMissing ? ' missing' : ''}"
              @click=${returnMissing ? undefined : () => this._openMoreInfo(cfg.return_temp_entity)}>
           <div class="kpi-value">${this._formatEntityTemp(cfg.return_temp_entity)}</div>
-          <div class="kpi-label">${localize('opentherm.status_card.return')}</div>
+          <div class="kpi-label">${localize('opentherm.efficiency_card.return')}</div>
         </div>
         ${cfg.dhw_temp_entity ? html`
           <div class="kpi-divider"></div>
