@@ -67,7 +67,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
       && this._entityExists(this._config.climate_entity)) {
       rows += 1;
     }
-    if (this._hasParamsFooter) rows += 1;
+    if (this._config.show_params_footer !== false) rows += 1;
     if (this._config.show_last_updated) rows += 1;
     return rows;
   }
@@ -110,7 +110,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
           adjustingDir: adjustingDir ?? undefined,
           curveOutput: this._curveOutputTempFormatted || undefined,
         })}
-        ${this._hasParamsFooter ? html`
+        ${this._config.show_params_footer !== false ? html`
           <eq-params-footer
             .hass=${this.hass}
             .config=${{
