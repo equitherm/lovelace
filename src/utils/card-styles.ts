@@ -59,8 +59,7 @@ export const cardStyle = css`
 
 export const kpiFooterStyles = css`
   .kpi-footer {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr auto 1fr;
+    display: flex;
     align-items: center;
     gap: 8px;
     padding: 0 10px var(--eq-kpi-padding-bottom, 8px);
@@ -72,6 +71,8 @@ export const kpiFooterStyles = css`
     padding: 4px;
     border-radius: 8px;
     transition: background 0.2s;
+    flex: 1;
+    min-width: 0;
   }
   .kpi-block:hover { background: var(--secondary-background-color, rgba(0,0,0,0.04)); }
   .kpi-block.missing { opacity: 0.4; cursor: default; }
@@ -109,11 +110,14 @@ export const kpiFooterStyles = css`
   }
   @container (max-width: 260px) {
     .kpi-footer {
-      grid-template-columns: 1fr;
+      flex-wrap: wrap;
       gap: 12px;
     }
     .kpi-footer .kpi-divider {
       display: none;
+    }
+    .kpi-footer .kpi-block {
+      flex: 1 1 40%;
     }
   }
 `;
