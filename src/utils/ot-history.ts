@@ -37,6 +37,21 @@ export class OtHistoryHelper {
     return count;
   }
 
+  /** Sum durations where state === 'on', returns minutes */
+  static computeActiveTime(history: OtHistoryPoint[]): number {
+    let totalMs = 0;
+    const now = Date.now();
+    for (let i = 0; i < history.length; i++) {
+      if (history[i].state !== 'on') continue;
+      const start = new Date(history[i].last_changed).getTime();
+      const end = i + 1 < history.length
+        ? new Date(history[i + 1].last_changed).getTime()
+        : now;
+      totalMs += end - start;
+    }
+    return Math.round(totalMs / 60_000);
+  }
+
   /** Convert ON/OFF history to rangeBar data */
   static toRangeBarSeries(history: OtHistoryPoint[], nowMs: number): { x: string; y: [number, number] }[] {
     const result: { x: string; y: [number, number] }[] = [];

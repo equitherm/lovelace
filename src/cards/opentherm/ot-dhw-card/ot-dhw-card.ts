@@ -100,22 +100,8 @@ export class OtDhwCard extends OtBaseCard<OtDhwCardConfig> {
 
     this._cyclesPerHour = OtHistoryHelper.countCycles(lastHourHistory);
     this._totalCycles = OtHistoryHelper.countCycles(this._dhwHistory);
-    this._totalActiveTime = this._computeActiveTime(this._dhwHistory);
+    this._totalActiveTime = OtHistoryHelper.computeActiveTime(this._dhwHistory);
     this._timelineCache = this._buildTimelineData();
-  }
-
-  private _computeActiveTime(history: OtHistoryPoint[]): number {
-    let totalMs = 0;
-    const now = Date.now();
-    for (let i = 0; i < history.length; i++) {
-      if (history[i].state !== 'on') continue;
-      const start = new Date(history[i].last_changed).getTime();
-      const end = i + 1 < history.length
-        ? new Date(history[i + 1].last_changed).getTime()
-        : now;
-      totalMs += end - start;
-    }
-    return Math.round(totalMs / 60_000);
   }
 
   private _buildTimelineData() {

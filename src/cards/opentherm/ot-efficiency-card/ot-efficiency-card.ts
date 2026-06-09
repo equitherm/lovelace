@@ -304,7 +304,7 @@ export class OtEfficiencyCard extends OtEChartCard<OtEfficiencyCardConfig> {
           axisLabel: { fontSize: 10, formatter: (v: number) => formatNumber(v, this.hass?.locale, { maximumFractionDigits: 1 }) },
         },
         grid: { top: 24, right: 10, bottom: 25, left: 40 },
-        tooltip: { trigger: 'axis' as const, formatter: this._buildTooltipFormatter() as any },
+        tooltip: { trigger: 'axis' as const, formatter: this._buildTooltipFormatter() },
         legend: { show: true, top: 0, right: 0, textStyle: { fontSize: 10 }, icon: 'circle', itemWidth: 8, itemHeight: 8 },
       },
       data: [

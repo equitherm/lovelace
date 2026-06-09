@@ -146,22 +146,8 @@ export class OtDiagnosticsCard extends OtBaseCard<OtDiagnosticsCardConfig> {
     this._faultHistory = history[this._config.fault_entity] ?? [];
 
     this._totalFaults = OtHistoryHelper.countCycles(this._faultHistory);
-    this._totalFaultTime = this._computeActiveTime(this._faultHistory);
+    this._totalFaultTime = OtHistoryHelper.computeActiveTime(this._faultHistory);
     this._timelineCache = this._buildTimelineData();
-  }
-
-  private _computeActiveTime(history: OtHistoryPoint[]): number {
-    let totalMs = 0;
-    const now = Date.now();
-    for (let i = 0; i < history.length; i++) {
-      if (history[i].state !== 'on') continue;
-      const start = new Date(history[i].last_changed).getTime();
-      const end = i + 1 < history.length
-        ? new Date(history[i + 1].last_changed).getTime()
-        : now;
-      totalMs += end - start;
-    }
-    return Math.round(totalMs / 60_000);
   }
 
   private _buildTimelineData() {
