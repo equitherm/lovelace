@@ -10,6 +10,7 @@ import { getRateTargetEntity, type ClimateHelperConfig } from '../climate-helper
 import setupCustomlocalize from '../../localize';
 import '../../shared/eq-param-bar';
 import '../../features/eq-hvac-badges';
+import '../../features/eq-temp-kpis';
 import { headerStyles } from './header-styles';
 import type { TuningDialogConfig } from '../../shared/eq-tuning-dialog-config';
 import { buildTuningDialogConfig } from '../tuning-dialog-config';
@@ -204,36 +205,18 @@ export abstract class EquithermBaseCard<TConfig extends EquithermCardConfig> ext
   }): TemplateResult | typeof nothing {
     if (this._config.show_kpi_footer === false) return nothing;
     if (!this._config || !this.hass) return nothing;
-    const localize = setupCustomlocalize(this.hass);
-    const outdoorEntity = opts?.outdoorClickEntity ?? this._config.outdoor_entity;
-    const outdoorMissing = !this._entityExists(outdoorEntity);
-    const flowMissing = !this._entityExists(this._config.flow_entity);
-    const climateMissing = !this._entityExists(this._config.climate_entity);
     return html`
-      <div class="kpi-footer">
-        <div class="kpi-block${outdoorMissing ? ' missing' : ''}" @click=${outdoorMissing ? undefined : () => this._openMoreInfo(outdoorEntity)}>
-          <div class="kpi-value">${this._outdoorTempFormatted}</div>
-          <div class="kpi-label">${localize('common.outdoor')}</div>
-        </div>
-        <div class="kpi-divider"></div>
-        <div class="kpi-block${flowMissing ? ' missing' : ''}" @click=${flowMissing ? undefined : () => this._openMoreInfo(this._config.flow_entity)}>
-          ${opts?.adjustingDir && opts?.curveOutput ? html`
-            <div class="kpi-dual">
-              <div class="kpi-value flow">${this._flowTempFormatted}</div>
-              <div class="kpi-target">
-                <ha-icon .icon=${opts.adjustingDir === 'rising' ? 'mdi:arrow-up-thin' : 'mdi:arrow-down-thin'}></ha-icon>
-                ${opts.curveOutput}
-              </div>
-            </div>
-          ` : html`<div class="kpi-value flow">${this._flowTempFormatted}</div>`}
-          <div class="kpi-label">${localize('common.flow')}</div>
-        </div>
-        <div class="kpi-divider"></div>
-        <div class="kpi-block${climateMissing ? ' missing' : ''}" @click=${climateMissing ? undefined : () => this._openMoreInfo(this._config.climate_entity)}>
-          <div class="kpi-value">${this._roomTemp}</div>
-          <div class="kpi-label">${localize('common.room')}</div>
-        </div>
-      </div>
+      <eq-temp-kpis
+        .hass=${this.hass}
+        .config=${{
+          outdoor_entity: this._config.outdoor_entity,
+          flow_entity: this._config.flow_entity,
+          climate_entity: this._config.climate_entity,
+          adjusting_dir: opts?.adjustingDir,
+          curve_output: opts?.curveOutput,
+          outdoor_click_entity: opts?.outdoorClickEntity,
+        }}
+      ></eq-temp-kpis>
     `;
   }
 
