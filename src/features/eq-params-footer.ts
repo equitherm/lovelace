@@ -238,6 +238,7 @@ export class EqParamsFooter extends LitElement {
 
   static get styles() {
     return css`
+      :host { display: block; height: fit-content; }
       .params-footer {
         display: flex;
         align-items: stretch;

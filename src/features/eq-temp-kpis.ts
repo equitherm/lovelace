@@ -118,13 +118,16 @@ export class EqTempKpis extends LitElement {
 
   static get styles() {
     return css`
+      :host { display: block; height: fit-content; }
       .kpi-footer {
         display: grid;
         grid-template-columns: 1fr auto 1fr auto 1fr;
         align-items: center;
+        place-content: center;
         gap: 8px;
         padding: 0 10px var(--eq-kpi-padding-bottom, 8px);
         flex-shrink: 0;
+        height: 100%;
       }
       .kpi-block {
         text-align: center;

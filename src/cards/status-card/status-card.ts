@@ -71,10 +71,9 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
           display: flex;
           flex-direction: column;
         }
-        .kpi-footer {
+        eq-temp-kpis {
           flex: 1;
           min-width: 0;
-          place-content: center;
         }
       `,
     ];

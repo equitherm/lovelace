@@ -199,6 +199,7 @@ export class EqHvacBadges extends LitElement {
 
   static get styles() {
     return css`
+      :host { display: block; }
       .badges {
         display: flex;
         align-items: center;
