@@ -52,14 +52,18 @@ export class OtDhwCard extends OtBaseCard<OtDhwCardConfig> {
   }
 
   setConfig(config: unknown) {
+    const prevMonitoringEntity = this._config?.dhw_active_entity;
+    const prevHours = this._config?.hours;
     this._config = validateOtDhwCardConfig(config);
-    this._dhwHistory = [];
-    this._timelineCache = null;
-    this._cyclesPerHour = 0;
-    this._totalCycles = 0;
-    this._totalActiveTime = 0;
-    if (this.isConnected) {
-      this._fetchHistory();
+    if (this._config.dhw_active_entity !== prevMonitoringEntity || this._config.hours !== prevHours) {
+      this._dhwHistory = [];
+      this._timelineCache = null;
+      this._cyclesPerHour = 0;
+      this._totalCycles = 0;
+      this._totalActiveTime = 0;
+      if (this.isConnected) {
+        this._fetchHistory();
+      }
     }
   }
 
@@ -176,9 +180,16 @@ export class OtDhwCard extends OtBaseCard<OtDhwCardConfig> {
       kpis.push({ value: `${this._totalCycles}`, label: localize('opentherm.dhw_card.cycles') });
     }
     if (this._totalActiveTime > 0) {
-      kpis.push({ value: `${this._totalActiveTime}`, label: localize('opentherm.dhw_card.active_time') });
+      kpis.push({ value: this._formatActiveTime(this._totalActiveTime), label: localize('opentherm.dhw_card.active_time') });
     }
     return kpis;
+  }
+
+  private _formatActiveTime(totalMinutes: number): string {
+    if (totalMinutes < 60) return `${totalMinutes}min`;
+    const h = Math.floor(totalMinutes / 60);
+    const m = totalMinutes % 60;
+    return m > 0 ? `${h}h ${m}min` : `${h}h`;
   }
 
   protected override _titleEntity(): string | undefined {
@@ -209,7 +220,7 @@ export class OtDhwCard extends OtBaseCard<OtDhwCardConfig> {
         ${this._cyclesPerHour > 0 && this._config.dhw_active_entity ? html`
           <eq-badge-info
             style="--badge-info-color: var(--rgb-info, 3, 169, 244)"
-            .icon=${'mdi:water-boiler'}
+            .icon=${'mdi:repeat'}
             .label=${`${this._cyclesPerHour} ${localize('opentherm.dhw_card.cycles')}/h`}
           ></eq-badge-info>
         ` : nothing}
