@@ -5,7 +5,7 @@ import type { ForecastCardConfig } from './forecast-card-config';
 import type { HomeAssistant } from '../../ha';
 import type { ForecastPoint, ForecastCurveConfig } from '../../utils/forecast';
 import { EquithermEChartCard, type EChartConfig, headerStyles } from '../../utils/base';
-import { cardStyle, paramsFooterStyles, kpiFooterStyles, tunableFooterStyles } from '../../utils/card-styles';
+import { cardStyle, kpiFooterStyles } from '../../utils/card-styles';
 import { registerCustomCard } from '../../utils/register-card';
 import { FORECAST_CARD_NAME, FORECAST_CARD_EDITOR_NAME } from './const';
 import { findClimateEntity, findWeatherEntity, findFlowEntity } from '../../utils/stub-config';
@@ -15,7 +15,6 @@ import { buildForecastSeries, peakDemand } from '../../utils/forecast';
 import setupCustomLocalize from '../../localize';
 import '../../shared/badge-info';
 import '../../shared/eq-manual-overlay';
-import '../../shared/eq-param-bar';
 import '../../shared/eq-tuning-dialog';
 import { buildTuningDialogConfig } from '../../utils/tuning-dialog-config';
 import { niceBounds, computeYAxisFractionDigits, sideTooltipPosition, Y_AXIS_FLOOR_C } from '../../utils/chart';
@@ -346,9 +345,7 @@ export class EquithermForecastCard extends EquithermEChartCard<ForecastCardConfi
       super.styles,
       cardStyle,
       headerStyles,
-      paramsFooterStyles,
       kpiFooterStyles,
-      tunableFooterStyles,
       css`
         ha-card {
           height: 100%;
@@ -373,16 +370,22 @@ export class EquithermForecastCard extends EquithermEChartCard<ForecastCardConfi
         ${this._renderKpiFooter({
           outdoorClickEntity: this._config.outdoor_entity ?? this._config.weather_entity,
         })}
-        ${this._config.curve_from_entities
-          ? this._renderTunableParamsFooter(
-              {
-                hc: this._config.hc_entity ? { entity: this._config.hc_entity, fallback: this._config.hc } : undefined,
-                n: this._config.n_entity ? { entity: this._config.n_entity, fallback: this._config.n } : undefined,
-                shift: this._config.shift_entity ? { entity: this._config.shift_entity, fallback: this._config.shift } : undefined,
-              },
-              () => { this._showTuningDialog = true; },
-            )
-          : nothing}
+        ${this._config.curve_from_entities ? html`
+          <eq-params-footer
+            .hass=${this.hass}
+            .config=${{
+              type: 'custom:eq-params-footer' as const,
+              hc_entity: this._config.hc_entity,
+              hc_fallback: this._config.hc,
+              n_entity: this._config.n_entity,
+              n_fallback: this._config.n,
+              shift_entity: this._config.shift_entity,
+              shift_fallback: this._config.shift,
+              interactive: !!this._config.tunable,
+            }}
+            @eq-tuning-requested=${() => { this._showTuningDialog = true; }}
+          ></eq-params-footer>
+        ` : nothing}
         ${this._renderFooterMeta()}
       </ha-card>
 

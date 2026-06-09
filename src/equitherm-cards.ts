@@ -8,6 +8,7 @@ import './shared/eq-tuning-dialog';
 // Feature elements
 import './features/eq-hvac-badges';
 import './features/eq-temp-kpis';
+import './features/eq-params-footer';
 
 console.info(
   '%c EQUITHERM-CARDS %c __VERSION__ ',

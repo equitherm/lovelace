@@ -3,7 +3,7 @@ import { classMap } from 'lit/directives/class-map.js';
 import { customElement } from 'lit/decorators.js';
 import type { CurveCardConfig } from './curve-card-config';
 import type { HomeAssistant } from '../../ha/types';
-import { cardStyle, paramsFooterStyles, kpiFooterStyles, tunableFooterStyles } from '../../utils/card-styles';
+import { cardStyle, kpiFooterStyles } from '../../utils/card-styles';
 import { registerCustomCard } from '../../utils/register-card';
 import { CURVE_CARD_NAME, CURVE_CARD_EDITOR_NAME } from './const';
 import { findClimateEntity, findOutdoorEntity, findFlowEntity, findCurveOutputEntity } from '../../utils/stub-config';
@@ -152,19 +152,6 @@ export class EquithermCurveCard extends EquithermEChartCard<CurveCardConfig> {
     return this._config.curve_from_entities
       ? this._resolveEntityNumber(this._config.n_entity, this._config.n)
       : this._config.n;
-  }
-
-  private _renderParamsFooterContent(): TemplateResult | typeof nothing {
-    if (!this._config.curve_from_entities) return nothing;
-
-    return this._renderTunableParamsFooter(
-      {
-        hc: this._config.hc_entity ? { entity: this._config.hc_entity, fallback: this._config.hc, onClick: this._config.tunable ? undefined : () => { this._showTuningDialog = true; } } : undefined,
-        n: this._config.n_entity ? { entity: this._config.n_entity, fallback: this._config.n } : undefined,
-        shift: this._config.shift_entity ? { entity: this._config.shift_entity, fallback: this._config.shift, onClick: this._config.tunable ? undefined : () => { this._showTuningDialog = true; } } : undefined,
-      },
-      () => { this._showTuningDialog = true; },
-    );
   }
 
   protected override _buildEChartOptions(): EChartConfig {
@@ -395,8 +382,6 @@ export class EquithermCurveCard extends EquithermEChartCard<CurveCardConfig> {
       super.styles,
       cardStyle,
       headerStyles,
-      paramsFooterStyles,
-      tunableFooterStyles,
       kpiFooterStyles,
       css`
         ha-card {
@@ -428,7 +413,22 @@ export class EquithermCurveCard extends EquithermEChartCard<CurveCardConfig> {
           adjustingDir: adjustingDir ?? undefined,
           curveOutput: this._curveOutputTempFormatted || undefined,
         })}
-        ${this._renderParamsFooterContent()}
+        ${this._config.curve_from_entities ? html`
+          <eq-params-footer
+            .hass=${this.hass}
+            .config=${{
+              type: 'custom:eq-params-footer' as const,
+              hc_entity: this._config.hc_entity,
+              hc_fallback: this._config.hc,
+              n_entity: this._config.n_entity,
+              n_fallback: this._config.n,
+              shift_entity: this._config.shift_entity,
+              shift_fallback: this._config.shift,
+              interactive: !!this._config.tunable,
+            }}
+            @eq-tuning-requested=${() => { this._showTuningDialog = true; }}
+          ></eq-params-footer>
+        ` : nothing}
         ${this._renderFooterMeta()}
       </ha-card>
 

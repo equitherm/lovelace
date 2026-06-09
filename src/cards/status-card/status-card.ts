@@ -4,14 +4,13 @@ import type { StatusCardConfig } from './status-card-config';
 import type { HomeAssistant } from '../../ha/types';
 import type { LovelaceGridOptions } from '../../ha/panels/lovelace/types';
 import { EquithermBaseCard, headerStyles } from '../../utils/base';
-import { cardStyle, paramsFooterStyles, kpiFooterStyles, tunableFooterStyles } from '../../utils/card-styles';
+import { cardStyle, kpiFooterStyles } from '../../utils/card-styles';
 import { registerCustomCard } from '../../utils/register-card';
 import { validateStatusCardConfig } from './status-card-config';
 import { STATUS_CARD_NAME, STATUS_CARD_EDITOR_NAME } from './const';
 import { findClimateEntity, findOutdoorEntity, findFlowEntity } from '../../utils/stub-config';
 import { getAdjustingDirection } from '../../utils/climate-helpers';
 import '../../shared/badge-info';
-import '../../shared/eq-param-bar';
 import '../../shared/eq-tuning-dialog';
 import { buildTuningDialogConfig } from '../../utils/tuning-dialog-config';
 
@@ -65,8 +64,6 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
       super.styles,
       cardStyle,
       headerStyles,
-      paramsFooterStyles,
-      tunableFooterStyles,
       kpiFooterStyles,
       css`
         ha-card {
@@ -81,18 +78,6 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
         }
       `,
     ];
-  }
-
-  private _renderParamsFooterWithTune() {
-    return this._renderTunableParamsFooter(
-      {
-        hc: this._config.hc_entity ? { entity: this._config.hc_entity, fallback: 0.9 } : undefined,
-        n: this._config.n_entity ? { entity: this._config.n_entity, fallback: 1.25 } : undefined,
-        shift: this._config.shift_entity ? { entity: this._config.shift_entity, fallback: 0 } : undefined,
-        pid_correction: this._config.pid_correction_entity ? { entity: this._config.pid_correction_entity } : undefined,
-      },
-      () => { this._showTuningDialog = true; },
-    );
   }
 
   render() {
@@ -113,7 +98,23 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
           adjustingDir: adjustingDir ?? undefined,
           curveOutput: this._curveOutputTempFormatted || undefined,
         })}
-        ${this._renderParamsFooterWithTune()}
+        ${this._hasParamsFooter ? html`
+          <eq-params-footer
+            .hass=${this.hass}
+            .config=${{
+              type: 'custom:eq-params-footer' as const,
+              hc_entity: this._config.hc_entity,
+              hc_fallback: 0.9,
+              n_entity: this._config.n_entity,
+              n_fallback: 1.25,
+              shift_entity: this._config.shift_entity,
+              shift_fallback: 0,
+              pid_correction_entity: this._config.pid_correction_entity,
+              interactive: !!this._config.tunable,
+            }}
+            @eq-tuning-requested=${() => { this._showTuningDialog = true; }}
+          ></eq-params-footer>
+        ` : nothing}
         ${this._renderFooterMeta()}
       </ha-card>
 
