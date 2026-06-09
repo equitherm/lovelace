@@ -6,7 +6,7 @@
  *
  * Extracted from EquithermBaseCard to reduce base class size.
  */
-import { LitElement, html, nothing, type PropertyValues, type TemplateResult } from 'lit';
+import { LitElement, html, css, nothing, type PropertyValues, type TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import type { HomeAssistant } from '../ha';
 import type { HassEntity } from 'home-assistant-js-websocket';
@@ -193,6 +193,19 @@ export class EqHvacBadges extends LitElement {
       curve_output_entity: this.config.curve_output_entity,
       flow_entity: this.config.flow_entity ?? '',
     };
+  }
+
+  // ── Styles ──
+
+  static get styles() {
+    return css`
+      .badges {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-shrink: 0;
+      }
+    `;
   }
 
   // ── Main render ──
