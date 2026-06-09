@@ -251,7 +251,7 @@ export class EquithermForecastCard extends EquithermEChartCard<ForecastCardConfi
             axisLabel: { fontSize: 10 },
           },
         ],
-        grid: { top: 15, right: 15, bottom: 25, left: 35 },
+        grid: { top: 15, right: 35, bottom: 25, left: 35 },
         // ha-chart-base wraps formatters via wrapLitTooltipFormatter (Lit render)
         tooltip: {
           trigger: 'axis' as const,
