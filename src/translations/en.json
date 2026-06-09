@@ -217,6 +217,9 @@
       "service_request": "Service Required",
       "diagnostic": "Diagnostic",
       "all_clear": "All Clear",
+      "timeline": "Timeline",
+      "faults": "faults",
+      "fault_time": "fault time",
       "editor": {
         "fault_sensors": "Fault Sensors",
         "diagnostic_sensors": "Diagnostic Sensors"

@@ -1,5 +1,5 @@
 import { html, css, nothing } from 'lit';
-import { customElement } from 'lit/decorators.js';
+import { customElement, state } from 'lit/decorators.js';
 import type { OtDiagnosticsCardConfig } from './ot-diagnostics-card-config';
 import type { HomeAssistant } from '../../../ha';
 import type { LovelaceGridOptions } from '../../../ha/panels/lovelace/types';
@@ -10,8 +10,12 @@ import { cardStyle } from '../../../utils/card-styles';
 import { registerCustomCard } from '../../../utils/register-card';
 import { OT_DIAGNOSTICS_CARD_NAME, OT_DIAGNOSTICS_CARD_EDITOR_NAME, BINARY_SENSOR_DOMAINS, SENSOR_DOMAINS } from './const';
 import { validateOtDiagnosticsCardConfig } from './ot-diagnostics-card-config';
+import { OtHistoryHelper, type OtHistoryPoint } from '../../../utils/ot-history';
 import setupCustomLocalize from '../../../localize';
 import '../../../shared/badge-info';
+import '../../../shared/ot-timeline-section';
+import type { KpiItem } from '../../../shared/ot-timeline-section';
+import type { BinarySegment } from '../../../shared/eq-binary-timeline';
 
 registerCustomCard({
   type: OT_DIAGNOSTICS_CARD_NAME,
@@ -21,6 +25,12 @@ registerCustomCard({
 
 @customElement(OT_DIAGNOSTICS_CARD_NAME)
 export class OtDiagnosticsCard extends OtBaseCard<OtDiagnosticsCardConfig> {
+
+  private _faultHistory: OtHistoryPoint[] = [];
+  @state() private _totalFaults = 0;
+  @state() private _totalFaultTime = 0;
+  private _timelineCache: { segments: BinarySegment[]; startTime: number; endTime: number } | null = null;
+  private _fetchTimer?: ReturnType<typeof setInterval>;
 
   static async getStubConfig(hass: HomeAssistant): Promise<OtDiagnosticsCardConfig> {
     const entityIds = Object.keys(hass.states);
@@ -61,11 +71,29 @@ export class OtDiagnosticsCard extends OtBaseCard<OtDiagnosticsCardConfig> {
   }
 
   setConfig(config: unknown) {
+    const prev = this._config;
     this._config = validateOtDiagnosticsCardConfig(config);
+    if (this._config.hours !== prev?.hours || this._config.fault_entity !== prev?.fault_entity) {
+      this._faultHistory = [];
+      this._timelineCache = null;
+      this._totalFaults = 0;
+      this._totalFaultTime = 0;
+      if (this.isConnected) this._fetchHistory();
+    }
   }
 
   public override getGridOptions(): LovelaceGridOptions {
-    return { columns: 12, rows: this._config.show_last_updated ? 4 : 3, min_rows: 3 };
+    const cfg = this._config;
+    let rows = 1; // header
+    if (this._hasNumericSensors) rows += 1;
+    const faultSensorKeys: (keyof OtDiagnosticsCardConfig)[] = [
+      'flame_fault_entity', 'low_pressure_entity', 'air_pressure_entity', 'water_overtemp_entity',
+    ];
+    const hasFaultSensors = faultSensorKeys.some(key => !!(cfg[key] as string | undefined));
+    if (hasFaultSensors) rows += 1;
+    if (cfg.hours && cfg.fault_entity) rows += 1; // timeline
+    if (cfg.show_last_updated) rows += 1;
+    return { columns: 6, rows, min_rows: 3 };
   }
 
   protected override _titleEntity(): string | undefined {
@@ -92,6 +120,84 @@ export class OtDiagnosticsCard extends OtBaseCard<OtDiagnosticsCardConfig> {
 
   protected override _lastUpdatedEntity(): string | undefined {
     return this._config.fault_entity;
+  }
+
+  // --- Lifecycle ---
+
+  override connectedCallback() {
+    super.connectedCallback();
+    this._fetchHistory();
+    this._fetchTimer = setInterval(() => this._fetchHistory(), 60_000);
+  }
+
+  override disconnectedCallback() {
+    super.disconnectedCallback();
+    clearInterval(this._fetchTimer);
+    this._fetchTimer = undefined;
+  }
+
+  // --- Fault history ---
+
+  private async _fetchHistory(): Promise<void> {
+    if (!this.hass || !this._config.fault_entity || !this._config.hours) return;
+    if (document.visibilityState !== 'visible') return;
+    const hours = this._config.hours;
+    const history = await OtHistoryHelper.fetch(this.hass, [this._config.fault_entity], hours);
+    this._faultHistory = history[this._config.fault_entity] ?? [];
+
+    this._totalFaults = OtHistoryHelper.countCycles(this._faultHistory);
+    this._totalFaultTime = this._computeActiveTime(this._faultHistory);
+    this._timelineCache = this._buildTimelineData();
+  }
+
+  private _computeActiveTime(history: OtHistoryPoint[]): number {
+    let totalMs = 0;
+    const now = Date.now();
+    for (let i = 0; i < history.length; i++) {
+      if (history[i].state !== 'on') continue;
+      const start = new Date(history[i].last_changed).getTime();
+      const end = i + 1 < history.length
+        ? new Date(history[i + 1].last_changed).getTime()
+        : now;
+      totalMs += end - start;
+    }
+    return Math.round(totalMs / 60_000);
+  }
+
+  private _buildTimelineData() {
+    const hours = this._config.hours ?? 24;
+    const endTime = Date.now();
+    const startTime = endTime - hours * 3600 * 1000;
+    const segments: BinarySegment[] = [];
+    const points = this._faultHistory.filter(p => {
+      const t = new Date(p.last_changed).getTime();
+      return t >= startTime && t <= endTime;
+    });
+    for (let i = 0; i < points.length; i++) {
+      const segStart = new Date(points[i].last_changed).getTime();
+      const segEnd = i + 1 < points.length
+        ? new Date(points[i + 1].last_changed).getTime()
+        : endTime;
+      segments.push({
+        start: segStart,
+        end: segEnd,
+        state: points[i].state === 'on' ? 'on' : 'off',
+      });
+    }
+    return { segments, startTime, endTime };
+  }
+
+  private get _timelineKpis(): KpiItem[] {
+    if (!this._config.hours) return [];
+    const localize = setupCustomLocalize(this.hass);
+    const kpis: KpiItem[] = [];
+    if (this._totalFaults > 0) {
+      kpis.push({ value: `${this._totalFaults}`, label: localize('opentherm.diagnostics_card.faults') });
+    }
+    if (this._totalFaultTime > 0) {
+      kpis.push({ value: this._formatActiveTime(this._totalFaultTime), label: localize('opentherm.diagnostics_card.fault_time') });
+    }
+    return kpis;
   }
 
   // --- Pressure value ---
@@ -359,6 +465,16 @@ export class OtDiagnosticsCard extends OtBaseCard<OtDiagnosticsCardConfig> {
 
           ${this._renderNotFound(cfg.fault_entity, localize('opentherm.diagnostics_card.fault_code'))}
         </div>
+        ${cfg.hours && cfg.fault_entity ? html`
+          <ot-timeline-section
+            .hass=${this.hass}
+            .label=${localize('opentherm.diagnostics_card.timeline')}
+            .segments=${this._timelineCache?.segments ?? []}
+            .startTime=${this._timelineCache?.startTime ?? Date.now()}
+            .endTime=${this._timelineCache?.endTime ?? Date.now()}
+            .kpis=${this._timelineKpis}
+          ></ot-timeline-section>
+        ` : nothing}
         ${this._renderFooterMeta()}
       </ha-card>
     `;

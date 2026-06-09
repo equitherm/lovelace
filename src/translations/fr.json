@@ -215,6 +215,9 @@
       "service_request": "Service Requis",
       "diagnostic": "Diagnostic",
       "all_clear": "Tout OK",
+      "timeline": "Chronologie",
+      "faults": "défauts",
+      "fault_time": "temps défaut",
       "editor": {
         "fault_sensors": "Capteurs Défaut",
         "diagnostic_sensors": "Capteurs Diagnostic"

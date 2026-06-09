@@ -1,8 +1,11 @@
-import { assert, type, string, optional, boolean, unknown } from 'superstruct';
+import { assert, type, string, optional, boolean, unknown, number } from 'superstruct';
+
+const DEFAULT_HOURS = 24;
 
 export interface OtDiagnosticsCardConfig {
   type: string;
   fault_entity: string;
+  hours?: number;
   name?: unknown;
   show_last_updated?: boolean;
 
@@ -29,6 +32,7 @@ export interface OtDiagnosticsCardConfig {
 export const OtDiagnosticsCardConfigStruct = type({
   type: string(),
   fault_entity: string(),
+  hours: optional(number()),
   name: optional(unknown()),
   show_last_updated: optional(boolean()),
   pressure_entity: optional(string()),
