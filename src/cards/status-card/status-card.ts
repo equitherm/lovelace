@@ -11,6 +11,8 @@ import { STATUS_CARD_NAME, STATUS_CARD_EDITOR_NAME } from './const';
 import { findClimateEntity, findOutdoorEntity, findFlowEntity } from '../../utils/stub-config';
 import { getAdjustingDirection } from '../../utils/climate-helpers';
 import '../../shared/badge-info';
+import '../../shared/eq-card-shell';
+import '../../shared/eq-content-centered';
 import '../../shared/eq-tuning-dialog';
 import { buildTuningDialogConfig } from '../../utils/tuning-dialog-config';
 
@@ -84,10 +86,6 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
           display: flex;
           flex-direction: column;
         }
-        eq-temp-kpis {
-          flex-shrink: 0;
-          min-width: 0;
-        }
       `,
     ];
   }
@@ -100,34 +98,40 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
 
     return html`
       <ha-card>
-        ${this._renderHeader({
-          iconName: 'mdi:thermostat',
-          clickEntity: this._config.climate_entity,
-          title,
-        })}
-
-        ${this._renderKpiFooter({
-          adjustingDir: adjustingDir ?? undefined,
-          curveOutput: this._curveOutputTempFormatted || undefined,
-        })}
-        ${this._config.show_params_footer !== false ? html`
-          <eq-params-footer
-            .hass=${this.hass}
-            .config=${{
-              type: 'custom:eq-params-footer' as const,
-              hc_entity: this._config.hc_entity,
-              hc_fallback: 0.9,
-              n_entity: this._config.n_entity,
-              n_fallback: 1.25,
-              shift_entity: this._config.shift_entity,
-              shift_fallback: 0,
-              pid_correction_entity: this._config.pid_correction_entity,
-              interactive: !!this._config.tunable,
-            }}
-            @eq-tuning-requested=${() => { this._showTuningDialog = true; }}
-          ></eq-params-footer>
-        ` : nothing}
-        ${this._renderFooterMeta()}
+        <eq-card-shell>
+          <div slot="header">
+            ${this._renderHeader({
+              iconName: 'mdi:thermostat',
+              clickEntity: this._config.climate_entity,
+              title,
+            })}
+          </div>
+          <eq-content-centered slot="main">
+            ${this._renderKpiFooter({
+              adjustingDir: adjustingDir ?? undefined,
+              curveOutput: this._curveOutputTempFormatted || undefined,
+            })}
+          </eq-content-centered>
+          ${this._config.show_params_footer !== false ? html`
+            <eq-params-footer
+              slot="footer"
+              .hass=${this.hass}
+              .config=${{
+                type: 'custom:eq-params-footer' as const,
+                hc_entity: this._config.hc_entity,
+                hc_fallback: 0.9,
+                n_entity: this._config.n_entity,
+                n_fallback: 1.25,
+                shift_entity: this._config.shift_entity,
+                shift_fallback: 0,
+                pid_correction_entity: this._config.pid_correction_entity,
+                interactive: !!this._config.tunable,
+              }}
+              @eq-tuning-requested=${() => { this._showTuningDialog = true; }}
+            ></eq-params-footer>
+          ` : nothing}
+          ${this._renderFooterMeta({ slot: 'footer' })}
+        </eq-card-shell>
       </ha-card>
 
       ${this._dialogConfig && this._showTuningDialog ? html`
