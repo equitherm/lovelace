@@ -10,8 +10,6 @@ import '../../features/eq-hvac-badges';
 import '../../features/eq-temp-kpis';
 import { headerStyles } from './header-styles';
 import type { TuningDialogConfig } from '../../shared/eq-tuning-dialog-config';
-import { buildTuningDialogConfig } from '../tuning-dialog-config';
-
 export { headerStyles };
 
 /** Minimum config fields shared by all equitherm cards */
@@ -51,20 +49,9 @@ export abstract class EquithermBaseCard<TConfig extends EquithermCardConfig> ext
     }
   }
 
-  /** Formatted room temperature from climate entity */
-  protected get _roomTemp(): string {
-    const temp = this._climate?.attributes.current_temperature;
-    return this._formatCalcTemp(temp);
-  }
-
   /** Formatted outdoor temperature from outdoor_entity */
   protected get _outdoorTempFormatted(): string {
     return this._formatEntityTemp(this._config.outdoor_entity);
-  }
-
-  /** Formatted flow temperature from flow_entity */
-  protected get _flowTempFormatted(): string {
-    return this._formatEntityTemp(this._config.flow_entity);
   }
 
   /** Formatted curve output temp from rate target entity (for adjusting indicator) */
