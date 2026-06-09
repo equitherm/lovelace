@@ -270,16 +270,17 @@ export class OtEfficiencyCard extends OtEChartCard<OtEfficiencyCardConfig> {
     };
   }
 
-  private _buildTooltipFormatter(): (params: any) => string {
+  private _buildTooltipFormatter(): (params: any) => ReturnType<typeof html> {
     const unit = this.hass?.config?.unit_system?.temperature ?? '°C';
     const locale = this.hass?.locale;
     return (params: any) => {
       const time = this._formatChartTime(params[0].value[0] as number);
-      let html = `<span style="opacity:0.6">${time}</span><br/>`;
-      for (const p of params) {
-        html += `<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${p.color};margin-right:4px;vertical-align:middle"></span>${p.seriesName}: <b>${formatNumber(p.value[1] as number, locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}${unit}</b><br/>`;
-      }
-      return html;
+      return html`
+        <span style="opacity:0.6">${time}</span><br/>
+        ${params.map((p: any) => html`
+          <ha-chart-tooltip-marker .color=${p.color}></ha-chart-tooltip-marker>${p.seriesName}: <b>${formatNumber(p.value[1] as number, locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}${unit}</b><br/>
+        `)}
+      `;
     };
   }
 
@@ -304,7 +305,8 @@ export class OtEfficiencyCard extends OtEChartCard<OtEfficiencyCardConfig> {
           axisLabel: { fontSize: 10, formatter: (v: number) => formatNumber(v, this.hass?.locale, { maximumFractionDigits: 1 }) },
         },
         grid: { top: 24, right: 10, bottom: 25, left: 40 },
-        tooltip: { trigger: 'axis' as const, formatter: this._buildTooltipFormatter() },
+        // ha-chart-base renders Lit TemplateResult in tooltips (not standard ECharts)
+        tooltip: { trigger: 'axis' as const, formatter: this._buildTooltipFormatter() as any },
         legend: { show: true, top: 0, right: 0, textStyle: { fontSize: 10 }, icon: 'circle', itemWidth: 8, itemHeight: 8 },
       },
       data: [
