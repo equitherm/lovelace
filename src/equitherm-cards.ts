@@ -5,6 +5,9 @@ import './cards/forecast-card/forecast-card';
 // Shared components
 import './shared/eq-tuning-dialog';
 
+// Feature elements
+import './features/eq-hvac-badges';
+
 console.info(
   '%c EQUITHERM-CARDS %c __VERSION__ ',
   'color: white; background: #f97316; font-weight: bold;',

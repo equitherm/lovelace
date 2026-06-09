@@ -2,9 +2,20 @@
 export interface EqHvacBadgesConfig {
   type: 'custom:eq-hvac-badges';
   climate_entity: string;
-  pid_entity?: string;
-  wws_entity?: string;
   outdoor_entity?: string;
+  wws_entity?: string;
+  /** PID active binary sensor entity */
+  pid_active_entity?: string;
+  /** Rate-limiting binary sensor entity */
+  rate_limiting_entity?: string;
+  /** PID output number entity (for adjusting direction) */
+  pid_output_entity?: string;
+  /** Curve output number entity (fallback for adjusting direction) */
+  curve_output_entity?: string;
+  /** Flow temperature entity (needed for adjusting direction comparison) */
+  flow_entity?: string;
+  /** Whether tuning mode is active (shows tune button) */
+  tunable?: boolean;
 }
 
 /** Config for eq-temp-kpis feature */

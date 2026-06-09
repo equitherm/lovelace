@@ -5,10 +5,11 @@ import type { ClimateEntity } from '../../ha/data/climate';
 import { formatNumber } from '../../ha';
 import { computeDomain } from '../../ha/common/entity/compute_domain';
 import { BaseCard } from './abstract-base-card';
-import { normalizeHvacAction, getHvacActionColor, getHvacBadgeProps } from '../hvac-colors';
-import { isRateLimitingActive, isPidActive, getAdjustingDirection, getRateTargetEntity, type ClimateHelperConfig } from '../climate-helpers';
+import { normalizeHvacAction, getHvacActionColor } from '../hvac-colors';
+import { getRateTargetEntity, type ClimateHelperConfig } from '../climate-helpers';
 import setupCustomlocalize from '../../localize';
 import '../../shared/eq-param-bar';
+import '../../features/eq-hvac-badges';
 import { headerStyles } from './header-styles';
 import type { TuningDialogConfig } from '../../shared/eq-tuning-dialog-config';
 import { buildTuningDialogConfig } from '../tuning-dialog-config';
@@ -77,7 +78,8 @@ export abstract class EquithermBaseCard<TConfig extends EquithermCardConfig> ext
 
   /** Whether Warm Weather Shutdown is active.
    *  When wws_entity is configured, uses its state directly (authoritative).
-   *  Otherwise falls back to inferring from outdoor >= target. */
+   *  Otherwise falls back to inferring from outdoor >= target.
+   *  Subclasses (e.g. forecast-card) may override with alternative logic. */
   protected get _isWWSD(): boolean {
     if (this._config?.wws_entity) {
       const s = this._entityState(this._config.wws_entity);
@@ -94,7 +96,8 @@ export abstract class EquithermBaseCard<TConfig extends EquithermCardConfig> ext
     return !isNaN(tOutdoor) && tOutdoor >= tTarget;
   }
 
-  /** Formatted WWSD explanation with actual temperatures, e.g. "Outdoor 22.0°C ≥ 21.0°C" */
+  /** Formatted WWSD explanation with actual temperatures, e.g. "Outdoor 22.0°C >= 21.0°C".
+   *  Subclasses (e.g. forecast-card) may override with alternative formatting. */
   protected _wwsdDescription(): string {
     const localize = setupCustomlocalize(this.hass);
     const tTarget = this._climate?.attributes.temperature;
@@ -150,74 +153,6 @@ export abstract class EquithermBaseCard<TConfig extends EquithermCardConfig> ext
     `;
   }
 
-  /** Render PID status chip. */
-  protected _renderPidBadge(): ReturnType<typeof html> | typeof nothing {
-    const cfg = this._config as unknown as ClimateHelperConfig;
-    if (!cfg.pid_active_entity) return nothing;
-    const lookup = (id: string) => this._entityState(id);
-    const active = isPidActive(cfg, lookup);
-    return html`
-      <eq-badge-info
-        .label=${'PID'}
-        style=${`--badge-info-color: ${active ? 'var(--rgb-success)' : 'var(--rgb-disabled)'}`}
-        .icon=${active ? undefined : 'mdi:alert-circle-outline'}
-      ></eq-badge-info>
-    `;
-  }
-
-  /** Render WWSD warning badge. */
-  protected _renderWwsdBadge(): ReturnType<typeof html> | typeof nothing {
-    if (!this._isWWSD) return nothing;
-    const localize = setupCustomlocalize(this.hass);
-    return html`
-      <eq-badge-info
-        id="wwsd-badge"
-        .label=${localize('common.wwsd')}
-        style=${`--badge-info-color: var(--rgb-warning, 255, 167, 38)`}
-        .icon=${'mdi:weather-sunny-alert'}
-        .active=${true}
-      ></eq-badge-info>
-      <ha-tooltip for="wwsd-badge" placement="top" without-arrow>
-        <span style="white-space: nowrap">${this._wwsdDescription()}</span>
-      </ha-tooltip>
-    `;
-  }
-
-  /** Render Manual preset badge when curve is bypassed. */
-  protected _renderManualBadge(): ReturnType<typeof html> | typeof nothing {
-    if (!this._isManualPreset) return nothing;
-    const localize = setupCustomlocalize(this.hass);
-    return html`
-      <eq-badge-info
-        .label=${localize('common.manual')}
-        style=${`--badge-info-color: var(--rgb-warning, 255, 167, 38)`}
-        .icon=${'mdi:hand-back-right'}
-      ></eq-badge-info>
-    `;
-  }
-
-  /** Render HVAC action badge with optional rate-limiting indicator. */
-  protected _renderHvacBadge(): ReturnType<typeof html> {
-    const localize = setupCustomlocalize(this.hass);
-    const rawAction = this._climate?.attributes.hvac_action ?? 'off';
-    const hvacAction = normalizeHvacAction(rawAction);
-    const lookup = (id: string) => this._entityState(id);
-    const cfg = this._config as unknown as ClimateHelperConfig;
-    const badge = getHvacBadgeProps(
-      localize, hvacAction,
-      isRateLimitingActive(cfg, lookup),
-      getAdjustingDirection(cfg, lookup),
-    );
-    return html`
-      <eq-badge-info
-        .label=${badge.label}
-        style=${`--badge-info-color: ${badge.color}`}
-        .icon=${badge.icon}
-        .active=${badge.active}
-      ></eq-badge-info>
-    `;
-  }
-
   /** Override to inject extra badges into the header. */
   protected _renderExtraBadges(): typeof nothing {
     return nothing;
@@ -238,18 +173,25 @@ export abstract class EquithermBaseCard<TConfig extends EquithermCardConfig> ext
     this._showTuningDialog = true;
   };
 
-  /** Render the full badges row. */
+  /** Render the full badges row via the eq-hvac-badges feature element. */
   protected override _renderHeaderBadges(): ReturnType<typeof html> {
-    const manual = this._isManualPreset;
     return html`
-      <div class="badges">
-        ${manual ? nothing : this._renderPidBadge()}
-        ${manual ? nothing : this._renderWwsdBadge()}
-        ${this._renderManualBadge()}
-        ${this._renderExtraBadges()}
-        ${this._renderHvacBadge()}
-        ${this._renderTuneButton()}
-      </div>
+      <eq-hvac-badges
+        .hass=${this.hass}
+        .config=${{
+          climate_entity: this._config.climate_entity!,
+          outdoor_entity: this._config.outdoor_entity,
+          wws_entity: this._config.wws_entity,
+          pid_active_entity: (this._config as unknown as ClimateHelperConfig).pid_active_entity,
+          rate_limiting_entity: (this._config as unknown as ClimateHelperConfig).rate_limiting_entity,
+          pid_output_entity: (this._config as unknown as ClimateHelperConfig).pid_output_entity,
+          curve_output_entity: (this._config as unknown as ClimateHelperConfig).curve_output_entity,
+          flow_entity: this._config.flow_entity,
+          tunable: this._config.tunable,
+        }}
+        .extraBadges=${() => this._renderExtraBadges()}
+        .tuneButton=${() => this._renderTuneButton()}
+      ></eq-hvac-badges>
     `;
   }
 
