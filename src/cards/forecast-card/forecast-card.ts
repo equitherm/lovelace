@@ -370,7 +370,7 @@ export class EquithermForecastCard extends EquithermEChartCard<ForecastCardConfi
         ${this._renderKpiFooter({
           outdoorClickEntity: this._config.outdoor_entity ?? this._config.weather_entity,
         })}
-        ${this._config.curve_from_entities ? html`
+        ${this._config.curve_from_entities && this._config.show_params_footer !== false ? html`
           <eq-params-footer
             .hass=${this.hass}
             .config=${{

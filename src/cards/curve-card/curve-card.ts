@@ -413,7 +413,7 @@ export class EquithermCurveCard extends EquithermEChartCard<CurveCardConfig> {
           adjustingDir: adjustingDir ?? undefined,
           curveOutput: this._curveOutputTempFormatted || undefined,
         })}
-        ${this._config.curve_from_entities ? html`
+        ${this._config.curve_from_entities && this._config.show_params_footer !== false ? html`
           <eq-params-footer
             .hass=${this.hass}
             .config=${{
