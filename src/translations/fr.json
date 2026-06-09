@@ -110,6 +110,7 @@
     "condensing_threshold": "Seuil de Condensation",
     "gradient_warm_color": "Couleur chaude du dégradé",
     "gradient_cool_color": "Couleur froide du dégradé",
+    "dhw_sensors": "Capteurs ECS",
     "display": "Affichage",
     "helper": {
       "curve_from_entities": "Lire depuis les nombres ESPHome ajustables au lieu de valeurs statiques",
@@ -183,7 +184,8 @@
       "temp_axis": "Température",
       "condensing": "Condensation",
       "non_condensing": "Sans condensation",
-      "too_hot": "Retour trop chaud"
+      "too_hot": "Retour trop chaud",
+      "dhw": "ECS"
     },
     "modulation_card": {
       "name": "Modulation OpenTherm",

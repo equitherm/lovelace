@@ -13,6 +13,9 @@ export interface OtEfficiencyCardConfig {
   condensing_threshold?: number;
   hours?: number;
   fault_entity?: string;
+  dhw_temp_entity?: string;
+  dhw_setpoint_entity?: string;
+  dhw_active_entity?: string;
   name?: unknown;
   show_last_updated?: boolean;
   [key: string]: unknown;
@@ -27,6 +30,9 @@ export const OtEfficiencyCardConfigStruct = type({
   condensing_threshold: optional(defaulted(number(), DEFAULT_CONDENSING_THRESHOLD)),
   hours: optional(defaulted(number(), DEFAULT_HOURS)),
   fault_entity: optional(string()),
+  dhw_temp_entity: optional(string()),
+  dhw_setpoint_entity: optional(string()),
+  dhw_active_entity: optional(string()),
   name: optional(unknown()),
   show_last_updated: optional(boolean()),
 });

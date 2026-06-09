@@ -112,6 +112,7 @@
     "condensing_threshold": "Condensing Threshold",
     "gradient_warm_color": "Gradient warm color",
     "gradient_cool_color": "Gradient cool color",
+    "dhw_sensors": "DHW Sensors",
     "display": "Display",
     "helper": {
       "curve_from_entities": "Read from ESPHome runtime-tunable numbers instead of static values",
@@ -185,7 +186,8 @@
       "temp_axis": "Temperature",
       "condensing": "Condensing",
       "non_condensing": "Non-condensing",
-      "too_hot": "Return too hot"
+      "too_hot": "Return too hot",
+      "dhw": "DHW"
     },
     "modulation_card": {
       "name": "OpenTherm Modulation",

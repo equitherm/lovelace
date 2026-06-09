@@ -28,6 +28,8 @@ registerCustomCard({
 export class OtEfficiencyCard extends OtEChartCard<OtEfficiencyCardConfig> {
   private _boilerHistory: OtHistoryPoint[] = [];
   private _returnHistory: OtHistoryPoint[] = [];
+  private _dhwHistory: OtHistoryPoint[] = [];
+  private _dhwActiveHistory: OtHistoryPoint[] = [];
   private _fetchTimer?: ReturnType<typeof setInterval>;
 
   setConfig(config: unknown) {
@@ -162,13 +164,14 @@ export class OtEfficiencyCard extends OtEChartCard<OtEfficiencyCardConfig> {
   private async _fetchHistory(): Promise<void> {
     if (document.visibilityState !== 'visible') return;
     const hours = this._config.hours ?? DEFAULT_HOURS;
-    const history = await OtHistoryHelper.fetch(
-      this.hass,
-      [this._config.boiler_temp_entity, this._config.return_temp_entity],
-      hours,
-    );
+    const entityIds = [this._config.boiler_temp_entity, this._config.return_temp_entity];
+    if (this._config.dhw_temp_entity) entityIds.push(this._config.dhw_temp_entity);
+    if (this._config.dhw_active_entity) entityIds.push(this._config.dhw_active_entity);
+    const history = await OtHistoryHelper.fetch(this.hass, entityIds, hours);
     this._boilerHistory = history[this._config.boiler_temp_entity] ?? [];
     this._returnHistory = history[this._config.return_temp_entity] ?? [];
+    this._dhwHistory = this._config.dhw_temp_entity ? (history[this._config.dhw_temp_entity] ?? []) : [];
+    this._dhwActiveHistory = this._config.dhw_active_entity ? (history[this._config.dhw_active_entity] ?? []) : [];
     this._updateChartConfig();
   }
 
@@ -191,6 +194,65 @@ export class OtEfficiencyCard extends OtEChartCard<OtEfficiencyCardConfig> {
       symbol: 'none' as const,
       lineStyle: { color: 'rgba(76,175,80,0.5)', type: 'dashed' as const, width: 1 },
       data: [{ yAxis: threshold, label: { formatter: label, fontSize: 10, position: 'insideEndTop' } }],
+    };
+  }
+
+  private _buildDhwSeries(): object[] {
+    const cfg = this._config;
+    if (!cfg.dhw_temp_entity) return [];
+    const dhwSeries: Record<string, unknown> = {
+      type: 'line' as const,
+      name: 'DHW',
+      data: this._toChartData(this._dhwHistory, cfg.dhw_temp_entity),
+      smooth: true,
+      showSymbol: false,
+      lineStyle: { width: 1.5, type: 'dashed' as const },
+      itemStyle: { color: 'rgb(0, 150, 136)' },
+    };
+    if (cfg.dhw_setpoint_entity) {
+      dhwSeries.markLine = this._buildDhwSetpointMarkLine();
+    }
+    if (cfg.dhw_active_entity && this._dhwActiveHistory.length > 0) {
+      dhwSeries.markArea = this._buildDhwActiveMarkArea();
+    }
+    return [dhwSeries];
+  }
+
+  private _buildDhwSetpointMarkLine(): object {
+    const setpoint = this._resolveEntityNumber(this._config.dhw_setpoint_entity!, NaN);
+    if (isNaN(setpoint)) return {};
+    const unit = this.hass?.config?.unit_system?.temperature ?? '°C';
+    const label = `${formatNumber(setpoint, this.hass?.locale, { maximumFractionDigits: 0 })}${unit}`;
+    return {
+      silent: true,
+      symbol: 'none' as const,
+      lineStyle: { color: 'rgba(0,150,136,0.5)', type: 'dashed' as const, width: 1 },
+      data: [{ yAxis: setpoint, label: { formatter: label, fontSize: 10, position: 'insideEndTop' } }],
+    };
+  }
+
+  private _buildDhwActiveMarkArea(): object {
+    const hours = this._config.hours ?? DEFAULT_HOURS;
+    const startTime = Date.now() - hours * 3600 * 1000;
+    const endTime = Date.now();
+    const zones: Array<[number, number]> = [];
+    const points = this._dhwActiveHistory.filter(p => {
+      const t = new Date(p.last_changed).getTime();
+      return t >= startTime && t <= endTime;
+    });
+    for (let i = 0; i < points.length; i++) {
+      if (points[i].state !== 'on') continue;
+      const zoneStart = new Date(points[i].last_changed).getTime();
+      const zoneEnd = i + 1 < points.length
+        ? new Date(points[i + 1].last_changed).getTime()
+        : endTime;
+      zones.push([zoneStart, zoneEnd]);
+    }
+    if (!zones.length) return {};
+    return {
+      silent: true,
+      itemStyle: { color: 'rgba(255,152,0,0.08)' },
+      data: zones.map(([start, end]) => [{ xAxis: start }, { xAxis: end }]),
     };
   }
 
@@ -252,6 +314,7 @@ export class OtEfficiencyCard extends OtEChartCard<OtEfficiencyCardConfig> {
           lineStyle: { width: 1.5 },
           itemStyle: { color: coolingColor },
         },
+        ...this._buildDhwSeries(),
       ],
     };
   }
@@ -262,6 +325,7 @@ export class OtEfficiencyCard extends OtEChartCard<OtEfficiencyCardConfig> {
     const cfg = this._config;
     const boilerMissing = !this._entityExists(cfg.boiler_temp_entity);
     const returnMissing = !this._entityExists(cfg.return_temp_entity);
+    const dhwMissing = cfg.dhw_temp_entity ? !this._entityExists(cfg.dhw_temp_entity) : true;
 
     return html`
       <div class="kpi-footer">
@@ -276,6 +340,14 @@ export class OtEfficiencyCard extends OtEChartCard<OtEfficiencyCardConfig> {
           <div class="kpi-value">${this._formatEntityTemp(cfg.return_temp_entity)}</div>
           <div class="kpi-label">${localize('opentherm.status_card.return')}</div>
         </div>
+        ${cfg.dhw_temp_entity ? html`
+          <div class="kpi-divider"></div>
+          <div class="kpi-block${dhwMissing ? ' missing' : ''}"
+               @click=${dhwMissing ? undefined : () => this._openMoreInfo(cfg.dhw_temp_entity!)}>
+            <div class="kpi-value">${this._formatEntityTemp(cfg.dhw_temp_entity!)}</div>
+            <div class="kpi-label">${localize('opentherm.efficiency_card.dhw')}</div>
+          </div>
+        ` : nothing}
         <div class="kpi-divider"></div>
         <div class="kpi-block">
           <div class="kpi-value">${this._formattedDeltaT}</div>
