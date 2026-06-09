@@ -18,7 +18,7 @@ export abstract class EquithermEChartCard<TConfig extends EquithermCardConfig> e
   @state() protected _echartConfig?: EChartConfig;
 
   public override getGridOptions(): LovelaceGridOptions {
-    return { columns: 12, rows: "auto", min_rows: 3 };
+    return { columns: 12, rows: 4, min_rows: 3, max_rows: 8 };
   }
 
   public override getCardSize(): number {

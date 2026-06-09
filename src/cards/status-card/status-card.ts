@@ -26,7 +26,7 @@ registerCustomCard({
 export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
 
   public getGridOptions(): LovelaceGridOptions {
-    return { columns: 12, rows: this._activeRows, min_rows: 2 };
+    return { columns: 12, rows: this._activeRows, min_rows: 2, max_rows: 6 };
   }
 
   static getStubConfig(
@@ -62,6 +62,7 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
   }
 
   private get _activeRows(): number {
+    if (!this._config) return 2; // safe default when editor calls before setConfig
     let rows = 1; // header (always)
     if (this._config.show_kpi_footer !== false
       && this._entityExists(this._config.outdoor_entity)
