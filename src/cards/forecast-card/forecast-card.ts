@@ -357,6 +357,15 @@ export class EquithermForecastCard extends EquithermEChartCard<ForecastCardConfi
         .chart-host {
           height: 100%;
           min-height: 0;
+          display: flex;
+          flex-direction: column;
+        }
+        .chart-host > .chart-wrapper {
+          flex: 1;
+          min-height: 0;
+        }
+        .chart-host > .chart-wrapper ha-chart-base {
+          height: 100%;
         }
       `,
     ];

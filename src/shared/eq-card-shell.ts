@@ -27,7 +27,8 @@ export class EqCardShell extends LitElement {
       :host {
         display: grid;
         grid-template-rows: auto 1fr auto;
-        height: 100%;
+        flex: 1;
+        min-height: 0;
       }
       ::slotted([slot="main"]) {
         min-height: 0;
