@@ -278,7 +278,7 @@ export class EquithermCurveCard extends EquithermEChartCard<CurveCardConfig> {
           min: yMin,
           max: yMax,
         },
-        grid: { top: 5, right: 5, bottom: 20, left: 30 },
+        grid: { top: 5, right: 20, bottom: 20, left: 30 },
         // ha-chart-base wraps formatters via wrapLitTooltipFormatter (Lit render)
         tooltip: {
           trigger: 'axis' as const,
