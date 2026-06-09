@@ -25,7 +25,8 @@ registerCustomCard({
 @customElement(STATUS_CARD_NAME)
 export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
 
-  public getGridOptions(): LovelaceGridOptions {
+  public override getGridOptions(): LovelaceGridOptions {
+    if (!this._config) return { columns: 12, rows: 2, min_rows: 2, max_rows: 6 };
     return { columns: 12, rows: this._activeRows, min_rows: 2, max_rows: 6 };
   }
 
