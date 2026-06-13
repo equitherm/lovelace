@@ -16,7 +16,11 @@
     "wwsd": "Standby",
     "wwsd_label": "Outdoor temperature meets room setpoint",
     "manual": "Manual",
-    "manual_override": "Manual override"
+    "manual_override": "Manual override",
+    "outdoor_fault": "Outdoor fault",
+    "indoor_fault": "Indoor fault",
+    "outdoor_fault_desc": "Outdoor sensor fault — using fallback temperature",
+    "indoor_fault_desc": "Indoor sensor fault — PID disabled (pure equitherm)"
   },
   "status_card": {
     "name": "Equitherm Status Card",
@@ -113,6 +117,9 @@
     "gradient_warm_color": "Gradient warm color",
     "gradient_cool_color": "Gradient cool color",
     "display": "Display",
+    "diagnostics": "Diagnostics",
+    "outdoor_fault_entity": "Outdoor sensor fault entity",
+    "indoor_fault_entity": "Indoor sensor fault entity",
     "helper": {
       "curve_from_entities": "Read from ESPHome runtime-tunable numbers instead of static values",
       "hc": "How aggressively heating responds to cold — increase if room is too cold in winter",

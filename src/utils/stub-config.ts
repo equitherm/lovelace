@@ -57,3 +57,22 @@ export function findFlowEntity(hass: HomeAssistant): string | undefined {
 export function findCurveOutputEntity(hass: HomeAssistant): string {
   return findTempSensors(hass).find(e => e.includes('curve_output')) ?? '';
 }
+
+/** Find a binary_sensor fault indicator by the component's naming convention. */
+function findFaultSensor(hass: HomeAssistant, token: string): string | undefined {
+  const states = hass.states;
+  const candidates = Object.keys(states).filter(e => {
+    const state = states[e];
+    return computeDomain(e) === 'binary_sensor' && e.includes(token);
+  });
+  // Prefer one tagged as a problem device_class, else any name match.
+  return candidates.find(e => states[e]?.attributes?.device_class === 'problem') ?? candidates[0];
+}
+
+export function findOutdoorFaultEntity(hass: HomeAssistant): string | undefined {
+  return findFaultSensor(hass, 'outdoor_sensor_fault');
+}
+
+export function findIndoorFaultEntity(hass: HomeAssistant): string | undefined {
+  return findFaultSensor(hass, 'indoor_sensor_fault');
+}

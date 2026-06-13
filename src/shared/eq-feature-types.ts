@@ -27,6 +27,10 @@ export interface EqTempKpisConfig {
   adjusting_dir?: string;
   curve_output?: string;
   outdoor_click_entity?: string;
+  /** Outdoor sensor fault active — tints the outdoor column */
+  outdoor_fault?: boolean;
+  /** Indoor sensor fault active — tints the room column */
+  room_fault?: boolean;
 }
 
 /** Config for eq-params-footer feature */

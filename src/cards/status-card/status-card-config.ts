@@ -13,6 +13,8 @@ export interface StatusCardConfig {
   pid_active_entity?: string;
   pid_correction_entity?: string;
   wws_entity?: string;
+  outdoor_fault_entity?: string;
+  indoor_fault_entity?: string;
   hc_entity?: string;
   shift_entity?: string;
   n_entity?: string;
@@ -36,6 +38,8 @@ export const StatusCardConfigStruct = type({
   pid_active_entity: optional(string()),
   pid_correction_entity: optional(string()),
   wws_entity: optional(string()),
+  outdoor_fault_entity: optional(string()),
+  indoor_fault_entity: optional(string()),
   hc_entity: optional(string()),
   shift_entity: optional(string()),
   n_entity: optional(string()),

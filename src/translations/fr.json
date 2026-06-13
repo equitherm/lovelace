@@ -14,7 +14,11 @@
     "preheating": "Préchauffage",
     "not_found": "{entity} introuvable",
     "wwsd": "Veille",
-    "wwsd_label": "Température extérieure ≥ consigne"
+    "wwsd_label": "Température extérieure ≥ consigne",
+    "outdoor_fault": "Défaut capteur extérieur",
+    "indoor_fault": "Défaut capteur intérieur",
+    "outdoor_fault_desc": "Défaut capteur extérieur — température de secours utilisée",
+    "indoor_fault_desc": "Défaut capteur intérieur — PID désactivé (équitherm pur)"
   },
   "status_card": {
     "name": "Carte Status Equitherm",
@@ -111,6 +115,9 @@
     "gradient_warm_color": "Couleur chaude du dégradé",
     "gradient_cool_color": "Couleur froide du dégradé",
     "display": "Affichage",
+    "diagnostics": "Diagnostics",
+    "outdoor_fault_entity": "Entité défaut capteur extérieur",
+    "indoor_fault_entity": "Entité défaut capteur intérieur",
     "helper": {
       "curve_from_entities": "Lire depuis les nombres ESPHome ajustables au lieu de valeurs statiques",
       "hc": "Agressivité du chauffage par temps froid — augmenter si la pièce est trop froide en hiver",

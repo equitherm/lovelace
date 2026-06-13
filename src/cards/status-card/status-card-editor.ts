@@ -46,6 +46,10 @@ export class StatusCardEditor extends EquithermBaseEditor<StatusCardConfig> {
         schemaHelpers.entity('wws_entity', { domain: ['binary_sensor'], required: false }),
         schemaHelpers.entity('pid_correction_entity', { domain: ['sensor', 'input_number'], device_class: 'temperature', required: false }),
       ]),
+      schemaHelpers.expandable(localize('editor.diagnostics'), 'mdi:alert-circle-outline', [
+        schemaHelpers.entity('outdoor_fault_entity', { domain: ['binary_sensor'], device_class: 'problem', required: false }),
+        schemaHelpers.entity('indoor_fault_entity', { domain: ['binary_sensor'], device_class: 'problem', required: false }),
+      ]),
       schemaHelpers.expandable(localize('editor.curve_parameters'), 'mdi:chart-bell-curve-cumulative', [
         schemaHelpers.entity('hc_entity', { domain: ['number', 'input_number'], required: false }),
         schemaHelpers.entity('shift_entity', { domain: ['number', 'input_number'], required: false }),

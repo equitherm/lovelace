@@ -8,7 +8,7 @@ import { cardStyle, kpiFooterStyles } from '../../utils/card-styles';
 import { registerCustomCard } from '../../utils/register-card';
 import { validateStatusCardConfig } from './status-card-config';
 import { STATUS_CARD_NAME, STATUS_CARD_EDITOR_NAME } from './const';
-import { findClimateEntity, findOutdoorEntity, findFlowEntity } from '../../utils/stub-config';
+import { findClimateEntity, findOutdoorEntity, findFlowEntity, findOutdoorFaultEntity, findIndoorFaultEntity } from '../../utils/stub-config';
 import { getAdjustingDirection } from '../../utils/climate-helpers';
 import '../../shared/badge-info';
 import '../../shared/eq-card-shell';
@@ -40,6 +40,8 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
       climate_entity: findClimateEntity(hass, entities, entitiesFallback) ?? '',
       outdoor_entity: findOutdoorEntity(hass) ?? '',
       flow_entity: findFlowEntity(hass) ?? '',
+      outdoor_fault_entity: findOutdoorFaultEntity(hass),
+      indoor_fault_entity: findIndoorFaultEntity(hass),
     } as StatusCardConfig;
   }
 
