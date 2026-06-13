@@ -10,6 +10,7 @@ import { validateStatusCardConfig } from './status-card-config';
 import { STATUS_CARD_NAME, STATUS_CARD_EDITOR_NAME } from './const';
 import { findClimateEntity, findOutdoorEntity, findFlowEntity, findOutdoorFaultEntity, findIndoorFaultEntity } from '../../utils/stub-config';
 import { getAdjustingDirection } from '../../utils/climate-helpers';
+import setupCustomlocalize from '../../localize';
 import '../../shared/badge-info';
 import '../../shared/eq-card-shell';
 import '../../shared/eq-content-centered';
@@ -57,6 +58,44 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
 
   protected override _lastUpdatedEntity(): string | undefined {
     return this._config.flow_entity;
+  }
+
+  private get _outdoorFault(): boolean {
+    return this._isFaultOn(this._config.outdoor_fault_entity);
+  }
+
+  private get _indoorFault(): boolean {
+    return this._isFaultOn(this._config.indoor_fault_entity);
+  }
+
+  private _isFaultOn(id?: string): boolean {
+    return !!id && this._entityState(id)?.state === 'on';
+  }
+
+  protected override _renderExtraBadges() {
+    return html`${this._renderFaultBadge('outdoor')}${this._renderFaultBadge('indoor')}`;
+  }
+
+  private _renderFaultBadge(kind: 'outdoor' | 'indoor') {
+    const faulted = kind === 'outdoor' ? this._outdoorFault : this._indoorFault;
+    if (!faulted) return nothing;
+    const localize = setupCustomlocalize(this.hass);
+    const label = localize(`common.${kind}_fault`);
+    const desc = localize(`common.${kind}_fault_desc`);
+    const icon = kind === 'outdoor' ? 'mdi:thermometer-lines' : 'mdi:home-thermometer-outline';
+    const badgeId = `${kind}-fault-badge`;
+    return html`
+      <eq-badge-info
+        id=${badgeId}
+        .label=${label}
+        .icon=${icon}
+        .active=${true}
+        style="--badge-info-color: var(--rgb-danger, 244, 67, 54)"
+      ></eq-badge-info>
+      <ha-tooltip for=${badgeId} placement="top" without-arrow>
+        <span style="white-space: nowrap">${desc}</span>
+      </ha-tooltip>
+    `;
   }
 
   private get _hasParamsFooter(): boolean {
@@ -114,6 +153,8 @@ export class EquithermStatusCard extends EquithermBaseCard<StatusCardConfig> {
             ${this._renderKpiFooter({
               adjustingDir: adjustingDir ?? undefined,
               curveOutput: this._curveOutputTempFormatted || undefined,
+              outdoorFault: this._outdoorFault,
+              roomFault: this._indoorFault,
             })}
           </eq-content-centered>
           ${this._config.show_params_footer !== false ? html`

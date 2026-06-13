@@ -90,8 +90,8 @@ export class EqTempKpis extends LitElement {
 
     return html`
       <div class="kpi-footer">
-        <div class="kpi-block${outdoorMissing ? ' missing' : ''}" @click=${outdoorMissing ? undefined : () => this._openMoreInfo(outdoorEntity)}>
-          <div class="kpi-value">${this._outdoorTempFormatted}</div>
+        <div class="kpi-block${outdoorMissing ? ' missing' : ''}${this.config.outdoor_fault ? ' fault' : ''}" @click=${outdoorMissing ? undefined : () => this._openMoreInfo(outdoorEntity)}>
+          <div class="kpi-value">${this.config.outdoor_fault ? html`<ha-icon icon="mdi:alert"></ha-icon>` : nothing}${this._outdoorTempFormatted}</div>
           <div class="kpi-label">${localize('common.outdoor')}</div>
         </div>
         <div class="kpi-divider"></div>
@@ -108,8 +108,8 @@ export class EqTempKpis extends LitElement {
           <div class="kpi-label">${localize('common.flow')}</div>
         </div>
         <div class="kpi-divider"></div>
-        <div class="kpi-block${climateMissing ? ' missing' : ''}" @click=${climateMissing ? undefined : () => this._openMoreInfo(this.config.climate_entity)}>
-          <div class="kpi-value">${this._roomTemp}</div>
+        <div class="kpi-block${climateMissing ? ' missing' : ''}${this.config.room_fault ? ' fault' : ''}" @click=${climateMissing ? undefined : () => this._openMoreInfo(this.config.climate_entity)}>
+          <div class="kpi-value">${this.config.room_fault ? html`<ha-icon icon="mdi:alert"></ha-icon>` : nothing}${this._roomTemp}</div>
           <div class="kpi-label">${localize('common.room')}</div>
         </div>
       </div>
@@ -138,6 +138,8 @@ export class EqTempKpis extends LitElement {
       .kpi-block:hover { background: var(--secondary-background-color, rgba(0,0,0,0.04)); }
       .kpi-block.missing { opacity: 0.4; cursor: default; }
       .kpi-block.missing:hover { background: transparent; }
+      .kpi-block.fault .kpi-value { color: rgb(var(--rgb-danger, 244, 67, 54)); display: inline-flex; align-items: center; gap: 4px; }
+      .kpi-block.fault .kpi-value ha-icon { --mdc-icon-size: var(--ha-font-size-md, 1rem); }
       .kpi-value {
         font-size: var(--eq-kpi-font-size, var(--ha-font-size-xl, 1.4rem));
         font-weight: 600;

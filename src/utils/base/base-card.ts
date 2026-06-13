@@ -139,7 +139,7 @@ export abstract class EquithermBaseCard<TConfig extends EquithermCardConfig> ext
   }
 
   /** Override to inject extra badges into the header. */
-  protected _renderExtraBadges(): typeof nothing {
+  protected _renderExtraBadges(): typeof nothing | TemplateResult {
     return nothing;
   }
 
@@ -186,6 +186,8 @@ export abstract class EquithermBaseCard<TConfig extends EquithermCardConfig> ext
     adjustingDir?: string;
     curveOutput?: string;
     outdoorClickEntity?: string;
+    outdoorFault?: boolean;
+    roomFault?: boolean;
   }): TemplateResult | typeof nothing {
     if (this._config.show_kpi_footer === false) return nothing;
     if (!this._config || !this.hass) return nothing;
@@ -199,6 +201,8 @@ export abstract class EquithermBaseCard<TConfig extends EquithermCardConfig> ext
           adjusting_dir: opts?.adjustingDir,
           curve_output: opts?.curveOutput,
           outdoor_click_entity: opts?.outdoorClickEntity,
+          outdoor_fault: opts?.outdoorFault,
+          room_fault: opts?.roomFault,
         }}
       ></eq-temp-kpis>
     `;

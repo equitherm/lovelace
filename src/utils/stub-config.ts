@@ -61,10 +61,9 @@ export function findCurveOutputEntity(hass: HomeAssistant): string {
 /** Find a binary_sensor fault indicator by the component's naming convention. */
 function findFaultSensor(hass: HomeAssistant, token: string): string | undefined {
   const states = hass.states;
-  const candidates = Object.keys(states).filter(e => {
-    const state = states[e];
-    return computeDomain(e) === 'binary_sensor' && e.includes(token);
-  });
+  const candidates = Object.keys(states).filter(e =>
+    computeDomain(e) === 'binary_sensor' && e.includes(token),
+  );
   // Prefer one tagged as a problem device_class, else any name match.
   return candidates.find(e => states[e]?.attributes?.device_class === 'problem') ?? candidates[0];
 }
